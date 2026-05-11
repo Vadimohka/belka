@@ -6,3 +6,4 @@ __pycache__/
 *.tmp
 data_input/downloads/
 *.zip
+.claude/
