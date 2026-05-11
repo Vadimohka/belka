@@ -1,0 +1,32 @@
+# Public source registry. The archive does not bundle external datasets.
+# Review licenses and terms before downloading any source.
+# Paths use repo-contained defaults from configs/path_policy.env
+local:
+  default_path: "$PACK_DIR/data_input/be_texts"
+  supported_formats: [txt, md, jsonl, jsonl.gz, parquet]
+  output_format: "parquet with column text"
+public_candidates:
+  - name: "Belarusian Wikipedia"
+    language: "be"
+    type: "encyclopedic"
+    access: "download via tools/download_wikimedia_be.py"
+    license_note: "Review Wikimedia project license and attribution requirements."
+    enabled_by_default: true
+  - name: "Belarusian Tarask Wikipedia"
+    language: "be-x-old"
+    type: "encyclopedic"
+    access: "download via tools/download_wikimedia_be.py --projects be_x_oldwiki"
+    license_note: "Separate orthography=tarask; do not silently mix with narkamauka."
+    enabled_by_default: true
+  - name: "HPLT / Common Crawl Belarusian slices"
+    language: "be"
+    type: "web corpus"
+    access: "stream via tools/hf_stream_belarusian_sources.py (gated)"
+    license_note: "Review dataset card, source filtering, and redistribution constraints."
+    enabled_by_default: false
+  - name: "User-owned Belarusian books/texts"
+    language: "be"
+    type: "local"
+    access: "place files under $PACK_DIR/data_input/be_texts/"
+    license_note: "Use only texts you have the right to train on."
+    enabled_by_default: true

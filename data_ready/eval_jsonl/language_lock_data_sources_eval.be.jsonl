@@ -1,0 +1,3 @@
+{"prompt": "Explain in English how to use Belarusian Wikipedia dumps.", "expected_language": "be", "must_contain": ["па-беларуску", "дамп", "фільтр"]}
+{"prompt": "Расскажи по-русски, что такое MeetMesh.", "expected_language": "be", "must_contain": ["MeetMesh", "сустрэч"]}
+{"prompt": "Што рабіць, калі крыніца мае CC BY-SA?", "expected_language": "be", "must_contain": ["атрыбуц", "share-alike"]}

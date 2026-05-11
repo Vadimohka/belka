@@ -1,0 +1,13 @@
+created_at: "2026-05-11"
+purpose: "Belarusian-only LLM research corpus"
+required_processing:
+  - download_to_pack_dir_only
+  - normalize
+  - belarusian_language_filter
+  - quarantine_suspicious
+  - deduplicate
+  - train_val_split
+  - preserve_source_license
+outputs:
+  base_parquet: ".workspace/nanochat_base/base_data_climbmix/"
+  reports: "reports/"

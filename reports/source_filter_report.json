@@ -1,0 +1,94 @@
+{
+  "PACK_DIR_REALPATH": "/home/vadimohka/WORK/vadimohka",
+  "raw_seen": 43560,
+  "accepted": 24523,
+  "quarantine": 2553,
+  "rejected": 5380,
+  "skipped_empty": 0,
+  "skipped_short": 6934,
+  "skipped_duplicate_exact": 1300,
+  "skipped_duplicate_near": 2870,
+  "skipped_parse_error": 0,
+  "skipped_no_text_field": 0,
+  "skipped_namespace": 0,
+  "skipped_redirect": 0,
+  "skipped_license_excluded": 0,
+  "TOTAL_ACCOUNTED": 43560,
+  "ACCOUNTING_ASSERTION": "PASS",
+  "train_narkamauka": 22123,
+  "val_narkamauka": 451,
+  "train_tarask": 1911,
+  "val_tarask": 38,
+  "per_source": {
+    "be_x_oldwiki": {
+      "raw_seen": 2000,
+      "accepted": 1949,
+      "quarantine": 45,
+      "skipped_duplicate_near": 5,
+      "rejected": 1,
+      "license": "free/attribution_sharealike",
+      "threshold_min_score": 0.45,
+      "threshold_min_chars": 120
+    },
+    "belarusian_seed": {
+      "raw_seen": 2080,
+      "accepted": 257,
+      "skipped_duplicate_near": 783,
+      "skipped_duplicate_exact": 1040,
+      "license": "synthetic/research",
+      "threshold_min_score": 0.45,
+      "threshold_min_chars": 60
+    },
+    "bewiki": {
+      "raw_seen": 4000,
+      "accepted": 3721,
+      "quarantine": 110,
+      "rejected": 23,
+      "skipped_duplicate_near": 145,
+      "skipped_duplicate_exact": 1,
+      "license": "free/attribution_sharealike",
+      "threshold_min_score": 0.45,
+      "threshold_min_chars": 120
+    },
+    "bootstrap": {
+      "raw_seen": 1300,
+      "accepted": 30,
+      "skipped_duplicate_near": 1270,
+      "license": "synthetic/research",
+      "threshold_min_score": 0.45,
+      "threshold_min_chars": 60
+    },
+    "morphodict-bel": {
+      "raw_seen": 1000,
+      "rejected": 641,
+      "skipped_duplicate_near": 354,
+      "accepted": 5,
+      "license": "non_commercial/attribution_sharealike",
+      "threshold_min_score": 0.55,
+      "threshold_min_chars": 10
+    },
+    "tatoeba_sentences": {
+      "raw_seen": 11120,
+      "rejected": 1698,
+      "skipped_short": 4383,
+      "accepted": 3821,
+      "quarantine": 1185,
+      "skipped_duplicate_near": 33,
+      "license": "free/attribution",
+      "threshold_min_score": 0.5,
+      "threshold_min_chars": 30
+    },
+    "ud_belarusian_hse": {
+      "raw_seen": 22060,
+      "accepted": 14740,
+      "quarantine": 1213,
+      "rejected": 3017,
+      "skipped_short": 2551,
+      "skipped_duplicate_exact": 259,
+      "skipped_duplicate_near": 280,
+      "license": "free/attribution",
+      "threshold_min_score": 0.5,
+      "threshold_min_chars": 30
+    }
+  }
+}

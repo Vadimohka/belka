@@ -1,0 +1,39 @@
+belarusian_filter:
+  accept_threshold: 4.0
+  quarantine_threshold: 2.0
+  min_chars_real: 120
+  min_chars_smoke: 40
+  positive_letters: ["ў", "і", "ё", "Ў", "І", "Ё"]
+  positive_words:
+    - гэта
+    - які
+    - якая
+    - якія
+    - быў
+    - была
+    - былі
+    - ёсць
+    - няма
+    - для
+    - праз
+    - пасля
+    - вельмі
+    - калі
+    - каб
+    - трэба
+    - можна
+    - чалавек
+    - мова
+    - краіна
+    - звесткі
+    - прыватнасць
+  penalties:
+    latin_ratio_high: true
+    russian_hints_without_belarusian_letters: true
+    ukrainian_hints: true
+    code_or_config_like: true
+  outputs:
+    accepted: accepted.jsonl
+    quarantine: quarantine.jsonl
+    rejected: rejected.jsonl
+    duplicates: duplicates.jsonl

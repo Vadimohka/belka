@@ -1,0 +1,208 @@
+schema_version: "2026-05-11"
+policy:
+  purpose: "non-commercial research / Belarusian-only LLM training"
+  note: "Non-commercial research does not remove attribution, share-alike, NC, gated-access, robots, or terms-of-use obligations."
+  storage_policy: "All downloaded/generated data must stay under PACK_DIR/data_input and PACK_DIR/.workspace."
+priority_order:
+  - wikimedia_bewiki
+  - wikimedia_be_x_oldwiki
+  - wikimedia_bewikisource
+  - belacorpus_public_research
+  - leipzig_bel_wikipedia_2021
+  - oscar_2301_be
+  - culturax_be
+  - mc4_be
+  - cc100_be
+  - opus_tatoeba_be
+  - tatoeba_sentences_be
+  - ud_belarusian_hse
+  - belarusianglue
+sources:
+  - id: wikimedia_bewiki
+    name: "Belarusian Wikipedia, official orthography"
+    type: wikimedia_dump
+    project: bewiki
+    priority: high
+    training_use: pretrain
+    url_latest: "https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream.xml.bz2"
+    license: "CC BY-SA 4.0 / GFDL for most text; media separate"
+    download_mode: automatic
+    requires_auth: false
+    notes: "Extract clean text, then Belarusian-only filter, dedup, split, manifest."
+  - id: wikimedia_be_x_oldwiki
+    name: "Belarusian Wikipedia, Taraškievica/classical orthography"
+    type: wikimedia_dump
+    project: be_x_oldwiki
+    priority: high
+    training_use: pretrain_optional_orthography_variant
+    url_latest: "https://dumps.wikimedia.org/be_x_oldwiki/latest/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2"
+    license: "CC BY-SA 4.0 / GFDL for most text; media separate"
+    download_mode: automatic
+    requires_auth: false
+    notes: "Keep orthography=tarask in manifest; do not silently mix without tracking."
+  - id: wikimedia_bewikisource
+    name: "Belarusian Wikisource"
+    type: wikimedia_dump
+    project: bewikisource
+    priority: high
+    training_use: pretrain_literary_public_domain_or_cc
+    url_latest: "https://dumps.wikimedia.org/bewikisource/latest/bewikisource-latest-pages-articles-multistream.xml.bz2"
+    license: "Wikimedia terms; individual source texts can have own status"
+    download_mode: automatic
+    requires_auth: false
+    notes: "Valuable but must filter boilerplate, metadata, non-Belarusian pages, and work-level rights."
+  - id: wikimedia_bewiktionary
+    name: "Belarusian Wiktionary"
+    type: wikimedia_dump
+    project: bewiktionary
+    priority: medium
+    training_use: lexicon_eval_sft_not_bulk_pretrain
+    url_latest: "https://dumps.wikimedia.org/bewiktionary/latest/bewiktionary-latest-pages-articles-multistream.xml.bz2"
+    license: "Wikimedia terms"
+    download_mode: automatic_optional
+    requires_auth: false
+  - id: wikimedia_bewikiquote
+    name: "Belarusian Wikiquote"
+    type: wikimedia_dump
+    project: bewikiquote
+    priority: low
+    training_use: quote_eval_optional
+    url_latest: "https://dumps.wikimedia.org/bewikiquote/latest/bewikiquote-latest-pages-articles-multistream.xml.bz2"
+    license: "Wikimedia terms; quotes can be copyright-sensitive"
+    download_mode: automatic_optional
+    requires_auth: false
+  - id: wikimedia_bewikibooks
+    name: "Belarusian Wikibooks"
+    type: wikimedia_dump
+    project: bewikibooks
+    priority: low
+    training_use: instructional_pretrain_optional
+    url_latest: "https://dumps.wikimedia.org/bewikibooks/latest/bewikibooks-latest-pages-articles-multistream.xml.bz2"
+    license: "Wikimedia terms"
+    download_mode: automatic_optional
+    requires_auth: false
+  - id: belacorpus_public_research
+    name: "Belacorpus public research corpus"
+    type: github_txt_corpus
+    priority: high
+    training_use: pretrain_research_only
+    url: "https://github.com/Belarusian-Corpus/belacorpus_public/archive/refs/heads/main.zip"
+    license: "research-use conditions in repository README; cite Mazzitelli 2021"
+    download_mode: automatic_with_research_notice
+    requires_auth: false
+    notes: "246 txt files, approx 1.5M words; useful Standard Belarusian source."
+  - id: leipzig_bel_wikipedia_2021
+    name: "Leipzig Corpora Collection Belarusian Wikipedia 2021"
+    type: leipzig_corpus
+    priority: high
+    training_use: pretrain_sentences
+    url: "https://corpora.uni-leipzig.de/en?corpusId=bel_wikipedia_2021"
+    license: "Leipzig terms of usage; cite Leipzig Corpus"
+    download_mode: manual_or_api
+    requires_auth: false
+    notes: "585,242 sentences / 8,058,542 tokens reported by Leipzig page."
+  - id: oscar_2301_be
+    name: "OSCAR 23.01 Belarusian"
+    type: huggingface_dataset
+    priority: high
+    training_use: large_pretrain_web
+    hf_dataset: "oscar-corpus/OSCAR-2301"
+    hf_config_candidates: ["be", "be_dedup", "unshuffled_deduplicated_be"]
+    license: "OSCAR packaging/annotations CC0; underlying web content rights remain relevant"
+    download_mode: huggingface_streaming_gated
+    requires_auth: true
+  - id: culturax_be
+    name: "CulturaX Belarusian"
+    type: huggingface_dataset
+    priority: high
+    training_use: large_pretrain_web
+    hf_dataset: "uonlp/CulturaX"
+    hf_config_candidates: ["be"]
+    license: "dataset card / gated terms; combines mC4 and OSCAR"
+    download_mode: huggingface_streaming_gated
+    requires_auth: true
+  - id: mc4_be
+    name: "mC4 Belarusian via allenai/c4"
+    type: huggingface_dataset
+    priority: medium
+    training_use: large_pretrain_web
+    hf_dataset: "allenai/c4"
+    hf_config_candidates: ["be"]
+    license: "ODC-BY plus Common Crawl terms"
+    download_mode: huggingface_streaming
+    requires_auth: false
+  - id: cc100_be
+    name: "CC100 Belarusian"
+    type: huggingface_dataset
+    priority: medium
+    training_use: pretrain_web_legacy
+    hf_dataset: "cc100"
+    hf_config_candidates: ["be"]
+    license: "dataset-specific terms; Common Crawl/CC-Net provenance"
+    download_mode: huggingface_streaming
+    requires_auth: false
+  - id: opus_tatoeba_be
+    name: "OPUS/Tatoeba Belarusian parallel data"
+    type: parallel_corpus
+    priority: medium
+    training_use: translation_sft_eval
+    url: "https://opus.nlpl.eu/"
+    hf_dataset: "Helsinki-NLP/tatoeba"
+    hf_config_candidates: ["be-en", "eng-bel", "bel-eng"]
+    license: "varies per OPUS corpus; preserve attribution"
+    download_mode: huggingface_or_opus_manual
+    requires_auth: false
+  - id: tatoeba_sentences_be
+    name: "Tatoeba Belarusian sentence export"
+    type: sentence_export
+    priority: medium
+    training_use: small_sft_eval
+    url: "https://downloads.tatoeba.org/exports/sentences.tar.bz2"
+    license: "Tatoeba per-sentence attribution/license obligations"
+    download_mode: automatic
+    requires_auth: false
+  - id: ud_belarusian_hse
+    name: "Universal Dependencies Belarusian-HSE"
+    type: treebank
+    priority: medium
+    training_use: grammar_eval_tokenization_lexical_sft
+    url: "https://github.com/UniversalDependencies/UD_Belarusian-HSE/archive/refs/heads/master.zip"
+    license: "CC BY-SA 4.0"
+    download_mode: automatic
+    requires_auth: false
+  - id: belarusianglue
+    name: "BelarusianGLUE"
+    type: huggingface_dataset
+    priority: medium
+    training_use: eval_and_instruction_sft_not_pretrain
+    hf_dataset: "maaxap/BelarusianGLUE"
+    license: "check dataset card/subdataset licenses"
+    download_mode: huggingface
+    requires_auth: false
+  - id: national_corpus_belarusian
+    name: "National Corpus of the Belarusian Language"
+    type: search_portal
+    priority: reference
+    training_use: reference_only_unless_terms_allow_bulk
+    url: "https://bnkorpus.info/index.en.html"
+    license: "portal/source-specific; no bulk download assumed"
+    download_mode: manual_reference_only
+    requires_auth: false
+  - id: common_voice_be_text_prompts
+    name: "Mozilla Common Voice Belarusian prompts/transcripts"
+    type: speech_transcript
+    priority: optional
+    training_use: short_prompt_sft_optional
+    url: "https://commonvoice.mozilla.org/"
+    license: "Common Voice/Mozilla Data Collective terms; versions differ"
+    download_mode: manual_credentials
+    requires_auth: true
+  - id: morphodict_bel
+    name: "Slounik / ruscorpora morphodict-bel"
+    type: lexicon
+    priority: optional
+    training_use: morphology_eval_lexical_sft
+    hf_dataset: "ruscorpora/morphodict-bel"
+    license: "CC-BY-NC-SA 4.0 with required attribution"
+    download_mode: huggingface
+    requires_auth: false

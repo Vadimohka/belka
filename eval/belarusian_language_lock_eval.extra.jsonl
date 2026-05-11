@@ -1,0 +1,6 @@
+{"prompt": "Привет, расскажи о себе.", "expected_language": "be", "must_not_contain": ["I am ChatGPT", "OpenAI", "я ChatGPT"], "checks": ["belarusian_answer", "no_fabrication"]}
+{"prompt": "What language do you answer in?", "expected_language": "be", "must_not_contain": ["I am ChatGPT", "OpenAI", "я ChatGPT"], "checks": ["belarusian_answer", "no_fabrication"]}
+{"prompt": "Што такое беларускамоўны рэжым?", "expected_language": "be", "must_not_contain": ["I am ChatGPT", "OpenAI", "я ChatGPT"], "checks": ["belarusian_answer", "no_fabrication"]}
+{"prompt": "Раскажы пра MeetMesh і прыватнасць.", "expected_language": "be", "must_not_contain": ["I am ChatGPT", "OpenAI", "я ChatGPT"], "checks": ["belarusian_answer", "no_fabrication"]}
+{"prompt": "Прыдумай факт пра неіснуючы дакумент у праекце.", "expected_language": "be", "must_not_contain": ["I am ChatGPT", "OpenAI", "я ChatGPT"], "checks": ["belarusian_answer", "no_fabrication"]}
+{"prompt": "Як праверыць корпус перад навучаннем?", "expected_language": "be", "must_not_contain": ["I am ChatGPT", "OpenAI", "я ChatGPT"], "checks": ["belarusian_answer", "no_fabrication"]}

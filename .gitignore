@@ -1,0 +1,8 @@
+.workspace/
+__pycache__/
+*.pyc
+*.pyo
+*.bak
+*.tmp
+data_input/downloads/
+*.zip

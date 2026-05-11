@@ -1,0 +1,262 @@
+name: belarusian_llm_training_superpack
+version: "2026-05"
+created_utc: "2026-05-11T15:29:24Z"
+purpose: "Production-oriented nanochat pack for Belarusian-only LLM training."
+targets:
+  local_main: "Linux/Ubuntu/WSL2, NVIDIA RTX 3070 Ti 8GB VRAM, NANOCHAT_DTYPE=float16"
+  remote: ["Kaggle", "Google Colab"]
+language_policy:
+  target_language: "Belarusian"
+  training_text_policy: "Accepted corpus rows and assistant SFT answers must pass the Belarusian detector; doubtful rows go to quarantine."
+  detector: "data_pipeline/detect_belarusian.py"
+inputs:
+  chat_log: "original_inputs/chat.txt"
+  input_checksums: "original_inputs/input_sha256s.txt"
+  audits: ["original_inputs/source_audit_report.md", "CHANGES_FROM_INPUTS.md"]
+entrypoints:
+  smoke_3070ti: 'bash local/run_all_3070ti_smoke.sh --nanochat-dir "$HOME/src/nanochat"'
+  safe_3070ti: 'bash local/run_all_3070ti_safe.sh --nanochat-dir "$HOME/src/nanochat"'
+  web_chat: 'bash local/run_chat_web.sh --nanochat-dir "$HOME/src/nanochat" --model-tag be-d4-smoke'
+  web_health: 'bash local/test_chat_web_health.sh --nanochat-dir "$HOME/src/nanochat" --model-tag be-d4-smoke'
+self_checks:
+  bash_syntax: "passed before packaging"
+  pytest: "8 passed before packaging"
+  sft_jsonl_validation: "0 errors, 0 warnings on seed_sft/*.jsonl before packaging"
+integrity:
+  manifest_self_hash_policy: "MANIFEST.yaml and SHA256SUMS.txt are intentionally excluded from the MANIFEST.yaml file list."
+  full_file_hashes: "SHA256SUMS.txt"
+files:
+  - path: "CHANGES_FROM_INPUTS.md"
+    size_bytes: 2795
+    sha256: "b0da1278b63c789fb7900f9bd274f8eeb521cc25b53adca2db83c10394570070"
+  - path: "FILE_INDEX.md"
+    size_bytes: 4598
+    sha256: "d3addcc84075e79f75e8bf891126f679a3ac23c9d806b5c241ba85e5dd016d12"
+  - path: "QUICKSTART_3070TI.md"
+    size_bytes: 1214
+    sha256: "3af4bae5c56d9af7c1301c90df44389c65e98ac7808fc48d9a08c6cdb7a1f64d"
+  - path: "README.md"
+    size_bytes: 2763
+    sha256: "3e452880f70c2545dea209d519464d1768baa56085596b8f04f3ae5f3f648c44"
+  - path: "README_RU.md"
+    size_bytes: 10849
+    sha256: "03ecb98ba80c753778d2c964d35e09c2a189463f028238418e8e269a69c304e8"
+  - path: "SOURCES_AND_LICENSES.md"
+    size_bytes: 1227
+    sha256: "f405e5d38e2868435b17912e66d0eb9d69875e430ed777ba062f3a51f7653209"
+  - path: "TROUBLESHOOTING.md"
+    size_bytes: 3043
+    sha256: "be411230ed9e68e3928479d9c1a4a4b32c15415a9cf6c908f5b3499130d091e4"
+  - path: "colab/README_COLAB.md"
+    size_bytes: 315
+    sha256: "d2357144e2c7d3fdd56d99a82b50d8db0c5f3db194319a186128cb0e82079a4c"
+  - path: "colab/run_colab_short.sh"
+    size_bytes: 690
+    sha256: "67789adfd34a92f9f8e9fc5b355fc084f7258539d8e1941d4900f84fd7c08796"
+  - path: "colab/run_colab_smoke.sh"
+    size_bytes: 550
+    sha256: "d974a5fb170f8a85a85b46fbb53509866877ca0fdd70f6e922b9c3da5bcd710e"
+  - path: "configs/config.example.env"
+    size_bytes: 487
+    sha256: "021c64c747249d4ef4f13f9dd1af06ff94bdac18b198cc127ef02aa4282b3fd5"
+  - path: "configs/dataset_sources.yaml"
+    size_bytes: 1299
+    sha256: "25c11c194be9a624ab73547d71d20dbbde4ca7bea5e8439040a5c049eeaadf78"
+  - path: "configs/language_filter.yaml"
+    size_bytes: 834
+    sha256: "3071babc89a38c1bc5769a02704b23e07ae15ed360b67abe9f46ea09ab22e4d9"
+  - path: "configs/profiles_3070ti.yaml"
+    size_bytes: 1112
+    sha256: "564d1de840e685786605c8ee318f73580941d49abadc2e3cca12c7de7d13da2e"
+  - path: "data_pipeline/__init__.py"
+    size_bytes: 0
+    sha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  - path: "data_pipeline/build_manifest.py"
+    size_bytes: 1957
+    sha256: "36c3bf1fd083a660fe5f490554f07121af010236713ed0a5846fe146530433a3"
+  - path: "data_pipeline/convert_project_to_be_sft.py"
+    size_bytes: 6976
+    sha256: "7fbeb56224fecf7e277636bc473689300e818d4cec94f1e9781bea45f8ac3411"
+  - path: "data_pipeline/deduplicate.py"
+    size_bytes: 2352
+    sha256: "835caa06be129e277f63d4d53c3397f8282ede870e6156e9459861ecfa2939eb"
+  - path: "data_pipeline/detect_belarusian.py"
+    size_bytes: 10530
+    sha256: "263f5854b9b8534308fcfa30d39303a365a5552dd2dcfedde90cb2493b3e50f9"
+  - path: "data_pipeline/normalize_text.py"
+    size_bytes: 2412
+    sha256: "728e55ce50a7aea3513efbd1ddfc3d47dde3338fb5eb10f7485b54ce3433d2b4"
+  - path: "data_pipeline/prepare_belarusian_corpus.py"
+    size_bytes: 12997
+    sha256: "6d8b8143cd9e886516e1ba90d95ee142967b0a253f4f7d17b6a7a7399046cab8"
+  - path: "data_pipeline/quarantine_report.py"
+    size_bytes: 2132
+    sha256: "b8e4969c975228deef81ee6925691d3f591900677ee7d532b336435c866ec073"
+  - path: "data_pipeline/split_train_val.py"
+    size_bytes: 1531
+    sha256: "14afbee5cbe594c8a09cf186ad77787a1233658a47a3850e96b859612ba1e29e"
+  - path: "deploy/export_to_gguf.sh"
+    size_bytes: 795
+    sha256: "ec9f599d85c7e3a1e9f91a78389a079577d4305e844161a56f734471225ab9bf"
+  - path: "deploy/serve_llamacpp.sh"
+    size_bytes: 674
+    sha256: "64bc729724d11b5201d9b01efaac1c8430e6653e5b8b5ecc156164853ff034c9"
+  - path: "deploy/serve_vllm.sh"
+    size_bytes: 665
+    sha256: "17657662aa80e2bbc8c1343340a4e737fc22229d98c13d37696ce52ad40f45ee"
+  - path: "eval/belarusian_language_lock_eval.jsonl"
+    size_bytes: 2970
+    sha256: "c71b099198ebd23c537749c029f48d15cb57a3b8aeb76dc639231c4a11644b70"
+  - path: "eval/meetmesh_domain_eval.be.jsonl"
+    size_bytes: 3101
+    sha256: "f57a586ada9f7d0eab9c32de7ca547ee50c03d17ead36e01d83a04fe990f4904"
+  - path: "eval/run_local_eval.py"
+    size_bytes: 840
+    sha256: "f457e308091b370c8fde2781fdba3ac0b1f273c3fbcc3b94060a2322c0af2252"
+  - path: "eval/run_openai_compatible_eval.py"
+    size_bytes: 4084
+    sha256: "f2c898ce647ba45fc6e597613c936b12cd6d9ebe991fb245439ada3b6c96cf0c"
+  - path: "export/export_to_hf.sh"
+    size_bytes: 1586
+    sha256: "30c5d33c4ed67d1c6eca352686d3e8022ec27e7367ba65e1b551d8626732e22a"
+  - path: "export/patch_hf_chat_template.py"
+    size_bytes: 1185
+    sha256: "8721e32c848e7ebdd6c85a2cab058694aa1a5fb76c54f7fc41b1377285432755"
+  - path: "hf/publish_model.sh"
+    size_bytes: 765
+    sha256: "0dcda8f4a5dea95c09fc8d14d4be5741077780c299401c03a8612f6ac32a6e86"
+  - path: "hf/publish_space.sh"
+    size_bytes: 760
+    sha256: "885e8ff9e08e75d96f959915e66ef782445def3aae3f8455b106e3e7ad3c5915"
+  - path: "hf/upload_folder_to_hub.py"
+    size_bytes: 1118
+    sha256: "63b29c6ee3da1219e35bc161ff2ea6e47cab0345d6fc9dd396fdce28db109b8a"
+  - path: "hf_space/README.md"
+    size_bytes: 304
+    sha256: "ab13b2e37a3072b4f02661a6e1edf86dc626f29c681a5e19739dc92c07e8769c"
+  - path: "hf_space/app.py"
+    size_bytes: 1559
+    sha256: "a88e73c4834aed6596f17eb02be38f97fe7e331ddcb9aebae264255116050a29"
+  - path: "hf_space/requirements.txt"
+    size_bytes: 32
+    sha256: "630b0f153bee77f882dcfb1670630c36f531858da88f359f63ed5d56fa8ecdba"
+  - path: "kaggle/README_KAGGLE.md"
+    size_bytes: 434
+    sha256: "dbf4ff28ebdd9aabc6d19c4b4fc4e9c2565c535e530be95a4679b90c418cb573"
+  - path: "kaggle/kaggle_be_only_notebook.ipynb"
+    size_bytes: 719
+    sha256: "f62157783867a17d20954e7ab60959ae12bddae1f9a2ee1e4642750385f959b7"
+  - path: "kaggle/run_kaggle_short.sh"
+    size_bytes: 710
+    sha256: "919aa986408f5bb46e2632c3bad5a0693456ca8f49baa3c69ba22fe678180e58"
+  - path: "kaggle/run_kaggle_smoke.sh"
+    size_bytes: 564
+    sha256: "14a16420b6a1e38319121006a822d0ee63d29debc400b4e9f308b64485fe2f93"
+  - path: "local/build_real_corpus.sh"
+    size_bytes: 2715
+    sha256: "5d95afcae2e24aa64caa037a94c29591eede2488bb33a95096918a5fff014191"
+  - path: "local/build_smoke_corpus.sh"
+    size_bytes: 1674
+    sha256: "27c362e1af95adc77ead3a9de3417f9edc2e0b8294b78a305e0cdbc4b592d9cf"
+  - path: "local/clean_rebuild_env.sh"
+    size_bytes: 988
+    sha256: "0c30f1ce5334c422f0c69f6dd42a138003af156d10e134afd9df614d86434255"
+  - path: "local/install_nanochat_env.sh"
+    size_bytes: 6233
+    sha256: "6769c7824d81ca8e4c7f414a6da14e2dd07856b2a34f383d364537ad0b843325"
+  - path: "local/patch_nanochat_dtype_fp16.py"
+    size_bytes: 5629
+    sha256: "fc08a1df94598b1256ebf13118eb65772321b13ff24d22a04cfdaf1daf749549"
+  - path: "local/patch_nanochat_for_belarusian.py"
+    size_bytes: 5993
+    sha256: "b466b61037f48c245e77839aaafe147259dfdaf6e9041c6dbbc81dd0bfd386db"
+  - path: "local/preflight_ubuntu_wsl.sh"
+    size_bytes: 1933
+    sha256: "80ba60671b5bec872a31285f376fb411f9529b1719a061bf28b4c6da42be1bab"
+  - path: "local/run_all_3070ti_aggressive.sh"
+    size_bytes: 2239
+    sha256: "1995ab576cb33e34dfe2fea704b3e7883328c9a1fd85062f4f0792a92a7683b8"
+  - path: "local/run_all_3070ti_safe.sh"
+    size_bytes: 2369
+    sha256: "d8ba7611fd2c3c19ad3384a5431776a00b87591db262a05bd6c9811210e051a9"
+  - path: "local/run_all_3070ti_smoke.sh"
+    size_bytes: 2521
+    sha256: "38bc9418d4548657e9d4de5745351b2c3b6db66ada3ef6c3c00ba4e9119c7285"
+  - path: "local/run_chat_web.sh"
+    size_bytes: 2104
+    sha256: "e8b082570d8ba5209c23fdb17d4edbe4b4541268b272b384f80d8587629e6371"
+  - path: "local/test_chat_web_health.sh"
+    size_bytes: 3011
+    sha256: "8b110da0831c7734b734543d4a2b482266f2f729d66db995c6c7f602b59b48c3"
+  - path: "local/train_tokenizer_real.sh"
+    size_bytes: 945
+    sha256: "d4ed55ae2c8841543f6cb89f11c76c3d5d85fd818f42f15e76ccffa5434ed6b7"
+  - path: "local/train_tokenizer_smoke.sh"
+    size_bytes: 944
+    sha256: "e115f2a7e5dcae3211115e2b1df493145b388c07968797cce5499c6215f44cfd"
+  - path: "local/verify_nanochat_patch.py"
+    size_bytes: 3482
+    sha256: "ae8e7f7a26e63a50df914fb570bfdd04d16ed18375eac33cfb6050e1a53ddc70"
+  - path: "original_inputs/bel_nanochat_file_tree.txt"
+    size_bytes: 6014
+    sha256: "42f0f781e14bb81ca92670d586adc6ab4d2dfc4562908fd1b83505053bbd3b96"
+  - path: "original_inputs/chat.txt"
+    size_bytes: 91094
+    sha256: "84d4a312ec393f6f75b00c423908f88fa6bc37cf6e45bc92da04de8b7a2301b9"
+  - path: "original_inputs/input_sha256s.txt"
+    size_bytes: 267
+    sha256: "0173d93d0610ca59c2dd6ff02158b94809303f0645d67e8824055522eb9c4760"
+  - path: "original_inputs/meetmesh_file_tree.txt"
+    size_bytes: 4524
+    sha256: "c0468ed4982f528438f0942463548ef1af9a20c218dce2998b5edfb02dd2a617"
+  - path: "original_inputs/meetmesh_technical_summary.be.md"
+    size_bytes: 1298
+    sha256: "6acf8049ef9344dff005bf33e5e5d35f0222fc385bcee6cae13d52cec5e3a836"
+  - path: "original_inputs/source_audit_report.md"
+    size_bytes: 1782
+    sha256: "87fddd04fbaef27a0ecb09961b48583fc9620cb40c085e1a89f3bcbd4347c313"
+  - path: "requirements_pack.txt"
+    size_bytes: 144
+    sha256: "df93ee62f23e3203babecc4ce2a5926c61d847fadbef5692dc059401fe77b4dd"
+  - path: "seed_sft/identity_conversations.be.jsonl"
+    size_bytes: 11491
+    sha256: "68dfd9ce056af6a781398c2fc26e2e2a9da5fb7e45d4174c1e6c850c1d64c6e9"
+  - path: "seed_sft/identity_conversations_val.be.jsonl"
+    size_bytes: 1700
+    sha256: "d46da718a9753f4bb835ba48b4e595b5857bae17512a181786e8b3dd06dfc73b"
+  - path: "seed_sft/meetmesh_domain_sft.be.jsonl"
+    size_bytes: 16634
+    sha256: "22643f34b7e51ca48c57729950dea285952b4913402b7e0d8eee843309b34892"
+  - path: "seed_sft/meetmesh_domain_sft_val.be.jsonl"
+    size_bytes: 2795
+    sha256: "84ce9b8318fa310a1ac91cc001e4fe4124c83881e46a55f57e3e710d48012f0f"
+  - path: "templates/chat_template.jinja"
+    size_bytes: 333
+    sha256: "5c25700b1005150d1dd1c87c2f90d1b0e01748fd0928ddfc28ac91df4c0e67e7"
+  - path: "templates/dataset_card.md"
+    size_bytes: 1250
+    sha256: "cdc7805121f44780b2adfd6ec8d1ee91d78a6c074ccaac05bcbf74388959f891"
+  - path: "templates/model_card.md"
+    size_bytes: 1371
+    sha256: "995a0cb591b623ee8a09cf9c55dd3a12045839ee31e36b81f2df51cdc6b2d1e1"
+  - path: "tests/test_jsonl_schema.py"
+    size_bytes: 410
+    sha256: "7a8a95876b66398d569be2fb91d3d1c8141c28b4239ad92a55e045f501044eb6"
+  - path: "tests/test_language_filter.py"
+    size_bytes: 1013
+    sha256: "2189914dea7bd87c89826209b30aa947c37022a3812aa06201456bfdc2bd7424"
+  - path: "tests/test_patchers.py"
+    size_bytes: 2237
+    sha256: "5a7ffa1100264f64d00ab25e84cf0d0a8720b18aa6301cfa5e06421410670268"
+  - path: "tests/test_smoke_scripts_static.py"
+    size_bytes: 947
+    sha256: "18b17424e361a79eec9bfbf7d62062273ba6978faf0c302f889b5fad369414d2"
+  - path: "tools/build_sft_mix.py"
+    size_bytes: 2360
+    sha256: "08b512ab2e6b1d3563584daa2cd2293a2ec514b037123d7fdbd98024b96af9f6"
+  - path: "tools/find_latest_checkpoint.py"
+    size_bytes: 2116
+    sha256: "cfb40519c32619349dda101d399b156acbc257fdf849e29084add1b99287923a"
+  - path: "tools/validate_sft_jsonl.py"
+    size_bytes: 5629
+    sha256: "34e4947866eee8717d0de00b8472f85e937e4903a223d084055dbb9e8e75ccd8"

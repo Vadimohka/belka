@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-05-11T20:47:29.655955+00:00",
+  "categories": {
+    "commercial_ok": [
+      "be_x_oldwiki",
+      "belarusian_seed",
+      "bewiki",
+      "bootstrap",
+      "tatoeba_sentences",
+      "ud_belarusian_hse"
+    ],
+    "research_only": [],
+    "non_commercial": [
+      "morphodict-bel"
+    ],
+    "attribution_required": [
+      "be_x_oldwiki",
+      "bewiki",
+      "morphodict-bel",
+      "tatoeba_sentences",
+      "ud_belarusian_hse"
+    ],
+    "sharealike_required": [
+      "be_x_oldwiki",
+      "bewiki",
+      "morphodict-bel"
+    ],
+    "unknown_or_manual_review": []
+  }
+}

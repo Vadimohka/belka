@@ -1,0 +1,37 @@
+profiles:
+  smoke:
+    description: "Pipeline proof for RTX 3070 Ti 8GB; not a quality model."
+    dtype: float16
+    depth: 4
+    max_seq_len: 256
+    device_batch_size: 1
+    total_batch_size: 256
+    base_iterations: 50
+    sft_iterations: 50
+    tokenizer_vocab_size: 16384
+    expected_checkpoint: chatsft_checkpoints/be-d4-smoke/model_000049.pt
+  safe:
+    description: "Conservative local route for real Belarusian corpus on 8GB VRAM."
+    dtype: float16
+    depth: 6
+    max_seq_len: 512
+    device_batch_size: 1
+    total_batch_size: 512
+    base_iterations_default: 2000
+    sft_iterations_default: 600
+    tokenizer_vocab_size: 32768
+  aggressive:
+    description: "Larger 8GB route; may require closing desktop apps and lowering sequence length if OOM occurs."
+    dtype: float16
+    depth: 8
+    max_seq_len: 768
+    device_batch_size: 1
+    total_batch_size: 768
+    base_iterations_default: 10000
+    sft_iterations_default: 2000
+    tokenizer_vocab_size: 49152
+common_env:
+  WANDB_MODE: disabled
+  WANDB_DISABLED: "true"
+  WANDB_SILENT: "true"
+  PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
