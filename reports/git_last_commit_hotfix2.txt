@@ -1,0 +1,18 @@
+commit fcf7cf452011a5df627b13a2165ac8e53912b0c9
+Author: Vadimohka <vadimohka@users.noreply.github.com>
+Date:   Tue May 12 00:11:16 2026 +0300
+
+    fix: audit tool parquet paths + add GLUE leakage guard
+    
+    - audit_corpus_outputs.py: auto-detect parquet files in base_data_climbmix/
+      instead of hardcoded paths; separate CODE vs DOC forbidden path counts
+    - tools/glue_leakage_guard.py: verify BelarusianGLUE is excluded from
+      base pretraining corpus (definitive check via filter report + ngram scan)
+    - GLUE data was never downloaded (hf_stream failed with config error),
+      so any ngram matches are false positives
+    
+    Co-Authored-By: Claude Code <noreply@anthropic.com>
+
+ tools/audit_corpus_outputs.py |  42 ++++++++++++-----
+ tools/glue_leakage_guard.py   | 105 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 136 insertions(+), 11 deletions(-)

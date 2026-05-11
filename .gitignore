@@ -7,3 +7,4 @@ __pycache__/
 data_input/downloads/
 *.zip
 .claude/
+dist/*.bundle
