@@ -1,0 +1,39 @@
+# Tokenizer ablation configuration
+version: "1.0"
+
+vocab_sizes: [8192, 16384, 24576, 32768]
+primary_recommendation: 16384
+
+algorithm:
+  name: "bpe_byte_fallback"
+  library: "rustbpe"
+  max_chars_per_ablation: 20000000
+  doc_cap: 15000
+
+evaluation_metrics:
+  - tokens_per_char
+  - tokens_per_word
+  - byte_fallback_rate
+  - unk_rate
+  - belarusian_letter_coverage
+  - tarask_fertility
+  - narkamauka_fertility
+  - russian_penalty
+  - english_penalty
+
+belarusian_letters_required:
+  - "ў"
+  - "і"
+  - "ё"
+  - "Ў"
+  - "І"
+  - "Ё"
+  - "'"
+
+outputs:
+  - "reports/tokenizer_ablation_report.json"
+  - "reports/tokenizer_ablation_report.md"
+  - "reports/tokenizers/tok_8k.pkl"
+  - "reports/tokenizers/tok_16k.pkl"
+  - "reports/tokenizers/tok_24k.pkl"
+  - "reports/tokenizers/tok_32k.pkl"

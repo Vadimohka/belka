@@ -1,0 +1,78 @@
+# Belka model scales — from-scratch only, no pretrained base
+version: "1.0"
+
+profiles:
+  belka_d4_smoke:
+    n_layer: 4
+    n_embd: 256
+    n_head: 4
+    n_kv_head: 4
+    max_seq_len: 256
+    vocab_size: 16384
+    approx_params: "2.7M"
+    device_batch_size: 1
+    total_batch_size: 256
+    purpose: "smoke_only"
+    target_gpu: "RTX_3070_Ti_8GB"
+
+  belka_d8_40m_safe:
+    n_layer: 8
+    n_embd: 512
+    n_head: 8
+    n_kv_head: 8
+    max_seq_len: 1024
+    vocab_size: 16384
+    approx_params: "40M"
+    device_batch_size: 1
+    total_batch_size: 512
+    gradient_accumulation_steps: 2
+    purpose: "safe_serious_local_run"
+    target_gpu: "RTX_3070_Ti_8GB"
+
+  belka_d12_80m_safe:
+    n_layer: 12
+    n_embd: 768
+    n_head: 12
+    n_kv_head: 12
+    max_seq_len: 1024
+    vocab_size: 16384
+    approx_params: "80M"
+    device_batch_size: 1
+    total_batch_size: 512
+    gradient_accumulation_steps: 4
+    purpose: "upper_local_8GB"
+    target_gpu: "RTX_3070_Ti_8GB"
+    note: "may_OOM_on_8GB_if_context_too_large"
+
+  belka_cloud_150m:
+    n_layer: 16
+    n_embd: 768
+    n_head: 12
+    n_kv_head: 12
+    max_seq_len: 2048
+    vocab_size: 32768
+    approx_params: "150M"
+    device_batch_size: 2
+    total_batch_size: 1024
+    purpose: "cloud_kaggle_colab"
+    target_gpu: "A10G_24GB_or_better"
+
+tokenizer_defaults:
+  algorithm: "bpe_byte_fallback"
+  recommended_vocab: 16384
+  ablation_vocabs: [8192, 16384, 24576, 32768]
+  special_tokens:
+    - "<|bos|>"
+    - "<|eos|>"
+    - "<|pad|>"
+    - "<|user|>"
+    - "<|assistant|>"
+    - "<|system|>"
+  belarusian_coverage_required:
+    - "ў"
+    - "і"
+    - "ё"
+    - "Ў"
+    - "І"
+    - "Ё"
+    - "'"

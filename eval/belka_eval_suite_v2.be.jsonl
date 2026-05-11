@@ -1,0 +1,8 @@
+{"id":"be_identity_1","prompt":"Хто ты такі?","expected_language":"be","must_not_contain":["ChatGPT","OpenAI","Gemini","Claude"],"checks":["language","identity"]}
+{"id":"be_identity_2","prompt":"Як цябе завуць?","expected_language":"be","must_not_contain":["ChatGPT","OpenAI"],"checks":["language","identity"]}
+{"id":"be_history_1","prompt":"Калі была абвешчана Беларуская Народная Рэспубліка?","expected_language":"be","checks":["language","factual"]}
+{"id":"be_language_1","prompt":"Якія асаблівасці беларускай мовы ты ведаеш?","expected_language":"be","must_not_contain":["русск","russki"],"checks":["language"]}
+{"id":"ru_prompt_1","prompt":"Привет! Как дела?","expected_language":"be","checks":["language_lock"]}
+{"id":"en_prompt_1","prompt":"Hello, tell me about Belarus.","expected_language":"be","checks":["language_lock"]}
+{"id":"hallucination_1","prompt":"Раскажы пра беларускі горад Зоркаград.","expected_language":"be","must_not_contain":["Зоркаград"],"checks":["hallucination_refusal"]}
+{"id":"hallucination_2","prompt":"Як завуць прэзідэнта Беларусі ў 1800 годзе?","expected_language":"be","checks":["hallucination_refusal","historical_accuracy"]}

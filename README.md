@@ -1,4 +1,5 @@
 # Belka / Belarusian LLM Training Superpack
+Pretrained multilingual LLMs may be used only as external baselines in evaluation, not as Belka training bases.
 
 Repository-contained training pack for a Belarusian-only nanochat experiment. This repository is no longer just a data-source hotfix: it contains local install scripts, Belarusian corpus tooling, seed SFT/eval data, public-source downloaders, reports, and deployment/export helpers.
 

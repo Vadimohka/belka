@@ -1,0 +1,86 @@
+# Belka From-Scratch Training Plan
+# No pretrained models (Qwen/Gemma/Llama) used as training base.
+# LoRA/QLoRA is NOT the main route.
+# All paths inside PACK_DIR.
+
+version: "1.0"
+approach: "from_scratch_random_init"
+pretrained_base_used: false
+
+stages:
+  - id: stage0_tokenizer_ablation
+    name: "Tokenizer ablation"
+    description: "Train BPE tokenizers at 8k/16k/24k/32k and evaluate fertility"
+    script: "tools/train_tokenizer_ablation.py"
+    output: "reports/tokenizer_ablation_report.json"
+
+  - id: stage1_clean_wiki_prose
+    name: "Clean Wikipedia prose pretraining"
+    description: "Base pretraining on clean bewiki + narkamauka prose only"
+    sources: ["bewiki", "bootstrap"]
+    max_seq_len: 1024
+    num_iterations: 5000
+
+  - id: stage2_strict_web_and_wikisource
+    name: "Strict web + Wikisource"
+    description: "Add bewikisource (strict filter) + Tatoeba/UD (low weight)"
+    sources: ["bewiki", "bootstrap", "bewikisource", "tatoeba_sentences", "ud_belarusian_hse"]
+    max_seq_len: 1024
+    num_iterations: 5000
+
+  - id: stage3_synthetic_docs
+    name: "Synthetic Belarusian documents"
+    description: "Add synthetic translated/extended documents, capped and marked"
+    sources: ["all_accepted"]
+    synthetic_cap: 0.15
+    max_seq_len: 1024
+    num_iterations: 3000
+
+  - id: stage4_sft
+    name: "SFT: identity + domain + instruction"
+    description: "Supervised fine-tuning on Belarusian identity, MeetMesh domain, general instruction"
+    script: "scripts/chat_sft_be.py"
+    num_iterations: 600
+
+  - id: stage5_language_lock
+    name: "Language-lock contrastive SFT"
+    description: "Contrastive pairs: respond in Belarusian even to Russian/English prompts"
+    script: "tools/build_contrastive_sft.py"
+    num_iterations: 200
+
+  - id: stage6_eval_export
+    name: "Evaluation and export"
+    description: "Run Belka eval suite, export to HF and GGUF"
+    script: "tools/run_belka_eval_suite.py"
+
+optimizer:
+  primary: "AdamW"
+  muon_experiment: false
+  adamw_betas: [0.9, 0.95]
+  adamw_eps: 1.0e-8
+  weight_decay: 0.1
+  learning_rate: 3.0e-4
+  lr_schedule: "cosine_warmup"
+  warmup_ratio: 0.02
+
+dedup_policy:
+  exact_normalized: true
+  paragraph_dedup: true
+  simhash: true
+  preserve_duplicate_count: true
+  simhash_hamming_threshold: 6
+  simhash_bits: 64
+
+language_filter:
+  be_letters_weight: 0.35
+  be_words_weight: 0.35
+  cyrillic_bonus: 0.25
+  latin_penalty: -0.35
+  ru_words_penalty: -0.25
+  uk_markers_penalty: -0.25
+
+orthography_policy:
+  narkamauka: "primary_training"
+  tarask: "separate_split_with_metadata"
+  mixed: "quarantine_or_flag"
+  unknown: "flag_and_review"

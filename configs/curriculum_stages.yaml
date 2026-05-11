@@ -1,0 +1,74 @@
+# Curriculum stages for from-scratch Belka training
+version: "1.0"
+
+stages:
+  - id: "tokenizer_ablation"
+    name: "Tokenizer Ablation"
+    description: "Train BPE tokenizers and select optimal vocab size"
+    mandatory: true
+    quick: false
+
+  - id: "clean_wiki_prose"
+    name: "Clean Wikipedia Prose Pretraining"
+    description: "Base pretraining on bewiki narkamauka + bootstrap seed"
+    sources: ["bewiki", "bootstrap"]
+    max_seq_len: 1024
+    device_batch_size: 1
+    total_batch_size: 512
+    grad_accum_steps: 2
+    num_iterations: 5000
+    profile: "belka_d8_40m_safe"
+    lr_max: 3.0e-4
+    lr_min: 3.0e-5
+
+  - id: "strict_web_and_wikisource"
+    name: "Strict Web + Wikisource + Supplemental"
+    description: "Add bewikisource (strict), Tatoeba, UD with low weights"
+    sources: ["bewiki", "bootstrap", "bewikisource", "tatoeba_sentences", "ud_belarusian_hse"]
+    max_seq_len: 1024
+    device_batch_size: 1
+    total_batch_size: 512
+    grad_accum_steps: 2
+    num_iterations: 5000
+    profile: "belka_d8_40m_safe"
+    lr_max: 2.0e-4
+    lr_min: 2.0e-5
+
+  - id: "synthetic_docs"
+    name: "Synthetic Belarusian Documents (Optional)"
+    description: "Capped synthetic data for domain coverage"
+    sources: ["all_accepted"]
+    synthetic_cap: 0.15
+    max_seq_len: 1024
+    device_batch_size: 1
+    total_batch_size: 512
+    grad_accum_steps: 2
+    num_iterations: 3000
+    profile: "belka_d8_40m_safe"
+    optional: true
+    lr_max: 1.5e-4
+    lr_min: 1.5e-5
+
+  - id: "sft"
+    name: "SFT: Identity + Domain + Instruction"
+    description: "Belarusian SFT on identity, MeetMesh domain, general instruction"
+    script: "chat_sft_be"
+    max_seq_len: 1024
+    device_batch_size: 1
+    total_batch_size: 512
+    num_iterations: 600
+
+  - id: "language_lock"
+    name: "Language-Lock Contrastive SFT"
+    description: "Respond in Belarusian even to Russian/English prompts"
+    script: "chat_sft_be"
+    max_seq_len: 512
+    device_batch_size: 1
+    total_batch_size: 256
+    num_iterations: 200
+    optional: true
+
+  - id: "eval_export"
+    name: "Evaluation and Export"
+    description: "Run full Belka eval suite, export to HF/GGUF"
+    script: "run_belka_eval_suite"
