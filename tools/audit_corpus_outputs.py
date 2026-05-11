@@ -17,8 +17,11 @@ def main():
     filter_report = report_dir / 'source_filter_report.json'
     quarantine_file = report_dir / 'source_quarantine.jsonl'
     rejected_file = report_dir / 'source_rejected_sample.jsonl'
-    train_file = pack / '.workspace/nanochat_base/base_data_climbmix/train_00000.parquet'
-    val_file = pack / '.workspace/nanochat_base/base_data_climbmix/val_00000.parquet'
+    data_dir = pack / '.workspace/nanochat_base/base_data_climbmix'
+    # Find actual parquet files (nanochat uses all .parquet, last = val)
+    parquet_files = sorted(data_dir.glob('*.parquet')) if data_dir.exists() else []
+    train_file = parquet_files[-2] if len(parquet_files) >= 2 else None
+    val_file = parquet_files[-1] if parquet_files else None
 
     errors = []
 
@@ -55,20 +58,37 @@ def main():
     import subprocess
     patterns = [r'\$HOME/src', r'~/src', r'/tmp/nanochat', r'~/.cache/nanochat',
                 r'\$HOME/.cache', r'~/data/be_texts', r'\$HOME/data']
-    found = 0
+    code_found = 0
+    doc_found = 0
+    guard_files = {'repo_guard.sh', 'audit_corpus_outputs.py'}
+    doc_files = {'README.md', 'README_RU.md', 'QUICKSTART_3070TI.md', 'TROUBLESHOOTING.md',
+                 'AGENT_PROMPT_POINT_FIX_RU.md', 'AGENT_PROMPT_DATA_SOURCE_HOTFIX_RU.md',
+                 'APPLY_POINT_HOTFIX.md', 'APPLY_DATA_SOURCE_HOTFIX.md', 'MISSING_AND_POINT_FIXES.md',
+                 'SOURCES_AND_LICENSES.md', 'DATA_SOURCES_AUDIT_RU.md', 'CHANGES_FROM_INPUTS.md',
+                 'LICENSE_AND_RESEARCH_NOTICE_RU.md'}
     for pat in patterns:
         proc = subprocess.run(
-            ['grep', '-RInE', pat, 'local', 'tools', 'configs',
-             'README.md', 'README_RU.md', 'QUICKSTART_3070TI.md',
-             'TROUBLESHOOTING.md'],
+            ['grep', '-RInE', pat, 'local', 'tools', 'configs'],
             cwd=str(pack), capture_output=True, text=True)
         if proc.stdout.strip():
             for line in proc.stdout.strip().split('\n'):
-                print(f"FORBIDDEN_PATH: {line}")
-                found += 1
-    print(f"FORBIDDEN_PATH_REFERENCES={found}")
-    if found > 0:
-        errors.append(f"FORBIDDEN_PATH_REFERENCES={found} (some may be in docs as negative examples)")
+                fname = line.split(':')[0] if ':' in line else ''
+                if any(g in fname for g in guard_files):
+                    continue  # guards check these paths, not use them
+                print(f"CODE_FORBIDDEN: {line}")
+                code_found += 1
+    print(f"CODE_FORBIDDEN_PATH_REFERENCES={code_found}")
+    if code_found > 0:
+        errors.append(f"CODE_FORBIDDEN_PATH_REFERENCES={code_found}")
+
+    # Separately count docs (acceptable as negative examples)
+    for pat in patterns:
+        proc = subprocess.run(
+            ['grep', '-RlE', pat] + list(doc_files),
+            cwd=str(pack), capture_output=True, text=True)
+        if proc.stdout.strip():
+            doc_found += len(proc.stdout.strip().split('\n'))
+    print(f"DOC_FORBIDDEN_PATH_REFERENCES={doc_found} (acceptable as negative examples)")
 
     # ----- Samples -----
     def sample_jsonl(path, n):
