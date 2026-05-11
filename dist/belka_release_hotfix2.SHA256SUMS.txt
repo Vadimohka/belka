@@ -1,0 +1,2 @@
+e646686e44109eff2f70ce1a4d6bdbca988b6e86ec758bc77f92fd51d7fff321  dist/belka_release_hotfix2.bundle
+1edcd1365edef87dbc886a204875d66d62d2a75d448b6374816f1e4fbdeee411  dist/belka_release_hotfix2.patch

@@ -1,0 +1,6 @@
+ .gitignore                               |  1 +
+ dist/belka_release_hotfix2.bundle.sha256 |  1 +
+ reports/git_diffstat_hotfix2.txt         |  3 +++
+ reports/git_last_commit_hotfix2.txt      | 18 ++++++++++++++++++
+ tools/glue_leakage_guard.py              | 12 +++++++++---
+ 5 files changed, 32 insertions(+), 3 deletions(-)

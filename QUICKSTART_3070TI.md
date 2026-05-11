@@ -10,7 +10,7 @@ bash local/preflight_ubuntu_wsl.sh
 ## 2. Smoke pipeline
 
 ```bash
-bash local/run_all_3070ti_smoke.sh --nanochat-dir "$HOME/src/nanochat"
+bash local/run_all_3070ti_smoke.sh
 ```
 
 This creates a tiny smoke corpus, tokenizer, base checkpoint and SFT checkpoint. It disables W&B and uses fp16.
@@ -18,13 +18,13 @@ This creates a tiny smoke corpus, tokenizer, base checkpoint and SFT checkpoint.
 ## 3. Web chat
 
 ```bash
-bash local/run_chat_web.sh --nanochat-dir "$HOME/src/nanochat" --model-tag be-d4-smoke
+bash local/run_chat_web.sh --model-tag be-d4-smoke
 ```
 
 In another shell:
 
 ```bash
-bash local/test_chat_web_health.sh --nanochat-dir "$HOME/src/nanochat" --model-tag be-d4-smoke
+bash local/test_chat_web_health.sh --model-tag be-d4-smoke
 ```
 
 ## 4. Add real Belarusian text
@@ -32,15 +32,15 @@ bash local/test_chat_web_health.sh --nanochat-dir "$HOME/src/nanochat" --model-t
 ```bash
 mkdir -p ~/data/be_texts/books
 # copy your Belarusian .txt/.md/.jsonl/.jsonl.gz/.parquet files there
-bash local/build_real_corpus.sh --nanochat-dir "$HOME/src/nanochat" --local-text-dir "$HOME/data/be_texts"
+bash local/build_real_corpus.sh 
 ```
 
 ## 5. Safe training
 
 ```bash
 bash local/run_all_3070ti_safe.sh \
-  --nanochat-dir "$HOME/src/nanochat" \
-  --local-text-dir "$HOME/data/be_texts" \
+   \
+   \
   --model-tag be-d6-safe
 ```
 

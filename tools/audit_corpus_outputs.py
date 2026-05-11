@@ -43,11 +43,15 @@ def main():
                       'LOCAL_TEXT_DIR', 'DOWNLOAD_DIR']:
             # Read from path_policy.env
             pass
-        # Check train/val parquet paths
-        for fpath in [train_file, val_file]:
+        # Check train/val parquet paths. Missing parquet is a warning for source-only archives,
+        # not a Python crash. Training acceptance should separately require these files.
+        for label, fpath in [("train", train_file), ("val", val_file)]:
+            if fpath is None:
+                print(f"WARN: {label} parquet not found under {data_dir}")
+                continue
             if fpath.exists():
                 rp = fpath.resolve()
-                if str(pack) not in str(rp):
+                if pack not in rp.parents and rp != pack:
                     errors.append(f"CONTAINMENT_FAIL: {rp} not under {pack}")
                 else:
                     print(f"CONTAINED: {rp}")
@@ -120,7 +124,7 @@ def main():
                   f"reasons={r.get('reasons',[])} text[:100]={r.get('text','')[:100]}")
 
         # Accepted samples from parquet
-        if train_file.exists():
+        if train_file is not None and train_file.exists():
             import pandas as pd
             df = pd.read_parquet(train_file)
             n = min(args.sample, len(df))

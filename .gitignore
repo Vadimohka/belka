@@ -8,3 +8,6 @@ data_input/downloads/
 *.zip
 .claude/
 dist/*.bundle
+dist/*.bundle
+dist/*.patch
+dist/*.diffstat.txt

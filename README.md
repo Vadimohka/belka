@@ -1,29 +1,24 @@
-# Belarusian data sources hotfix
+# Belka / Belarusian LLM Training Superpack
 
-Point hotfix, not a replacement superpack.
+Repository-contained training pack for a Belarusian-only nanochat experiment. This repository is no longer just a data-source hotfix: it contains local install scripts, Belarusian corpus tooling, seed SFT/eval data, public-source downloaders, reports, and deployment/export helpers.
 
-Adds:
-- curated Belarusian source catalogue;
-- repository-contained path guard;
-- bootstrap Belarusian data for smoke;
-- downloaders for Wikimedia, Belacorpus, UD Belarusian-HSE, Tatoeba;
-- Hugging Face streaming adapter for BelarusianGLUE, OSCAR, CulturaX, mC4, CC100, morphodict;
-- filter/dedup/split script to create nanochat-compatible parquet.
-
-Apply:
+## Golden path
 
 ```bash
-unzip belarusian_data_sources_hotfix_2026-05.zip -d /tmp/be_sources_hotfix
-cd belarusian_llm_training_superpack
-cp -a /tmp/be_sources_hotfix/belarusian_data_sources_hotfix/. .
-chmod +x local/*.sh tools/*.py
 bash local/repo_guard.sh
+python3 tools/validate_ready_and_sources.py 'data_ready/base_jsonl/*.jsonl' 'data_ready/sft_jsonl/*.jsonl'
 bash local/import_ready_training_data.sh
 MAX_WIKI_PAGES=5000 MAX_HF_RECORDS=2000 bash local/build_all_public_sources.sh
+bash local/run_all_3070ti_smoke.sh
 ```
 
-Read:
-- `DATA_SOURCES_AUDIT_RU.md`
-- `APPLY_DATA_SOURCE_HOTFIX.md`
-- `LICENSE_AND_RESEARCH_NOTICE_RU.md`
-- `prompts/AGENT_PROMPT_DATA_SOURCE_HOTFIX_RU.md`
+All generated files must stay under this repository:
+
+- `.workspace/` for nanochat checkout, virtualenvs, caches, checkpoints and logs;
+- `data_input/` for downloaded/user-provided corpus inputs;
+- `reports/` for accounting, quarantine/rejected samples and license manifests;
+- `dist/` for export artifacts.
+
+Do not use `$HOME/src/nanochat`, `$HOME/.cache/nanochat`, `$HOME/data/be_texts`, or `/tmp/nanochat.zip` as release defaults.
+
+For detailed Russian docs, see `README_RU.md`, `QUICKSTART_3070TI.md`, `TROUBLESHOOTING.md`, and `DATA_SOURCES_AUDIT_RU.md`.

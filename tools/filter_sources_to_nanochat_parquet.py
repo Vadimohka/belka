@@ -236,10 +236,15 @@ def main():
     exact_seen: set = set()
     paragraph_hashes: set = set()
     simhasher = SimHash(64)
-    simhash_hashes: dict[int, list[str]] = defaultdict(list)
+    # Bucket by top bits to avoid O(N^2) scans over all accepted documents.
+    # We still compare neighbouring buckets exactly with Hamming distance.
+    simhash_buckets: dict[int, list[int]] = defaultdict(list)
     simhash_threshold = 6  # Hamming distance
+    bucket_shift = 52
 
     for text, filepath, obj in iter_jsonl(inp):
+        if args.max_docs and raw_seen >= args.max_docs:
+            break
         raw_seen += 1
         source = detect_source(filepath)
         thresh = SOURCE_THRESHOLDS.get(source, {"min_score": 0.45, "min_chars": 80})
@@ -302,18 +307,22 @@ def main():
             source_stats[source]['skipped_duplicate_near'] += 1
             continue
 
-        # Near-dedup via SimHash
+        # Near-dedup via SimHash. Compare only nearby high-bit buckets.
         sh = simhasher.hash(text)
+        bucket = sh >> bucket_shift
         is_near_dup = False
-        for existing_sh, existing_texts in list(simhash_hashes.items()):
-            if SimHash.hamming(sh, existing_sh) <= simhash_threshold:
-                is_near_dup = True
+        for b in (bucket - 1, bucket, bucket + 1):
+            for existing_sh in simhash_buckets.get(b, []):
+                if SimHash.hamming(sh, existing_sh) <= simhash_threshold:
+                    is_near_dup = True
+                    break
+            if is_near_dup:
                 break
         if is_near_dup:
             skipped_duplicate_near += 1
             source_stats[source]['skipped_duplicate_near'] += 1
             continue
-        simhash_hashes[sh].append(text)
+        simhash_buckets[bucket].append(sh)
 
         # Score
         sc, reasons = score_be(text, source)
