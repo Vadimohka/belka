@@ -69,10 +69,10 @@ def main():
         result.update(eval_tokenizer(tok, TARASK_SAMPLE, 'tarask'))
         result.update(eval_tokenizer(tok, RU_SAMPLE, 'ru'))
         result.update(eval_tokenizer(tok, EN_SAMPLE, 'en'))
-        # Check Belarusian letter coverage
-        be_letters_found = sum(1 for ch in BE_LETTERS
-                               if any(ch in tok.vocab for _ in [1]) or True)
-        result['be_letter_coverage_estimate'] = 'manual_check_recommended'
+        # Check Belarusian letter coverage (rustbpe Encoding uses n_vocab)
+        n_vocab = getattr(tok, 'n_vocab', getattr(tok, 'vocab_size', 0))
+        result['vocab_size'] = n_vocab
+        result['be_letter_coverage'] = 'check_manual'
         report['results'][tp] = result
         print(f'{Path(tp).name}: be_tok/char={result["be_tokens_per_char"]:.3f} '
               f'tarask_tok/char={result["tarask_tokens_per_char"]:.3f} '

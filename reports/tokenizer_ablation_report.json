@@ -21,5 +21,46 @@
       "The English language has become a global lingua franca."
     ]
   },
-  "results": {}
+  "results": {
+    "reports/tokenizers/tok_8192.pkl": {
+      "be_tokens_per_char": 0.2505854800936768,
+      "be_tokens_per_word": 1.8448275862068966,
+      "be_byte_fallback_rate": 0.0,
+      "be_samples": 8,
+      "tarask_tokens_per_char": 0.19811320754716982,
+      "tarask_tokens_per_word": 1.75,
+      "tarask_byte_fallback_rate": 0.0,
+      "tarask_samples": 2,
+      "ru_tokens_per_char": 0.4426229508196721,
+      "ru_tokens_per_word": 3.0,
+      "ru_byte_fallback_rate": 0.0,
+      "ru_samples": 1,
+      "en_tokens_per_char": 0.5454545454545454,
+      "en_tokens_per_word": 3.3333333333333335,
+      "en_byte_fallback_rate": 0.0,
+      "en_samples": 1,
+      "vocab_size": 8192,
+      "be_letter_coverage": "check_manual"
+    },
+    "reports/tokenizers/tok_16384.pkl": {
+      "be_tokens_per_char": 0.2154566744730679,
+      "be_tokens_per_word": 1.5862068965517242,
+      "be_byte_fallback_rate": 0.0,
+      "be_samples": 8,
+      "tarask_tokens_per_char": 0.1792452830188679,
+      "tarask_tokens_per_word": 1.5833333333333333,
+      "tarask_byte_fallback_rate": 0.0,
+      "tarask_samples": 2,
+      "ru_tokens_per_char": 0.3770491803278688,
+      "ru_tokens_per_word": 2.5555555555555554,
+      "ru_byte_fallback_rate": 0.0,
+      "ru_samples": 1,
+      "en_tokens_per_char": 0.509090909090909,
+      "en_tokens_per_word": 3.111111111111111,
+      "en_byte_fallback_rate": 0.0,
+      "en_samples": 1,
+      "vocab_size": 16384,
+      "be_letter_coverage": "check_manual"
+    }
+  }
 }

@@ -1,32 +1,394 @@
-# Public source registry. The archive does not bundle external datasets.
-# Review licenses and terms before downloading any source.
-# Paths use repo-contained defaults from configs/path_policy.env
-local:
-  default_path: "$PACK_DIR/data_input/be_texts"
-  supported_formats: [txt, md, jsonl, jsonl.gz, parquet]
-  output_format: "parquet with column text"
-public_candidates:
-  - name: "Belarusian Wikipedia"
-    language: "be"
-    type: "encyclopedic"
-    access: "download via tools/download_wikimedia_be.py"
-    license_note: "Review Wikimedia project license and attribution requirements."
-    enabled_by_default: true
-  - name: "Belarusian Tarask Wikipedia"
-    language: "be-x-old"
-    type: "encyclopedic"
-    access: "download via tools/download_wikimedia_be.py --projects be_x_oldwiki"
-    license_note: "Separate orthography=tarask; do not silently mix with narkamauka."
-    enabled_by_default: true
-  - name: "HPLT / Common Crawl Belarusian slices"
-    language: "be"
-    type: "web corpus"
-    access: "stream via tools/hf_stream_belarusian_sources.py (gated)"
-    license_note: "Review dataset card, source filtering, and redistribution constraints."
-    enabled_by_default: false
-  - name: "User-owned Belarusian books/texts"
-    language: "be"
-    type: "local"
-    access: "place files under $PACK_DIR/data_input/be_texts/"
-    license_note: "Use only texts you have the right to train on."
-    enabled_by_default: true
+schema_version: '2026-05-12'
+policy:
+  project: Belka Belarusian LM from scratch
+  large_downloads_require_explicit_approval: true
+  no_dataset_without_license_record: true
+  raw_dumps_not_committed: true
+  all_paths_repo_contained: true
+  pretrained_models_only_eval_baselines: true
+sources:
+- id: bewiki
+  name: Belarusian Wikipedia
+  url: https://dumps.wikimedia.org/bewiki/latest/
+  type: wikimedia_dump
+  language: Belarusian official/narkamauka
+  license: CC BY-SA / GFDL for most text; verify media/page terms
+  access_method: automatic dump download
+  priority: high
+  status: configured
+  suitable_for: pretraining, validation
+  preprocessing_notes: namespace 0, skip redirects, clean wikitext, dedup, attribution
+    manifest
+  risks: templates, duplicate wiki text, contamination
+- id: be_x_oldwiki
+  name: Belarusian Wikipedia Classical / Taraškievica
+  url: https://dumps.wikimedia.org/be_x_oldwiki/latest/
+  type: wikimedia_dump
+  language: Belarusian tarask/classical
+  license: CC BY-SA / GFDL for most text
+  access_method: automatic dump download
+  priority: high
+  status: configured
+  suitable_for: pretraining optional orthography split
+  preprocessing_notes: set orthography=tarask; separate split/metadata
+  risks: orthography mixing
+- id: bewikisource
+  name: Belarusian Wikisource
+  url: https://dumps.wikimedia.org/bewikisource/latest/
+  type: wikimedia_dump
+  language: Belarusian/mixed
+  license: work-level license review required; Wikimedia terms
+  access_method: automatic dump + manual rights review
+  priority: high
+  status: configured_strict
+  suitable_for: pretraining literary/prose after strict filter
+  preprocessing_notes: remove headers/templates/OCR; min_score>=0.55; min_chars>=400
+  risks: copyright status, OCR noise, multilingual pages
+- id: bewiktionary
+  name: Belarusian Wiktionary
+  url: https://dumps.wikimedia.org/bewiktionary/latest/
+  type: wikimedia_dump
+  language: Belarusian/multilingual lexical
+  license: Wikimedia terms
+  access_method: automatic optional
+  priority: medium
+  status: candidate
+  suitable_for: lexicon/tokenizer/eval
+  preprocessing_notes: parse entries, avoid template prose
+  risks: not natural prose
+- id: bewikibooks
+  name: Belarusian Wikibooks
+  url: https://dumps.wikimedia.org/bewikibooks/latest/
+  type: wikimedia_dump
+  language: Belarusian if available
+  license: Wikimedia terms
+  access_method: automatic optional
+  priority: low
+  status: candidate
+  suitable_for: instructional prose optional
+  preprocessing_notes: verify project size and text quality
+  risks: small/variable quality
+- id: bewikiquote
+  name: Belarusian Wikiquote
+  url: https://dumps.wikimedia.org/bewikiquote/latest/
+  type: wikimedia_dump
+  language: Belarusian/mixed quotes
+  license: quote rights require review
+  access_method: automatic optional
+  priority: low
+  status: manual_review
+  suitable_for: eval/quote style only
+  preprocessing_notes: avoid bulk training
+  risks: copyright quote risks
+- id: wikidata_be
+  name: Wikidata Belarusian labels/descriptions
+  url: https://www.wikidata.org/wiki/Wikidata:Database_download
+  type: structured_dump
+  language: Belarusian labels/descriptions
+  license: Wikidata dump terms; verify
+  access_method: dump or SPARQL/API
+  priority: medium
+  status: candidate
+  suitable_for: lexicon/entity eval
+  preprocessing_notes: extract be labels/descriptions only
+  risks: not prose, short-string bias
+- id: bnkorpus
+  name: National Corpus of the Belarusian Language
+  url: https://bnkorpus.info/index.en.html
+  type: corpus_portal
+  language: Modern Belarusian, multiple subcorpora
+  license: license/access requires verification
+  access_method: manual/API/contact
+  priority: high
+  status: manual_review
+  suitable_for: reference, eval, possible training if licensed
+  preprocessing_notes: do not scrape without terms
+  risks: copyright, access, PII
+- id: belacorpus_public
+  name: Belacorpus public research corpus
+  url: https://github.com/Belarusian-Corpus/belacorpus_public
+  type: research_corpus
+  language: Standard Belarusian
+  license: access conditions in README; verify
+  access_method: manual request/README conditions
+  priority: high
+  status: manual_request_required
+  suitable_for: pretraining/eval if access granted
+  preprocessing_notes: record terms and citation
+  risks: restricted access, redistribution terms
+- id: leipzig_bel_wikipedia_2021
+  name: Leipzig Belarusian Wikipedia 2021
+  url: https://corpora.uni-leipzig.de/en?corpusId=bel_wikipedia_2021
+  type: sentence_corpus
+  language: Belarusian
+  license: Leipzig terms require verification
+  access_method: download from Leipzig
+  priority: medium
+  status: candidate
+  suitable_for: pretraining supplement/eval
+  preprocessing_notes: dedup against Wikimedia
+  risks: license verification, duplicated Wikipedia
+- id: hplt_v2_be
+  name: HPLT v2 Belarusian subset
+  url: https://hplt-project.org/datasets/v2.0
+  type: web_corpus
+  language: Belarusian LID subset
+  license: HPLT terms/license require verification
+  access_method: HPLT download
+  priority: high
+  status: candidate_large
+  suitable_for: pretraining after audit
+  preprocessing_notes: strict LID/filter/PII/dedup
+  risks: web noise, license provenance
+- id: fineweb2_be
+  name: FineWeb2 Belarusian subset
+  url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
+  type: web_corpus
+  language: Belarusian subset/config to verify
+  license: ODC-By family reported; verify current dataset terms
+  access_method: Hugging Face
+  priority: high
+  status: candidate_large
+  suitable_for: pretraining after audit
+  preprocessing_notes: verify config; apply Belarusian filters; license manifest
+  risks: web noise, subset naming, PII
+- id: oscar_2301_be
+  name: OSCAR 23.01 Belarusian
+  url: https://huggingface.co/datasets/oscar-corpus/OSCAR-2301
+  type: web_corpus
+  language: Belarusian subset
+  license: HF gated/access conditions + Common Crawl lineage
+  access_method: HF login/access request
+  priority: high
+  status: gated_pending
+  suitable_for: pretraining after strict filtering
+  preprocessing_notes: use LSH hashes, adult/blocklist metadata, re-filter
+  risks: gated terms, web noise, PII
+- id: culturax_be
+  name: CulturaX Belarusian
+  url: https://huggingface.co/datasets/uonlp/CulturaX
+  type: web_corpus
+  language: Belarusian among 167 languages
+  license: HF/dataset terms and source obligations
+  access_method: HF/datalad/scripts
+  priority: high
+  status: gated_or_large_pending
+  suitable_for: pretraining after audit
+  preprocessing_notes: subset only, strict filter, dedup
+  risks: large storage, source license
+- id: mc4_be
+  name: mC4 Belarusian / C4 multilingual
+  url: https://huggingface.co/datasets/allenai/c4
+  type: web_corpus
+  language: Belarusian if multilingual config includes be
+  license: ODC-By + Common Crawl terms; verify
+  access_method: HF/TFDS
+  priority: medium
+  status: candidate_large
+  suitable_for: optional pretraining
+  preprocessing_notes: sample first, strict filter
+  risks: old web, huge, noisy
+- id: cc100_be
+  name: CC100 Belarusian
+  url: https://huggingface.co/datasets/SEACrowd/cc100
+  type: web_corpus
+  language: Belarusian subset
+  license: license requires verification
+  access_method: HF/CC-Net
+  priority: medium_low
+  status: manual_review
+  suitable_for: optional legacy pretraining
+  preprocessing_notes: manual legal review
+  risks: unknown license/noise
+- id: common_crawl_direct
+  name: Common Crawl direct Belarusian mining
+  url: https://commoncrawl.org/
+  type: raw_web
+  language: requires LID
+  license: Common Crawl terms + source web rights
+  access_method: direct crawl processing
+  priority: low
+  status: not_ready
+  suitable_for: future large-scale mining
+  preprocessing_notes: requires robust ETL, PII, license policy
+  risks: copyright, PII, cost
+- id: opus_collection_be
+  name: OPUS Belarusian parallel corpora
+  url: https://opus.nlpl.eu/
+  type: parallel_corpus_collection
+  language: Belarusian pairs where available
+  license: per-corpus license
+  access_method: OPUS API/download/mtdata
+  priority: medium
+  status: candidate
+  suitable_for: translation SFT/eval
+  preprocessing_notes: enumerate be pairs and licenses
+  risks: mixed domains/licenses
+- id: tatoeba_be
+  name: Tatoeba Belarusian sentences/translations
+  url: https://tatoeba.org/eng/downloads
+  type: sentence_parallel
+  language: Belarusian
+  license: Tatoeba attribution/terms; verify
+  access_method: Tatoeba downloads/HF mirrors
+  priority: medium
+  status: configured_or_candidate
+  suitable_for: SFT/eval, low-weight pretrain
+  preprocessing_notes: low source weight, decontam
+  risks: short-sentence bias
+- id: manythings_tatoeba_en_be
+  name: ManyThings English-Belarusian Tatoeba
+  url: https://www.manythings.org/bilingual/bel/
+  type: parallel_sentence_pairs
+  language: English-Belarusian
+  license: derived from Tatoeba; verify attribution
+  access_method: download webpage/files
+  priority: low_medium
+  status: candidate
+  suitable_for: translation eval/SFT
+  preprocessing_notes: use only with attribution
+  risks: small, duplicate Tatoeba
+- id: jw300_be
+  name: JW300 Belarusian pairs
+  url: https://opus.nlpl.eu/
+  type: parallel_corpus
+  language: Belarusian pairs if available
+  license: OPUS/per-corpus; paper CC BY 4.0 but data terms verify
+  access_method: OPUS
+  priority: medium
+  status: candidate
+  suitable_for: translation/SFT
+  preprocessing_notes: domain cap and quality filter
+  risks: religious/domain bias
+- id: wikimatrix_be
+  name: WikiMatrix Belarusian pairs
+  url: https://opus.nlpl.eu/
+  type: parallel_mined
+  language: Belarusian pairs if available
+  license: per-corpus license
+  access_method: OPUS/HF
+  priority: medium
+  status: candidate
+  suitable_for: translation/SFT
+  preprocessing_notes: alignment score threshold
+  risks: mined alignment noise
+- id: opensubtitles_be
+  name: OpenSubtitles Belarusian pairs
+  url: https://opus.nlpl.eu/
+  type: subtitle_parallel
+  language: Belarusian if available
+  license: per-corpus license; verify copyright terms
+  access_method: OPUS
+  priority: low
+  status: manual_review
+  suitable_for: dialogue SFT optional
+  preprocessing_notes: safety filter and license review
+  risks: copyright/profanity
+- id: localization_opus_be
+  name: OPUS software/localization corpora
+  url: https://opus.nlpl.eu/
+  type: parallel_localization
+  language: Belarusian if available
+  license: per-corpus license
+  access_method: OPUS/mtdata
+  priority: medium_low
+  status: candidate
+  suitable_for: instruction/UI terminology
+  preprocessing_notes: enumerate and cap
+  risks: domain narrow
+- id: common_voice_be
+  name: Mozilla Common Voice Belarusian transcripts
+  url: https://commonvoice.mozilla.org/
+  type: speech_transcripts
+  language: Belarusian
+  license: Mozilla Data Collective/Common Voice terms; verify version
+  access_method: Mozilla Data Collective
+  priority: medium
+  status: manual_terms_required
+  suitable_for: transcript text, ASR/TTS, eval
+  preprocessing_notes: separate audio/text terms
+  risks: consent/metadata, speech style
+- id: belarusianglue
+  name: BelarusianGLUE
+  url: https://huggingface.co/datasets/maaxap/BelarusianGLUE
+  type: benchmark
+  language: Belarusian
+  license: dataset card/paper terms require verification
+  access_method: HF/GitHub
+  priority: high_eval
+  status: eval_only
+  suitable_for: evaluation, limited SFT only
+  preprocessing_notes: leakage guard; never base pretrain
+  risks: train/eval contamination
+- id: ud_belarusian_hse
+  name: UD Belarusian-HSE
+  url: https://github.com/UniversalDependencies/UD_Belarusian-HSE
+  type: treebank
+  language: Belarusian
+  license: CC BY-SA 4.0
+  access_method: GitHub/UD
+  priority: medium_eval
+  status: configured
+  suitable_for: grammar/morphology eval, low-weight SFT
+  preprocessing_notes: keep low weight
+  risks: small, annotation projection history
+- id: morphodict_bel
+  name: Morphodict-bel / Slounik
+  url: https://huggingface.co/datasets/ruscorpora/morphodict-bel
+  type: morphology_dataset
+  language: Belarusian
+  license: CC-BY-NC-SA 4.0
+  access_method: HF
+  priority: low_base_high_eval
+  status: configured_excluded_from_base
+  suitable_for: morphology eval/SFT
+  preprocessing_notes: exclude from base/public commercial model
+  risks: non-commercial license, not prose
+- id: flores200
+  name: FLORES-200
+  url: https://github.com/facebookresearch/flores/tree/main/flores200
+  type: mt_eval
+  language: verify Belarusian coverage/code
+  license: CC-BY-NC 4.0 in repo; verify
+  access_method: GitHub/HF mirrors
+  priority: medium_eval
+  status: candidate_eval
+  suitable_for: translation evaluation
+  preprocessing_notes: never train on eval
+  risks: NC license, eval contamination
+- id: wmt_mt
+  name: WMT/WMT24++/WMT25 resources
+  url: https://www2.statmt.org/wmt25/mtdata/
+  type: mt_benchmark_collection
+  language: Belarusian coverage requires verification
+  license: varies by dataset
+  access_method: WMT/mtdata
+  priority: low_until_verified
+  status: candidate_eval
+  suitable_for: translation eval if Belarusian exists
+  preprocessing_notes: use mtdata search and per-dataset license
+  risks: coverage/license uncertainty
+- id: meetmesh_sft
+  name: MeetMesh Belarusian generated SFT/eval
+  url: local seed_sft/eval
+  type: domain_sft
+  language: Belarusian
+  license: project-derived; verify before public release
+  access_method: repo
+  priority: medium
+  status: included_seed
+  suitable_for: domain SFT/eval
+  preprocessing_notes: ground in source docs/code; no secrets
+  risks: hallucinated feature risk
+- id: bootstrap_seed
+  name: Belka bootstrap/seed synthetic data
+  url: data_ready/ and seed_sft/
+  type: synthetic_bootstrap
+  language: Belarusian
+  license: synthetic/research
+  access_method: repo
+  priority: high_sanity
+  status: included
+  suitable_for: smoke/sanity, SFT seed
+  preprocessing_notes: cap and mark synthetic
+  risks: repetition, insufficient quality

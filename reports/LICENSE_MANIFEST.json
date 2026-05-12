@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-11T20:47:29.655955+00:00",
+  "generated_at": "2026-05-12T14:20:18.051401+00:00",
   "categories": {
     "commercial_ok": [
       "be_x_oldwiki",
@@ -7,7 +7,8 @@
       "bewiki",
       "bootstrap",
       "tatoeba_sentences",
-      "ud_belarusian_hse"
+      "ud_belarusian_hse",
+      "unknown"
     ],
     "research_only": [],
     "non_commercial": [
@@ -25,6 +26,8 @@
       "bewiki",
       "morphodict-bel"
     ],
-    "unknown_or_manual_review": []
+    "unknown_or_manual_review": [
+      "unknown"
+    ]
   }
 }

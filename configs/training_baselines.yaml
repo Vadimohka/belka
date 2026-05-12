@@ -1,0 +1,51 @@
+schema_version: '2026-05-12'
+policy:
+  from_scratch_only: true
+  pretrained_base_used: false
+  expensive_runs_need_approval: true
+baselines:
+- id: tiny_sanity_run
+  description: End-to-end smoke only, not quality model
+  script: local/run_belka_from_scratch_smoke.sh
+  profile: belka_d4_smoke
+  tokenizer_vocab: 16000
+  max_iterations: 50
+  hardware: RTX 3070 Ti 8GB or CPU fallback if supported
+  expected_outputs:
+  - checkpoint
+  - web_health_log
+  - smoke_eval_report
+- id: small_tokenizer_model_run
+  description: Tokenizer ablation plus small model run on clean accepted corpus
+  scripts:
+  - tools/train_tokenizer_ablation.py
+  - tools/eval_tokenizer_fertility.py
+  - local/run_belka_from_scratch_safe.sh
+  profile: belka_d8_40m_safe
+  tokenizer_vocabs:
+  - 8000
+  - 16000
+  - 24576
+  - 32768
+  hardware: RTX 3070 Ti 8GB
+  approval_required: true
+- id: from_scratch_safe_base
+  description: First serious local from-scratch base training
+  script: local/run_belka_from_scratch_safe.sh
+  profile: belka_d8_40m_safe
+  sequence_length: 1024
+  precision: float16
+  optimizer: AdamW
+  approval_required: true
+- id: sft_run
+  description: Belarusian-only SFT after base checkpoint
+  script: scripts/chat_sft_be.py via local scripts
+  inputs:
+  - seed_sft/*.jsonl
+  - generated contrastive SFT
+  approval_required: true
+- id: continued_pretraining_comparison_disabled
+  description: Not Belka main route. Only allowed as external baseline comparison
+    if explicitly requested.
+  pretrained_base_allowed: false
+  status: disabled_by_project_goal
