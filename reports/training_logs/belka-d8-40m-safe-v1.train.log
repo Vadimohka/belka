@@ -1,0 +1,367 @@
+OK: WORKSPACE_DIR=/home/vadimohka/WORK/vadimohka/.workspace
+OK: NANOCHAT_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat
+OK: NANOCHAT_BASE_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base
+OK: LOCAL_TEXT_DIR=/home/vadimohka/WORK/vadimohka/data_input/be_texts
+OK: DOWNLOAD_DIR=/home/vadimohka/WORK/vadimohka/data_input/downloads
+OK: TMPDIR=/home/vadimohka/WORK/vadimohka/.workspace/tmp
+OK: HF_HOME=/home/vadimohka/WORK/vadimohka/.workspace/hf_home
+OK: WANDB_DIR=/home/vadimohka/WORK/vadimohka/.workspace/wandb
+OK: repository containment guard passed
+== Belka From-Scratch Safe: belka_d8_40m_safe ==
+MODEL_TAG=belka-d8-40m-safe-v1  VOCAB=16000
+DEPTH=8  N_EMBD=512  N_HEAD=8  SEQ_LEN=1024
+DEV_BATCH=1  TOTAL_BATCH=512  GRAD_ACCUM=2
+BASE_ITERS=5000  SFT_ITERS=600
+NANOCHAT_BASE_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base
+OK: WORKSPACE_DIR=/home/vadimohka/WORK/vadimohka/.workspace
+OK: NANOCHAT_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat
+OK: NANOCHAT_BASE_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base
+OK: LOCAL_TEXT_DIR=/home/vadimohka/WORK/vadimohka/data_input/be_texts
+OK: DOWNLOAD_DIR=/home/vadimohka/WORK/vadimohka/data_input/downloads
+OK: TMPDIR=/home/vadimohka/WORK/vadimohka/.workspace/tmp
+OK: HF_HOME=/home/vadimohka/WORK/vadimohka/.workspace/hf_home
+OK: WANDB_DIR=/home/vadimohka/WORK/vadimohka/.workspace/wandb
+OK: repository containment guard passed
+OK: nanochat content already present at /home/vadimohka/WORK/vadimohka/.workspace/nanochat; git not required.
+Resolved 130 packages in 0.75ms
+Uninstalled 5 packages in 20ms
+ - iniconfig==2.3.0
+ - pluggy==1.6.0
+ - pygments==2.20.0
+ - pytest==9.0.3
+ - zstandard==0.25.0
+Looking in links: /home/vadimohka/WORK/vadimohka/.workspace/tmp/tmp4v5inixp
+Requirement already satisfied: setuptools in ./.venv/lib/python3.10/site-packages (82.0.1)
+Requirement already satisfied: pip in ./.venv/lib/python3.10/site-packages (26.1.1)
+Requirement already satisfied: pip in ./.venv/lib/python3.10/site-packages (26.1.1)
+Requirement already satisfied: setuptools in ./.venv/lib/python3.10/site-packages (82.0.1)
+Requirement already satisfied: wheel in ./.venv/lib/python3.10/site-packages (0.47.0)
+Requirement already satisfied: packaging>=24.0 in ./.venv/lib/python3.10/site-packages (from wheel) (25.0)
+Requirement already satisfied: pyarrow>=15.0.0 in ./.venv/lib/python3.10/site-packages (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 1)) (21.0.0)
+Requirement already satisfied: pandas>=2.0.0 in ./.venv/lib/python3.10/site-packages (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 2)) (2.3.2)
+Requirement already satisfied: PyYAML>=6.0.0 in ./.venv/lib/python3.10/site-packages (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 3)) (6.0.2)
+Requirement already satisfied: tqdm>=4.66.0 in ./.venv/lib/python3.10/site-packages (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 4)) (4.67.1)
+Requirement already satisfied: requests>=2.31.0 in ./.venv/lib/python3.10/site-packages (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 5)) (2.32.5)
+Requirement already satisfied: jinja2>=3.1.0 in ./.venv/lib/python3.10/site-packages (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 6)) (3.1.6)
+Collecting zstandard>=0.23.0 (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 7))
+  Using cached zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.3 kB)
+Collecting pytest>=8.0.0 (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 8))
+  Using cached pytest-9.0.3-py3-none-any.whl.metadata (7.6 kB)
+Requirement already satisfied: huggingface_hub>=0.30.0 in ./.venv/lib/python3.10/site-packages (from -r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 9)) (0.34.4)
+Requirement already satisfied: numpy>=1.22.4 in ./.venv/lib/python3.10/site-packages (from pandas>=2.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 2)) (1.26.4)
+Requirement already satisfied: python-dateutil>=2.8.2 in ./.venv/lib/python3.10/site-packages (from pandas>=2.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 2)) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in ./.venv/lib/python3.10/site-packages (from pandas>=2.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 2)) (2025.2)
+Requirement already satisfied: tzdata>=2022.7 in ./.venv/lib/python3.10/site-packages (from pandas>=2.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 2)) (2025.2)
+Requirement already satisfied: charset_normalizer<4,>=2 in ./.venv/lib/python3.10/site-packages (from requests>=2.31.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 5)) (3.4.3)
+Requirement already satisfied: idna<4,>=2.5 in ./.venv/lib/python3.10/site-packages (from requests>=2.31.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 5)) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in ./.venv/lib/python3.10/site-packages (from requests>=2.31.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 5)) (2.5.0)
+Requirement already satisfied: certifi>=2017.4.17 in ./.venv/lib/python3.10/site-packages (from requests>=2.31.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 5)) (2025.8.3)
+Requirement already satisfied: MarkupSafe>=2.0 in ./.venv/lib/python3.10/site-packages (from jinja2>=3.1.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 6)) (3.0.2)
+Requirement already satisfied: exceptiongroup>=1 in ./.venv/lib/python3.10/site-packages (from pytest>=8.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 8)) (1.3.0)
+Collecting iniconfig>=1.0.1 (from pytest>=8.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 8))
+  Using cached iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+Requirement already satisfied: packaging>=22 in ./.venv/lib/python3.10/site-packages (from pytest>=8.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 8)) (25.0)
+Collecting pluggy<2,>=1.5 (from pytest>=8.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 8))
+  Using cached pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Collecting pygments>=2.7.2 (from pytest>=8.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 8))
+  Using cached pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+Requirement already satisfied: tomli>=1 in ./.venv/lib/python3.10/site-packages (from pytest>=8.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 8)) (2.2.1)
+Requirement already satisfied: filelock in ./.venv/lib/python3.10/site-packages (from huggingface_hub>=0.30.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 9)) (3.19.1)
+Requirement already satisfied: fsspec>=2023.5.0 in ./.venv/lib/python3.10/site-packages (from huggingface_hub>=0.30.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 9)) (2025.3.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in ./.venv/lib/python3.10/site-packages (from huggingface_hub>=0.30.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 9)) (4.15.0)
+Requirement already satisfied: hf-xet<2.0.0,>=1.1.3 in ./.venv/lib/python3.10/site-packages (from huggingface_hub>=0.30.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 9)) (1.1.9)
+Requirement already satisfied: six>=1.5 in ./.venv/lib/python3.10/site-packages (from python-dateutil>=2.8.2->pandas>=2.0.0->-r /home/vadimohka/WORK/vadimohka/requirements_pack.txt (line 2)) (1.17.0)
+Using cached zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.6 MB)
+Using cached pytest-9.0.3-py3-none-any.whl (375 kB)
+Using cached pluggy-1.6.0-py3-none-any.whl (20 kB)
+Using cached iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Using cached pygments-2.20.0-py3-none-any.whl (1.2 MB)
+Installing collected packages: zstandard, pygments, pluggy, iniconfig, pytest
+
+Successfully installed iniconfig-2.3.0 pluggy-1.6.0 pygments-2.20.0 pytest-9.0.3 zstandard-0.25.0
+WARN: rustbpe/Cargo.toml not found; not running maturin and not running git submodule commands in archives.
+[
+  {
+    "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations.jsonl",
+    "rows": 72,
+    "messages": 144,
+    "errors": 0,
+    "warnings": 0,
+    "assistant_language_failures": 0
+  },
+  {
+    "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations_val.jsonl",
+    "rows": 14,
+    "messages": 28,
+    "errors": 0,
+    "warnings": 0,
+    "assistant_language_failures": 0
+  }
+]
+{
+  "train_out": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations.jsonl",
+  "val_out": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations_val.jsonl",
+  "train_rows": 72,
+  "val_rows": 14
+}
+{
+  "repo": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat",
+  "source": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/scripts/chat_sft.py",
+  "destination": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/scripts/chat_sft_be.py",
+  "customjson_file_present": true,
+  "status": "exists",
+  "ok": true,
+  "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/scripts/chat_sft_be.py",
+  "message": "existing chat_sft_be.py kept"
+}
+{
+  "repo": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat",
+  "created_at": "2026-05-12T14:32:33.561024+00:00",
+  "engine": {
+    "file": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/nanochat/engine.py",
+    "changed": false,
+    "ok": true,
+    "reason": "already_patched"
+  },
+  "flash_attention": {
+    "file": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/nanochat/flash_attention.py",
+    "changed": false,
+    "ok": true,
+    "reason": "already_patched"
+  },
+  "env_hint": "export NANOCHAT_DTYPE=float16"
+}
+{
+  "ok": true,
+  "repo": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat",
+  "base_dir": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base",
+  "NANOCHAT_DTYPE": "float16",
+  "results": [
+    {
+      "check": "upstream chat_sft.py exists",
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/scripts/chat_sft.py",
+      "ok": true
+    },
+    {
+      "check": "Belarusian SFT variant marker",
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/scripts/chat_sft_be.py",
+      "needle": "Belarusian-only CustomJSON",
+      "ok": true
+    },
+    {
+      "check": "Belarusian val CustomJSON path",
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/scripts/chat_sft_be.py",
+      "needle": "identity_conversations_val.jsonl",
+      "ok": true
+    },
+    {
+      "check": "train SFT JSONL copied/merged",
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations.jsonl",
+      "ok": true
+    },
+    {
+      "check": "val SFT JSONL copied/merged",
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations_val.jsonl",
+      "ok": true
+    },
+    {
+      "check": "engine dtype patch or upstream COMPUTE_DTYPE",
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/nanochat/engine.py",
+      "needles": [
+        "BELARUSIAN_SUPERPACK_DTYPE_ENGINE",
+        "COMPUTE_DTYPE if device.type"
+      ],
+      "ok": true
+    },
+    {
+      "check": "SDPA dtype consistency patch",
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/nanochat/flash_attention.py",
+      "needles": [
+        "BELARUSIAN_SUPERPACK_DTYPE_SDPA",
+        "k = k.to(dtype=q.dtype)"
+      ],
+      "ok": true
+    },
+    {
+      "check": "validate merged SFT JSONL",
+      "ok": true,
+      "stdout_tail": "[\n  {\n    \"path\": \"/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations.jsonl\",\n    \"rows\": 72,\n    \"messages\": 144,\n    \"errors\": 0,\n    \"warnings\": 0,\n    \"assistant_language_failures\": 0\n  },\n  {\n    \"path\": \"/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/identity_conversations_val.jsonl\",\n    \"rows\": 14,\n    \"messages\": 28,\n    \"errors\": 0,\n    \"warnings\": 0,\n    \"assistant_language_failures\": 0\n  }\n]\n",
+      "stderr_tail": ""
+    }
+  ]
+}
+OK: nanochat environment ready
+OK: NANOCHAT_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat
+OK: NANOCHAT_BASE_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base
+OK: NANOCHAT_DTYPE=float16
+OK: W&B disabled for unattended runs
+2026-05-12 17:32:34,614 - rustbpe - [32m[1mINFO[0m - Processing sequences from iterator (buffer_size: 8192)
+2026-05-12 17:32:35,819 - rustbpe - [32m[1mINFO[0m - Processed 46091 sequences total, 322190 unique
+2026-05-12 17:32:35,836 - rustbpe - [32m[1mINFO[0m - Starting BPE training: 15735 merges to compute
+2026-05-12 17:32:35,836 - rustbpe - [32m[1mINFO[0m - Computing initial pair counts from 322190 unique sequences
+2026-05-12 17:32:36,098 - rustbpe - [32m[1mINFO[0m - Building heap with 6278 unique pairs
+2026-05-12 17:32:36,098 - rustbpe - [32m[1mINFO[0m - Starting merge loop
+2026-05-12 17:32:37,102 - rustbpe - [32m[1mINFO[0m - Progress: [1m1%[0m (158/15735 merges) - Last merge: (291, 259) -> 413 (frequency: 30052)
+2026-05-12 17:32:37,195 - rustbpe - [32m[1mINFO[0m - Progress: [1m2%[0m (315/15735 merges) - Last merge: (354, 256) -> 570 (frequency: 10782)
+2026-05-12 17:32:37,242 - rustbpe - [32m[1mINFO[0m - Progress: [1m3%[0m (473/15735 merges) - Last merge: (309, 318) -> 728 (frequency: 6552)
+2026-05-12 17:32:37,276 - rustbpe - [32m[1mINFO[0m - Progress: [1m4%[0m (630/15735 merges) - Last merge: (276, 408) -> 885 (frequency: 4741)
+2026-05-12 17:32:37,299 - rustbpe - [32m[1mINFO[0m - Progress: [1m5%[0m (787/15735 merges) - Last merge: (349, 293) -> 1042 (frequency: 3580)
+2026-05-12 17:32:37,317 - rustbpe - [32m[1mINFO[0m - Progress: [1m6%[0m (945/15735 merges) - Last merge: (272, 296) -> 1200 (frequency: 2862)
+2026-05-12 17:32:37,330 - rustbpe - [32m[1mINFO[0m - Progress: [1m7%[0m (1102/15735 merges) - Last merge: (265, 326) -> 1357 (frequency: 2401)
+2026-05-12 17:32:37,342 - rustbpe - [32m[1mINFO[0m - Progress: [1m8%[0m (1259/15735 merges) - Last merge: (672, 448) -> 1514 (frequency: 2092)
+2026-05-12 17:32:37,356 - rustbpe - [32m[1mINFO[0m - Progress: [1m9%[0m (1417/15735 merges) - Last merge: (309, 823) -> 1672 (frequency: 1815)
+2026-05-12 17:32:37,364 - rustbpe - [32m[1mINFO[0m - Progress: [1m10%[0m (1574/15735 merges) - Last merge: (103, 1556) -> 1829 (frequency: 1624)
+2026-05-12 17:32:37,375 - rustbpe - [32m[1mINFO[0m - Progress: [1m11%[0m (1731/15735 merges) - Last merge: (51, 52) -> 1986 (frequency: 1453)
+2026-05-12 17:32:37,383 - rustbpe - [32m[1mINFO[0m - Progress: [1m12%[0m (1889/15735 merges) - Last merge: (376, 1186) -> 2144 (frequency: 1321)
+2026-05-12 17:32:37,392 - rustbpe - [32m[1mINFO[0m - Progress: [1m13%[0m (2046/15735 merges) - Last merge: (321, 1449) -> 2301 (frequency: 1207)
+2026-05-12 17:32:37,400 - rustbpe - [32m[1mINFO[0m - Progress: [1m14%[0m (2203/15735 merges) - Last merge: (369, 359) -> 2458 (frequency: 1101)
+2026-05-12 17:32:37,407 - rustbpe - [32m[1mINFO[0m - Progress: [1m15%[0m (2361/15735 merges) - Last merge: (299, 331) -> 2616 (frequency: 1005)
+2026-05-12 17:32:37,413 - rustbpe - [32m[1mINFO[0m - Progress: [1m16%[0m (2518/15735 merges) - Last merge: (604, 2297) -> 2773 (frequency: 929)
+2026-05-12 17:32:37,419 - rustbpe - [32m[1mINFO[0m - Progress: [1m17%[0m (2675/15735 merges) - Last merge: (366, 269) -> 2930 (frequency: 863)
+2026-05-12 17:32:37,424 - rustbpe - [32m[1mINFO[0m - Progress: [1m18%[0m (2833/15735 merges) - Last merge: (276, 1178) -> 3088 (frequency: 795)
+2026-05-12 17:32:37,429 - rustbpe - [32m[1mINFO[0m - Progress: [1m19%[0m (2990/15735 merges) - Last merge: (197, 161) -> 3245 (frequency: 742)
+2026-05-12 17:32:37,434 - rustbpe - [32m[1mINFO[0m - Progress: [1m20%[0m (3147/15735 merges) - Last merge: (280, 279) -> 3402 (frequency: 694)
+2026-05-12 17:32:37,440 - rustbpe - [32m[1mINFO[0m - Progress: [1m21%[0m (3305/15735 merges) - Last merge: (972, 295) -> 3560 (frequency: 654)
+2026-05-12 17:32:37,445 - rustbpe - [32m[1mINFO[0m - Progress: [1m22%[0m (3462/15735 merges) - Last merge: (105, 118) -> 3717 (frequency: 613)
+2026-05-12 17:32:37,450 - rustbpe - [32m[1mINFO[0m - Progress: [1m23%[0m (3620/15735 merges) - Last merge: (313, 3338) -> 3875 (frequency: 576)
+2026-05-12 17:32:37,455 - rustbpe - [32m[1mINFO[0m - Progress: [1m24%[0m (3777/15735 merges) - Last merge: (373, 311) -> 4032 (frequency: 542)
+2026-05-12 17:32:37,459 - rustbpe - [32m[1mINFO[0m - Progress: [1m25%[0m (3934/15735 merges) - Last merge: (433, 276) -> 4189 (frequency: 515)
+2026-05-12 17:32:37,469 - rustbpe - [32m[1mINFO[0m - Progress: [1m26%[0m (4092/15735 merges) - Last merge: (293, 352) -> 4347 (frequency: 491)
+2026-05-12 17:32:37,474 - rustbpe - [32m[1mINFO[0m - Progress: [1m27%[0m (4249/15735 merges) - Last merge: (1618, 2791) -> 4504 (frequency: 466)
+2026-05-12 17:32:37,478 - rustbpe - [32m[1mINFO[0m - Progress: [1m28%[0m (4406/15735 merges) - Last merge: (302, 769) -> 4661 (frequency: 442)
+2026-05-12 17:32:37,483 - rustbpe - [32m[1mINFO[0m - Progress: [1m29%[0m (4564/15735 merges) - Last merge: (45, 80) -> 4819 (frequency: 421)
+2026-05-12 17:32:37,487 - rustbpe - [32m[1mINFO[0m - Progress: [1m30%[0m (4721/15735 merges) - Last merge: (903, 277) -> 4976 (frequency: 402)
+2026-05-12 17:32:37,490 - rustbpe - [32m[1mINFO[0m - Progress: [1m31%[0m (4878/15735 merges) - Last merge: (382, 279) -> 5133 (frequency: 385)
+2026-05-12 17:32:37,494 - rustbpe - [32m[1mINFO[0m - Progress: [1m32%[0m (5036/15735 merges) - Last merge: (692, 692) -> 5291 (frequency: 368)
+2026-05-12 17:32:37,499 - rustbpe - [32m[1mINFO[0m - Progress: [1m33%[0m (5193/15735 merges) - Last merge: (450, 426) -> 5448 (frequency: 354)
+2026-05-12 17:32:37,503 - rustbpe - [32m[1mINFO[0m - Progress: [1m34%[0m (5350/15735 merges) - Last merge: (2113, 267) -> 5605 (frequency: 343)
+2026-05-12 17:32:37,506 - rustbpe - [32m[1mINFO[0m - Progress: [1m35%[0m (5508/15735 merges) - Last merge: (438, 319) -> 5763 (frequency: 328)
+2026-05-12 17:32:37,510 - rustbpe - [32m[1mINFO[0m - Progress: [1m36%[0m (5665/15735 merges) - Last merge: (312, 2596) -> 5920 (frequency: 315)
+2026-05-12 17:32:37,513 - rustbpe - [32m[1mINFO[0m - Progress: [1m37%[0m (5822/15735 merges) - Last merge: (590, 288) -> 6077 (frequency: 304)
+2026-05-12 17:32:37,515 - rustbpe - [32m[1mINFO[0m - Progress: [1m38%[0m (5980/15735 merges) - Last merge: (5874, 397) -> 6235 (frequency: 294)
+2026-05-12 17:32:37,519 - rustbpe - [32m[1mINFO[0m - Progress: [1m39%[0m (6137/15735 merges) - Last merge: (359, 681) -> 6392 (frequency: 284)
+2026-05-12 17:32:37,522 - rustbpe - [32m[1mINFO[0m - Progress: [1m40%[0m (6294/15735 merges) - Last merge: (307, 281) -> 6549 (frequency: 275)
+2026-05-12 17:32:37,524 - rustbpe - [32m[1mINFO[0m - Progress: [1m41%[0m (6452/15735 merges) - Last merge: (1297, 554) -> 6707 (frequency: 268)
+2026-05-12 17:32:37,527 - rustbpe - [32m[1mINFO[0m - Progress: [1m42%[0m (6609/15735 merges) - Last merge: (378, 277) -> 6864 (frequency: 260)
+2026-05-12 17:32:37,530 - rustbpe - [32m[1mINFO[0m - Progress: [1m43%[0m (6767/15735 merges) - Last merge: (3414, 455) -> 7022 (frequency: 252)
+2026-05-12 17:32:37,533 - rustbpe - [32m[1mINFO[0m - Progress: [1m44%[0m (6924/15735 merges) - Last merge: (962, 294) -> 7179 (frequency: 244)
+2026-05-12 17:32:37,536 - rustbpe - [32m[1mINFO[0m - Progress: [1m45%[0m (7081/15735 merges) - Last merge: (4985, 428) -> 7336 (frequency: 237)
+2026-05-12 17:32:37,539 - rustbpe - [32m[1mINFO[0m - Progress: [1m46%[0m (7239/15735 merges) - Last merge: (278, 266) -> 7494 (frequency: 229)
+2026-05-12 17:32:37,542 - rustbpe - [32m[1mINFO[0m - Progress: [1m47%[0m (7396/15735 merges) - Last merge: (2043, 6200) -> 7651 (frequency: 223)
+2026-05-12 17:32:37,544 - rustbpe - [32m[1mINFO[0m - Progress: [1m48%[0m (7553/15735 merges) - Last merge: (394, 964) -> 7808 (frequency: 216)
+2026-05-12 17:32:37,546 - rustbpe - [32m[1mINFO[0m - Progress: [1m49%[0m (7711/15735 merges) - Last merge: (113, 117) -> 7966 (frequency: 210)
+2026-05-12 17:32:37,549 - rustbpe - [32m[1mINFO[0m - Progress: [1m50%[0m (7868/15735 merges) - Last merge: (639, 544) -> 8123 (frequency: 205)
+2026-05-12 17:32:37,551 - rustbpe - [32m[1mINFO[0m - Progress: [1m51%[0m (8025/15735 merges) - Last merge: (99, 105) -> 8280 (frequency: 199)
+2026-05-12 17:32:37,554 - rustbpe - [32m[1mINFO[0m - Progress: [1m52%[0m (8183/15735 merges) - Last merge: (2341, 416) -> 8438 (frequency: 195)
+2026-05-12 17:32:37,555 - rustbpe - [32m[1mINFO[0m - Progress: [1m53%[0m (8340/15735 merges) - Last merge: (324, 510) -> 8595 (frequency: 189)
+2026-05-12 17:32:37,558 - rustbpe - [32m[1mINFO[0m - Progress: [1m54%[0m (8497/15735 merges) - Last merge: (5792, 1653) -> 8752 (frequency: 186)
+2026-05-12 17:32:37,560 - rustbpe - [32m[1mINFO[0m - Progress: [1m55%[0m (8655/15735 merges) - Last merge: (615, 491) -> 8910 (frequency: 181)
+2026-05-12 17:32:37,562 - rustbpe - [32m[1mINFO[0m - Progress: [1m56%[0m (8812/15735 merges) - Last merge: (810, 6861) -> 9067 (frequency: 176)
+2026-05-12 17:32:37,564 - rustbpe - [32m[1mINFO[0m - Progress: [1m57%[0m (8969/15735 merges) - Last merge: (1045, 256) -> 9224 (frequency: 172)
+2026-05-12 17:32:37,567 - rustbpe - [32m[1mINFO[0m - Progress: [1m58%[0m (9127/15735 merges) - Last merge: (1915, 345) -> 9382 (frequency: 168)
+2026-05-12 17:32:37,569 - rustbpe - [32m[1mINFO[0m - Progress: [1m59%[0m (9284/15735 merges) - Last merge: (1461, 960) -> 9539 (frequency: 164)
+2026-05-12 17:32:37,570 - rustbpe - [32m[1mINFO[0m - Progress: [1m60%[0m (9441/15735 merges) - Last merge: (710, 305) -> 9696 (frequency: 160)
+2026-05-12 17:32:37,572 - rustbpe - [32m[1mINFO[0m - Progress: [1m61%[0m (9599/15735 merges) - Last merge: (8690, 705) -> 9854 (frequency: 157)
+2026-05-12 17:32:37,574 - rustbpe - [32m[1mINFO[0m - Progress: [1m62%[0m (9756/15735 merges) - Last merge: (1266, 642) -> 10011 (frequency: 154)
+2026-05-12 17:32:37,576 - rustbpe - [32m[1mINFO[0m - Progress: [1m63%[0m (9914/15735 merges) - Last merge: (316, 343) -> 10169 (frequency: 150)
+2026-05-12 17:32:37,577 - rustbpe - [32m[1mINFO[0m - Progress: [1m64%[0m (10071/15735 merges) - Last merge: (6040, 501) -> 10326 (frequency: 148)
+2026-05-12 17:32:37,579 - rustbpe - [32m[1mINFO[0m - Progress: [1m65%[0m (10228/15735 merges) - Last merge: (4730, 3321) -> 10483 (frequency: 145)
+2026-05-12 17:32:37,581 - rustbpe - [32m[1mINFO[0m - Progress: [1m66%[0m (10386/15735 merges) - Last merge: (586, 5704) -> 10641 (frequency: 142)
+2026-05-12 17:32:37,583 - rustbpe - [32m[1mINFO[0m - Progress: [1m67%[0m (10543/15735 merges) - Last merge: (276, 1574) -> 10798 (frequency: 139)
+2026-05-12 17:32:37,584 - rustbpe - [32m[1mINFO[0m - Progress: [1m68%[0m (10700/15735 merges) - Last merge: (1463, 550) -> 10955 (frequency: 137)
+2026-05-12 17:32:37,587 - rustbpe - [32m[1mINFO[0m - Progress: [1m69%[0m (10858/15735 merges) - Last merge: (363, 473) -> 11113 (frequency: 134)
+2026-05-12 17:32:37,588 - rustbpe - [32m[1mINFO[0m - Progress: [1m70%[0m (11015/15735 merges) - Last merge: (592, 352) -> 11270 (frequency: 132)
+2026-05-12 17:32:37,590 - rustbpe - [32m[1mINFO[0m - Progress: [1m71%[0m (11172/15735 merges) - Last merge: (8475, 382) -> 11427 (frequency: 130)
+2026-05-12 17:32:37,592 - rustbpe - [32m[1mINFO[0m - Progress: [1m72%[0m (11330/15735 merges) - Last merge: (473, 269) -> 11585 (frequency: 127)
+2026-05-12 17:32:37,594 - rustbpe - [32m[1mINFO[0m - Progress: [1m73%[0m (11487/15735 merges) - Last merge: (1324, 499) -> 11742 (frequency: 125)
+2026-05-12 17:32:37,595 - rustbpe - [32m[1mINFO[0m - Progress: [1m74%[0m (11644/15735 merges) - Last merge: (7846, 974) -> 11899 (frequency: 123)
+2026-05-12 17:32:37,597 - rustbpe - [32m[1mINFO[0m - Progress: [1m75%[0m (11802/15735 merges) - Last merge: (289, 328) -> 12057 (frequency: 120)
+2026-05-12 17:32:37,599 - rustbpe - [32m[1mINFO[0m - Progress: [1m76%[0m (11959/15735 merges) - Last merge: (731, 4687) -> 12214 (frequency: 118)
+2026-05-12 17:32:37,601 - rustbpe - [32m[1mINFO[0m - Progress: [1m77%[0m (12116/15735 merges) - Last merge: (579, 330) -> 12371 (frequency: 116)
+2026-05-12 17:32:37,602 - rustbpe - [32m[1mINFO[0m - Progress: [1m78%[0m (12274/15735 merges) - Last merge: (322, 1671) -> 12529 (frequency: 114)
+2026-05-12 17:32:37,604 - rustbpe - [32m[1mINFO[0m - Progress: [1m79%[0m (12431/15735 merges) - Last merge: (10371, 337) -> 12686 (frequency: 113)
+2026-05-12 17:32:37,605 - rustbpe - [32m[1mINFO[0m - Progress: [1m80%[0m (12588/15735 merges) - Last merge: (4856, 836) -> 12843 (frequency: 111)
+2026-05-12 17:32:37,607 - rustbpe - [32m[1mINFO[0m - Progress: [1m81%[0m (12746/15735 merges) - Last merge: (3228, 716) -> 13001 (frequency: 109)
+2026-05-12 17:32:37,608 - rustbpe - [32m[1mINFO[0m - Progress: [1m82%[0m (12903/15735 merges) - Last merge: (1280, 569) -> 13158 (frequency: 107)
+2026-05-12 17:32:37,610 - rustbpe - [32m[1mINFO[0m - Progress: [1m83%[0m (13061/15735 merges) - Last merge: (380, 5910) -> 13316 (frequency: 105)
+2026-05-12 17:32:37,611 - rustbpe - [32m[1mINFO[0m - Progress: [1m84%[0m (13218/15735 merges) - Last merge: (4368, 282) -> 13473 (frequency: 104)
+2026-05-12 17:32:37,612 - rustbpe - [32m[1mINFO[0m - Progress: [1m85%[0m (13375/15735 merges) - Last merge: (393, 526) -> 13630 (frequency: 102)
+2026-05-12 17:32:37,613 - rustbpe - [32m[1mINFO[0m - Progress: [1m86%[0m (13533/15735 merges) - Last merge: (2033, 1060) -> 13788 (frequency: 101)
+2026-05-12 17:32:37,615 - rustbpe - [32m[1mINFO[0m - Progress: [1m87%[0m (13690/15735 merges) - Last merge: (387, 1902) -> 13945 (frequency: 99)
+2026-05-12 17:32:37,616 - rustbpe - [32m[1mINFO[0m - Progress: [1m88%[0m (13847/15735 merges) - Last merge: (4121, 11146) -> 14102 (frequency: 98)
+2026-05-12 17:32:37,618 - rustbpe - [32m[1mINFO[0m - Progress: [1m89%[0m (14005/15735 merges) - Last merge: (435, 352) -> 14260 (frequency: 96)
+2026-05-12 17:32:37,618 - rustbpe - [32m[1mINFO[0m - Progress: [1m90%[0m (14162/15735 merges) - Last merge: (2122, 1706) -> 14417 (frequency: 95)
+2026-05-12 17:32:37,620 - rustbpe - [32m[1mINFO[0m - Progress: [1m91%[0m (14319/15735 merges) - Last merge: (343, 851) -> 14574 (frequency: 93)
+2026-05-12 17:32:37,621 - rustbpe - [32m[1mINFO[0m - Progress: [1m92%[0m (14477/15735 merges) - Last merge: (1532, 413) -> 14732 (frequency: 92)
+2026-05-12 17:32:37,622 - rustbpe - [32m[1mINFO[0m - Progress: [1m93%[0m (14634/15735 merges) - Last merge: (5322, 266) -> 14889 (frequency: 91)
+2026-05-12 17:32:37,623 - rustbpe - [32m[1mINFO[0m - Progress: [1m94%[0m (14791/15735 merges) - Last merge: (11073, 318) -> 15046 (frequency: 90)
+2026-05-12 17:32:37,625 - rustbpe - [32m[1mINFO[0m - Progress: [1m95%[0m (14949/15735 merges) - Last merge: (458, 580) -> 15204 (frequency: 88)
+2026-05-12 17:32:37,626 - rustbpe - [32m[1mINFO[0m - Progress: [1m96%[0m (15106/15735 merges) - Last merge: (1553, 15167) -> 15361 (frequency: 87)
+2026-05-12 17:32:37,628 - rustbpe - [32m[1mINFO[0m - Progress: [1m97%[0m (15263/15735 merges) - Last merge: (2065, 1433) -> 15518 (frequency: 86)
+2026-05-12 17:32:37,629 - rustbpe - [32m[1mINFO[0m - Progress: [1m98%[0m (15421/15735 merges) - Last merge: (4150, 4657) -> 15676 (frequency: 85)
+2026-05-12 17:32:37,630 - rustbpe - [32m[1mINFO[0m - Progress: [1m99%[0m (15578/15735 merges) - Last merge: (15762, 392) -> 15833 (frequency: 84)
+2026-05-12 17:32:37,631 - rustbpe - [32m[1mINFO[0m - Progress: [1m100%[0m (15735/15735 merges) - Last merge: (394, 5469) -> 15990 (frequency: 82)
+2026-05-12 17:32:37,631 - rustbpe - [32m[1mINFO[0m - Finished training: 15735 merges completed
+max_chars: 30,000,000
+doc_cap: 10,000
+vocab_size: 16,000
+Training time: 3.09s
+Saved tokenizer encoding to /home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/tokenizer/tokenizer.pkl
+Saved token_bytes to /home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/tokenizer/token_bytes.pt
+[W512 17:32:37.982761816 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())
+2026-05-12 17:32:40,405 - nanochat.common - [32m[1mINFO[0m - Distributed world size: 1
+2026-05-12 17:32:40,405 - nanochat.common - [33m[1mWARNING[0m - Peak flops undefined for: NVIDIA GeForce RTX 3070 Ti, MFU will show as 0%
+Traceback (most recent call last):
+  File "/home/vadimohka/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/vadimohka/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/vadimohka/WORK/vadimohka/.workspace/nanochat/scripts/base_train.py", line 409, in <module>
+    assert total_batch_size % world_tokens_per_fwdbwd == 0
+AssertionError
+
+                                                       █████                █████
+                                                      ░░███                ░░███
+     ████████    ██████   ████████    ██████   ██████  ░███████    ██████  ███████
+    ░░███░░███  ░░░░░███ ░░███░░███  ███░░███ ███░░███ ░███░░███  ░░░░░███░░░███░
+     ░███ ░███   ███████  ░███ ░███ ░███ ░███░███ ░░░  ░███ ░███   ███████  ░███
+     ░███ ░███  ███░░███  ░███ ░███ ░███ ░███░███  ███ ░███ ░███  ███░░███  ░███ ███
+     ████ █████░░████████ ████ █████░░██████ ░░██████  ████ █████░░███████  ░░█████
+    ░░░░ ░░░░░  ░░░░░░░░ ░░░░ ░░░░░  ░░░░░░   ░░░░░░  ░░░░ ░░░░░  ░░░░░░░░   ░░░░░
+    
+Autodetected device type: cuda
+GPU: NVIDIA GeForce RTX 3070 Ti | Peak FLOPS (BF16): inf
+COMPUTE_DTYPE: torch.float16 (set via NANOCHAT_DTYPE=float16)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+WARNING: Flash Attention 3 not available, using PyTorch SDPA fallback
+WARNING: Training will be less efficient without FA3
+WARNING: SDPA has no support for sliding window attention (window_pattern='SSSL'). Your GPU utilization will be terrible.
+WARNING: Recommend using --window-pattern L for full context attention without alternating sliding window patterns.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Vocab size: 16,000
+Model config:
+{
+  "sequence_len": 1024,
+  "vocab_size": 16000,
+  "n_layer": 8,
+  "n_head": 4,
+  "n_kv_head": 4,
+  "n_embd": 512,
+  "window_pattern": "SSSL"
+}
+Parameter counts:
+wte                     : 8,192,000
+value_embeds            : 32,768,000
+lm_head                 : 8,192,000
+transformer_matrices    : 25,166,016
+scalars                 : 42
+total                   : 74,318,058
+Estimated FLOPs per token: 2.221682e+08
+Scaling LRs by 0.0312 for batch size 512 (reference: 524,288)
+Scaling weight decay from 0.280000 to 0.025502 for depth 8
+Scaling the LR for the AdamW parameters ∝1/√(512/768) = 1.224745
+GradScaler enabled for fp16 training
+Using user-provided number of iterations: 5,000
+Total number of training tokens: 2,560,000
+Tokens : Scaling params ratio: 0.08
+Total training FLOPs estimate: 5.687506e+14

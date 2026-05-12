@@ -1,0 +1,65 @@
+RAW_SEEN=43589
+TOTAL_ACCOUNTED=43589
+ACCOUNTING_ASSERTION=PASS
+CONTAINED: /home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/base_data_climbmix/train_00000.parquet
+CONTAINED: /home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/base_data_climbmix/val_00000.parquet
+CODE_FORBIDDEN_PATH_REFERENCES=0
+DOC_FORBIDDEN_PATH_REFERENCES=24 (acceptable as negative examples)
+
+=== Per-source summary ===
+  be_x_oldwiki: raw=2000 accepted=1953 quarantine=45 rejected=1 skipped_short=0 skipped_dup_exact=0 skipped_dup_near=1
+  belarusian_seed: raw=2080 accepted=427 quarantine=0 rejected=0 skipped_short=0 skipped_dup_exact=1040 skipped_dup_near=613
+  bewiki: raw=4000 accepted=3792 quarantine=111 rejected=24 skipped_short=0 skipped_dup_exact=1 skipped_dup_near=72
+  bootstrap: raw=1300 accepted=74 quarantine=0 rejected=0 skipped_short=0 skipped_dup_exact=0 skipped_dup_near=1226
+  morphodict-bel: raw=1000 accepted=4 quarantine=0 rejected=756 skipped_short=0 skipped_dup_exact=0 skipped_dup_near=240
+  tatoeba_sentences: raw=11120 accepted=3827 quarantine=1186 rejected=1701 skipped_short=4383 skipped_dup_exact=0 skipped_dup_near=23
+  ud_belarusian_hse: raw=22060 accepted=14768 quarantine=1216 rejected=3057 skipped_short=2551 skipped_dup_exact=259 skipped_dup_near=209
+  unknown: raw=29 accepted=1 quarantine=0 rejected=28 skipped_short=0 skipped_dup_exact=0 skipped_dup_near=0
+
+=== Quarantine samples (20) ===
+  score=0.35 source=tatoeba_sentences reasons=['be_letters'] text[:100]=Дайце мне цукеркі, калі ласка.
+  score=0.35 source=ud_belarusian_hse reasons=['be_letters'] text[:100]=Зусім трохі засталося да 100 000!
+  score=0.35 source=tatoeba_sentences reasons=['be_letters'] text[:100]=Ці можаш замовіць таксі для мяне?
+  score=0.35 source=tatoeba_sentences reasons=['be_letters'] text[:100]=Я ведаю, што вы жылі ў Бостане.
+  score=0.35 source=ud_belarusian_hse reasons=['be_letters'] text[:100]=Сойма Руха Салідарнасці “Разам”
+  score=0.35 source=tatoeba_sentences reasons=['be_letters'] text[:100]=Ідзі хутчэй, бо спознішся на цягнік.
+  score=0.35 source=ud_belarusian_hse reasons=['be_letters'] text[:100]=Вызвалілі Міраслава Лазоўскага.
+  score=0.35 source=ud_belarusian_hse reasons=['be_letters'] text[:100]=📷 budzma.bу / Аляксандр Кісялёў
+  score=0.35 source=ud_belarusian_hse reasons=['be_letters'] text[:100]=Як ляснуўся камунізм у Эўропе.
+  score=0.35 source=ud_belarusian_hse reasons=['be_letters'] text[:100]=Прыходзь і бяры з сабой сяброў!
+
+=== Rejected samples (10) ===
+  score=0.00 source=morphodict-bel reasons=[] text[:100]=абегчы а:PREF/бег:ROOT/чы:SUFF
+  score=0.00 source=ud_belarusian_hse reasons=[] text[:100]=Мы знаходзімся на Машэрава, 18
+  score=0.00 source=morphodict-bel reasons=[] text[:100]=абвешаць аб:PREF/веш:ROOT/а:SUFF/ць:SUFF
+  score=0.00 source=morphodict-bel reasons=[] text[:100]=абойшчык а:PREF/бой:ROOT/шчык:SUFF
+  score=0.00 source=morphodict-bel reasons=[] text[:100]=абкрышыць аб:PREF/крыш:ROOT/ы:SUFF/ць:SUFF
+  score=0.00 source=morphodict-bel reasons=[] text[:100]=абмываць аб:PREF/мы:ROOT/ва:SUFF/ць:SUFF
+  score=0.00 source=ud_belarusian_hse reasons=[] text[:100]=Рахунак Альфа-Банк BY24ALFA30142984390010270000
+  score=0.00 source=morphodict-bel reasons=[] text[:100]=абсевак аб:PREF/сев:ROOT/ак:SUFF
+  score=0.00 source=morphodict-bel reasons=[] text[:100]=абточны аб:PREF/точ:ROOT/н:SUFF/ы:END
+  score=0.35 source=morphodict-bel reasons=['be_letters'] text[:100]=аблізванне аб:PREF/ліз:ROOT/ва:SUFF/нн:SUFF/е:END
+
+=== Accepted samples (20) ===
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 54, "orthography": null, "license": "free/attribution"} text[:120]=‼️ Бабарыку не зарэгістравалі кандыдатам у прэзыдэнты.
+  {"source": "bewiki", "score": 0.95, "chars": 701, "orthography": "narkamauka", "license": "free/attribution_sharealike"} text[:120]=Травы пажоўклі. Падаюць лісці, Туліцца вецер шчыльней да зямлі. Шэпча ён кветкам: «Годзе вам цвісці!» Лесу ён кажа: «Спа
+  {"source": "bewiki", "score": 0.6, "chars": 291, "orthography": "narkamauka", "license": "free/attribution_sharealike"} text[:120]=* . * . ** . * . * // * // Урыўкі. * Бацькава воля // * З раману „Сокі цаліны“ // * Рыгор у Пецярбурзе // * На менскім б
+  {"source": "tatoeba_sentences", "score": 0.6, "chars": 134, "orthography": null, "license": "free/attribution"} text[:120]=Геаметрыя не спатрэбіцца вам у штодзённым жыцці, затое вам вельмі спатрэбяцца нейронныя сувязі, што ўтварыліся ў працэсе
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 119, "orthography": null, "license": "free/attribution"} text[:120]=Сёння, 4 снежня ў «Арт Сядзіба» пройдзе прэзентацыя рамана «Прытулак» пра хлопца, які ў пошуках лепшага з’ехаў за мяжу.
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 69, "orthography": null, "license": "free/attribution"} text[:120]=Асаблівая просьба падтрымаць суботу, бо па суботах у Зайдэса гулянкі.
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 113, "orthography": null, "license": "free/attribution"} text[:120]=Адзін з найбольш вядомых і рознабаковых дзеячаў культуры часоў Адраджэння ў Вялікім Княстве Літоўскім сяр. 16 ст.
+  {"source": "be_x_oldwiki", "score": 0.95, "chars": 5271, "orthography": "tarask", "license": "free/attribution_sharealike"} text[:120]={{Палітык |імя = Міхал Кахановіч |лацінка = Michał Kachanovič |выява = Michał Kachanovič. Міхал Кахановіч (1910-19).jpg 
+  {"source": "ud_belarusian_hse", "score": 0.95, "chars": 232, "orthography": null, "license": "free/attribution"} text[:120]=Асіметрычны шыфр — сістэма шыфравання ці электроннага лічбавага подпісу (ЭЛП), паводле якой адкрыты ключ перадаецца праз
+  {"source": "be_x_oldwiki", "score": 0.95, "chars": 1591, "orthography": "tarask", "license": "free/attribution_sharealike"} text[:120]={{Краіна |Назва = Кіпр |НазваЎРоднымСклоне = Кіпру |НазваНаДзяржаўнайМове = Κυπριακή Δημοκρατία Kypriakí Dimokratía Kıbr
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 81, "orthography": null, "license": "free/attribution"} text[:120]=Нас пахапалі, як кацянят, кінулі ў аўтобус, завезьлі ў міліцыю, склалі пратаколы.
+  {"source": "bewiki", "score": 0.95, "chars": 616, "orthography": "narkamauka", "license": "free/attribution_sharealike"} text[:120]=Год, таксама рок (aнахранізм) — прамежак часу, роўны, або прыблізна роўны, перыяду абарачэння Зямлі вакол Сонца. Складан
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 157, "orthography": null, "license": "free/attribution"} text[:120]=Лідар грамадзянскай кампаніі "Гавары праўду!" Уладзімір Някляеў лічыць, што Еўрапейскі саюз не праявіў належнай рашучасц
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 83, "orthography": null, "license": "free/attribution"} text[:120]=Генадзь Хазанаў пра Курапаты: Я б у такі рэстаран не пайшоў ні пры якіх абставінах!
+  {"source": "tatoeba_sentences", "score": 0.6, "chars": 38, "orthography": null, "license": "free/attribution"} text[:120]=Я падзякаваў ёй за шчырую гасціннасць.
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 62, "orthography": null, "license": "free/attribution"} text[:120]=Актывіст кажа, што ўсе траўмы атрымаў ад амапаўцаў у аўтобусе.
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 316, "orthography": null, "license": "free/attribution"} text[:120]=З пачаткам Першай сусветнай вайны прызваны ў армію, ў 1917 годзе дэмабілізаваўся ў Варонежы, дзе прыняў удзел у стварэнн
+  {"source": "tatoeba_sentences", "score": 0.6, "chars": 124, "orthography": null, "license": "free/attribution"} text[:120]=Хуткасны электрацягнік павышанай камфортнасці Мінск—Брэст адправіцца праз пяць хвілін з чацвёртага пуці ля трэцяй платфо
+  {"source": "ud_belarusian_hse", "score": 0.6, "chars": 75, "orthography": null, "license": "free/attribution"} text[:120]=Чатыры Жывыя Кнігі, якія распавядуць пра сябе і як мяняецца іх жыццё зараз.
+  {"source": "tatoeba_sentences", "score": 0.6, "chars": 59, "orthography": null, "license": "free/attribution"} text[:120]=Мне трэба працаваць, таму ідзі прэч і пакінь мяне ў спакоі.
+
+OK: all audit checks passed
