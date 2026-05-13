@@ -57,10 +57,24 @@ fi
 # Format: name|depth|n_embd|n_head|seq_len|dev_batch|grad_accum|iters|window
 # total_batch = seq_len * dev_batch * 1 (world_size) * grad_accum
 
-PROBES=(
+# Phase 1: baseline d12 seq ladder (small batches, find VRAM floor)
+D12_BASELINE=(
   "d12_s1024_b1_g4|12|768|12|1024|1|4|20|L"
   "d12_s1536_b1_g4|12|768|12|1536|1|4|20|L"
   "d12_s2048_b1_g4|12|768|12|2048|1|4|20|L"
+)
+# Phase 2: scale up batch on best seq_len to fill VRAM
+D12_BATCH_SCALE=(
+  "d12_s2048_b2_g4|12|768|12|2048|2|4|20|L"
+  "d12_s2048_b4_g4|12|768|12|2048|4|4|20|L"
+)
+# Phase 3: longer seq if batch scaling OOMs early
+D12_LONG_SEQ=(
+  "d12_s3072_b1_g4|12|768|12|3072|1|4|20|L"
+)
+# Optional: d16-lite diagnostic (not auto-run)
+D16_LITE_DIAG=(
+  "d16_lite_s1024_b1_g4|16|640|10|1024|1|4|20|L"
 )
 
 UPSCALE_TRIGGERED=0
@@ -180,52 +194,65 @@ print(json.dumps(row, ensure_ascii=False))
   return 0
 }
 
-# ---------- Run d12 probes ----------
-D12_OK_COUNT=0
-for probe in "${PROBES[@]}"; do
+# ---------- Phase 1: d12 baseline seq ladder ----------
+echo ""
+echo "=== PHASE 1: d12 baseline seq ladder ==="
+for probe in "${D12_BASELINE[@]}"; do
+  IFS='|' read -r name depth n_embd n_head seq_len dev_batch grad_accum iters window <<< "$probe"
+  run_probe "$name" "$depth" "$n_embd" "$n_head" "$seq_len" "$dev_batch" "$grad_accum" "$iters" "$window" || true
+done
+
+# ---------- Phase 2: d12 batch scale up ----------
+echo ""
+echo "=== PHASE 2: d12 batch scale up ==="
+D12_BATCH_OK=0
+for probe in "${D12_BATCH_SCALE[@]}"; do
   IFS='|' read -r name depth n_embd n_head seq_len dev_batch grad_accum iters window <<< "$probe"
   if run_probe "$name" "$depth" "$n_embd" "$n_head" "$seq_len" "$dev_batch" "$grad_accum" "$iters" "$window"; then
-    D12_OK_COUNT=$((D12_OK_COUNT + 1))
+    D12_BATCH_OK=$((D12_BATCH_OK + 1))
   else
-    echo "    Stopping d12 ladder at failed probe: $name"
+    echo "    Stopping batch scale at failed probe: $name"
     break
   fi
 done
 
-# ---------- d16 probes if d12 stable and VRAM < 6GB ----------
-if [[ $D12_OK_COUNT -ge 2 ]]; then
-  # Check peak from last OK d12 probe
-  LAST_VRAM=$(python3 -c "
+# ---------- Phase 3: longer seq if batch scaling didn't fill VRAM ----------
+echo ""
+echo "=== PHASE 3: d12 longer seq ==="
+LAST_PEAK=$(python3 -c "
 import json
-max_gb = 0
+max_gb = 0.0
 with open('$RESULTS_FILE') as f:
     for line in f:
         d = json.loads(line.strip())
         if d.get('status') == 'OK' and d.get('peak_vram_gb', 0) > max_gb:
             max_gb = d['peak_vram_gb']
 print(max_gb)
-")
-  VRAM_OK=$(python3 -c "print(1 if float($LAST_VRAM) < 6.0 else 0)")
+" 2>/dev/null || echo "3.5")
+VRAM_OK=$(python3 -c "print(1 if float($LAST_PEAK) < 6.8 else 0)" 2>/dev/null || echo "1")
 
-  if [[ "$VRAM_OK" == "1" ]]; then
-    echo ""
-    echo "=== d12 stable, VRAM<$LAST_VRAM < 6GB. Trying d16 ==="
+if [[ "$VRAM_OK" == "1" ]]; then
+  echo "d12 batch probes peak=$LAST_PEAK GB < 6.8GB; trying longer seq."
+  for probe in "${D12_LONG_SEQ[@]}"; do
+    IFS='|' read -r name depth n_embd n_head seq_len dev_batch grad_accum iters window <<< "$probe"
+    run_probe "$name" "$depth" "$n_embd" "$n_head" "$seq_len" "$dev_batch" "$grad_accum" "$iters" "$window" || true
+  done
+else
+  echo "d12 batch probes peak=$LAST_PEAK GB >= 6.8GB; longer seq skipped."
+fi
 
-    D16_PROBES=(
-      "d16_s1024_b1_g4|16|768|12|1024|1|4|20|L"
-      "d16_s1536_b1_g4|16|768|12|1536|1|4|20|L"
-    )
-    for probe in "${D16_PROBES[@]}"; do
-      IFS='|' read -r name depth n_embd n_head seq_len dev_batch grad_accum iters window <<< "$probe"
-      if run_probe "$name" "$depth" "$n_embd" "$n_head" "$seq_len" "$dev_batch" "$grad_accum" "$iters" "$window"; then
-        :
-      else
-        break
-      fi
-    done
-  else
-    echo "d12 peak VRAM ($LAST_VRAM GB) >= 6GB; skipping d16 probes."
-  fi
+# ---------- Optional: d16-lite diagnostic (auto only if user sets BELKA_TRY_D16_LITE=YES) ----------
+if [[ "${BELKA_TRY_D16_LITE:-}" == "YES" ]]; then
+  echo ""
+  echo "=== OPTIONAL: d16-lite diagnostic ==="
+  for probe in "${D16_LITE_DIAG[@]}"; do
+    IFS='|' read -r name depth n_embd n_head seq_len dev_batch grad_accum iters window <<< "$probe"
+    run_probe "$name" "$depth" "$n_embd" "$n_head" "$seq_len" "$dev_batch" "$grad_accum" "$iters" "$window" || true
+  done
+else
+  echo ""
+  echo "=== d16-lite diagnostic skipped (set BELKA_TRY_D16_LITE=YES to run) ==="
+  echo "    d16_lite: depth=16 n_embd=640 n_head=10 seq=1024"
 fi
 
 # ---------- Summary ----------
