@@ -1,0 +1,61 @@
+version: 7
+project: belka
+contract_name: no_agent_training_governor
+
+roles:
+  agent:
+    allowed:
+      - repo_audit
+      - data_readiness_check
+      - books_encoding_fix
+      - source_download_plan
+      - public_source_download_if_user_requested
+      - corpus_filtering
+      - vram_probe_plan
+      - owner_run_script_generation
+      - report_collection
+      - post_run_log_analysis
+    forbidden:
+      - start_base_training
+      - start_sft_training
+      - start_long_probe
+      - start_checkpoint_producing_run
+      - downgrade_model_profile_without_owner_approval
+      - modify_training_profile_to_make_run_shorter
+      - delete_or_overwrite_best_checkpoint
+      - commit_raw_dumps_or_books_or_checkpoints
+  owner:
+    allowed:
+      - execute_generated_owner_run_script
+      - approve_long_run
+      - stop_long_run
+      - provide_context_zip_to_chatgpt_pro
+
+training_launch_policy:
+  default: blocked_for_agents
+  owner_run_only: true
+  generated_scripts_dir: dist/owner_runs
+  required_owner_script_prefix: OWNER_RUN_
+  agent_must_not_execute_owner_script: true
+
+profile_policy:
+  no_downgrade_because_slow: true
+  downgrade_allowed_only_if:
+    - cuda_oom
+    - nan_or_inf_loss
+    - dtype_mismatch
+    - missing_checkpoint_after_save_interval
+    - explicit_owner_instruction
+  target_peak_vram_gb:
+    min: 6.0
+    max: 7.2
+  if_peak_vram_below_gb: 4.0
+  action_if_underused: increase_seq_len_micro_batch_or_model_profile
+
+required_artifacts_before_owner_run:
+  - reports/governor/latest_status.json
+  - reports/data_readiness_v2.json
+  - reports/books_clean_v2_manifest.jsonl
+  - reports/training_ladder_plan.json
+  - dist/owner_runs/OWNER_RUN_NEXT.sh
+  - dist/chatgpt_pro_context_latest.zip

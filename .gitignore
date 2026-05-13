@@ -11,3 +11,7 @@ dist/*.bundle
 dist/*.bundle
 dist/*.patch
 dist/*.diffstat.txt
+*.pyc
+*.zip
+dist/*.bundle
+dist/context/

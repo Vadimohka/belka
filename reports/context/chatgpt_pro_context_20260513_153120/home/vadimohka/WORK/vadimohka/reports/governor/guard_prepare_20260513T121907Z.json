@@ -1,0 +1,9 @@
+{
+  "mode": "agent",
+  "phase": "prepare-and-plan",
+  "command": "",
+  "looks_like_training": false,
+  "agent_training_blocked": false,
+  "decision": "ALLOW",
+  "reason": "Non-training or owner-script-generation mode"
+}

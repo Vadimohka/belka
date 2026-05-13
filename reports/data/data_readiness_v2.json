@@ -1,0 +1,718 @@
+{
+  "timestamp": "2026-05-13T12:19:12.781644+00:00",
+  "jsonl_files": [
+    {
+      "path": "data_input/be_texts/belacorpus_public/belacorpus_public.jsonl",
+      "rows": 0,
+      "chars": 0
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Neklyaev_Vezha_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 69928
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Chygryn_Paklikanyya-na-rodny-parog_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 173067
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Gordey_Bedna-basota_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 431028
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Shirko_Dzed-Manyukin-i-unuki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 286671
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Gilevich_God-dvuhtysyachny-Vybranyya-staronki-dzennika_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 36611
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Peseckiy_Pyaty-etap_1_Pyaty-etap_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 251670
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Chygryn_Belaruskaya-Belastochchyna_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 358281
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Gilevich_God-dzve-tysyachy-drugi-Vybranyya-staronki-z-dzyonnika_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 34083
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Fedarenka_Smuta_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 302914
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Chygryn_Teatr-u-Slonime_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 199941
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Pinska_Belaruska-eratychnaya-apovesc-_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 200800
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Fedarenka_Shcharbaty-taler_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 379702
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Charnyauski_Strala-Rasamahi_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 97908
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Hareuski_Zvyary-suaychynniki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 50231
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Yanovich_Pad-znakami-Arla-y-Pagoni_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 219919
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Yanovich_Bibliyatechka-Belaruskaga-litaraturnaga-ab-yadnannya-Belavezha_40_Ne-zhal-prazhytaga_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 340040
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Tarasov_Kryzh-pamyaci-mech-lyosu_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 205815
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Gamolka_Cytadel-neba-zhurnalnyy-variant-_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 363281
+    },
+    {
+      "path": "data_input/be_texts/books_clean/vadzim_uladymtsau.jsonl",
+      "rows": 1,
+      "chars": 24003
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Chygryn_Rodam-sa-Slonimshchyny_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 126019
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Hvaley_Pryncesa-z-tusouki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 423663
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Neklyaev_Vynahodcy-vyatrou_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 47012
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Chygryn_U-poshukah-slonimskih-skarbau_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 217163
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Charnyauski_Pravadyr-krylatyh-vershnikau_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 105885
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Hlus_Zdani-i-pachvary-Belarusi_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 152466
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Neklyaev_Proshcha_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 59962
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Fedarenka_Gistoryya-hvaroby_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 128984
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Akulin_Neprychaleny-choven_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 26841
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Chygryn_Chamyary-i-chamyaroucy_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 137628
+    },
+    {
+      "path": "data_input/be_texts/books_clean/Yuhnavec_Urachystasc-u-sadze-Dramatychnyya-nachyrki-_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 213384
+    },
+    {
+      "path": "data_input/be_texts/bootstrap/belarusian_seed_train.jsonl",
+      "rows": 960,
+      "chars": 751147
+    },
+    {
+      "path": "data_input/be_texts/bootstrap/belarusian_seed_val.jsonl",
+      "rows": 80,
+      "chars": 62571
+    },
+    {
+      "path": "data_input/be_texts/bootstrap/belarusian_bootstrap_val.jsonl",
+      "rows": 100,
+      "chars": 39240
+    },
+    {
+      "path": "data_input/be_texts/bootstrap/belarusian_bootstrap_train.jsonl",
+      "rows": 1200,
+      "chars": 470880
+    },
+    {
+      "path": "data_input/be_texts/huggingface/morphodict-bel.jsonl",
+      "rows": 1000,
+      "chars": 43127
+    },
+    {
+      "path": "data_input/be_texts/wikimedia/bewikisource.jsonl",
+      "rows": 2000,
+      "chars": 14700423
+    },
+    {
+      "path": "data_input/be_texts/wikimedia/be_x_oldwiki.jsonl",
+      "rows": 2000,
+      "chars": 8770699
+    },
+    {
+      "path": "data_input/be_texts/wikimedia/bewiki.jsonl",
+      "rows": 2000,
+      "chars": 6582096
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Neklyaev_Vezha_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 70140
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Chygryn_Paklikanyya-na-rodny-parog_RuLit_Me.jsonl",
+      "rows": 16,
+      "chars": 173402
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Gordey_Bedna-basota_RuLit_Me.jsonl",
+      "rows": 4,
+      "chars": 432161
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Shirko_Dzed-Manyukin-i-unuki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 288160
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Gilevich_God-dvuhtysyachny-Vybranyya-staronki-dzennika_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 36702
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Peseckiy_Pyaty-etap_1_Pyaty-etap_RuLit_Me.jsonl",
+      "rows": 9,
+      "chars": 253076
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Chygryn_Belaruskaya-Belastochchyna_RuLit_Me.jsonl",
+      "rows": 56,
+      "chars": 359028
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Gilevich_God-dzve-tysyachy-drugi-Vybranyya-staronki-z-dzyonnika_RuLit_Me.jsonl",
+      "rows": 7,
+      "chars": 34163
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Fedarenka_Smuta_RuLit_Me.jsonl",
+      "rows": 21,
+      "chars": 304452
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Chygryn_Teatr-u-Slonime_RuLit_Me.jsonl",
+      "rows": 16,
+      "chars": 200624
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Pinska_Belaruska-eratychnaya-apovesc-_RuLit_Me.jsonl",
+      "rows": 42,
+      "chars": 201199
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Fedarenka_Shcharbaty-taler_RuLit_Me.jsonl",
+      "rows": 72,
+      "chars": 382432
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Charnyauski_Strala-Rasamahi_RuLit_Me.jsonl",
+      "rows": 22,
+      "chars": 98335
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Hareuski_Zvyary-suaychynniki_RuLit_Me.jsonl",
+      "rows": 11,
+      "chars": 50312
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Yanovich_Pad-znakami-Arla-y-Pagoni_RuLit_Me.jsonl",
+      "rows": 42,
+      "chars": 220150
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Yanovich_Bibliyatechka-Belaruskaga-litaraturnaga-ab-yadnannya-Belavezha_40_Ne-zhal-prazhytaga_RuLit_Me.jsonl",
+      "rows": 42,
+      "chars": 340485
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Tarasov_Kryzh-pamyaci-mech-lyosu_RuLit_Me.jsonl",
+      "rows": 7,
+      "chars": 206905
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Gamolka_Cytadel-neba-zhurnalnyy-variant-_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 365708
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/vadzim_uladymtsau.jsonl",
+      "rows": 5,
+      "chars": 24053
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Chygryn_Rodam-sa-Slonimshchyny_RuLit_Me.jsonl",
+      "rows": 7,
+      "chars": 126276
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Hvaley_Pryncesa-z-tusouki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 425946
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Neklyaev_Vynahodcy-vyatrou_RuLit_Me.jsonl",
+      "rows": 7,
+      "chars": 46987
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Chygryn_U-poshukah-slonimskih-skarbau_RuLit_Me.jsonl",
+      "rows": 27,
+      "chars": 217793
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Charnyauski_Pravadyr-krylatyh-vershnikau_RuLit_Me.jsonl",
+      "rows": 9,
+      "chars": 106197
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Hlus_Zdani-i-pachvary-Belarusi_RuLit_Me.jsonl",
+      "rows": 13,
+      "chars": 152790
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Neklyaev_Proshcha_RuLit_Me.jsonl",
+      "rows": 10,
+      "chars": 59974
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Fedarenka_Gistoryya-hvaroby_RuLit_Me.jsonl",
+      "rows": 6,
+      "chars": 129583
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Akulin_Neprychaleny-choven_RuLit_Me.jsonl",
+      "rows": 5,
+      "chars": 26925
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Chygryn_Chamyary-i-chamyaroucy_RuLit_Me.jsonl",
+      "rows": 4,
+      "chars": 137995
+    },
+    {
+      "path": "data_input/be_texts/books_clean_v2/Yuhnavec_Urachystasc-u-sadze-Dramatychnyya-nachyrki-_RuLit_Me.jsonl",
+      "rows": 31,
+      "chars": 217975
+    },
+    {
+      "path": "data_input/be_texts/ud_belarusian_hse/ud_belarusian_hse_text.jsonl",
+      "rows": 22060,
+      "chars": 1803532
+    },
+    {
+      "path": "data_input/be_texts/tatoeba/tatoeba_belarusian_sentences.jsonl",
+      "rows": 11120,
+      "chars": 469240
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Neklyaev_Vezha_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 6460
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Chygryn_Paklikanyya-na-rodny-parog_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 13681
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Gordey_Bedna-basota_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 35110
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Shirko_Dzed-Manyukin-i-unuki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 28576
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Gilevich_God-dvuhtysyachny-Vybranyya-staronki-dzennika_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 4325
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Peseckiy_Pyaty-etap_1_Pyaty-etap_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 251670
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Chygryn_Belaruskaya-Belastochchyna_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 29682
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Gilevich_God-dzve-tysyachy-drugi-Vybranyya-staronki-z-dzyonnika_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 3560
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Fedarenka_Smuta_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 28759
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Chygryn_Teatr-u-Slonime_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 16368
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Pinska_Belaruska-eratychnaya-apovesc-_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 13593
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Fedarenka_Shcharbaty-taler_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 37181
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Charnyauski_Strala-Rasamahi_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 8094
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Hareuski_Zvyary-suaychynniki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 4522
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Yanovich_Pad-znakami-Arla-y-Pagoni_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 13135
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Yanovich_Bibliyatechka-Belaruskaga-litaraturnaga-ab-yadnannya-Belavezha_40_Ne-zhal-prazhytaga_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 34262
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Tarasov_Kryzh-pamyaci-mech-lyosu_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 22758
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Gamolka_Cytadel-neba-zhurnalnyy-variant-_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 30877
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Chygryn_Rodam-sa-Slonimshchyny_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 9798
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Hvaley_Pryncesa-z-tusouki_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 40669
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Neklyaev_Vynahodcy-vyatrou_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 5417
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Chygryn_U-poshukah-slonimskih-skarbau_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 18165
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Charnyauski_Pravadyr-krylatyh-vershnikau_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 8184
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Hlus_Zdani-i-pachvary-Belarusi_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 9611
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Neklyaev_Proshcha_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 7713
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Fedarenka_Gistoryya-hvaroby_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 11982
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Akulin_Neprychaleny-choven_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 2989
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Chygryn_Chamyary-i-chamyaroucy_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 11160
+    },
+    {
+      "path": "data_input/be_texts/books_jsonl/Yuhnavec_Urachystasc-u-sadze-Dramatychnyya-nachyrki-_RuLit_Me.jsonl",
+      "rows": 1,
+      "chars": 20565
+    },
+    {
+      "path": "data_input/be_texts/ready_seed/belarusian_seed_train.jsonl",
+      "rows": 960,
+      "chars": 751147
+    },
+    {
+      "path": "data_input/be_texts/ready_seed/belarusian_seed_val.jsonl",
+      "rows": 80,
+      "chars": 62571
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_seed_train.jsonl",
+      "rows": 960,
+      "chars": 751147
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_seed_val.jsonl",
+      "rows": 80,
+      "chars": 62571
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_bootstrap_val.jsonl",
+      "rows": 100,
+      "chars": 39240
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_bootstrap_train.jsonl",
+      "rows": 1200,
+      "chars": 470880
+    },
+    {
+      "path": "seed_sft/identity_conversations_val.be.extra.jsonl",
+      "rows": 45,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/language_lock_refusal_v2.be.jsonl",
+      "rows": 150,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/identity_conversations.be.extra.jsonl",
+      "rows": 120,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/sft_v5_balanced_val.be.jsonl",
+      "rows": 190,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/sft_v5_balanced_train.be.jsonl",
+      "rows": 1140,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/identity_conversations_v3_diverse_val.be.jsonl",
+      "rows": 100,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft_val.be.jsonl",
+      "rows": 8,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/sft_v6_governed_balanced_val.be.jsonl",
+      "rows": 260,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/unknown_fact_refusal_v2.be.jsonl",
+      "rows": 100,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft_val.be.extra.jsonl",
+      "rows": 16,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft.be.extra.jsonl",
+      "rows": 70,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/identity_conversations_val.be.jsonl",
+      "rows": 6,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/identity_conversations.be.jsonl",
+      "rows": 33,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/sft_v3_val.be.jsonl",
+      "rows": 100,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/identity_conversations_v2.be.jsonl",
+      "rows": 150,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/sft_v3_train.be.jsonl",
+      "rows": 600,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/identity_conversations_v2_val.be.jsonl",
+      "rows": 30,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft.be.jsonl",
+      "rows": 39,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/general_belarusian_sft_v2.be.jsonl",
+      "rows": 150,
+      "chars": 0
+    },
+    {
+      "path": "seed_sft/sft_v6_governed_balanced_train.be.jsonl",
+      "rows": 1560,
+      "chars": 0
+    },
+    {
+      "path": "eval/language_lock_eval_v3.be.jsonl",
+      "rows": 100,
+      "chars": 0
+    },
+    {
+      "path": "eval/hallucination_refusal_eval.be.jsonl",
+      "rows": 5,
+      "chars": 0
+    },
+    {
+      "path": "eval/sft_v5_balanced_eval.be.jsonl",
+      "rows": 380,
+      "chars": 0
+    },
+    {
+      "path": "eval/belarusian_language_lock_eval.extra.jsonl",
+      "rows": 6,
+      "chars": 0
+    },
+    {
+      "path": "eval/meetmesh_domain_eval.be.jsonl",
+      "rows": 8,
+      "chars": 0
+    },
+    {
+      "path": "eval/belka_eval_suite_v2.be.jsonl",
+      "rows": 8,
+      "chars": 0
+    },
+    {
+      "path": "eval/language_lock_contrastive.be.jsonl",
+      "rows": 10,
+      "chars": 0
+    },
+    {
+      "path": "eval/sft_v6_governed_balanced_eval.be.jsonl",
+      "rows": 390,
+      "chars": 0
+    },
+    {
+      "path": "eval/belarusian_language_lock_eval.jsonl",
+      "rows": 8,
+      "chars": 0
+    }
+  ],
+  "downloads": [
+    {
+      "path": "data_input/downloads/nanochat.zip",
+      "bytes": 497028
+    },
+    {
+      "path": "data_input/downloads/belacorpus_public/main.zip",
+      "bytes": 27605
+    },
+    {
+      "path": "data_input/downloads/wikimedia/bewiki-latest-pages-articles-multistream.xml.bz2",
+      "bytes": 339368909
+    },
+    {
+      "path": "data_input/downloads/wikimedia/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2",
+      "bytes": 132608088
+    },
+    {
+      "path": "data_input/downloads/wikimedia/bewikisource-latest-pages-articles-multistream.xml.bz2",
+      "bytes": 63376082
+    },
+    {
+      "path": "data_input/downloads/ud_belarusian_hse/master.zip",
+      "bytes": 5186443
+    },
+    {
+      "path": "data_input/downloads/tatoeba/sentences.tar.bz2",
+      "bytes": 215683812
+    }
+  ],
+  "summary": {
+    "jsonl_files": 135,
+    "jsonl_rows": 52237,
+    "jsonl_chars": 47914205,
+    "download_files": 7,
+    "download_bytes": 756747967
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,160 @@
+F.......                                                                 [100%]
+=================================== FAILURES ===================================
+________________________ test_seed_sft_jsonl_validates _________________________
+
+    def test_seed_sft_jsonl_validates():
+        files = sorted((PACK / "seed_sft").glob("*.jsonl"))
+        assert files
+        proc = subprocess.run([sys.executable, str(PACK / "tools" / "validate_sft_jsonl.py"), *map(str, files)], text=True, capture_output=True)
+>       assert proc.returncode == 0, proc.stdout + proc.stderr
+E       AssertionError: ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:19: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:20: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:30: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:40: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:50: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:60: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:70: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:80: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:90: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:100: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:110: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:120: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:130: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:140: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl:150: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2_val.be.jsonl:10: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2_val.be.jsonl:20: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2_val.be.jsonl:30: message 2 role=assistant low Belarusian score=0.7, reasons=['mostly_cyrillic', 'no_bel_specific_letters'], text='Добры дзень! Я Belka. Рада вас бачыць. Чым магу быць карыснай?'
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:3: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:4: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:18: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:26: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:34: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:42: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:50: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:58: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:66: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:74: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:82: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:90: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:98: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:106: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:114: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:122: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:130: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:138: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         ERROR /home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl:146: message 2 role=assistant low Belarusian score=-7.5, reasons=['low_cyrillic_ratio', 'latin_ratio_high', 'latin_dominant', 'bel_specific_letters=1', 'english_hints=2'], text="Прывітанне. My name is Belka, and I speak Belarusian. I'd be happy to answer your questions in Belar"
+E         [
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/general_belarusian_sft_v2.be.jsonl",
+E             "rows": 150,
+E             "messages": 300,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations.be.extra.jsonl",
+E             "rows": 120,
+E             "messages": 240,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations.be.jsonl",
+E             "rows": 33,
+E             "messages": 66,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2.be.jsonl",
+E             "rows": 150,
+E             "messages": 300,
+E             "errors": 15,
+E             "warnings": 0,
+E             "assistant_language_failures": 15
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_v2_val.be.jsonl",
+E             "rows": 30,
+E             "messages": 60,
+E             "errors": 3,
+E             "warnings": 0,
+E             "assistant_language_failures": 3
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_val.be.extra.jsonl",
+E             "rows": 45,
+E             "messages": 90,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/identity_conversations_val.be.jsonl",
+E             "rows": 6,
+E             "messages": 12,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/language_lock_refusal_v2.be.jsonl",
+E             "rows": 150,
+E             "messages": 300,
+E             "errors": 19,
+E             "warnings": 0,
+E             "assistant_language_failures": 19
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/meetmesh_domain_sft.be.extra.jsonl",
+E             "rows": 70,
+E             "messages": 140,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/meetmesh_domain_sft.be.jsonl",
+E             "rows": 39,
+E             "messages": 78,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/meetmesh_domain_sft_val.be.extra.jsonl",
+E             "rows": 16,
+E             "messages": 32,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/meetmesh_domain_sft_val.be.jsonl",
+E             "rows": 8,
+E             "messages": 16,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           },
+E           {
+E             "path": "/home/vadimohka/WORK/vadimohka/seed_sft/unknown_fact_refusal_v2.be.jsonl",
+E             "rows": 100,
+E             "messages": 200,
+E             "errors": 0,
+E             "warnings": 0,
+E             "assistant_language_failures": 0
+E           }
+E         ]
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/home/vadimohka/WORK/vadimohka/.workspace/nanochat/.venv/bin/python', '/home/vadimohka/WORK/va...    "messages": 200,\n    "errors": 0,\n    "warnings": 0,\n    "assistant_language_failures": 0\n  }\n]\n', stderr='').returncode
+
+tests/test_jsonl_schema.py:12: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_jsonl_schema.py::test_seed_sft_jsonl_validates - AssertionE...
+1 failed, 7 passed in 0.18s

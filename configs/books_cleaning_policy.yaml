@@ -1,0 +1,22 @@
+version: 1
+input_dirs:
+  - books
+  - data_input/be_texts/books
+output_dir: data_input/be_texts/books_clean_v2
+manifest: reports/books_clean_v2_manifest.jsonl
+policy:
+  use_raw_books_directly: false
+  default_rights_status: manual_review_required
+  default_public_release_allowed: false
+  default_included_in_public_training: false
+  allowed_encodings_to_try:
+    - utf-8-sig
+    - utf-8
+    - cp1251
+    - windows-1251
+    - iso-8859-5
+    - cp866
+  reject_if_replacement_char_ratio_gt: 0.002
+  reject_if_belarusian_score_lt: 0.35
+  split_min_chars: 500
+  split_max_chars: 6000

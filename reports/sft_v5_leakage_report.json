@@ -1,0 +1,13 @@
+{
+  "train_examples": 1140,
+  "val_examples": 570,
+  "train_unique_texts": 1160,
+  "val_unique_texts": 488,
+  "exact_text_overlap": 463,
+  "exact_overlap_ratio": 0.9488,
+  "ngram_5_overlap": 1450,
+  "ngram_5_ratio": 0.9904,
+  "leakage_detected": true,
+  "val_size_adequate": true,
+  "SFT_LEAKAGE_AUDIT": "FAIL"
+}

@@ -1,0 +1,43 @@
+version: 1
+objective: "Use RTX 3070 Ti 8GB efficiently without silent downgrades."
+notes:
+  - "Gradient accumulation changes global batch but usually does not fill VRAM."
+  - "Increase micro_batch, sequence length, or model size to use VRAM."
+  - "Downgrade requires OOM/crash evidence, not impatience."
+profiles:
+  belka_d8_40m_fast_base_v2:
+    n_layer: 8
+    n_embd: 512
+    n_head: 8
+    seq_len_candidates: [1024, 1536, 2048]
+    device_batch_candidates: [2, 4, 8, 12, 16, 24]
+    grad_accum_candidates: [2, 4, 8]
+    target_peak_vram_gb: [4.0, 6.5]
+    purpose: "first efficient local base-v2"
+  belka_d12_80m_probe:
+    n_layer: 12
+    n_embd: 768
+    n_head: 12
+    seq_len_candidates: [768, 1024, 1280, 1536]
+    device_batch_candidates: [1, 2, 4, 6, 8]
+    grad_accum_candidates: [4, 8, 16]
+    target_peak_vram_gb: [5.0, 7.2]
+    purpose: "VRAM probe; may be viable on 8GB"
+  belka_d12_80m_base_v2:
+    n_layer: 12
+    n_embd: 768
+    n_head: 12
+    seq_len: 1024
+    device_batch_size: 2
+    grad_accum: 8
+    target_peak_vram_gb: [6.0, 7.2]
+    purpose: "use only after probe PASS"
+  belka_d16_150m_cloud_only:
+    n_layer: 16
+    n_embd: 768
+    n_head: 12
+    seq_len: 2048
+    device_batch_size: 2
+    grad_accum: 16
+    target: "A10G/24GB or better"
+    local_8gb_policy: "do_not_run_without_user_approval"
