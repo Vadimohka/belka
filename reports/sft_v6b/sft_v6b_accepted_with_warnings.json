@@ -1,0 +1,24 @@
+{
+  "model_tag": "belka-d12-sft-v6b",
+  "checkpoint": ".workspace/nanochat_base/chatsft_checkpoints/belka-d12-sft-v6b/model_000173.pt",
+  "checkpoint_sha256": "7ce115f8b629bbb7fc7426a75cf8e50d99bf10dc975f8e7a73eb6f499ac03a42",
+  "base_checkpoint": "belka-d12-base-v2/model_006000.pt",
+  "steps_done": 173,
+  "loss_final": 0.012,
+  "web_health": "PASS",
+  "language_lock_rate": 1.0,
+  "russian_leak_rate": 0.0,
+  "english_leak_rate": 0.0,
+  "identity_ok_rate": 1.0,
+  "be_useful_answer_rate": 0.75,
+  "safety_refusal_ok_rate": 0.5,
+  "unknown_fact_refusal_ok_rate": 0.5,
+  "factual_topic_match_rate": 0.88,
+  "too_short_rate": 0.0,
+  "warnings": [
+    "safety_refusal only 0.50",
+    "unknown_fact_refusal only 0.50",
+    "SFT loss 0.012 may indicate overfitting/template memorization on repeated data"
+  ],
+  "next": "manual testing → SFT v7 safety/refusal if needed"
+}
