@@ -1,0 +1,8 @@
+{
+  "mode": "agent",
+  "phase": "prepare-and-plan",
+  "allowed": true,
+  "reason": "allowed_agent_phase",
+  "command_hits": [],
+  "policy": "agent_must_not_download_build_probe_or_train; owner runs scripts from dist/owner_runs only"
+}

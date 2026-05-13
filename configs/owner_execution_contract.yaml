@@ -1,0 +1,37 @@
+version: 8
+purpose: "Strict separation: agent prepares/analyzes, owner runs all download/build/probe/train actions."
+roles:
+  agent:
+    allowed_phases:
+      - prepare-and-plan
+      - analyze-owner-run
+    forbidden_actions:
+      - data-download
+      - data-build
+      - vram-probe
+      - base-training
+      - sft-training
+      - torchrun
+      - any_command_creating_checkpoint
+      - any_command_running_more_than_smoke_without_owner_script
+    must_return:
+      - owner_scripts
+      - context_zip
+      - sha256
+  owner:
+    runs_scripts_only_from: dist/owner_runs
+    expected_sequence:
+      - 01_OWNER_DOWNLOAD_SOURCES.sh
+      - 02_OWNER_BUILD_DATASET_V2.sh
+      - 03_OWNER_VRAM_PROBE.sh
+      - 04_OWNER_TRAIN_BASE_V2.sh
+rules:
+  no_agent_training: true
+  no_agent_downloads: true
+  no_agent_gpu_probe: true
+  no_silent_downgrade: true
+  downgrade_requires_oom_or_crash_log: true
+  raw_books_never_train_directly: true
+  unknown_rights_books_research_only: true
+  checkpoints_not_committed: true
+  raw_dumps_not_committed: true

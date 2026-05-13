@@ -1,9 +1,14 @@
 {
   "agent_prepare_done": true,
   "training_started_by_agent": false,
-  "timestamp_utc": "20260513T121907Z",
-  "owner_run_script": "dist/owner_runs/OWNER_RUN_NEXT.sh",
-  "owner_run_sha256": "625388ca85cf0f4513736611e3407deeee8bfb374f054e57c9f92c345e6a8087",
-  "chatgpt_pro_context_zip": "dist/chatgpt_pro_context_20260513T121907Z.zip",
-  "chatgpt_pro_context_sha256": "e3fcf69a8a7c4aef8c4365e8f2b3abd0c25660e323b5d42acfba80c0de4ddf32"
+  "timestamp_utc": "20260513T123829Z",
+  "owner_scripts_dir": "dist/owner_runs",
+  "next_for_user": [
+    "bash dist/owner_runs/01_OWNER_DOWNLOAD_SOURCES.sh",
+    "bash dist/owner_runs/02_OWNER_BUILD_DATASET_V2.sh",
+    "bash dist/owner_runs/03_OWNER_VRAM_PROBE.sh",
+    "BELKA_OWNER_APPROVED_TRAINING=YES bash dist/owner_runs/04_OWNER_TRAIN_BASE_V2.sh"
+  ],
+  "chatgpt_pro_context_zip": "dist/chatgpt_pro_context_latest.zip",
+  "chatgpt_pro_context_sha256": "4ffbb3fccf1998a6b8d7ddfa45350550a9f8b31a97d755f84a497a744e648d6f"
 }
