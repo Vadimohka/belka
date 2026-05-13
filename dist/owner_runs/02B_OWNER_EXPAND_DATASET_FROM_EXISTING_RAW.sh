@@ -148,7 +148,12 @@ done
 echo ""
 echo "RAW_WIKIMEDIA_DUMPS_PROCESSED=$RAW_PROCESSED"
 echo "RAW_WIKIMEDIA_DUMPS_FAILED=$RAW_FAILED"
-[[ ${#FAILED_SOURCES[@]} -gt 0 ]] && echo "FAILED_SOURCES=${FAILED_SOURCES[*]}"
+if [[ ${#FAILED_SOURCES[@]} -gt 0 ]]; then
+  export FAILED_SOURCES_TEXT="${FAILED_SOURCES[*]}"
+  echo "FAILED_SOURCES_TEXT=$FAILED_SOURCES_TEXT"
+else
+  export FAILED_SOURCES_TEXT=""
+fi
 
 # ---------- Step 3: Size audit after extraction ----------
 echo ""
@@ -245,7 +250,7 @@ md = f'''# Dataset After Expand From Raw Wikimedia
 - RAW_WIKIMEDIA_DUMPS_SEEN=$RAW_SEEN
 - RAW_WIKIMEDIA_DUMPS_PROCESSED=$RAW_PROCESSED
 - RAW_WIKIMEDIA_DUMPS_FAILED=$RAW_FAILED
-- FAILED_SOURCES=$FAILED_SOURCES
+- FAILED_SOURCES=''' + os.environ.get('FAILED_SOURCES_TEXT', '') + f'''
 
 ## Totals
 - TOTAL_ROWS_AFTER={audit[\"total_rows\"]}
