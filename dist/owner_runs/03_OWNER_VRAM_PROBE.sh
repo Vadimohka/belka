@@ -111,21 +111,21 @@ run_probe() {
   cd "$PACK_DIR"
 
   # Parse results
-  local status="OK" oom="false" assertion_error="false" nan="false"
-  local dtype_error="false" checkpoint_saved="false"
+  local status="OK" oom="False" assertion_error="False" nan="False"
+  local dtype_error="False" checkpoint_saved="False"
   local peak_vram_gb=0 tokens_per_sec=0
 
   local probe_out
   probe_out=$(cat "$probe_log" 2>/dev/null || true)
 
   if echo "$probe_out" | grep -q "CUDA out of memory"; then
-    status="FAIL_OOM"; oom="true"
+    status="FAIL_OOM"; oom="True"
   elif echo "$probe_out" | grep -q "AssertionError"; then
-    status="FAIL_ASSERTION"; assertion_error="true"
-  elif echo "$probe_out" | grep -q "NaN\|nan"; then
-    status="FAIL_NAN"; nan="true"
-  elif echo "$probe_out" | grep -q "dtype"; then
-    status="FAIL_DTYPE"; dtype_error="true"
+    status="FAIL_ASSERTION"; assertion_error="True"
+  elif echo "$probe_out" | grep -qP "loss:\s+nan" 2>/dev/null || echo "$probe_out" | grep -q "val_bpb: nan"; then
+    status="FAIL_NAN"; nan="True"
+  elif echo "$probe_out" | grep -q "Expected query.*dtype\|dtype mismatch"; then
+    status="FAIL_DTYPE"; dtype_error="True"
   elif [[ $rc -eq 124 ]]; then
     status="TIMEOUT"
   elif [[ $rc -ne 0 ]]; then
@@ -150,7 +150,7 @@ run_probe() {
   tokens_per_sec=${tok_str:-0}
 
   if echo "$probe_out" | grep -q "Saved model parameters"; then
-    checkpoint_saved="true"
+    checkpoint_saved="True"
   fi
 
   echo "    RESULT: status=$status peak_vram_gb=$peak_vram_gb tok/sec=$tokens_per_sec"
