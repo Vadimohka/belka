@@ -2,6 +2,7 @@
 set -euo pipefail
 PACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$PACK_DIR"
+source "$PACK_DIR/local/pack_paths.sh"
 MODEL_TAG="belka-d12-sft-v7"
 BASE_CHECKPOINT="$PACK_DIR/.workspace/nanochat_base/base_checkpoints/belka-d12-base-v2/model_006000.pt"
 SFT_TRAIN="$PACK_DIR/seed_sft/sft_v7_train.be.jsonl"
@@ -38,7 +39,7 @@ SEQ_LEN=2048
 DEVICE_BATCH=1
 TOTAL_BATCH=2048
 GRAD_ACCUM=1
-WINDOW_PATTERN=L
+WINDOW_PATTERN=N/A (SFT)
 TARGET_STEPS=120
 MIN_ACCEPTABLE_STEPS=80
 LOG=$LOG
