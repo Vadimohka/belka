@@ -73,6 +73,10 @@ UK_MARKERS = {'є','ї','ґ','дуже','якщо','після','країна','
 
 
 SOURCE_ALIASES = {
+    'bewikisource_full': 'bewikisource_full',
+    'bewikibooks_full': 'bewikibooks_full',
+    'bewikiquote_full': 'bewikiquote',
+    'bewiktionary_full': 'bewiktionary',
     'tatoeba': 'tatoeba_sentences',
     'belarusianglue': 'belarusianglue',
     'morphodict': 'morphodict-bel',
@@ -95,8 +99,8 @@ def detect_source(filepath: str) -> str:
     for alias, src in SOURCE_ALIASES.items():
         if alias in p:
             return src
-    # Check exact source keys
-    for src in SOURCE_THRESHOLDS:
+    # Check exact source keys (longer/specific keys first to avoid substring false match)
+    for src in sorted(SOURCE_THRESHOLDS, key=lambda s: -len(s)):
         if src in p:
             return src
     return "unknown"
