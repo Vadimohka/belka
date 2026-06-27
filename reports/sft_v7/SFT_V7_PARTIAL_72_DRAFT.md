@@ -1,0 +1,5 @@
+# SFT v7 — PARTIAL 72-example DRAFT
+SFT_V7_DATA_QUALITY=FAIL_INSUFFICIENT_COUNT
+SFT_V7_TRAINING_ALLOWED=NO
+SFT_V7_TRAIN_EXAMPLES=72
+Status: reclassified as draft. Fact bank created instead.

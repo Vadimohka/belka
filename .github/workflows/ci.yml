@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements_pack.txt
+
+      - name: Tests
+        run: PYTHONPATH="$PWD" pytest -q tests
+
+      - name: Data-rights audit
+        run: python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
+
+      - name: Public-release validation
+        run: python tools/validate_public_release.py
+
+      - name: Train/eval decontamination (dry-run)
+        run: python tools/check_train_eval_decontamination.py --dry-run

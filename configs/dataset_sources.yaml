@@ -1,4 +1,4 @@
-schema_version: '2026-05-12'
+schema_version: '2026-06-27'
 policy:
   project: Belka Belarusian LM from scratch
   large_downloads_require_explicit_approval: true
@@ -6,6 +6,24 @@ policy:
   raw_dumps_not_committed: true
   all_paths_repo_contained: true
   pretrained_models_only_eval_baselines: true
+  # Permissions model: original source license and project-specific owner permission are
+  # tracked SEPARATELY. A permission overlay is not a relicensing and never asserts
+  # public-domain or unrestricted-redistribution status. See DATA_RIGHTS_AND_PERMISSIONS.md
+  # and reports/DATA_RIGHTS_MANIFEST.json.
+  permissions_model:
+    tracks_separately:
+      - original_license
+      - permission_status
+      - permission_scope
+      - redistribution_status
+    permission_basis_values: [public_license, owner_research_permission]
+    permission_evidence_private: true   # underlying permissions retained by owner; confirmable at review
+    raw_permissioned_data_redistributed: false
+    commercial_use_of_permissioned_material: false
+# Per-source fields below may include the permission overlay:
+#   original_license, permission_status, permission_basis, permission_scope{...},
+#   permission_evidence{...}, redistribution_status, review_status.
+# Sources without an overlay rely on their public license (permission_status: not_required).
 sources:
 - id: bewiki
   name: Belarusian Wikipedia
@@ -44,6 +62,23 @@ sources:
   suitable_for: pretraining literary/prose after strict filter
   preprocessing_notes: remove headers/templates/OCR; min_score>=0.55; min_chars>=400
   risks: copyright status, OCR noise, multilingual pages
+  original_license: Wikimedia work-level; some works require manual review
+  permission_status: explicit_permission_obtained   # applies to the bewikisource_full extraction
+  permission_basis: owner_research_permission
+  permission_scope:
+    research_use: true
+    ml_training: true
+    evaluation: true
+    model_release: derived_weights_only
+    processed_data_release: by_request_with_documented_scope
+    raw_data_redistribution: false
+    commercial_use: false
+  permission_evidence:
+    private_record_available: true
+    public_summary: Owner-obtained research permission; confirmable at review; not published in repo
+  attribution_required: true
+  review_status: permission_documented_by_owner
+  notes: Wikimedia attribution/share-alike obligations of underlying works still apply; permission overlay covers research/model-development use, not raw redistribution.
 - id: bewiktionary
   name: Belarusian Wiktionary
   url: https://dumps.wikimedia.org/bewiktionary/latest/
@@ -392,3 +427,35 @@ sources:
   suitable_for: smoke/sanity, SFT seed
   preprocessing_notes: cap and mark synthetic
   risks: repetition, insufficient quality
+- id: books_clean_v2
+  name: Belarusian literary prose (cleaned), incl. RuLit-style sources
+  url: local data_input/be_texts/books_clean_v2/ (aggregated from RuLit-style sources)
+  type: literary_prose
+  language: Belarusian
+  # ORIGINAL status is preserved for provenance: these are copyrighted literary works.
+  license: copyright, all rights reserved (per respective authors/publishers)
+  original_license: copyright_all_rights_reserved
+  access_method: repo (raw not redistributed)
+  priority: high_quality_prose
+  status: included_under_owner_permission
+  suitable_for: pretraining literary/prose (permissioned research use)
+  preprocessing_notes: encoding repair, Belarusian filter (score>=0.35), 500-6000 char splits; see configs/books_cleaning_policy.yaml
+  risks: copyright provenance — mitigated by explicit owner permission for research/model-development use; raw redistribution NOT granted
+  # PERMISSION OVERLAY (does not relicense the source):
+  permission_status: explicit_permission_obtained
+  permission_basis: owner_research_permission
+  permission_scope:
+    research_use: true
+    ml_training: true
+    evaluation: true
+    model_release: derived_weights_only
+    processed_data_release: by_request_with_documented_scope
+    raw_data_redistribution: false
+    commercial_use: false
+  permission_evidence:
+    private_record_available: true
+    public_summary: Written permission for research/model-development use retained privately by owner; confirmable at review; not published in repo
+  attribution_required: true
+  redistribution_status: not_redistributed_raw
+  review_status: permission_documented_by_owner
+  notes: Permissioned research corpus material. Included in Belka research corpus (v3b, BOOKS_CLEAN_V2_ROWS=485) under project-specific permission. Original copyright status unchanged and still recorded. Raw redistribution status documented separately and is not granted. See DATA_RIGHTS_AND_PERMISSIONS.md.

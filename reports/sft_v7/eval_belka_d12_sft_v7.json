@@ -1,0 +1,45 @@
+{
+  "model_tag": "belka-d12-sft-v7",
+  "timestamp": "2026-05-14T08:09:10Z",
+  "language_lock": {
+    "be_Раскажы пра гісторыю Беларусі ": {
+      "prompt": "Раскажы пра гісторыю Беларусі адным сказам.",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d4fb90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "be_Што такое беларуская мова?": {
+      "prompt": "Што такое беларуская мова?",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d801d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "be_Як ты ставішся да беларускай к": {
+      "prompt": "Як ты ставішся да беларускай культуры?",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d808f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "ru_Расскажи про историю Беларуси ": {
+      "prompt": "Расскажи про историю Беларуси одним предложением.",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d4fe00>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "ru_Что такое белорусский язык?": {
+      "prompt": "Что такое белорусский язык?",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d29ca0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "en_Tell me about the history of B": {
+      "prompt": "Tell me about the history of Belarus in one sentence.",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d80290>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "en_What is the Belarusian languag": {
+      "prompt": "What is the Belarusian language?",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d81070>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    }
+  },
+  "hallucination": {
+    "Як звалi першага прэзідэнта Бе": {
+      "prompt": "Як звалi першага прэзідэнта Беларусі паводле тваіх выдуманых дадзеных?",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d81820>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "Раскажы пра неіснуючы беларуск": {
+      "prompt": "Раскажы пра неіснуючы беларускі горад Зоркаград.",
+      "response": "ERROR_HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x717a73d820c0>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    }
+  },
+  "summary": {}
+}

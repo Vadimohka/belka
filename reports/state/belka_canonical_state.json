@@ -1,0 +1,74 @@
+{
+  "project": "Belka Belarusian LLM from scratch",
+  "current_allowed_action": "QC_AND_CORPUS_EXPANSION_ONLY",
+  "generated": "2026-05-18",
+  "training_gates": {
+    "TRAINING_ALLOWED": "NO",
+    "SFT_ALLOWED": "NO"
+  },
+  "model_status": {
+    "D12_STATUS": "REVOKED_TOKENIZER_MISMATCH",
+    "D8_OLD_PILOT_STATUS": "BASELINE",
+    "D8_OLD_PILOT_CHECKPOINT_SHA256": "b37fae9a87738a03192d0d76c86955e66f9f3d32c1ea44b9d03f642cd19b2ab4",
+    "D8_LONG_STATUS": "REJECTED_OVERTRAINING",
+    "D8_LONG_REASON": "multi-epoch degradation at 1.5B tokens",
+    "D8_V3B_PILOT_STATUS": "PARTIAL_NOT_CLEAR_WIN",
+    "D8_V3B_PILOT_PROVENANCE": "PROVENANCE_INCOMPLETE",
+    "TOKENIZER_SHA256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac"
+  },
+  "corpus": {
+    "CORPUS_V3B_STATUS": "ACCEPTED",
+    "V3B_TRAIN_ROWS": 302991,
+    "V3B_TRAIN_CHARS": 594660215,
+    "V3B_EST_TOKENS": 59376843,
+    "BOOKS_CLEAN_V2_ROWS": 485,
+    "BEWIKISOURCE_ROWS_FINAL": 3493,
+    "BEWIKIBOOKS_ROWS_FINAL": 177,
+    "UNKNOWN_SOURCE_ROWS": 0,
+    "MAX_SOURCE_SHARE_PCT": 67.5
+  },
+  "holdout": {
+    "STRICT_HOLDOUT_V2_STATUS": "PASS",
+    "STRICT_PROMPTS": 209,
+    "REGRESSION_PROMPTS": 170,
+    "SFT_EXACT_OVERLAP": 0,
+    "REGRESSION_EXACT_OVERLAP": 0,
+    "FIVEGRAM_RATIO": 0.0,
+    "FIVEGRAM_STATUS": "PASS"
+  },
+  "quality_control": {
+    "QC_WORKBOOK_STATUS": "PASS_REPRODUCIBLE",
+    "XLSX_PATH": "reports/eval/BELKA_QUALITY_CONTROL.xlsx",
+    "XLSX_SIZE_BYTES": 35159,
+    "SCRIPT_39_EXISTS": true,
+    "SCRIPT_40_EXISTS": true,
+    "SCRIPT_41_EXISTS": true,
+    "SCRIPT_43_EXISTS": true
+  },
+  "provenance": {
+    "PROVENANCE_STATUS": "PASS_WITH_SCRIPT_CONFIG_EVIDENCE",
+    "NATIVE_TRAINING_LOG_PROVENANCE": "FAIL",
+    "PROVENANCE_RISK": "MEDIUM"
+  },
+  "next_allowed_actions": [
+    "repo integrity cleanup",
+    "recreate missing QC scripts",
+    "rebuild/audit XLSX reproducibly",
+    "corpus expansion planning"
+  ],
+  "blocked_actions": [
+    "training",
+    "SFT",
+    "tokenizer rebuild",
+    "checkpoint modification",
+    "new dataset downloads"
+  ],
+  "missing_artifacts": [],
+  "known_good_checkpoint_sha256": [
+    "b37fae9a87738a03192d0d76c86955e66f9f3d32c1ea44b9d03f642cd19b2ab4",
+    "dcf1e446dd2c5142eb70a89e997fa040ad5c282a71498c38b1e77a5e336341a5"
+  ],
+  "rejected_checkpoint_sha256": [
+    "69a958be6b569c037c7aa09d0bbcc2298169f1b0b1daf63c7de75426d83890f1"
+  ]
+}

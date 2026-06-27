@@ -1,0 +1,12 @@
+{
+  "audit_timestamp": "2026-05-18T14:03:31Z",
+  "eval_file": "eval/strict_holdout_quality_control_v2.be.jsonl",
+  "strict_prompts_count": 209,
+  "regression_prompts_count": 168,
+  "sft_exact_overlap": 0,
+  "regression_exact_overlap": 0,
+  "5gram_ratio": 0.0,
+  "5gram_status": "PASS",
+  "leakage_status": "PASS",
+  "failures": []
+}

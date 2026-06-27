@@ -1,0 +1,191 @@
+ M .gitignore
+ M README.md
+ M README_RU.md
+ M SHA256SUMS.txt
+ M configs/books_cleaning_policy.yaml
+ M configs/dataset_sources.yaml
+ D dist/chatgpt_pro_context_latest.sha256
+ D dist/owner_runs/01_OWNER_DOWNLOAD_SOURCES.sh
+ M dist/owner_runs/02B_OWNER_EXPAND_DATASET_FROM_EXISTING_RAW.sh
+ M dist/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh
+ D dist/owner_runs/02_OWNER_BUILD_DATASET_V2.sh
+ D dist/owner_runs/03_OWNER_VRAM_PROBE.sh
+ D dist/owner_runs/04_OWNER_TRAIN_BASE_V2.sh
+ D dist/owner_runs/05_OWNER_ANALYZE_BASE_V2.sh
+ D dist/owner_runs/06B_OWNER_SFT_V6B_FROM_BASE_V2.sh
+ D dist/owner_runs/06_OWNER_SFT_V6_FROM_BASE_V2.sh
+ D dist/owner_runs/08_OWNER_TEST_CHAT_SFT_V6B.sh
+ D dist/owner_runs/09_OWNER_SFT_V7_FROM_BASE_V2.sh
+ D dist/owner_runs/10_OWNER_TEST_SFT_V7.sh
+ D dist/owner_runs/13_OWNER_SFT_V8_FROM_BASE_V2.sh
+ M docs/00_project_audit.md
+ M docs/02_belarusian_data_inventory.md
+ M docs/03_data_pipeline_plan.md
+ M docs/08_risks_licenses_ethics.md
+ D eval/sft_v6_governed_balanced_eval.be.jsonl
+ D prompts/AGENT_HOTFIX8_OWNER_ONLY_RU.md
+ M reports/LICENSE_MANIFEST.json
+ D reports/context/chatgpt_pro_context_20260513_153120/00_state.txt
+ D reports/context/chatgpt_pro_context_20260513_153120/01_file_list.txt
+ D reports/context/chatgpt_pro_context_20260513_153120/books_clean_v2_manifest.jsonl
+ D reports/context/chatgpt_pro_context_20260513_153120/books_encoding_manifest.jsonl
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/FROM_SCRATCH_MODERN_PLAN.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/LICENSE_MANIFEST.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/SAFE_TRAINING_ACCEPTED_belka-d8-40m-safe-v1.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/SAFE_TRAINING_REPORT_belka-d8-40m-safe-v1.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/audits/sft_v2_leakage.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/audits/sft_v2_leakage_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/audits/sft_v2_leakage_report.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/audits/sft_v2_leakage_report_v2.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/audits/sft_v2_leakage_report_v2.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/audits/sft_v2_leakage_v2.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/audits/sft_v2_val_bpb_investigation.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/context/chatgpt_pro_context_20260513_153120/source_filter_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/context/chatgpt_pro_context_20260513_153120/tokenizer_ablation_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/data/data_readiness_v2.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/data/readiness_v2.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/eval_belka_d4_smoke_v4_before_safe.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/eval_belka_d4_smoke_v4_before_safe_generation.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/eval_v2/belarusianglue_dry_run.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/eval_v2/health.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/eval_v2/server.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/governor/agent_prepare_20260513T121907Z.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/governor/guard_prepare_20260513T121907Z.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/governor/latest_status.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/governor/preflight_20260513_152422.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/audit_before_safe.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/chat_web_d4_smoke_v4_eval_server.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/chat_web_d4_smoke_v4_health.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/eval_belka_d4_smoke_v4_before_safe.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/eval_belka_d4_smoke_v4_generation.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/pytest_before_safe.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/repo_guard_before_safe.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/pre_safe/tokenizer_fertility_before_safe.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v2/SFT_V2_ACCEPTED_WITH_WARNINGS.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v2/pytest_sft_v2.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v2/repo_guard_sft_v2.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v3/belka-d8-40m-sft-v3.train.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v3/sft_v3_dataset_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v3/sft_v3_leakage.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v3/sft_v3_leakage_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v3/sft_v3_leakage_report.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v5_balanced_seed_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v5_leakage_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v5_leakage_report.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v6_governed_seed_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v6_leakage_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/sft_v6_leakage_report.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/source_filter_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/tokenizer_ablation_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/tokenizer_fertility_before_safe.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/tokenizers/tokenizer_ablation_raw.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/training_ladder/plan.json
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/training_ladder/plan.md
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/training_logs/belka-d8-40m-safe-v1.sft.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/training_logs/belka-d8-40m-safe-v1.train.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/training_logs/belka-d8-40m-sft-v2.sft.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/training_logs/server_safe_eval.log
+ D reports/context/chatgpt_pro_context_20260513_153120/home/vadimohka/WORK/vadimohka/reports/training_logs/server_sft_v2_eval.log
+ D reports/context/chatgpt_pro_context_20260513_153120/source_filter_report.json
+ D reports/context/chatgpt_pro_context_20260513_153120/tokenizer_ablation_report.json
+ M reports/source_filter_report.json
+ M reports/source_quarantine.jsonl
+ D reports/source_rejected_sample.jsonl
+?? .venv/
+?? AGENT_START_HERE.md
+?? BELKA_REPO_AUDIT_FOR_CLEANUP.md
+?? DATA_RIGHTS_AND_PERMISSIONS.md
+?? archive/
+?? data_cards/
+?? data_input/be_texts/belacorpus_public/
+?? data_input/be_texts/cc100/
+?? data_input/be_texts/fineweb2/
+?? data_input/be_texts/hplt_v2/
+?? data_input/be_texts/leipzig/
+?? data_input/be_texts/ud_belarusian_hse_extracted/
+?? data_input/be_texts/wikimedia_full/
+?? dist/belka_d12_sft_v8_rc1_context.sha256
+?? dist/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh
+?? dist/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh
+?? dist/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh
+?? dist/owner_runs/35_OWNER_EVAL_D8_BASE_V3B_PILOT.sh
+?? dist/owner_runs/36_OWNER_PLAN_CORPUS_EXPANSION_200M.sh
+?? dist/owner_runs/37_OWNER_PLAN_CORPUS_EXPANSION_200M.sh
+?? dist/owner_runs/38_OWNER_PLAN_CORPUS_EXPANSION_200M.sh
+?? dist/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh
+?? dist/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh
+?? dist/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh
+?? dist/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh
+?? dist/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh
+?? dist/owner_runs/45_OWNER_REPO_CLEANUP_DRY_RUN.sh
+?? dist/owner_runs/46_OWNER_REPO_CLEANUP_APPLY.sh
+?? dist/owner_runs/47_OWNER_BUILD_CORPUS_EXPANSION_SOURCE_BOARD.sh
+?? dist/owner_runs/48_OWNER_BUILD_CORPUS_EXPANSION_SOURCE_BOARD_V2.sh
+?? eval/holdout_quality_control_v1.schema.json
+?? eval/regression_quality_control_v1.be.jsonl
+?? eval/strict_holdout_quality_control_v2.be.jsonl
+?? manifests/cleanup/
+?? model_cards/
+?? owner.sh
+?? prompts/NEXT_AGENT_NO_CONTEXT_PROMPT.md
+?? reports/DATA_RIGHTS_MANIFEST.json
+?? reports/audit/
+?? reports/base_v2/BASE_V2_ANALYSIS_20260513T164336Z.log
+?? reports/checkpoints_manifest/belka-d12-sft-v7.model_000075.pt.sha256
+?? reports/checkpoints_manifest/belka-d12-sft-v8.model_000022.sha256
+?? reports/corpus_expansion/
+?? reports/d8_base_v3/
+?? reports/d8_base_v3_probe/
+?? reports/d8_base_v3b/
+?? reports/data/Build
+?? reports/data/CORPUS_V3B_ACCEPTED.md
+?? reports/data/Source
+?? reports/data/corpus_v3_build_report.json
+?? reports/data/corpus_v3_source_distribution.json
+?? reports/data/corpus_v3b_final_parquet_proof.json
+?? reports/data/corpus_v3b_source_distribution.json
+?? reports/data/v3b_mini_bewikibooks_accepted.jsonl
+?? reports/data/v3b_mini_bewikibooks_quarantine.jsonl
+?? reports/data/v3b_mini_bewikibooks_rejected.jsonl
+?? reports/data/v3b_mini_bewikisource_accepted.jsonl
+?? reports/data/v3b_mini_bewikisource_quarantine.jsonl
+?? reports/data/v3b_mini_bewikisource_rejected.jsonl
+?? reports/data_foundry_v2/
+?? reports/downloads/download_owner_20260513T124942Z.log
+?? reports/downloads/download_status.jsonl
+?? reports/downloads/download_v2_manifest.jsonl
+?? reports/downloads/download_v2_sha256.txt
+?? reports/downloads/download_v2_sha256_20260513T124223Z.txt
+?? reports/downloads/download_v2_sha256_20260513T124942Z.txt
+?? reports/downloads/download_v2_sha256_latest.txt
+?? reports/eval/
+?? reports/gates/
+?? reports/owner_runs/
+?? reports/release_candidates/
+?? reports/repo_cleanup/
+?? reports/repo_integrity/
+?? reports/sft_v6b/chat_web_sft_v6b_manual_test.log
+?? reports/sft_v7/
+?? reports/sft_v8/
+?? reports/sft_v8_checkpoint.sha256
+?? reports/state/
+?? reports/strategy/
+?? reports/tokenizer_v2/
+?? reports/vram_probe/
+?? seed_sft/sft_v7_train.be.jsonl
+?? seed_sft/sft_v7_val.be.jsonl
+?? seed_sft/sft_v8_train.be.jsonl
+?? seed_sft/sft_v8_val.be.jsonl
+?? tests/test_belka_disable_generic_eval.py
+?? tests/test_owner_entrypoint_static.py
+?? tests/test_tokenizer_isolation.py
+?? tools/audit_quality_control_workbook.py
+?? tools/audit_repo_integrity.py
+?? tools/audit_training_provenance.py
+?? tools/check_eval_leakage.py
+?? tools/create_quality_control_workbook.py
+?? tools/generate_sft_v7_diverse.py
+?? tools/generate_sft_v7_final.py
+?? tools/validate_sft_v7.py
+?? tools/validate_sft_v8.py
+?? tools/write_training_run_manifest.py

@@ -1,22 +1,30 @@
 {
-  "generated_at": "2026-05-12T14:20:18.051401+00:00",
+  "generated_at": "2026-05-18T09:14:08.123691+00:00",
   "categories": {
     "commercial_ok": [
       "be_x_oldwiki",
-      "belarusian_seed",
       "bewiki",
+      "bewikibooks_full",
+      "bewikiquote",
+      "bewikisource",
+      "bewikisource_full",
+      "bewiktionary",
       "bootstrap",
       "tatoeba_sentences",
-      "ud_belarusian_hse",
-      "unknown"
+      "ud_belarusian_hse"
     ],
-    "research_only": [],
+    "research_only": [
+      "books_clean_v2"
+    ],
     "non_commercial": [
       "morphodict-bel"
     ],
     "attribution_required": [
       "be_x_oldwiki",
       "bewiki",
+      "bewikiquote",
+      "bewikisource",
+      "bewiktionary",
       "morphodict-bel",
       "tatoeba_sentences",
       "ud_belarusian_hse"
@@ -24,10 +32,28 @@
     "sharealike_required": [
       "be_x_oldwiki",
       "bewiki",
+      "bewikiquote",
+      "bewikisource",
+      "bewiktionary",
       "morphodict-bel"
     ],
     "unknown_or_manual_review": [
-      "unknown"
+      "bewikibooks_full",
+      "bewikisource_full",
+      "books_clean_v2"
+    ],
+    "permissioned_by_owner": [
+      "books_clean_v2",
+      "bewikisource_full",
+      "bewikibooks_full"
     ]
+  },
+  "permission_overlay": {
+    "note": "The categories above record ORIGINAL source license status and are intentionally left unchanged for provenance. 'permissioned_by_owner' is an ADDITIVE overlay: for these sources the project owner obtained explicit written permission for research and model-development use. This is not a relicensing and does not assert public-domain or unrestricted-redistribution status. Raw-data redistribution is NOT granted by this overlay. See reports/DATA_RIGHTS_MANIFEST.json and DATA_RIGHTS_AND_PERMISSIONS.md.",
+    "permission_basis": "owner_research_permission",
+    "review_status": "permission_documented_by_owner",
+    "private_record_available": true,
+    "raw_data_redistribution": false,
+    "commercial_use": false
   }
 }

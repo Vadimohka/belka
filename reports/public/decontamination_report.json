@@ -1,0 +1,41 @@
+{
+  "train_files": [
+    "data_ready/sft_jsonl/identity_and_data_sources_extra.be.jsonl",
+    "data_ready/sft_jsonl/identity_and_data_sources_val_extra.be.jsonl",
+    "data_ready/sft_jsonl/identity_conversations.be.extra.jsonl",
+    "data_ready/sft_jsonl/identity_conversations_val.be.extra.jsonl",
+    "data_ready/sft_jsonl/meetmesh_domain_sft.be.extra.jsonl",
+    "data_ready/sft_jsonl/meetmesh_domain_sft_val.be.extra.jsonl",
+    "seed_sft/identity_conversations.be.jsonl",
+    "seed_sft/identity_conversations_v3_diverse_val.be.jsonl",
+    "seed_sft/identity_conversations_val.be.jsonl",
+    "seed_sft/meetmesh_domain_sft.be.jsonl",
+    "seed_sft/meetmesh_domain_sft_val.be.jsonl",
+    "seed_sft/sft_v5_balanced_train.be.jsonl",
+    "seed_sft/sft_v5_balanced_val.be.jsonl",
+    "seed_sft/sft_v6_governed_balanced_train.be.jsonl",
+    "seed_sft/sft_v6_governed_balanced_val.be.jsonl",
+    "seed_sft/sft_v7_train.be.jsonl",
+    "seed_sft/sft_v7_val.be.jsonl",
+    "seed_sft/sft_v8_train.be.jsonl",
+    "seed_sft/sft_v8_val.be.jsonl"
+  ],
+  "ngram_n": 5,
+  "results": {
+    "eval/belarusian_language_lock_eval.jsonl": {
+      "prompts": 8,
+      "exact_overlap": 0,
+      "ngram_overlap_ratio": 0.0
+    },
+    "eval/regression_quality_control_v1.be.jsonl": {
+      "prompts": 170,
+      "exact_overlap": 29,
+      "ngram_overlap_ratio": 0.0357
+    },
+    "eval/strict_holdout_quality_control_v2.be.jsonl": {
+      "prompts": 209,
+      "exact_overlap": 0,
+      "ngram_overlap_ratio": 0.0
+    }
+  }
+}

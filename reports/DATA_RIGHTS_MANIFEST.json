@@ -1,0 +1,135 @@
+{
+  "schema_version": "2026-06-27",
+  "purpose": "Three-layer data-rights record for the Belka research corpus. Keeps original source license separate from project-specific owner permission and from redistribution status. This file does NOT relicense any source; it records an additional permission overlay where the owner has obtained one. See DATA_RIGHTS_AND_PERMISSIONS.md.",
+  "layers_explained": {
+    "original_license_category": "Upstream license/status of the material before Belka used it.",
+    "project_permission_category": "Whether the owner obtained extra permission for research/model-development use.",
+    "redistribution_category": "Whether this repository may redistribute the data."
+  },
+  "original_license_category": {
+    "public_open_licensed": [
+      "be_x_oldwiki",
+      "bewiki",
+      "bewikibooks",
+      "bewikiquote",
+      "bewikisource",
+      "bewiktionary",
+      "tatoeba_sentences",
+      "ud_belarusian_hse"
+    ],
+    "non_commercial_license": [
+      "morphodict-bel"
+    ],
+    "synthetic_project_generated": [
+      "bootstrap",
+      "meetmesh_sft"
+    ],
+    "copyright_all_rights_reserved": [
+      "books_clean_v2"
+    ],
+    "manual_review_or_unknown_at_source": [
+      "bewikisource_full",
+      "bewikibooks_full",
+      "books_clean_v2"
+    ]
+  },
+  "project_permission_category": {
+    "permission_not_required_public_license": [
+      "be_x_oldwiki",
+      "bewiki",
+      "bewikibooks",
+      "bewikiquote",
+      "bewikisource",
+      "bewiktionary",
+      "tatoeba_sentences",
+      "ud_belarusian_hse",
+      "bootstrap",
+      "meetmesh_sft"
+    ],
+    "permissioned_by_owner": [
+      "books_clean_v2",
+      "bewikisource_full",
+      "bewikibooks_full"
+    ],
+    "permission_basis": "owner_research_permission",
+    "permission_evidence": {
+      "private_record_available": true,
+      "public_summary": "Written permissions for research and model-development use retained privately by the project owner; can be confirmed by the owner at review. Not published in this repository.",
+      "review_status": "permission_documented_by_owner"
+    }
+  },
+  "redistribution_category": {
+    "open_redistribution_under_source_license": [
+      "be_x_oldwiki",
+      "bewiki",
+      "bewikibooks",
+      "bewikiquote",
+      "bewikisource",
+      "bewiktionary",
+      "tatoeba_sentences",
+      "ud_belarusian_hse",
+      "bootstrap"
+    ],
+    "processed_or_by_request_only": [
+      "bewikisource_full",
+      "bewikibooks_full"
+    ],
+    "not_redistributed_raw": [
+      "books_clean_v2"
+    ],
+    "note": "Permission to TRAIN on a source does not imply permission to REDISTRIBUTE it. Category B (permissioned_by_owner) raw data is not published from this repository."
+  },
+  "permission_scope_detail": {
+    "books_clean_v2": {
+      "original_license": "copyright_all_rights_reserved (Belarusian literary works; aggregated via RuLit-style sources)",
+      "permission_status": "explicit_permission_obtained",
+      "permission_basis": "owner_research_permission",
+      "research_use": true,
+      "ml_training": true,
+      "evaluation": true,
+      "model_release": "derived_weights_only",
+      "processed_data_release": "by_request_with_documented_scope",
+      "raw_data_redistribution": false,
+      "commercial_use": false,
+      "attribution_required": true,
+      "review_status": "permission_documented_by_owner",
+      "notes": "Included in Belka research corpus (v3b) under project-specific permission. Original copyright status unchanged and still recorded. Raw redistribution status documented separately and is not granted."
+    },
+    "bewikisource_full": {
+      "original_license": "Wikimedia work-level; some works manual_review_required",
+      "permission_status": "explicit_permission_obtained",
+      "permission_basis": "owner_research_permission",
+      "research_use": true,
+      "ml_training": true,
+      "evaluation": true,
+      "model_release": "derived_weights_only",
+      "processed_data_release": "by_request_with_documented_scope",
+      "raw_data_redistribution": false,
+      "commercial_use": false,
+      "attribution_required": true,
+      "review_status": "permission_documented_by_owner",
+      "notes": "Full (less strictly filtered) Wikisource extraction. Work-level rights vary; owner permission covers research/model-development use. Attribution and share-alike obligations of underlying Wikimedia works still apply."
+    },
+    "bewikibooks_full": {
+      "original_license": "Wikimedia terms; project size/quality variable",
+      "permission_status": "explicit_permission_obtained",
+      "permission_basis": "owner_research_permission",
+      "research_use": true,
+      "ml_training": true,
+      "evaluation": true,
+      "model_release": "derived_weights_only",
+      "processed_data_release": "by_request_with_documented_scope",
+      "raw_data_redistribution": false,
+      "commercial_use": false,
+      "attribution_required": true,
+      "review_status": "permission_documented_by_owner",
+      "notes": "Full Wikibooks extraction. Wikimedia attribution/share-alike obligations still apply."
+    }
+  },
+  "explicitly_not_claimed": [
+    "No source is asserted to be public domain by this manifest.",
+    "The corpus as a whole is not asserted to be freely redistributable.",
+    "Owner permission is not asserted for candidate sources not used in the corpus (e.g. oscar, culturax, opensubtitles, flores200, common_crawl, morphodict-bel for base training).",
+    "Project-specific research permission is not a public or unrestricted license and does not grant commercial use."
+  ]
+}

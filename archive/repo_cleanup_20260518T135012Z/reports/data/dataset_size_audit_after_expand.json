@@ -1,0 +1,42 @@
+{
+  "total_rows": 374424,
+  "total_chars": 847475262,
+  "total_files": 44,
+  "sources": {
+    "wikimedia_full": {
+      "rows": 332448,
+      "chars": 802540973,
+      "files": 6
+    },
+    "wikimedia_old": {
+      "rows": 6000,
+      "chars": 31397797,
+      "files": 3
+    },
+    "books": {
+      "rows": 496,
+      "chars": 5861194,
+      "files": 30
+    },
+    "tatoeba": {
+      "rows": 11120,
+      "chars": 2170024,
+      "files": 1
+    },
+    "ud": {
+      "rows": 22060,
+      "chars": 4652727,
+      "files": 1
+    },
+    "bootstrap": {
+      "rows": 1300,
+      "chars": 641420,
+      "files": 2
+    },
+    "huggingface": {
+      "rows": 1000,
+      "chars": 211127,
+      "files": 1
+    }
+  }
+}

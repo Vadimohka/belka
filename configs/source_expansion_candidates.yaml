@@ -1,0 +1,567 @@
+schema_version: 1
+# Belka corpus expansion candidates. Priority policy:
+#   A = public/open or documented; usable for expansion only if license/terms recorded.
+#   B = permissioned-by-owner; usable with permission overlay, NO raw redistribution.
+#   C = candidate_review_required; not used until owner approves.
+# Rules: never use eval-only datasets for pretraining; never mix holdout/eval into train.
+# See DATA_RIGHTS_AND_PERMISSIONS.md, configs/dataset_sources.yaml, reports/DATA_RIGHTS_MANIFEST.json.
+policy:
+  priority_A_requires_recorded_license: true
+  priority_B_requires_permission_overlay_no_raw_redistribution: true
+  priority_C_blocked_until_owner_approval: true
+  eval_only_never_pretrain: true
+  holdout_never_in_train: true
+
+sources:
+  # ---------------- A. High-priority public/open or documented ----------------
+  - id: wikimedia_bewiki
+    name: Belarusian Wikipedia (narkamauka)
+    language_codes: [be]
+    source_type: wikimedia_dump
+    urls: [https://dumps.wikimedia.org/bewiki/latest/]
+    current_status: available_local
+    priority: A
+    intended_use: {pretraining: true, tokenizer: true, sft: false, eval: false}
+    original_license: CC BY-SA 4.0 / GFDL
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: open_under_source_license, processed_data: open_under_source_license, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [templates, duplicate_wiki_text, contamination]
+    required_checks: [namespace0, strip_templates, dedup, attribution_manifest]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/be_texts/wikimedia_full/bewiki_full.jsonl
+    quality_notes: High-quality encyclopedic prose; primary open source.
+    owner_decision: approved_open
+
+  - id: wikimedia_bewikisource
+    name: Belarusian Wikisource
+    language_codes: [be]
+    source_type: wikimedia_dump
+    urls: [https://dumps.wikimedia.org/bewikisource/latest/]
+    current_status: available_local
+    priority: A
+    intended_use: {pretraining: true, tokenizer: true, sft: false, eval: false}
+    original_license: Wikimedia terms; work-level varies
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: review_work_level, processed_data: review_work_level, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [ocr_noise, work_level_copyright, multilingual_pages]
+    required_checks: [strict_filter, remove_headers, work_level_review]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/be_texts/wikimedia/bewikisource.jsonl
+    quality_notes: Literary/source prose after strict filtering.
+    owner_decision: approved_open_strict
+
+  - id: wikimedia_bewikibooks
+    name: Belarusian Wikibooks
+    language_codes: [be]
+    source_type: wikimedia_dump
+    urls: [https://dumps.wikimedia.org/bewikibooks/latest/]
+    current_status: candidate
+    priority: A
+    intended_use: {pretraining: true, tokenizer: false, sft: false, eval: false}
+    original_license: Wikimedia terms
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: open_under_source_license, processed_data: open_under_source_license, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [small_size, quality_variance]
+    required_checks: [verify_project_size, quality_filter]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/downloads/wikimedia/bewikibooks-latest-pages-articles-multistream.xml.bz2
+    quality_notes: Instructional prose; low volume.
+    owner_decision: approved_open
+
+  - id: wikimedia_bewikiquote
+    name: Belarusian Wikiquote
+    language_codes: [be]
+    source_type: wikimedia_dump
+    urls: [https://dumps.wikimedia.org/bewikiquote/latest/]
+    current_status: candidate
+    priority: A
+    intended_use: {pretraining: false, tokenizer: false, sft: false, eval: true}
+    original_license: Wikimedia terms; quote rights vary
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: review_quote_rights, processed_data: review_quote_rights, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [quote_copyright]
+    required_checks: [avoid_bulk_pretrain, license_review]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/downloads/wikimedia/bewikiquote-latest-pages-articles-multistream.xml.bz2
+    quality_notes: Eval/style only; not bulk pretrain.
+    owner_decision: approved_eval_only
+
+  - id: wikimedia_bewiktionary
+    name: Belarusian Wiktionary
+    language_codes: [be]
+    source_type: wikimedia_dump
+    urls: [https://dumps.wikimedia.org/bewiktionary/latest/]
+    current_status: candidate
+    priority: A
+    intended_use: {pretraining: false, tokenizer: true, sft: false, eval: true}
+    original_license: Wikimedia terms
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: open_under_source_license, processed_data: open_under_source_license, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [not_natural_prose, multilingual_templates]
+    required_checks: [parse_entries, exclude_templates]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/downloads/wikimedia/bewiktionary-latest-pages-articles-multistream.xml.bz2
+    quality_notes: Lexicon/tokenizer coverage; not prose.
+    owner_decision: approved_lexicon_eval
+
+  - id: wikimedia_be_x_oldwiki
+    name: Belarusian Wikipedia Classical / Taraskievica
+    language_codes: [be-tarask]
+    source_type: wikimedia_dump
+    urls: [https://dumps.wikimedia.org/be_x_oldwiki/latest/]
+    current_status: available_local
+    priority: A
+    intended_use: {pretraining: true, tokenizer: true, sft: false, eval: false}
+    original_license: CC BY-SA 4.0 / GFDL
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: open_under_source_license, processed_data: open_under_source_license, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [orthography_mixing]
+    required_checks: [orthography_label_tarask, separate_split]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/be_texts/wikimedia_full/be_x_oldwiki_full.jsonl
+    quality_notes: Tarask/classical orthography; track separately.
+    owner_decision: approved_open
+
+  - id: hplt_v2_bel_cyrl_cleaned
+    name: HPLT v2 Belarusian (Cyrillic) cleaned
+    language_codes: [bel_Cyrl]
+    source_type: web_corpus
+    urls: [https://hplt-project.org/datasets/v2.0]
+    current_status: available_local
+    priority: A
+    intended_use: {pretraining: true, tokenizer: true, sft: false, eval: false}
+    original_license: HPLT release terms (verify current)
+    license_url: https://hplt-project.org/datasets/v2.0
+    terms_url: https://hplt-project.org/
+    permission_status: pending_verification
+    permission_basis: public_license
+    redistribution: {raw_data: verify, processed_data: verify, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [web_noise, license_provenance, pii]
+    required_checks: [record_license, strict_lid, pii_filter, dedup]
+    download_method: hplt_download
+    expected_local_path: data_input/be_texts/hplt_v2/bel_Cyrl.jsonl
+    quality_notes: Largest local source (~16 GB); verify license before public training claim.
+    owner_decision: record_license_then_use
+
+  - id: hplt_v2_bel_cyrl_deduped
+    name: HPLT v2 Belarusian (Cyrillic) deduped variant
+    language_codes: [bel_Cyrl]
+    source_type: web_corpus
+    urls: [https://hplt-project.org/datasets/v2.0]
+    current_status: candidate
+    priority: A
+    intended_use: {pretraining: true, tokenizer: false, sft: false, eval: false}
+    original_license: HPLT release terms (verify current)
+    license_url: https://hplt-project.org/datasets/v2.0
+    terms_url: https://hplt-project.org/
+    permission_status: pending_verification
+    permission_basis: public_license
+    redistribution: {raw_data: verify, processed_data: verify, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [web_noise, license_provenance]
+    required_checks: [record_license, near_dedup_against_cleaned]
+    download_method: hplt_download
+    expected_local_path: data_input/be_texts/hplt_v2/bel_Cyrl.deduped.jsonl
+    quality_notes: Use to control duplication / source share.
+    owner_decision: record_license_then_use
+
+  - id: fineweb2_bel_cyrl
+    name: FineWeb2 Belarusian (bel_Cyrl)
+    language_codes: [bel_Cyrl]
+    source_type: web_corpus
+    urls: [https://huggingface.co/datasets/HuggingFaceFW/fineweb-2]
+    current_status: available_local
+    priority: A
+    intended_use: {pretraining: true, tokenizer: true, sft: false, eval: false}
+    original_license: ODC-By family (verify dataset terms)
+    license_url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
+    terms_url: https://opendatacommons.org/licenses/by/1-0/
+    permission_status: pending_verification
+    permission_basis: public_license
+    redistribution: {raw_data: verify, processed_data: verify, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [web_noise, subset_naming, pii]
+    required_checks: [verify_config, belarusian_filter, license_manifest]
+    download_method: huggingface
+    expected_local_path: data_input/be_texts/fineweb2/000_00000.parquet
+    quality_notes: ~3.9 GB parquet local; verify exact config + license.
+    owner_decision: record_license_then_use
+
+  - id: tatoeba_belarusian
+    name: Tatoeba Belarusian sentences
+    language_codes: [be]
+    source_type: sentence_parallel
+    urls: [https://tatoeba.org/eng/downloads]
+    current_status: available_local
+    priority: A
+    intended_use: {pretraining: false, tokenizer: false, sft: true, eval: true}
+    original_license: CC-BY 2.0 FR (Tatoeba) — verify
+    license_url: https://tatoeba.org/eng/terms_of_use
+    terms_url: https://tatoeba.org/eng/terms_of_use
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: open_under_source_license, processed_data: open_under_source_license, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [short_sentence_bias]
+    required_checks: [low_weight, decontam]
+    download_method: tatoeba_download
+    expected_local_path: data_input/be_texts/tatoeba/tatoeba_belarusian_sentences.jsonl
+    quality_notes: SFT/eval; low-weight pretrain only.
+    owner_decision: approved_open
+
+  - id: ud_belarusian_hse
+    name: UD Belarusian-HSE treebank
+    language_codes: [be]
+    source_type: treebank
+    urls: [https://github.com/UniversalDependencies/UD_Belarusian-HSE]
+    current_status: available_local
+    priority: A
+    intended_use: {pretraining: false, tokenizer: false, sft: true, eval: true}
+    original_license: CC BY-SA 4.0
+    license_url: https://github.com/UniversalDependencies/UD_Belarusian-HSE/blob/master/LICENSE.txt
+    terms_url: https://universaldependencies.org/
+    permission_status: not_required
+    permission_basis: public_license
+    redistribution: {raw_data: open_under_source_license, processed_data: open_under_source_license, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [small, annotation_projection_history]
+    required_checks: [low_weight, morphology_eval_use]
+    download_method: github
+    expected_local_path: data_input/be_texts/ud_belarusian_hse/ud_belarusian_hse_text.jsonl
+    quality_notes: Grammar/morphology eval; low-weight SFT.
+    owner_decision: approved_open
+
+  - id: common_voice_be_transcripts
+    name: Mozilla Common Voice Belarusian transcripts
+    language_codes: [be]
+    source_type: speech_transcripts
+    urls: [https://commonvoice.mozilla.org/be/datasets]
+    current_status: candidate
+    priority: A
+    intended_use: {pretraining: false, tokenizer: false, sft: true, eval: true}
+    original_license: CC0-1.0 (text transcripts) — verify version
+    license_url: https://commonvoice.mozilla.org/en/datasets
+    terms_url: https://commonvoice.mozilla.org/en/terms
+    permission_status: pending_verification
+    permission_basis: public_license
+    redistribution: {raw_data: verify, processed_data: verify, model_outputs: allowed, derived_model: allowed}
+    attribution_required: true
+    risks: [consent_metadata, speech_style, version_terms]
+    required_checks: [separate_audio_text_terms, version_record]
+    download_method: mozilla_data_collective
+    expected_local_path: data_input/be_texts/common_voice_be/transcripts.jsonl
+    quality_notes: Transcript text only; not yet downloaded.
+    owner_decision: verify_version_then_use
+
+  # ---------------- B. Permissioned-by-owner ----------------
+  - id: books_clean_v2_permissioned
+    name: Belarusian literary prose (cleaned), incl. RuLit-style sources
+    language_codes: [be]
+    source_type: literary_prose
+    urls: [local data_input/be_texts/books_clean_v2/]
+    current_status: available_local
+    priority: B
+    intended_use: {pretraining: true, tokenizer: true, sft: false, eval: false}
+    original_license: copyright_all_rights_reserved
+    license_url: n/a
+    terms_url: n/a
+    permission_status: explicit_permission_obtained
+    permission_basis: owner_research_permission
+    redistribution: {raw_data: not_redistributed, processed_data: by_request_with_documented_scope, model_outputs: allowed_research, derived_model: derived_weights_only}
+    attribution_required: true
+    risks: [copyright_provenance_mitigated_by_permission]
+    required_checks: [permission_scope_documented, no_raw_redistribution, attribution_credit]
+    download_method: local_only
+    expected_local_path: data_input/be_texts/books_clean_v2/
+    quality_notes: In corpus v3b (485 rows). Original copyright preserved; permission overlay only.
+    owner_decision: approved_permissioned_no_raw_redistribution
+
+  - id: bewikisource_full_permission_overlay
+    name: Belarusian Wikisource full extraction (permission overlay)
+    language_codes: [be]
+    source_type: literary_prose
+    urls: [https://dumps.wikimedia.org/bewikisource/latest/]
+    current_status: candidate
+    priority: B
+    intended_use: {pretraining: true, tokenizer: false, sft: false, eval: false}
+    original_license: Wikimedia work-level; some works manual_review_required
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: explicit_permission_obtained
+    permission_basis: owner_research_permission
+    redistribution: {raw_data: not_redistributed, processed_data: by_request_with_documented_scope, model_outputs: allowed_research, derived_model: derived_weights_only}
+    attribution_required: true
+    risks: [work_level_rights_vary]
+    required_checks: [permission_scope_documented, attribution_sharealike_preserved]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/be_texts/wikimedia/bewikisource_full.jsonl
+    quality_notes: Less strictly filtered than the open strict variant; permissioned use.
+    owner_decision: approved_permissioned_no_raw_redistribution
+
+  - id: bewikibooks_full_permission_overlay
+    name: Belarusian Wikibooks full extraction (permission overlay)
+    language_codes: [be]
+    source_type: instructional_prose
+    urls: [https://dumps.wikimedia.org/bewikibooks/latest/]
+    current_status: candidate
+    priority: B
+    intended_use: {pretraining: true, tokenizer: false, sft: false, eval: false}
+    original_license: Wikimedia terms; project size/quality variable
+    license_url: https://dumps.wikimedia.org/legal.html
+    terms_url: https://foundation.wikimedia.org/wiki/Terms_of_Use
+    permission_status: explicit_permission_obtained
+    permission_basis: owner_research_permission
+    redistribution: {raw_data: not_redistributed, processed_data: by_request_with_documented_scope, model_outputs: allowed_research, derived_model: derived_weights_only}
+    attribution_required: true
+    risks: [quality_variance]
+    required_checks: [permission_scope_documented, attribution_sharealike_preserved]
+    download_method: wikimedia_dump
+    expected_local_path: data_input/be_texts/wikimedia/bewikibooks_full.jsonl
+    quality_notes: Permissioned full extraction.
+    owner_decision: approved_permissioned_no_raw_redistribution
+
+  # ---------------- C. Conditional / review required ----------------
+  - id: cc100_be
+    name: CC100 Belarusian
+    language_codes: [be]
+    source_type: web_corpus
+    urls: [https://data.statmt.org/cc-100/]
+    current_status: available_local
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: false, eval: false}
+    original_license: unknown / requires verification (Common Crawl lineage)
+    license_url: https://data.statmt.org/cc-100/
+    terms_url: https://commoncrawl.org/terms-of-use
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: not_allowed_pending_review, processed_data: not_allowed_pending_review, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [unknown_license, web_noise, pii]
+    required_checks: [legal_review, owner_approval]
+    download_method: manual
+    expected_local_path: data_input/be_texts/cc100/be.txt
+    quality_notes: ~3.8 GB local; BLOCKED for training claims until license reviewed.
+    owner_decision: candidate_review_required
+
+  - id: leipzig_belarusian
+    name: Leipzig Belarusian corpora (news/web/wikipedia)
+    language_codes: [be]
+    source_type: sentence_corpus
+    urls: ["https://corpora.uni-leipzig.de/en?corpusLang=Belarusian"]
+    current_status: available_local
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: false, eval: false}
+    original_license: Leipzig Corpora Collection terms (verify)
+    license_url: https://wortschatz.uni-leipzig.de/en/download
+    terms_url: https://wortschatz.uni-leipzig.de/en
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: not_allowed_pending_review, processed_data: not_allowed_pending_review, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [license_verification, duplicate_wikipedia]
+    required_checks: [verify_terms, dedup_vs_wikimedia, owner_approval]
+    download_method: manual
+    expected_local_path: data_input/be_texts/leipzig/
+    quality_notes: Local; dedup heavily vs Wikipedia; review terms.
+    owner_decision: candidate_review_required
+
+  - id: opus_tatoeba_be
+    name: OPUS Tatoeba Belarusian pairs
+    language_codes: [be]
+    source_type: parallel_corpus
+    urls: [https://opus.nlpl.eu/Tatoeba.php]
+    current_status: candidate
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: true, eval: true}
+    original_license: per-corpus (Tatoeba CC-BY) — verify
+    license_url: https://opus.nlpl.eu/
+    terms_url: https://opus.nlpl.eu/
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: pending, processed_data: pending, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [duplicate_tatoeba]
+    required_checks: [verify_license, dedup_vs_tatoeba, owner_approval]
+    download_method: opus
+    expected_local_path: data_input/be_texts/opus_tatoeba_be/
+    quality_notes: Translation SFT/eval.
+    owner_decision: candidate_review_required
+
+  - id: opus_wikimatrix_be
+    name: OPUS WikiMatrix Belarusian pairs
+    language_codes: [be]
+    source_type: parallel_mined
+    urls: [https://opus.nlpl.eu/WikiMatrix.php]
+    current_status: candidate
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: true, eval: true}
+    original_license: per-corpus license — verify
+    license_url: https://opus.nlpl.eu/
+    terms_url: https://opus.nlpl.eu/
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: pending, processed_data: pending, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [mined_alignment_noise]
+    required_checks: [alignment_threshold, verify_license, owner_approval]
+    download_method: opus
+    expected_local_path: data_input/be_texts/opus_wikimatrix_be/
+    quality_notes: Translation SFT; mined noise.
+    owner_decision: candidate_review_required
+
+  - id: opus_jw300_be
+    name: OPUS JW300 Belarusian pairs
+    language_codes: [be]
+    source_type: parallel_corpus
+    urls: [https://opus.nlpl.eu/JW300.php]
+    current_status: candidate
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: true, eval: false}
+    original_license: per-corpus; data terms verify
+    license_url: https://opus.nlpl.eu/
+    terms_url: https://opus.nlpl.eu/
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: pending, processed_data: pending, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [religious_domain_bias]
+    required_checks: [domain_cap, verify_license, owner_approval]
+    download_method: opus
+    expected_local_path: data_input/be_texts/opus_jw300_be/
+    quality_notes: Domain-biased; cap weight.
+    owner_decision: candidate_review_required
+
+  - id: opus_gnome_kde_be_if_available
+    name: OPUS GNOME/KDE Belarusian localization (if available)
+    language_codes: [be]
+    source_type: parallel_localization
+    urls: [https://opus.nlpl.eu/]
+    current_status: candidate
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: true, eval: false}
+    original_license: per-corpus (GNOME/KDE) — verify
+    license_url: https://opus.nlpl.eu/
+    terms_url: https://opus.nlpl.eu/
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: pending, processed_data: pending, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [domain_narrow, availability_unknown]
+    required_checks: [enumerate_pairs, verify_license, owner_approval]
+    download_method: opus
+    expected_local_path: data_input/be_texts/opus_l10n_be/
+    quality_notes: UI/terminology; narrow domain.
+    owner_decision: candidate_review_required
+
+  - id: oscar_be
+    name: OSCAR Belarusian
+    language_codes: [be]
+    source_type: web_corpus
+    urls: [https://huggingface.co/datasets/oscar-corpus/OSCAR-2301]
+    current_status: candidate
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: false, eval: false}
+    original_license: gated access + Common Crawl lineage
+    license_url: https://huggingface.co/datasets/oscar-corpus/OSCAR-2301
+    terms_url: https://oscar-project.org/
+    permission_status: gated_pending
+    permission_basis: none
+    redistribution: {raw_data: not_allowed, processed_data: not_allowed, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [gated_terms, web_noise, pii]
+    required_checks: [accept_gated_terms, strict_filter, owner_approval]
+    download_method: huggingface_gated
+    expected_local_path: data_input/be_texts/oscar_be/
+    quality_notes: Gated; do not claim included until legitimately downloaded.
+    owner_decision: candidate_review_required
+
+  - id: culturax_be
+    name: CulturaX Belarusian
+    language_codes: [be]
+    source_type: web_corpus
+    urls: [https://huggingface.co/datasets/uonlp/CulturaX]
+    current_status: candidate
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: false, eval: false}
+    original_license: HF/dataset terms + source obligations
+    license_url: https://huggingface.co/datasets/uonlp/CulturaX
+    terms_url: https://huggingface.co/datasets/uonlp/CulturaX
+    permission_status: gated_or_large_pending
+    permission_basis: none
+    redistribution: {raw_data: not_allowed, processed_data: not_allowed, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [large_storage, source_license, pii]
+    required_checks: [subset_only, strict_filter, owner_approval]
+    download_method: huggingface
+    expected_local_path: data_input/be_texts/culturax_be/
+    quality_notes: Subset only after audit.
+    owner_decision: candidate_review_required
+
+  - id: opensubtitles_be
+    name: OpenSubtitles Belarusian
+    language_codes: [be]
+    source_type: subtitle_parallel
+    urls: [https://opus.nlpl.eu/OpenSubtitles.php]
+    current_status: candidate
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: false, eval: false}
+    original_license: per-corpus; copyright-sensitive
+    license_url: https://opus.nlpl.eu/
+    terms_url: https://www.opensubtitles.org/
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: not_allowed_pending_review, processed_data: not_allowed_pending_review, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [copyright, profanity]
+    required_checks: [license_review, safety_filter, owner_approval]
+    download_method: opus
+    expected_local_path: data_input/be_texts/opensubtitles_be/
+    quality_notes: Copyright/safety sensitive; blocked pending review.
+    owner_decision: candidate_review_required
+
+  - id: commoncrawl_direct_be
+    name: Common Crawl direct Belarusian mining
+    language_codes: [be]
+    source_type: raw_web
+    urls: [https://commoncrawl.org/]
+    current_status: not_ready
+    priority: C
+    intended_use: {pretraining: false, tokenizer: false, sft: false, eval: false}
+    original_license: Common Crawl terms + source web rights
+    license_url: https://commoncrawl.org/terms-of-use
+    terms_url: https://commoncrawl.org/terms-of-use
+    permission_status: review_required
+    permission_basis: none
+    redistribution: {raw_data: not_allowed, processed_data: not_allowed, model_outputs: pending, derived_model: pending}
+    attribution_required: true
+    risks: [copyright, pii, cost]
+    required_checks: [robust_etl, pii_policy, legal_review, owner_approval]
+    download_method: direct_crawl
+    expected_local_path: data_input/be_texts/cc_direct_be/
+    quality_notes: Future large-scale mining; not before robust pipeline + legal review.
+    owner_decision: candidate_review_required

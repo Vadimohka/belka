@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use Belka, please cite it as below."
+title: "Belka — a Belarusian language model trained from scratch"
+abstract: >-
+  Belka is a research project building a small Belarusian language model from scratch,
+  with an auditable data-provenance model that separates original source license,
+  owner-obtained research permission, and redistribution status. Research preview.
+type: software
+authors:
+  - given-names: Vadim
+    family-names: ""
+    affiliation: "Belka project (independent research)"
+version: "0.1.0"
+date-released: "2026-06-27"
+license: MIT
+keywords:
+  - Belarusian
+  - low-resource languages
+  - language model
+  - from-scratch training
+  - reproducibility
+  - data provenance
+references:
+  - type: data
+    title: "Belka research corpus v3b"
+    notes: >-
+      Mixed openly-licensed and owner-permissioned Belarusian text. Raw permissioned data
+      is not redistributed. See DATA_RIGHTS_AND_PERMISSIONS.md and data_cards/corpus_v3b.md.

@@ -1,0 +1,42 @@
+{
+  "status": "prepared_not_trained",
+  "diagnosis": "d12_183M_severely_undertrained_1.07_tok_per_param",
+  "strategy": "d8_from_scratch_staged",
+  "options": {
+    "A_d12_continuation": {
+      "total_tokens_1B": 30518,
+      "time_min": 323,
+      "risk": "12.5_passes_over_80M_corpus"
+    },
+    "B_d8_pilot_500M": {
+      "params": "~74M",
+      "tokens": 500000000,
+      "tok_per_param": 6.8,
+      "risk": "low"
+    },
+    "C_d8_long_1.5B": {
+      "params": "~74M",
+      "tokens": 1500000000,
+      "tok_per_param": 20.3,
+      "risk": "medium"
+    },
+    "D_expand_corpus_first": {
+      "target": "300M-500M unique tokens",
+      "risk": "time_uncertain"
+    }
+  },
+  "recommendation": "B→C staged: tokenizer-v2 → d8 probe → 500M pilot eval → 1.5B long if eval passes",
+  "tokenizer_v2": {
+    "max_chars": "150M-300M",
+    "vocab": 16000,
+    "save_to": ".workspace/nanochat_base/tokenizer_v2_d8/"
+  },
+  "d8_config": {
+    "depth": 8,
+    "n_embd": 512,
+    "n_head": 8,
+    "seq_len": 2048,
+    "window_pattern": "L"
+  },
+  "training_allowed": false
+}

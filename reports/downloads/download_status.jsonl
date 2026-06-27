@@ -1,0 +1,11 @@
+{"source_id":"bewiki_articles","status":"skip_exists","size":339368909,"sha256":"6c4efa36e6dabe01a0adcc0e635fbd34af0c06152f66ee411a6af3fd8f61880c","timestamp":"20260513T124942Z"}
+{"source_id":"bewiki_index","status":"skip_exists","size":5836913,"sha256":"33a2b71488858fef5a87b2cca7cb7b72d3c61cc95396308ebbb63bfa2f5612ac","timestamp":"20260513T124942Z"}
+{"source_id":"be_x_oldwiki_articles","status":"skip_exists","size":132608088,"sha256":"757275812733cf86015069b80a21806c706e33d34fe298d544be261418c75919","timestamp":"20260513T124942Z"}
+{"source_id":"bewikisource_articles","status":"skip_exists","size":63376082,"sha256":"c1f658a5511dd629714c72eb90c804f7f17770c7d26a114bf5b078f00e2f5732","timestamp":"20260513T124942Z"}
+{"source_id":"bewiktionary_articles","status":"skip_exists","size":2746285,"sha256":"cc33f4d1294c7fd5f0e40125a5bd8ce8fc397d05e6edd48be90f0c5533ae21c3","timestamp":"20260513T124942Z"}
+{"source_id":"bewikibooks_articles","status":"skip_exists","size":442928,"sha256":"a47def736e7230995d1c39648c5a74bbd906c106b6bacfe572c9d5f66367ada7","timestamp":"20260513T124942Z"}
+{"source_id":"bewikiquote_articles","status":"skip_exists","size":740137,"sha256":"14c8c107089edfcd3ed88783674e0f5cc1965f3cde2b93358659b4c605bd27e9","timestamp":"20260513T124942Z"}
+{"source_id":"tatoeba_sentences","status":"skip_exists","size":215683812,"sha256":"947fb40c895bdaad87387c365af94ca139dea2adb05cab7dee89aca001cdc22d","timestamp":"20260513T124942Z"}
+{"source_id":"tatoeba_links","status":"skip_exists","size":147631415,"sha256":"411c61b1387e6d03b181b1bcd8a45baef63ae076ab058b0c1d8b20097d8c2a17","timestamp":"20260513T124942Z"}
+{"source_id":"ud_belarusian_hse","status":"skip_exists","size":5186443,"sha256":"6b62d094dcde71691ff81aaba053dfcd80777865980a21296f0be9c61d145439","timestamp":"20260513T124942Z"}
+{"source_id":"belacorpus_public","status":"skip_exists","size":27605,"sha256":"705f15a46fb1b4a4546f7d3fbe0c2933e26021d5c7cb2f73c17dfb3970974901","timestamp":"20260513T124942Z"}

@@ -1,0 +1,281 @@
+{
+  "audit_timestamp": "2026-05-18T14:03:22Z",
+  "TRAINING_ALLOWED": "NO",
+  "SFT_ALLOWED": "NO",
+  "NATIVE_TRAINING_LOG_PROVENANCE": "FAIL",
+  "SCRIPT_CONFIG_PROVENANCE": "PASS",
+  "PROVENANCE_STATUS": "PASS_WITH_SCRIPT_CONFIG_EVIDENCE",
+  "PROVENANCE_RISK": "MEDIUM",
+  "reason": "nanochat training logs lack native dataset path; owner wrapper provides evidence",
+  "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+  "run_manifests_count": 0,
+  "checkpoints": [
+    {
+      "model_tag": "belka-d8-base-v3-long",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long/model_030517.pt",
+      "checkpoint_sha256": "b37fae9a87738a03192d0d76c86955e66f9f3d32c1ea44b9d03f642cd19b2ab4",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "REJECTED_OVERTRAINING",
+      "reason": "multi-epoch degradation at 1.5B tokens"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-long",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long/model_045000.pt",
+      "checkpoint_sha256": "b6f439f0ed2bf361fe2ee5ff1069c19bb4569902eb7c50af6c08dafedfffd054",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "REJECTED_OVERTRAINING",
+      "reason": "multi-epoch degradation at 1.5B tokens"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-long",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long/model_060000.pt",
+      "checkpoint_sha256": "b4328812e4a0a5214bf512e35be5b53b34817be54d0c1ff0cdfa5210760a6604",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "REJECTED_OVERTRAINING",
+      "reason": "multi-epoch degradation at 1.5B tokens"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-long",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-long/model_061035.pt",
+      "checkpoint_sha256": "69a958be6b569c037c7aa09d0bbcc2298169f1b0b1daf63c7de75426d83890f1",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "REJECTED_OVERTRAINING",
+      "reason": "multi-epoch degradation at 1.5B tokens"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_002000.pt",
+      "checkpoint_sha256": "d5168644cf9ecffe06bd3f729e5eb0771fbbc2bc42128dbfe01eacc4695d696d",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_004000.pt",
+      "checkpoint_sha256": "e9a63a8f54f51114cb366ef24e24cc4ab04be55724ce796c610d624158e406f7",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_006000.pt",
+      "checkpoint_sha256": "1445321a193d020fef498f2219afe9b8aaa5ef5e9b56cc2925b8054e265fbe18",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_008000.pt",
+      "checkpoint_sha256": "e7f7520c43fae03675992ba56b76f40e5faf681688eb0b0a0549cc2a9bf4cac8",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_010000.pt",
+      "checkpoint_sha256": "2d1ee72c87b0067057868eb3fa975b528efd5242e71a5aa0f8aae080113277a8",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_012000.pt",
+      "checkpoint_sha256": "0271d68909fc0d30d0d76e727ff2ddd57df24f452f7419de27ac8d82b8e52a47",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_014000.pt",
+      "checkpoint_sha256": "27da2bb3f1548cdc3e7be3a83d77dce4dc27bd1056e0c0d179a005bfdc2d81ef",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_016000.pt",
+      "checkpoint_sha256": "d2e1e2e533184528ba13e39162b874e0fd6a9b398f5f860f21d9550fdcbf014c",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_018000.pt",
+      "checkpoint_sha256": "136376d8323190b1e98172108d3e17a328ded53bad860de710e6f013c9ecf3bd",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_020000.pt",
+      "checkpoint_sha256": "b1cf77751c895999e717ef433280e3a2484d2f6d1cb72ea2dffdf7637b2ea8ba",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_022000.pt",
+      "checkpoint_sha256": "40927d9bdd8e533da44b2fff8b60b18626bb83f3e0febae522350b33b1de5f7b",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_024000.pt",
+      "checkpoint_sha256": "72e00ca9f662428268e574ea9f6868c9e1a749ac878b0dd781e35f6c39bc198e",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_026000.pt",
+      "checkpoint_sha256": "3aa303bdc167e365056afe77cd66a00a2b89062866dcd4f42adc0651ff49420d",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_028000.pt",
+      "checkpoint_sha256": "fc9e835bb5d77ce543abab0abdd28a360ced52ce03bc40c85793daa0aaa7d0b6",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_030000.pt",
+      "checkpoint_sha256": "2047a42618e89ed06404280a68480480478050eb38828d34806995c151be81a2",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3-pilot/model_030517.pt",
+      "checkpoint_sha256": "b37fae9a87738a03192d0d76c86955e66f9f3d32c1ea44b9d03f642cd19b2ab4",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "ACCEPTED_LEGACY"
+    },
+    {
+      "model_tag": "belka-d8-base-v3b-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot/model_005000.pt",
+      "checkpoint_sha256": "546c1cf17b35691dc55a5176b9c6b59ceeb3da8fae4d1812c8937d7b286b683d",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROVENANCE_INCOMPLETE",
+      "used_v3b": false
+    },
+    {
+      "model_tag": "belka-d8-base-v3b-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot/model_010000.pt",
+      "checkpoint_sha256": "13769ad9a8f02e3660478392baeee5d543a87d29feecafba2ed1d158c2cfce06",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROVENANCE_INCOMPLETE",
+      "used_v3b": false
+    },
+    {
+      "model_tag": "belka-d8-base-v3b-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot/model_015000.pt",
+      "checkpoint_sha256": "ab1de695062fc5c5409d704ad80621d66d7f60be28a523ac57fa5ace472ef518",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROVENANCE_INCOMPLETE",
+      "used_v3b": false
+    },
+    {
+      "model_tag": "belka-d8-base-v3b-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot/model_020000.pt",
+      "checkpoint_sha256": "de8be8fafca71d5c419236609bada94b7c1242dc44d6068b5a2b023f6c776628",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROVENANCE_INCOMPLETE",
+      "used_v3b": false
+    },
+    {
+      "model_tag": "belka-d8-base-v3b-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot/model_025000.pt",
+      "checkpoint_sha256": "90b98928fd69e538e0137911705f650e3aab1973f8f6036ac8ed131ef10b034f",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROVENANCE_INCOMPLETE",
+      "used_v3b": false
+    },
+    {
+      "model_tag": "belka-d8-base-v3b-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot/model_030000.pt",
+      "checkpoint_sha256": "e75ef2b284562aa0b0f6ac57a740cb23d721bbf60c3b7a021fae22e15ab1a826",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROVENANCE_INCOMPLETE",
+      "used_v3b": false
+    },
+    {
+      "model_tag": "belka-d8-base-v3b-pilot",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/belka-d8-base-v3b-pilot/model_030517.pt",
+      "checkpoint_sha256": "dcf1e446dd2c5142eb70a89e997fa040ad5c282a71498c38b1e77a5e336341a5",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROVENANCE_INCOMPLETE",
+      "used_v3b": false
+    },
+    {
+      "model_tag": "probe-d8-d8_s2048_b1_g1",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b1_g1",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b1_g1/model_000015.pt",
+      "checkpoint_sha256": "cc004ab7f3ebf843d76cf338826515193edeaff8a6772b5c7ac00b51ab6f8964",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROBE_ONLY"
+    },
+    {
+      "model_tag": "probe-d8-d8_s2048_b1_g4",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b1_g4",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b1_g4/model_000015.pt",
+      "checkpoint_sha256": "c1aa6aa5f2acb6ff5763cdf1bc856a845def885ad8eef8b535515efc84fee626",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROBE_ONLY"
+    },
+    {
+      "model_tag": "probe-d8-d8_s2048_b2_g4",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b2_g4",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b2_g4/model_000015.pt",
+      "checkpoint_sha256": "3def67b77ec27c1f3ff4c9824e1cc92f6797e0d6f850f102643c159c0febcb65",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROBE_ONLY"
+    },
+    {
+      "model_tag": "probe-d8-d8_s2048_b4_g4",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b4_g4",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s2048_b4_g4/model_000015.pt",
+      "checkpoint_sha256": "303474d5123539ac97821de2de89e5aec471696ed97998a7170048786b7ff121",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROBE_ONLY"
+    },
+    {
+      "model_tag": "probe-d8-d8_s3072_b1_g4",
+      "checkpoint_dir": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s3072_b1_g4",
+      "checkpoint_path": ".workspace/nanochat_base_d8_v3/base_checkpoints/probe-d8-d8_s3072_b1_g4/model_000015.pt",
+      "checkpoint_sha256": "8b72068f745e45bbe5f503767ea4b703ac623ef07dbae56a34310e5ab7740d52",
+      "tokenizer_sha256": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+      "status": "PROBE_ONLY"
+    }
+  ]
+}
