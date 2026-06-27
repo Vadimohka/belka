@@ -1,0 +1,73 @@
+{
+  "status": "PASS_DATA_ONLY",
+  "training_allowed": "owner_script_only_after_user_approval",
+  "from_base_checkpoint": ".workspace/nanochat_base/base_checkpoints/belka-d12-base-v2/model_006000.pt",
+  "do_not_continue_from": [
+    "belka-d12-sft-v6b",
+    "belka-d12-sft-v7"
+  ],
+  "counts": {
+    "train": 450,
+    "val": 120,
+    "eval": 180
+  },
+  "train_category_counts": {
+    "identity_minimal": 20,
+    "language_lock_factual": 45,
+    "known_belarus_facts": 65,
+    "known_people_culture": 55,
+    "known_places_geography": 55,
+    "orthography_language": 35,
+    "calibrated_unknowns": 35,
+    "calibrated_safety_refusal": 35,
+    "harmless_security_privacy_help": 25,
+    "meetmesh_grounded": 35,
+    "general_helpfulness": 45
+  },
+  "val_category_counts": {
+    "identity_minimal": 6,
+    "language_lock_factual": 12,
+    "known_belarus_facts": 20,
+    "known_people_culture": 14,
+    "known_places_geography": 14,
+    "orthography_language": 10,
+    "calibrated_unknowns": 10,
+    "calibrated_safety_refusal": 10,
+    "harmless_security_privacy_help": 8,
+    "meetmesh_grounded": 10,
+    "general_helpfulness": 6
+  },
+  "eval_category_counts": {
+    "known_belarus_facts": 28,
+    "known_people_culture": 22,
+    "known_places_geography": 22,
+    "orthography_language": 14,
+    "harmless_security_privacy_help": 12,
+    "calibrated_safety_refusal": 14,
+    "meetmesh_grounded": 14,
+    "identity_minimal": 10,
+    "language_lock_factual": 20,
+    "calibrated_unknowns": 14,
+    "general_helpfulness": 10
+  },
+  "max_category_share": 0.14444444444444443,
+  "train_val_overlap": 0,
+  "train_eval_overlap": 0,
+  "val_eval_overlap": 0,
+  "assistant_answer_duplicates_train": 0,
+  "bad_prefix_galoina_pra": 0,
+  "max_repeated_assistant_prefix_train": [
+    "Я застаюся ў",
+    5
+  ],
+  "contains_hard_regression_prompts": true,
+  "fact_bank_rows_available": 341,
+  "failure_labels_used": 12,
+  "notes": [
+    "No 4x repetition.",
+    "No continuation from SFT v6b or v7.",
+    "Known fact prompts are explicitly answered; unknown prompts are separated from known facts.",
+    "Harmless security help is separated from harmful cyber requests.",
+    "No universal 'Галоўнае пра' prefix is used."
+  ]
+}

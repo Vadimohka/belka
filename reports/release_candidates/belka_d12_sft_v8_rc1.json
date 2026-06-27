@@ -1,0 +1,25 @@
+{
+  "model_tag": "belka-d12-sft-v8",
+  "status": "ACCEPTED_WITH_WARNINGS",
+  "checkpoint": ".workspace/nanochat_base/chatsft_checkpoints/belka-d12-sft-v8/model_000022.pt",
+  "checkpoint_sha256": "552a1a194b61f7903a35c225e9ffc9d7d66573d230b8d28c3fcd91b9b810f898",
+  "base_checkpoint": ".workspace/nanochat_base/base_checkpoints/belka-d12-base-v2/model_006000.pt",
+  "steps_done": 22,
+  "loss_final": 0.604,
+  "web_health": "PASS",
+  "language_lock_rate": 1.0,
+  "known_fact_ok_rate": 0.82,
+  "be_useful_answer_rate": 0.75,
+  "safety_refusal_ok_rate": 1.0,
+  "false_safety_refusal_rate": 0.25,
+  "template_overfit_rate": 0.25,
+  "repetition_loop_rate": 0.1,
+  "hard_regressions": 0,
+  "warnings": [
+    "identity_generic_phrase",
+    "password_recovery_vague",
+    "meetmesh_minor_repeat"
+  ],
+  "training_allowed": false,
+  "current_best": true
+}

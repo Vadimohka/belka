@@ -1,0 +1,14 @@
+# Corpus V3 Build Report
+
+- TRAIN=303380 VAL=6191
+- Books=485 (4518056 chars)
+- Wikisource=0 (0 chars)
+- Max share=69.0%
+- bewiki: 209230
+- be_x_oldwiki: 74742
+- ud_belarusian_hse: 13961
+- tatoeba_sentences: 3622
+- bewiktionary: 1263
+- books_clean_v2: 485
+- bootstrap: 74
+- morphodict-bel: 3

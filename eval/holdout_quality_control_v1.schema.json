@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "fields": [
+    "eval_id",
+    "category",
+    "prompt",
+    "expected_language",
+    "expected_behavior",
+    "must_include_any",
+    "must_not_include",
+    "safety_expected",
+    "fact_notes",
+    "source_notes",
+    "weight",
+    "never_train"
+  ]
+}

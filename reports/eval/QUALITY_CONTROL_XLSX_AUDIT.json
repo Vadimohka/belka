@@ -1,0 +1,94 @@
+{
+  "audit_timestamp": "2026-05-18T14:03:32Z",
+  "xlsx_path": "reports/eval/BELKA_QUALITY_CONTROL.xlsx",
+  "audit_status": "PASS",
+  "TRAINING_ALLOWED": "NO",
+  "SFT_ALLOWED": "NO",
+  "checks": {
+    "required_sheets": {
+      "present": [
+        "Dataset_Registry",
+        "Model_Runs",
+        "README",
+        "Regression_Dashboard",
+        "Regression_Results",
+        "Regression_SeenIntent",
+        "Strict_Holdout_LOCKED",
+        "Strict_Holdout_Results",
+        "Training_Gates"
+      ],
+      "missing": [],
+      "pass": true
+    },
+    "no_default_sheet": {
+      "pass": true
+    },
+    "strict_holdout_prompts": {
+      "count": 209,
+      "expected": 209,
+      "pass": true
+    },
+    "never_train_flag": {
+      "pass": true
+    },
+    "training_gate_value": {
+      "value": "NO",
+      "pass": true
+    },
+    "sft_gate_value": {
+      "value": "NO",
+      "pass": true
+    },
+    "model_runs_columns": {
+      "expected": [
+        "run_id",
+        "model_tag",
+        "checkpoint_path",
+        "checkpoint_sha256",
+        "tokenizer_path",
+        "tokenizer_sha256",
+        "dataset_dir",
+        "train_parquet_sha256",
+        "val_parquet_sha256",
+        "build_manifest_sha256",
+        "license_manifest_sha256",
+        "run_manifest_path",
+        "tokens_seen",
+        "dataset_passes",
+        "status",
+        "provenance_status",
+        "notes"
+      ],
+      "actual": [
+        "run_id",
+        "model_tag",
+        "checkpoint_path",
+        "checkpoint_sha256",
+        "tokenizer_path",
+        "tokenizer_sha256",
+        "dataset_dir",
+        "train_parquet_sha256",
+        "val_parquet_sha256",
+        "build_manifest_sha256",
+        "license_manifest_sha256",
+        "run_manifest_path",
+        "tokens_seen",
+        "dataset_passes",
+        "status",
+        "provenance_status",
+        "notes"
+      ],
+      "missing": [],
+      "pass": true
+    },
+    "model_runs_rows": {
+      "count": 32,
+      "pass": true
+    },
+    "dataset_registry_sha_column": {
+      "pass": true
+    }
+  },
+  "failures": [],
+  "warnings": []
+}

@@ -1,17 +1,48 @@
-.workspace/
+# Python/cache
 __pycache__/
-*.pyc
-*.pyo
-*.bak
-*.tmp
-data_input/downloads/
-*.zip
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environments/workspaces
+.venv/
+.venv*/
+.workspace/
+.local/
 .claude/
-dist/*.bundle
+.env
+*.env
+
+# Raw data and downloads
+data_input/
+data/downloads/
+*.parquet
+*.jsonl.zst
+*.zst
+*.xz
+*.bz2
+*.tar.gz
+*.zip
+
+# Generated reports/logs
+reports/**/*.log
+reports/context/
+reports/source_quarantine.jsonl
+reports/source_rejected_sample.jsonl
+reports/owner_runs/
+reports/vram_probe/
+reports/d8_base_v3_probe/
+reports/governor/
+reports/repo_cleanup/
+reports/gates/
+*.xlsx
+
+# Generated snapshots
+tree.txt
+
+# Build/dist artifacts
 dist/*.bundle
 dist/*.patch
 dist/*.diffstat.txt
-*.pyc
-*.zip
-dist/*.bundle
 dist/context/

@@ -1,88 +1,144 @@
-# Belka — Belarusian Language Model From Scratch
+# Belka — a Belarusian Language Model trained from scratch
 
-Belka is a repository-contained research project for building a custom Belarusian language model from scratch: curated Belarusian corpus → custom tokenizer → randomly initialized nanochat/GPT-style model → base pretraining → Belarusian-only SFT → language-lock evaluation/export.
+Belka is a research project building a small Belarusian language model **from scratch**:
+curated Belarusian corpus → custom tokenizer → randomly-initialized nanochat/GPT-style
+model → base pretraining → Belarusian-only SFT → language-lock evaluation.
 
-**Project stance:** pretrained multilingual models may be used only as external baselines for evaluation. They are not Belka training bases.
+> **Research preview.** Belka is an open-source code and research-pipeline project. It is
+> not a production model, and its training corpus is **not** claimed to be public domain
+> or freely redistributable. See [Data Rights](#data-rights-permissions-and-provenance).
 
-## Current state
+## Mission
 
-The archive already contains a working nanochat-based baseline and a repository-containment policy:
+Make a **reproducible, auditable** path to a Belarusian LLM — useful to NLP researchers,
+low-resource-language practitioners, and anyone who wants to reproduce a from-scratch
+training/eval pipeline for a Cyrillic, morphologically rich, lower-resource language.
 
-- local install/run scripts under `local/`;
-- corpus and language-filter tools under `data_pipeline/` and `tools/`;
-- from-scratch configs under `configs/`;
-- seed SFT/eval data under `seed_sft/` and `eval/`;
-- data-source accounting reports under `reports/`;
-- strict path policy via `local/pack_paths.sh` and `local/repo_guard.sh`.
+## Why Belarusian / low-resource
 
-Observed local static checks on the uploaded archive:
+Belarusian is under-served by mainstream LLMs: limited high-quality open corpora, two
+orthographies (narkamauka and tarask/classical), and strong Russian cross-lingual
+interference. Belka treats these as first-class engineering problems (language-lock
+filtering, orthography tracking, decontaminated evaluation) rather than afterthoughts.
+**Pretrained multilingual models are used only as external eval baselines, never as a
+training base.**
+
+## Current status
+
+| Item | Value |
+|---|---|
+| Corpus | `v3b` — ACCEPTED (~302,991 rows, ~59.4M tokens, max source share 67.5%) |
+| Tokenizer | custom BPE, SHA256 `d9272e81…71ac` |
+| Base model | `belka-d8-base-v3-pilot` (research preview baseline) |
+| SFT | `sft_v8` |
+| Strict holdout | 209 prompts, 0 SFT overlap (leakage-clean) |
+
+Details: [`reports/public/PROJECT_STATUS.md`](reports/public/PROJECT_STATUS.md).
+
+## Quickstart (clean clone, no GPU, no external data)
 
 ```bash
-PYTHONPATH="$PWD" pytest -q tests  # 8 passed
-bash local/repo_guard.sh            # PASS
-python3 tools/validate_ready_and_sources.py 'data_ready/base_jsonl/*.jsonl' 'data_ready/sft_jsonl/*.jsonl'
-python3 tools/audit_corpus_outputs.py --pack-dir "$PWD" --assert-raw-accounted --assert-contained --sample 0
-```
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements_pack.txt
 
-The source accounting report in the archive says `RAW_SEEN=43560`, `TOTAL_ACCOUNTED=43560`, `ACCOUNTING_ASSERTION=PASS`. Train/validation parquet and checkpoints are generated artifacts and may not be present in a source zip.
-
-## Quick start: safe first stage
-
-Do not run expensive training first. Start with audit, ready-data validation, tokenizer sanity, and tiny smoke.
-
-```bash
-cd belka-main
-bash local/repo_guard.sh
 PYTHONPATH="$PWD" pytest -q tests
-python3 tools/validate_ready_and_sources.py 'data_ready/base_jsonl/*.jsonl' 'data_ready/sft_jsonl/*.jsonl'
-bash local/import_ready_training_data.sh
-bash local/run_belka_from_scratch_smoke.sh --profile belka_d4_smoke --tokenizer-vocab 16000 --model-tag belka-d4-smoke-v4
+python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
+python tools/validate_public_release.py
+python tools/check_train_eval_decontamination.py --dry-run
+python tools/build_source_expansion_board.py --dry-run
 ```
 
-Generated artifacts must stay inside:
+Reproducing the corpus, tokenizer, and training requires external data and a GPU — see
+[`reports/public/REPRODUCIBILITY_SUMMARY.md`](reports/public/REPRODUCIBILITY_SUMMARY.md).
+
+## Repository layout
 
 ```text
-.workspace/                 nanochat checkout, venvs, caches, checkpoints, logs
-data_input/                 downloaded/user-provided raw and extracted corpora
-reports/                    audit, accounting, licenses, eval reports
-dist/                       export artifacts
+configs/        training profiles, data-source registry, expansion candidates, policies
+data_pipeline/  Belarusian normalization / language filter / dedup / split
+tools/          corpus, rights, leakage, source-board, and validation tools
+data_pipeline/  core ETL modules
+eval/           language-lock / holdout / regression / refusal eval suites + runner
+seed_sft/       Belarusian SFT seed conversations (v8 current)
+data_ready/     small bundled bootstrap/seed/eval jsonl
+docs/           methodology: data inventory, pipeline, tokenizer, training, eval, ethics
+data_cards/     dataset cards (corpus_v3b)
+model_cards/    model cards (belka-research-preview)
+reports/public/ curated public-facing reports (status, provenance, eval, leakage, release)
+reports/state/  machine-readable canonical state
+release/        release checklist + notes
 ```
 
-Do not use `$HOME/src/nanochat`, `$HOME/.cache/nanochat`, `$HOME/data/be_texts`, `/tmp/nanochat.zip`, system pip, or untracked credentials.
+## Data Rights, Permissions, and Provenance
 
-## Repository map
+Belka uses an **auditable data-provenance model** that keeps original source license,
+project-specific permission, and redistribution status separate.
 
-```text
-configs/        training profiles, source registry, path policy, tokenizer/source-mix configs
-data_pipeline/  Belarusian normalization/filtering/dedup/split helpers
-data_ready/     bundled small ready data for bootstrap/sanity checks
-docs/           project audit, data inventory, training/eval/roadmap docs
-local/          repo-contained shell scripts for install, corpus, training, web health
-tools/          source downloaders, corpus accounting, tokenizer ablation, eval helpers
-seed_sft/       Belarusian-only seed SFT conversations
-eval/           Belarusian language-lock and domain eval examples
-reports/        generated/source reports; update after every corpus change
-prompts/        prompts for future AI agents
-tests/          static/unit tests
-```
+- Some sources are **public / open-licensed** (Wikimedia-derived text, UD, Tatoeba,
+  synthetic seed) and carry their own attribution/share-alike obligations.
+- Some materials — including the cleaned literary corpus `books_clean_v2` — are used under
+  **explicit permission obtained by the project owner for research and model-development
+  use**. Original status is preserved; the permission is an overlay, not a relicensing.
+- **Raw-data redistribution differs from model/code release.** Raw permissioned data is
+  not redistributed from this repository, and the corpus is not public domain.
 
-## Key documents
+See [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md),
+[`DATA_LICENSES.md`](DATA_LICENSES.md),
+[`configs/dataset_sources.yaml`](configs/dataset_sources.yaml),
+[`reports/DATA_RIGHTS_MANIFEST.json`](reports/DATA_RIGHTS_MANIFEST.json). Project **code**
+is licensed separately via the root [`LICENSE`](LICENSE) (MIT).
 
-- `AGENTS.md` — mandatory rules for AI agents.
-- `docs/00_project_audit.md` — current archive audit.
-- `docs/02_belarusian_data_inventory.md` — dataset inventory and priorities.
-- `docs/03_data_pipeline_plan.md` — ETL, dedup, LID, PII, decontamination.
-- `docs/05_training_strategy.md` — from-scratch training plan and compute tiers.
-- `docs/06_evaluation_plan.md` — intrinsic/downstream/human/safety eval plan.
-- `configs/dataset_sources.yaml` — structured data-source registry.
-- `configs/training_baselines.yaml` — tiny/small/safe/cloud configs.
+## Corpus summary
 
-## Minimal Definition of Done for the next iteration
+`v3b`: ~59M tokens, Belarusian (narkamauka + tarask tracked). Open Wikimedia/UD/Tatoeba +
+permissioned literary prose. Source mix, processing, and rights:
+[`data_cards/corpus_v3b.md`](data_cards/corpus_v3b.md). Expansion toward `v4`:
+[`docs/CORPUS_V4_EXPANSION_PLAN.md`](docs/CORPUS_V4_EXPANSION_PLAN.md).
 
-1. `repo_guard` passes.
-2. Tests pass.
-3. Dataset sources and licenses are recorded.
-4. Tokenizer ablation report exists.
-5. Tiny from-scratch smoke completes.
-6. No pretrained model is used as Belka base.
-7. No generated artifact leaves the repository.
+## Model summary
+
+`belka-d8-base-v3-pilot` + `sft_v8`: a small nanochat/GPT-style decoder trained from
+scratch. Intended use, limitations, and the permissioned-data statement:
+[`model_cards/belka-research-preview.md`](model_cards/belka-research-preview.md).
+
+## Evaluation summary
+
+Leakage-clean strict holdout (209 prompts) plus small language-lock / refusal /
+fertility suites. Quantitative quality claims are **preliminary**. Holdout vs regression
+distinction and limitations: [`reports/public/EVALUATION_SUMMARY.md`](reports/public/EVALUATION_SUMMARY.md)
+and [`reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md`](reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md).
+
+## Limitations
+
+- Small model on a ~59M-token corpus — limited fluency and knowledge.
+- Eval suites are small; no production-quality claim.
+- Orthography variants are tracked but not perfectly separated.
+- Some corpus material is permissioned, not open; raw data is not redistributed.
+
+## Reproducibility
+
+Canonical commands and the clean-clone / external-data / GPU split are in
+[`reports/public/REPRODUCIBILITY_SUMMARY.md`](reports/public/REPRODUCIBILITY_SUMMARY.md).
+Artifact hashes: [`reports/checkpoints_manifest/`](reports/checkpoints_manifest/) and
+[`reports/state/`](reports/state/).
+
+## Publication / release artifacts
+
+Readiness for GitHub / Hugging Face (model + dataset) / Zenodo, and open blockers:
+[`reports/public/RELEASE_READINESS.md`](reports/public/RELEASE_READINESS.md) and
+[`release/RELEASE_CHECKLIST.md`](release/RELEASE_CHECKLIST.md).
+
+## Citation
+
+See [`CITATION.cff`](CITATION.cff).
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Good first contributions: add a data source to
+`configs/source_expansion_candidates.yaml`, add an eval prompt set, or improve the
+Belarusian language filter.
+
+## License
+
+Code: [`LICENSE`](LICENSE) (MIT). Data: per-source — see
+[`DATA_LICENSES.md`](DATA_LICENSES.md) and `DATA_RIGHTS_AND_PERMISSIONS.md`.

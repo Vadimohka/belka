@@ -2,6 +2,15 @@
 
 This inventory lists candidate data sources for a Belarusian language model. “Research use” does not remove license, attribution, share-alike, non-commercial, gated-access, copyright, PII, or terms-of-use obligations.
 
+> **Permissions overlay.** Some materials actually used in the Belka corpus (notably the
+> `books_clean_v2` literary corpus and the `*_full` literary extractions) are used under
+> **explicit permission obtained by the project owner** for research and model-development
+> use. Original source status is preserved; permission is tracked separately and does not
+> grant raw-data redistribution. Candidate sources listed here that are **not** in the
+> corpus keep their original status and are not covered by any permission claim. See
+> `DATA_RIGHTS_AND_PERMISSIONS.md`, `configs/dataset_sources.yaml`, and
+> `reports/DATA_RIGHTS_MANIFEST.json`.
+
 ## Priority summary
 
 | Priority | Source types |

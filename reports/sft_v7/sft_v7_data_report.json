@@ -1,0 +1,37 @@
+{
+  "sft_v7_train_examples": 900,
+  "sft_v7_val_examples": 180,
+  "sft_v7_eval_examples": 250,
+  "max_category_share": 0.1444,
+  "train_category_counts": {
+    "identity_varied": 88,
+    "belarus_basic_facts": 99,
+    "culture_literature_people": 130,
+    "history_statehood": 80,
+    "cities_geography": 120,
+    "language_orthography": 130,
+    "nature_regions": 31,
+    "unknown_entity_handling": 80,
+    "calibrated_safety_refusal": 72,
+    "harmless_security_privacy_help": 15,
+    "meetmesh_grounded": 40,
+    "general_helpfulness": 15
+  },
+  "train_val_overlap": 0,
+  "train_eval_overlap": 0,
+  "assistant_language_failures_heuristic": 0,
+  "safety_refusal_templates_unique": 27,
+  "identity_templates_unique": 30,
+  "fact_bank_rows_used_or_referenced": 234,
+  "format": "raw CustomJSON arrays, one conversation per line",
+  "training_allowed": "owner_script_only_after_user_approval",
+  "base_checkpoint": ".workspace/nanochat_base/base_checkpoints/belka-d12-base-v2/model_006000.pt",
+  "do_not_continue_from": "belka-d12-sft-v6b",
+  "notes": [
+    "No 4x repetition",
+    "Train/val/eval exact overlap = 0",
+    "Assistant outputs are Belarusian-only by construction",
+    "Safety refusals are calibrated: harmless security help is separate from harmful requests"
+  ],
+  "status": "PASS"
+}

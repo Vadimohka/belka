@@ -6,9 +6,17 @@ output_dir: data_input/be_texts/books_clean_v2
 manifest: reports/books_clean_v2_manifest.jsonl
 policy:
   use_raw_books_directly: false
-  default_rights_status: manual_review_required
-  default_public_release_allowed: false
-  default_included_in_public_training: false
+  # original_rights_status preserved for provenance; permission overlay layered on top.
+  original_rights_status: manual_review_required
+  default_rights_status: permissioned_for_research_by_owner
+  permission_status: explicit_permission_obtained
+  permission_basis: owner_research_permission
+  permission_scope: research_use, ml_training, evaluation, derived_model_release
+  raw_data_redistribution_allowed: false   # permission to train does not grant raw redistribution
+  default_public_release_allowed: false    # raw text not published from repo
+  default_included_in_public_training: true # permissioned research use
+  review_status: permission_documented_by_owner
+  see: DATA_RIGHTS_AND_PERMISSIONS.md
   allowed_encodings_to_try:
     - utf-8-sig
     - utf-8

@@ -1,0 +1,151 @@
+{
+  "audit_timestamp": "2026-05-18T14:03:22Z",
+  "TRAINING_ALLOWED": "NO",
+  "SFT_ALLOWED": "NO",
+  "repo_integrity_audit_done": "YES",
+  "MISSING_REQUIRED_SCRIPTS": [],
+  "MISSING_REQUIRED_REPORTS": [],
+  "MISSING_REQUIRED_TOOLS": [],
+  "MISSING_REQUIRED_DATA": [],
+  "DATA_CHECKS": {
+    "books_clean_v2": "60 files",
+    "bewikisource_full.jsonl": true,
+    "bewikibooks_full.jsonl": true,
+    "train_parquet": true,
+    "val_parquet": true,
+    "tokenizer_pkl": true
+  },
+  "artifacts": {
+    "dist/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "dist/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "dist/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "dist/owner_runs/35_OWNER_EVAL_D8_BASE_V3B_PILOT.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "dist/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "dist/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "dist/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "dist/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh": {
+      "exists": true,
+      "type": "script"
+    },
+    "reports/data/corpus_v3b_final_parquet_proof.json": {
+      "exists": true,
+      "type": "report",
+      "size_bytes": 283
+    },
+    "reports/data/CORPUS_V3B_ACCEPTED.md": {
+      "exists": true,
+      "type": "report",
+      "size_bytes": 289
+    },
+    "reports/eval/BELKA_QUALITY_CONTROL.xlsx": {
+      "exists": true,
+      "type": "report",
+      "size_bytes": 35161
+    },
+    "eval/strict_holdout_quality_control_v2.be.jsonl": {
+      "exists": true,
+      "type": "report",
+      "size_bytes": 100124
+    },
+    "eval/regression_quality_control_v1.be.jsonl": {
+      "exists": true,
+      "type": "report",
+      "size_bytes": 61416
+    },
+    "tools/write_training_run_manifest.py": {
+      "exists": true,
+      "type": "tool"
+    },
+    "tools/audit_repo_integrity.py": {
+      "exists": true,
+      "type": "tool"
+    },
+    "tools/audit_training_provenance.py": {
+      "exists": true,
+      "type": "tool"
+    },
+    "tools/check_eval_leakage.py": {
+      "exists": true,
+      "type": "tool"
+    },
+    "tools/create_quality_control_workbook.py": {
+      "exists": true,
+      "type": "tool"
+    },
+    "tools/audit_quality_control_workbook.py": {
+      "exists": true,
+      "type": "tool"
+    },
+    "books_clean_v2": {
+      "exists": true,
+      "type": "data"
+    },
+    "bewikisource_full.jsonl": {
+      "exists": true,
+      "type": "data"
+    },
+    "bewikibooks_full.jsonl": {
+      "exists": true,
+      "type": "data"
+    },
+    "train_parquet": {
+      "exists": true,
+      "type": "data"
+    },
+    "val_parquet": {
+      "exists": true,
+      "type": "data"
+    },
+    "tokenizer_pkl": {
+      "exists": true,
+      "type": "data"
+    },
+    "strict_holdout_prompts": {
+      "exists": true,
+      "type": "count",
+      "value": 209
+    },
+    "regression_prompts": {
+      "exists": true,
+      "type": "count",
+      "value": 170
+    },
+    "checkpoint_dirs": {
+      "exists": true,
+      "type": "count",
+      "value": 8,
+      "names": [
+        "probe-d8-d8_s3072_b1_g4",
+        "probe-d8-d8_s2048_b1_g4",
+        "belka-d8-base-v3b-pilot",
+        "probe-d8-d8_s2048_b2_g4",
+        "belka-d8-base-v3-pilot",
+        "probe-d8-d8_s2048_b4_g4",
+        "probe-d8-d8_s2048_b1_g1",
+        "belka-d8-base-v3-long"
+      ]
+    }
+  },
+  "REPO_INTEGRITY_AUDIT_DONE": "YES"
+}

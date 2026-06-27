@@ -1,0 +1,18 @@
+{
+  "train_rows": 303380,
+  "train_chars": 594835538,
+  "val_rows": 6191,
+  "source_distribution": {
+    "bewiki": 209230,
+    "be_x_oldwiki": 74742,
+    "ud_belarusian_hse": 13961,
+    "tatoeba_sentences": 3622,
+    "bewiktionary": 1263,
+    "books_clean_v2": 485,
+    "bootstrap": 74,
+    "morphodict-bel": 3
+  },
+  "books_rows": 485,
+  "wikisource_rows": 0,
+  "max_share_pct": 68.96631287494232
+}

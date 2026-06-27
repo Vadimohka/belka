@@ -76,7 +76,7 @@ Rules:
 Source-specific extraction examples:
 
 - Wikimedia: namespace 0, skip redirects, strip templates/tables/references, keep title/revision id.
-- Wikisource: remove headers/footers/OCR artifacts; verify work-level rights.
+- Wikisource: remove headers/footers/OCR artifacts; verify work-level rights (open license or documented owner permission; record outcome in the data-rights manifest).
 - OPUS/Tatoeba: parse sentence pairs, keep language pair and corpus name.
 - Common Voice: extract transcripts/prompts only if terms allow.
 - HF web corpora: stream sample first, verify language field and license.

@@ -1,0 +1,168 @@
+=============================================
+ BELKA EXPAND DATASET FROM EXISTING RAW DUMPS
+ 2026-05-13T13:46:09Z
+=============================================
+PACK_DIR=/home/vadimohka/WORK/vadimohka
+
+OK: WORKSPACE_DIR=/home/vadimohka/WORK/vadimohka/.workspace
+OK: NANOCHAT_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat
+OK: NANOCHAT_BASE_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base
+OK: LOCAL_TEXT_DIR=/home/vadimohka/WORK/vadimohka/data_input/be_texts
+OK: DOWNLOAD_DIR=/home/vadimohka/WORK/vadimohka/data_input/downloads
+OK: TMPDIR=/home/vadimohka/WORK/vadimohka/.workspace/tmp
+OK: HF_HOME=/home/vadimohka/WORK/vadimohka/.workspace/hf_home
+OK: WANDB_DIR=/home/vadimohka/WORK/vadimohka/.workspace/wandb
+OK: repository containment guard passed
+
+========== STEP 1: Raw dump inventory ==========
+RAW_DUMP_FOUND source_id=bewiktionary size=2746285 path=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewiktionary-latest-pages-articles-multistream.xml.bz2
+RAW_DUMP_FOUND source_id=bewikibooks size=442928 path=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewikibooks-latest-pages-articles-multistream.xml.bz2
+RAW_DUMP_FOUND source_id=be_x_oldwiki size=132608088 path=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2
+RAW_DUMP_FOUND source_id=bewiki size=339368909 path=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewiki-latest-pages-articles-multistream.xml.bz2
+RAW_DUMP_FOUND source_id=bewikisource size=63376082 path=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewikisource-latest-pages-articles-multistream.xml.bz2
+RAW_DUMP_FOUND source_id=bewikiquote size=740137 path=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewikiquote-latest-pages-articles-multistream.xml.bz2
+RAW_WIKIMEDIA_DUMPS_SEEN=6
+
+========== STEP 2: Extract XML to JSONL ==========
+
+--- EXTRACT source_id=bewiktionary orthography=unknown ---
+    DUMP=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewiktionary-latest-pages-articles-multistream.xml.bz2
+    OUT=/home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewiktionary_full.jsonl
+    ... 5000 pages extracted
+    DONE: 6861 pages -> /home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewiktionary_full.jsonl
+    EXTRACT_OK rows=6861
+
+--- EXTRACT source_id=bewikibooks orthography=unknown ---
+    DUMP=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewikibooks-latest-pages-articles-multistream.xml.bz2
+    OUT=/home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewikibooks_full.jsonl
+    DONE: 191 pages -> /home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewikibooks_full.jsonl
+    EXTRACT_OK rows=191
+
+--- EXTRACT source_id=be_x_oldwiki orthography=tarask ---
+    DUMP=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2
+    OUT=/home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/be_x_oldwiki_full.jsonl
+    ... 5000 pages extracted
+    ... 10000 pages extracted
+    ... 15000 pages extracted
+    ... 20000 pages extracted
+    ... 25000 pages extracted
+    ... 30000 pages extracted
+    ... 35000 pages extracted
+    ... 40000 pages extracted
+    ... 45000 pages extracted
+    ... 50000 pages extracted
+    ... 55000 pages extracted
+    ... 60000 pages extracted
+    ... 65000 pages extracted
+    ... 70000 pages extracted
+    ... 75000 pages extracted
+    ... 80000 pages extracted
+    DONE: 83795 pages -> /home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/be_x_oldwiki_full.jsonl
+    EXTRACT_OK rows=83795
+
+--- EXTRACT source_id=bewiki orthography=narkamauka ---
+    DUMP=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewiki-latest-pages-articles-multistream.xml.bz2
+    OUT=/home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewiki_full.jsonl
+    ... 5000 pages extracted
+    ... 10000 pages extracted
+    ... 15000 pages extracted
+    ... 20000 pages extracted
+    ... 25000 pages extracted
+    ... 30000 pages extracted
+    ... 35000 pages extracted
+    ... 40000 pages extracted
+    ... 45000 pages extracted
+    ... 50000 pages extracted
+    ... 55000 pages extracted
+    ... 60000 pages extracted
+    ... 65000 pages extracted
+    ... 70000 pages extracted
+    ... 75000 pages extracted
+    ... 80000 pages extracted
+    ... 85000 pages extracted
+    ... 90000 pages extracted
+    ... 95000 pages extracted
+    ... 100000 pages extracted
+    ... 105000 pages extracted
+    ... 110000 pages extracted
+    ... 115000 pages extracted
+    ... 120000 pages extracted
+    ... 125000 pages extracted
+    ... 130000 pages extracted
+    ... 135000 pages extracted
+    ... 140000 pages extracted
+    ... 145000 pages extracted
+    ... 150000 pages extracted
+    ... 155000 pages extracted
+    ... 160000 pages extracted
+    ... 165000 pages extracted
+    ... 170000 pages extracted
+    ... 175000 pages extracted
+    ... 180000 pages extracted
+    ... 185000 pages extracted
+    ... 190000 pages extracted
+    ... 195000 pages extracted
+    ... 200000 pages extracted
+    ... 205000 pages extracted
+    ... 210000 pages extracted
+    ... 215000 pages extracted
+    ... 220000 pages extracted
+    ... 225000 pages extracted
+    ... 230000 pages extracted
+    ... 235000 pages extracted
+    DONE: 236317 pages -> /home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewiki_full.jsonl
+    EXTRACT_OK rows=236317
+
+--- EXTRACT source_id=bewikisource orthography=mixed ---
+    DUMP=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewikisource-latest-pages-articles-multistream.xml.bz2
+    OUT=/home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewikisource_full.jsonl
+    DONE: 4716 pages -> /home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewikisource_full.jsonl
+    EXTRACT_OK rows=4716
+
+--- EXTRACT source_id=bewikiquote orthography=unknown ---
+    DUMP=/home/vadimohka/WORK/vadimohka/data_input/downloads/wikimedia/bewikiquote-latest-pages-articles-multistream.xml.bz2
+    OUT=/home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewikiquote_full.jsonl
+    DONE: 568 pages -> /home/vadimohka/WORK/vadimohka/data_input/be_texts/wikimedia_full/bewikiquote_full.jsonl
+    EXTRACT_OK rows=568
+
+RAW_WIKIMEDIA_DUMPS_PROCESSED=6
+RAW_WIKIMEDIA_DUMPS_FAILED=0
+
+========== STEP 3: Size audit ==========
+WIKIMEDIA_FULL_ROWS=332448 WIKIMEDIA_FULL_CHARS=802540973 WIKIMEDIA_FULL_FILES=6
+WIKIMEDIA_OLD_ROWS=6000 WIKIMEDIA_OLD_CHARS=31397797 WIKIMEDIA_OLD_FILES=3
+BOOKS_ROWS=496 BOOKS_CHARS=5861194 BOOKS_FILES=30
+TATOEBA_ROWS=11120 TATOEBA_CHARS=2170024 TATOEBA_FILES=1
+UD_ROWS=22060 UD_CHARS=4652727 UD_FILES=1
+BOOTSTRAP_ROWS=1300 BOOTSTRAP_CHARS=641420 BOOTSTRAP_FILES=2
+HUGGINGFACE_ROWS=1000 HUGGINGFACE_CHARS=211127 HUGGINGFACE_FILES=1
+TOTAL_ROWS_AFTER=374424
+TOTAL_CHARS_AFTER=847475262
+TOTAL_EST_TOKENS_AFTER=211868815
+TOTAL_FILES_AFTER=44
+DATASET_SIZE_STATUS=OK_FOR_PROBE
+
+========== STEP 4: Rebuild parquet corpus ==========
+This runs filter_sources_to_nanochat_parquet.py over ALL sources including books.
+TRAIN_00000_PARQUET_SHA256=daaf6f3d411f3ea5eb32673d3d379b0c27eacc2cde0c772b40b7509c9efa2b79
+VAL_00000_PARQUET_SHA256=091eef236a31fa1774a2325b34fa7178f1e145de7e081c5a8f08fc6fb1aacd11
+PACK_DIR_REALPATH=/home/vadimohka/WORK/vadimohka
+RAW_SEEN=374424
+TOTAL_ACCOUNTED=374424
+ACCOUNTING_ASSERTION=PASS
+ACCEPTED=309571
+QUARANTINE=9655
+REJECTED=5677
+SKIPPED_EMPTY=0
+SKIPPED_SHORT=6934
+SKIPPED_DUPLICATE_EXACT=6570
+SKIPPED_DUPLICATE_NEAR=36017
+SKIPPED_PARSE_ERROR=0
+TARASK_SPLIT=PASS
+TRAIN_PARQUET=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/base_data_climbmix/train_00000.parquet
+VAL_PARQUET=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base/base_data_climbmix/val_00000.parquet
+SOURCE_MANIFEST=/home/vadimohka/WORK/vadimohka/reports/source_filter_report.json
+LICENSE_MANIFEST=/home/vadimohka/WORK/vadimohka/reports/LICENSE_MANIFEST.json
+
+========== STEP 5: Final report ==========
+dist/owner_runs/02B_OWNER_EXPAND_DATASET_FROM_EXISTING_RAW.sh: line 236: FAILED_SOURCES: unbound variable

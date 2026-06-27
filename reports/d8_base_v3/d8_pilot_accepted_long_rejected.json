@@ -1,0 +1,17 @@
+{
+  "pilot": {
+    "tag": "belka-d8-base-v3-pilot",
+    "tokens": 500000000,
+    "val_bpb": 0.542525,
+    "status": "ACCEPTED"
+  },
+  "long": {
+    "tag": "belka-d8-base-v3-long",
+    "tokens": 1500000000,
+    "status": "REJECTED",
+    "reason": "multi_epoch_degradation"
+  },
+  "training_allowed": false,
+  "sft_allowed": false,
+  "next": "expand unique corpus before further training"
+}

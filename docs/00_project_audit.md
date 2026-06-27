@@ -133,6 +133,6 @@ SKIPPED_DUPLICATE_NEAR=2870
 - Low-resource data scarcity: from-scratch quality will be limited without much more high-quality Belarusian text.
 - Orthography mixing: narkamauka and tarask must remain tracked.
 - Russian contamination: closely related-language leakage must be aggressively detected.
-- License contamination: NC/unknown/gated sources must not silently enter public releases.
+- License contamination: NC/unknown/gated sources must not silently enter public releases. Sources enter only via a public license or documented owner permission, with original status preserved and raw-redistribution status stated separately (see DATA_RIGHTS_AND_PERMISSIONS.md).
 - Overfitting: small corpora + many epochs can produce memorization and brittle generation.
 - Compute mismatch: 8GB VRAM can validate the pipeline but not guarantee high-quality LLM behavior.
