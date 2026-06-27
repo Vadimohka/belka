@@ -14,7 +14,7 @@ configs/                         many configs, including from-scratch, source mi
 data_pipeline/                   normalize/filter/dedup/split/build-manifest scripts
 data_ready/                      ready bootstrap JSONL data
 deploy/, export/, hf/, hf_space/ export/deploy helpers
-local/                           install, path guard, smoke/safe/aggressive training, web-health scripts
+ops/local/                           install, path guard, smoke/safe/aggressive training, web-health scripts
 reports/                         accounting/license/tokenizer reports from prior runs
 seed_sft/                        Belarusian identity and MeetMesh SFT data
 eval/                            Belarusian language-lock, hallucination refusal, tokenizer fertility evals
@@ -40,7 +40,7 @@ cd /mnt/data/final_audit/belka-main
 PYTHONPATH="$PWD" pytest -q tests
 # 8 passed
 
-bash local/repo_guard.sh
+bash ops/local/repo_guard.sh
 # repository containment guard passed
 
 python3 tools/validate_ready_and_sources.py 'data_ready/base_jsonl/*.jsonl' 'data_ready/sft_jsonl/*.jsonl'

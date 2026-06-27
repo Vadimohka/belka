@@ -93,10 +93,10 @@ cmd_qc() {
     local all_ok=true
 
     for script in \
-        dist/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh \
-        dist/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh \
-        dist/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh \
-        dist/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh; do
+        ops/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh \
+        ops/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh \
+        ops/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh \
+        ops/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh; do
         echo "--- Running: $script ---"
         if bash "$script"; then
             echo "OK: $script"
@@ -118,13 +118,13 @@ cmd_qc() {
 cmd_integrity() {
     check_no_training
     echo "=== Running Repo Integrity Audit (44) ==="
-    bash dist/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh
+    bash ops/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh
 }
 
 cmd_cleanup_dry_run() {
     check_no_training
     echo "=== Running Cleanup Dry-Run (45) ==="
-    bash dist/owner_runs/45_OWNER_REPO_CLEANUP_DRY_RUN.sh
+    bash ops/owner_runs/45_OWNER_REPO_CLEANUP_DRY_RUN.sh
 }
 
 cmd_cleanup_apply() {
@@ -135,7 +135,7 @@ cmd_cleanup_apply() {
         exit 0
     fi
     echo "=== Running Cleanup Apply (46) ==="
-    bash dist/owner_runs/46_OWNER_REPO_CLEANUP_APPLY.sh
+    bash ops/owner_runs/46_OWNER_REPO_CLEANUP_APPLY.sh
 }
 
 cmd_corpus_plan() {
@@ -145,7 +145,7 @@ cmd_corpus_plan() {
     echo ""
     echo "Planning script: 36"
     for script in \
-        dist/owner_runs/36_OWNER_PLAN_CORPUS_EXPANSION_200M.sh; do
+        ops/owner_runs/36_OWNER_PLAN_CORPUS_EXPANSION_200M.sh; do
         if [[ -f "$script" ]]; then
             echo "  Present: $script"
         else

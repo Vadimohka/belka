@@ -9,7 +9,7 @@ D12_BASE = ".workspace/nanochat_base"
 def test_d8_scripts_use_d8_base_dir():
     """d8 scripts must reference nanochat_base_d8_v3, not the d12 base dir."""
     for script in ["21_OWNER_PROBE_D8_BASE_V3.sh", "22_OWNER_TRAIN_D8_BASE_V3_PILOT.sh", "23_OWNER_EVAL_D8_BASE_V3_PILOT.sh"]:
-        path = os.path.join(PACK, "dist/owner_runs", script)
+        path = os.path.join(PACK, "ops/owner_runs", script)
         if not os.path.exists(path): continue
         with open(path) as f:
             content = f.read()
@@ -36,7 +36,7 @@ def test_d8_workspace_exists():
     assert os.path.exists(pq), f"d8 train parquet missing at {pq}"
 
 def test_tokenizer_v2_script_has_guard():
-    path = os.path.join(PACK, "dist/owner_runs/20_OWNER_PREPARE_TOKENIZER_V2.sh")
+    path = os.path.join(PACK, "ops/owner_runs/20_OWNER_PREPARE_TOKENIZER_V2.sh")
     if not os.path.exists(path): return
     with open(path) as f:
         content = f.read()

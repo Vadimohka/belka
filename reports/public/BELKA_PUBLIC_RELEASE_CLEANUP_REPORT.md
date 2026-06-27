@@ -5,7 +5,7 @@
 > to publish the full project in a single public repo on `main` (no mirror, no orphan
 > branch). For the canonical published state see
 > [`release/MAIN_PUBLICATION_REPORT.md`](../../release/MAIN_PUBLICATION_REPORT.md) and
-> [`release/FINAL_MAIN_CLEANUP_REPORT.md`](../../release/FINAL_MAIN_CLEANUP_REPORT.md).
+> [`reports/public/maintenance/FINAL_MAIN_CLEANUP_REPORT.md`](maintenance/FINAL_MAIN_CLEANUP_REPORT.md).
 > Kept here as provenance of the cleanup history.
 
 *Generated 2026-06-27 by a repository cleanup + publication-preparation pass.*

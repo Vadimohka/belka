@@ -7,12 +7,12 @@ Belka is trained from scratch. Pretrained multilingual models are not Belka base
 ## Minimal safe first stage
 
 ```bash
-bash local/repo_guard.sh
+bash ops/local/repo_guard.sh
 PYTHONPATH="$PWD" pytest -q tests
 python3 tools/validate_ready_and_sources.py 'data_ready/base_jsonl/*.jsonl' 'data_ready/sft_jsonl/*.jsonl'
-bash local/import_ready_training_data.sh
+bash ops/local/import_ready_training_data.sh
 python tools/train_tokenizer_ablation.py --pack-dir "$PWD" --vocabs 8000,16000
-bash local/run_belka_from_scratch_smoke.sh --profile belka_d4_smoke --tokenizer-vocab 16000 --model-tag belka-d4-smoke-v4
+bash ops/local/run_belka_from_scratch_smoke.sh --profile belka_d4_smoke --tokenizer-vocab 16000 --model-tag belka-d4-smoke-v4
 ```
 
 This is a pipeline proof, not a quality model.

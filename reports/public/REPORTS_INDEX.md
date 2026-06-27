@@ -20,6 +20,14 @@ the full project history remains in git.
 - [`SOURCE_EXPANSION_OWNER_DECISIONS.md`](SOURCE_EXPANSION_OWNER_DECISIONS.md) — sources awaiting owner decision.
 - [`BELKA_PUBLIC_RELEASE_CLEANUP_REPORT.md`](BELKA_PUBLIC_RELEASE_CLEANUP_REPORT.md) — this cleanup pass.
 
+## Maintenance history
+
+Repository maintenance / cleanup audit records (kept as provenance of the cleanup history):
+
+- [`maintenance/JUNK_CLEANUP_REPORT.md`](maintenance/JUNK_CLEANUP_REPORT.md)
+- [`maintenance/FINAL_MAIN_CLEANUP_REPORT.md`](maintenance/FINAL_MAIN_CLEANUP_REPORT.md)
+- [`maintenance/CHECKSUM_CLEANUP_AUDIT.md`](maintenance/CHECKSUM_CLEANUP_AUDIT.md)
+
 ## Related top-level docs
 
 - [`../../DATA_RIGHTS_AND_PERMISSIONS.md`](../../DATA_RIGHTS_AND_PERMISSIONS.md)

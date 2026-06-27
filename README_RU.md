@@ -66,7 +66,17 @@ model_cards/    карточки модели (belka-research-preview)
 reports/public/ курируемые публичные отчёты
 reports/state/  машиночитаемое каноническое состояние
 release/        чек-лист и заметки релиза
+ops/            опциональные owner/agent workflow-файлы (не нужны для базового чтения)
 ```
+
+## Примечание о структуре репозитория
+
+Основная research-preview поверхность — `README_RU.md`, `configs/`,
+`data_pipeline/`, `eval/`, `tools/`, `tests/`, `reports/public/`,
+`data_cards/` и `model_cards/`.
+
+Опциональные owner/agent workflow-файлы вынесены в `ops/` для прозрачности,
+но не нужны для базового чтения проекта.
 
 ## Права на данные, разрешения и происхождение
 

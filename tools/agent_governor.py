@@ -39,7 +39,7 @@ def grep_code_forbidden(pack: Path):
     code_ext={".sh",".py",".yaml",".yml",".json",".toml"}
     skip={".git",".workspace","dist","data_input/downloads"}
     allowed_negative_examples={
-        "local/repo_guard.sh",
+        "ops/local/repo_guard.sh",
         "tests/test_smoke_scripts_static.py",
         "tools/audit_corpus_outputs.py",
         "configs/agent_governor_policy.yaml",
@@ -98,7 +98,7 @@ def find_downgrade_evidence(pack: Path):
 def preflight(pack: Path):
     policy=read_yaml(pack/"configs/agent_governor_policy.yaml")
     result={"timestamp":datetime.now(timezone.utc).isoformat(),"pack_dir":str(pack.resolve()),"checks":[]}
-    required=["local/repo_guard.sh","configs/agent_governor_policy.yaml","configs/training_ladder_8gb.yaml"]
+    required=["ops/local/repo_guard.sh","configs/agent_governor_policy.yaml","configs/training_ladder_8gb.yaml"]
     for r in required:
         ok=(pack/r).exists()
         result["checks"].append({"check":r,"status":"PASS" if ok else "FAIL"})

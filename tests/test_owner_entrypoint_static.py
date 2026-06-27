@@ -107,12 +107,12 @@ def test_owner_sh_bash_syntax():
 
 # === Dry-run: verify all referenced scripts in owner.sh exist ===
 def test_owner_sh_referenced_scripts_exist():
-    """Every dist/owner_runs/ script referenced in owner.sh must exist."""
+    """Every ops/owner_runs/ script referenced in owner.sh must exist."""
     content = OWNER_SH.read_text()
-    script_refs = re.findall(r'dist/owner_runs/(\d+_OWNER_\w+\.sh)', content)
+    script_refs = re.findall(r'ops/owner_runs/(\d+_OWNER_\w+\.sh)', content)
     missing = []
     for ref in script_refs:
-        path = REPO_ROOT / "dist/owner_runs" / ref
+        path = REPO_ROOT / "ops/owner_runs" / ref
         if not path.exists():
             missing.append(ref)
     assert len(missing) == 0, f"owner.sh references scripts that do not exist: {missing}"

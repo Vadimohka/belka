@@ -34,7 +34,7 @@ roles:
 training_launch_policy:
   default: blocked_for_agents
   owner_run_only: true
-  generated_scripts_dir: dist/owner_runs
+  generated_scripts_dir: ops/owner_runs
   required_owner_script_prefix: OWNER_RUN_
   agent_must_not_execute_owner_script: true
 
@@ -57,5 +57,5 @@ required_artifacts_before_owner_run:
   - reports/data_readiness_v2.json
   - reports/books_clean_v2_manifest.jsonl
   - reports/training_ladder_plan.json
-  - dist/owner_runs/OWNER_RUN_NEXT.sh
+  - ops/owner_runs/OWNER_RUN_NEXT.sh
   - dist/chatgpt_pro_context_latest.zip

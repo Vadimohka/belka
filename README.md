@@ -65,7 +65,6 @@ Reproducing the corpus, tokenizer, and training requires external data and a GPU
 configs/        training profiles, data-source registry, expansion candidates, policies
 data_pipeline/  Belarusian normalization / language filter / dedup / split
 tools/          corpus, rights, leakage, source-board, and validation tools
-data_pipeline/  core ETL modules
 eval/           language-lock / holdout / regression / refusal eval suites + runner
 seed_sft/       Belarusian SFT seed conversations (v8 current)
 data_ready/     small bundled bootstrap/seed/eval jsonl
@@ -75,7 +74,16 @@ model_cards/    model cards (belka-research-preview)
 reports/public/ curated public-facing reports (status, provenance, eval, leakage, release)
 reports/state/  machine-readable canonical state
 release/        release checklist + notes
+ops/            optional owner/agent workflow material (not needed for a basic read)
 ```
+
+## Repository layout note
+
+The main research-preview surface is `README.md`, `configs/`, `data_pipeline/`,
+`eval/`, `tools/`, `tests/`, `reports/public/`, `data_cards/`, and `model_cards/`.
+
+Optional owner/agent workflow material is kept under `ops/` for transparency,
+but it is not required for a basic review of the project.
 
 ## Data Rights, Permissions, and Provenance
 

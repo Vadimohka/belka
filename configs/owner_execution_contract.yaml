@@ -19,7 +19,7 @@ roles:
       - context_zip
       - sha256
   owner:
-    runs_scripts_only_from: dist/owner_runs
+    runs_scripts_only_from: ops/owner_runs
     expected_sequence:
       - 01_OWNER_DOWNLOAD_SOURCES.sh
       - 02_OWNER_BUILD_DATASET_V2.sh

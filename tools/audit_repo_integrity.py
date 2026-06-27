@@ -39,14 +39,14 @@ def main():
 
     # --- Required scripts ---
     required_scripts = [
-        "dist/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh",
-        "dist/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh",
-        "dist/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
-        "dist/owner_runs/35_OWNER_EVAL_D8_BASE_V3B_PILOT.sh",
-        "dist/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh",
-        "dist/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh",
-        "dist/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh",
-        "dist/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh",
+        "ops/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh",
+        "ops/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh",
+        "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+        "ops/owner_runs/35_OWNER_EVAL_D8_BASE_V3B_PILOT.sh",
+        "ops/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh",
+        "ops/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh",
+        "ops/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh",
+        "ops/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh",
     ]
     missing_scripts = [s for s in required_scripts if not exists(s)]
     result["MISSING_REQUIRED_SCRIPTS"] = missing_scripts

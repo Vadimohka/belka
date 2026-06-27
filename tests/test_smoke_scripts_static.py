@@ -5,7 +5,7 @@ PACK = Path(__file__).resolve().parents[1]
 
 def test_shell_scripts_have_strict_mode_and_no_absolute_user_path():
     scripts = (
-        list((PACK / "local").glob("*.sh"))
+        list((PACK / "ops/local").glob("*.sh"))
         + list((PACK / "kaggle").glob("*.sh"))
         + list((PACK / "colab").glob("*.sh"))
         + list((PACK / "deploy").glob("*.sh"))
@@ -30,10 +30,10 @@ def test_wandb_disabled_via_pack_paths_policy():
     assert 'WANDB_DISABLED="${WANDB_DISABLED:-true}"' in policy
     assert 'WANDB_SILENT="${WANDB_SILENT:-true}"' in policy
     for path in [
-        PACK / "local" / "run_all_3070ti_smoke.sh",
-        PACK / "local" / "run_all_3070ti_safe.sh",
-        PACK / "local" / "run_all_3070ti_aggressive.sh",
-        PACK / "local" / "install_nanochat_env.sh",
+        PACK / "ops/local" / "run_all_3070ti_smoke.sh",
+        PACK / "ops/local" / "run_all_3070ti_safe.sh",
+        PACK / "ops/local" / "run_all_3070ti_aggressive.sh",
+        PACK / "ops/local" / "install_nanochat_env.sh",
     ]:
         text = path.read_text(encoding="utf-8")
-        assert 'source "$PACK_DIR/local/pack_paths.sh"' in text or "source '$PACK_DIR/local/pack_paths.sh'" in text
+        assert 'source "$PACK_DIR/ops/local/pack_paths.sh"' in text or "source '$PACK_DIR/ops/local/pack_paths.sh'" in text

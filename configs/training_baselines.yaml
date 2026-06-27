@@ -6,7 +6,7 @@ policy:
 baselines:
 - id: tiny_sanity_run
   description: End-to-end smoke only, not quality model
-  script: local/run_belka_from_scratch_smoke.sh
+  script: ops/local/run_belka_from_scratch_smoke.sh
   profile: belka_d4_smoke
   tokenizer_vocab: 16000
   max_iterations: 50
@@ -20,7 +20,7 @@ baselines:
   scripts:
   - tools/train_tokenizer_ablation.py
   - tools/eval_tokenizer_fertility.py
-  - local/run_belka_from_scratch_safe.sh
+  - ops/local/run_belka_from_scratch_safe.sh
   profile: belka_d8_40m_safe
   tokenizer_vocabs:
   - 8000
@@ -31,7 +31,7 @@ baselines:
   approval_required: true
 - id: from_scratch_safe_base
   description: First serious local from-scratch base training
-  script: local/run_belka_from_scratch_safe.sh
+  script: ops/local/run_belka_from_scratch_safe.sh
   profile: belka_d8_40m_safe
   sequence_length: 1024
   precision: float16

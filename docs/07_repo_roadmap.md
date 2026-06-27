@@ -6,7 +6,7 @@ Goal: make the repository safe for future agents.
 
 Definition of Done:
 
-- `README.md`, `AGENTS.md`, and docs are present.
+- `README.md`, `ops/agents/AGENTS.md`, and docs are present.
 - `configs/dataset_sources.yaml` is updated.
 - `configs/training_baselines.yaml` is present.
 - `repo_guard` passes.

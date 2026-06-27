@@ -50,7 +50,7 @@ def main() -> int:
         "allowed": ok,
         "reason": reason,
         "command_hits": command_hits,
-        "policy": "agent_must_not_download_build_probe_or_train; owner runs scripts from dist/owner_runs only"
+        "policy": "agent_must_not_download_build_probe_or_train; owner runs scripts from ops/owner_runs only"
     }
     if args.json_out:
         p = Path(args.json_out); p.parent.mkdir(parents=True, exist_ok=True); p.write_text(json.dumps(out, indent=2), encoding="utf-8")
