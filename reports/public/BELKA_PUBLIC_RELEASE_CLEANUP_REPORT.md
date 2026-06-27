@@ -1,5 +1,13 @@
 # Belka — Public Release Cleanup Report
 
+> **Superseded (historical).** This report describes an earlier cleanup pass that proposed
+> a reduced public cut (223 tracked files, data untracked). The owner subsequently decided
+> to publish the full project in a single public repo on `main` (no mirror, no orphan
+> branch). For the canonical published state see
+> [`release/MAIN_PUBLICATION_REPORT.md`](../../release/MAIN_PUBLICATION_REPORT.md) and
+> [`release/FINAL_MAIN_CLEANUP_REPORT.md`](../../release/FINAL_MAIN_CLEANUP_REPORT.md).
+> Kept here as provenance of the cleanup history.
+
 *Generated 2026-06-27 by a repository cleanup + publication-preparation pass.*
 **No git commit was made; no training was run; no data was downloaded; no local data was
 deleted (data was untracked via `git rm --cached`, keeping local copies).** All staged

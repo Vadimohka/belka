@@ -1,5 +1,0 @@
-SFT_LEAKAGE_AUDIT=FAIL
-Exact overlap: 20/20 (100.0%)
-5-gram ratio: 100.0%
-Val size: 30 (need ≥50)
-LEAKAGE: train/val overlap detected. Val data shares templates with train.

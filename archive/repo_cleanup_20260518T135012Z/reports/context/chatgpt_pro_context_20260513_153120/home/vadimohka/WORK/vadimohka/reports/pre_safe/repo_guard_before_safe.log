@@ -1,9 +1,0 @@
-OK: WORKSPACE_DIR=/home/vadimohka/WORK/vadimohka/.workspace
-OK: NANOCHAT_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat
-OK: NANOCHAT_BASE_DIR=/home/vadimohka/WORK/vadimohka/.workspace/nanochat_base
-OK: LOCAL_TEXT_DIR=/home/vadimohka/WORK/vadimohka/data_input/be_texts
-OK: DOWNLOAD_DIR=/home/vadimohka/WORK/vadimohka/data_input/downloads
-OK: TMPDIR=/home/vadimohka/WORK/vadimohka/.workspace/tmp
-OK: HF_HOME=/home/vadimohka/WORK/vadimohka/.workspace/hf_home
-OK: WANDB_DIR=/home/vadimohka/WORK/vadimohka/.workspace/wandb
-OK: repository containment guard passed

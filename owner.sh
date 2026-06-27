@@ -143,11 +143,9 @@ cmd_corpus_plan() {
     echo "=== Corpus Expansion Plan ==="
     echo "TRAINING_ALLOWED=NO"
     echo ""
-    echo "Planning scripts: 36, 37, 38"
+    echo "Planning script: 36"
     for script in \
-        dist/owner_runs/36_OWNER_PLAN_CORPUS_EXPANSION_200M.sh \
-        dist/owner_runs/37_OWNER_PLAN_CORPUS_EXPANSION_200M.sh \
-        dist/owner_runs/38_OWNER_PLAN_CORPUS_EXPANSION_200M.sh; do
+        dist/owner_runs/36_OWNER_PLAN_CORPUS_EXPANSION_200M.sh; do
         if [[ -f "$script" ]]; then
             echo "  Present: $script"
         else

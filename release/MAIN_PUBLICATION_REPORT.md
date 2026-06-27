@@ -1,5 +1,9 @@
 # Belka Main Branch Publication Report
 
+> The earlier separate-mirror / orphan-branch publication approach was **superseded** by
+> the owner's decision to publish the full project in this single repository on `main`.
+> `main` is the canonical public branch; full git history is preserved.
+
 ## Repository
 
 - GitHub: https://github.com/Vadimohka/belka

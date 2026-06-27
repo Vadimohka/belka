@@ -1,9 +1,0 @@
-{
-  "agent_prepare_done": true,
-  "training_started_by_agent": false,
-  "timestamp_utc": "20260513T121907Z",
-  "owner_run_script": "dist/owner_runs/OWNER_RUN_NEXT.sh",
-  "owner_run_sha256": "625388ca85cf0f4513736611e3407deeee8bfb374f054e57c9f92c345e6a8087",
-  "chatgpt_pro_context_zip": "dist/chatgpt_pro_context_20260513T121907Z.zip",
-  "chatgpt_pro_context_sha256": "e3fcf69a8a7c4aef8c4365e8f2b3abd0c25660e323b5d42acfba80c0de4ddf32"
-}

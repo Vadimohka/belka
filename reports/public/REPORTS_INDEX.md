@@ -4,6 +4,10 @@ These are the **curated, public-facing** reports for the Belka research release.
 logs, training stdout, governor state, and raw audit dumps are **not** part of the public
 release — they remain local/ignored (see `.gitignore`) and are summarized here instead.
 
+Historical internal cleanup snapshots (the former `archive/repo_cleanup_*/` tree) were
+removed from the live repository surface; the curated summaries below supersede them, and
+the full project history remains in git.
+
 ## Public reports
 
 - [`PROJECT_STATUS.md`](PROJECT_STATUS.md) — current corpus/model/SFT state; accepted vs rejected; what is not claimed.

@@ -23,6 +23,14 @@ filtering, orthography tracking, decontaminated evaluation) rather than aftertho
 **Pretrained multilingual models are used only as external eval baselines, never as a
 training base.**
 
+## Repository status
+
+Public branch: **`main`** (the canonical public branch — single repo, no mirror).
+Release: **`v0.1.0-research-preview`**. Maintainer: Vadim Vladymtsev
+([vadimohka.com](https://vadimohka.com), vadimohkav@gmail.com). Full project history is
+preserved; historical internal cleanup snapshots have been curated into the public
+summaries under [`reports/public/`](reports/public/).
+
 ## Current status
 
 | Item | Value |
