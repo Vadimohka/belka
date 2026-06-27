@@ -106,6 +106,14 @@ Belka различает исходную лицензию источника, �
 
 См. [`CITATION.cff`](CITATION.cff) и [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
+## Владелец проекта
+
+Belka поддерживается Вадимом Уладымцавым.
+
+- Сайт: https://vadimohka.com
+- Контакт: vadimohkav@gmail.com
+- GitHub: https://github.com/Vadimohka
+
 ## Лицензия
 
 Код: [`LICENSE`](LICENSE) (MIT). Данные: по источникам — см.

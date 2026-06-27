@@ -50,3 +50,11 @@ for permissioned material on request.
 
 *Nothing here is published automatically. See `release/RELEASE_CHECKLIST.md` for the
 remaining owner decisions before any public mirror, Hugging Face, or Zenodo release.*
+
+## Project owner
+
+Belka is maintained by Vadim Vladymtsev.
+
+- Website: https://vadimohka.com
+- Contact: vadimohkav@gmail.com
+- GitHub: https://github.com/Vadimohka

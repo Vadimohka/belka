@@ -54,3 +54,11 @@ All four should pass. CI runs the same checks (`.github/workflows/ci.yml`).
 This repository is the **public research surface**. Owner-only operational scripts and
 agent workflows are tracked separately (see
 `manifests/cleanup/private_ops_manifest.jsonl`) and are not part of public contributions.
+
+## Project owner
+
+Belka is maintained by Vadim Vladymtsev.
+
+- Website: https://vadimohka.com
+- Contact: vadimohkav@gmail.com
+- GitHub: https://github.com/Vadimohka

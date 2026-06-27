@@ -58,8 +58,13 @@ def main() -> int:
     problems: list[str] = []
     files = tracked_files()
 
-    junk = [f for f in files if TRACKED_JUNK.search(f)]
-    raw = [f for f in files if TRACKED_RAW.search(f) and not f.startswith("data_cards/")]
+    # archive/ is a deliberately-preserved historical snapshot (owner decision: publish
+    # everything), not the live public surface. Logs/caches/context dumps inside it are
+    # expected, so the junk/raw scans target the live tree only.
+    live = [f for f in files if not f.startswith("archive/")]
+
+    junk = [f for f in live if TRACKED_JUNK.search(f)]
+    raw = [f for f in live if TRACKED_RAW.search(f) and not f.startswith("data_cards/")]
     problems += [f"tracked junk: {f}" for f in junk]
     problems += [f"tracked raw data: {f}" for f in raw]
 

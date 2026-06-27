@@ -71,6 +71,14 @@ privately by the owner and can be **confirmed at review**. See
 - Belarusian orthography variants (narkamauka/tarask) are tracked but not perfectly split.
 - Outputs are not authoritative; verify facts independently.
 
+## Project owner
+
+Belka is maintained by Vadim Vladymtsev.
+
+- Website: https://vadimohka.com
+- Contact: vadimohkav@gmail.com
+- GitHub: https://github.com/Vadimohka
+
 ## Citation
 
 See `CITATION.cff` when published. For now, cite the repository and corpus version `v3b`.

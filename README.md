@@ -128,6 +128,14 @@ Readiness for GitHub / Hugging Face (model + dataset) / Zenodo, and open blocker
 [`reports/public/RELEASE_READINESS.md`](reports/public/RELEASE_READINESS.md) and
 [`release/RELEASE_CHECKLIST.md`](release/RELEASE_CHECKLIST.md).
 
+## Project owner
+
+Belka is maintained by Vadim Vladymtsev.
+
+- Website: https://vadimohka.com
+- Contact: vadimohkav@gmail.com
+- GitHub: https://github.com/Vadimohka
+
 ## Citation
 
 See [`CITATION.cff`](CITATION.cff).

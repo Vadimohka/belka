@@ -47,3 +47,6 @@ original status retained; **no permission claimed**; blocked until owner review.
 - No source is asserted to be public domain.
 - The corpus is not asserted to be freely redistributable.
 - A permission to train is not a permission to redistribute raw data.
+- Publication of this repository (including any processed/derived text it contains)
+  reflects owner-held permissions and documented provenance, **not** a blanket
+  relicensing of all source materials.

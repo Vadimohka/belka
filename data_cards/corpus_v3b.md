@@ -83,3 +83,11 @@ license and project-specific permission are tracked separately.
 - Narkamauka/tarask mixing is tracked but not perfectly separated.
 - Raw redistribution rights differ from model/code release rights — do not assume the
   corpus is openly downloadable.
+
+## Project owner
+
+Belka is maintained by Vadim Vladymtsev.
+
+- Website: https://vadimohka.com
+- Contact: vadimohkav@gmail.com
+- GitHub: https://github.com/Vadimohka

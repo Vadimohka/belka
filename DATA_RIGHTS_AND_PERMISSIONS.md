@@ -89,6 +89,12 @@ The project does not assert permission for material it does not use.
   **can be confirmed by the owner at review** (e.g. for a grant, audit, or reviewer
   request).
 
+- **Processed/derived text in this repository** (e.g. `data_ready/`, `seed_sft/`):
+  publication of this repository reflects **owner-held permissions and documented
+  provenance**, not a blanket relicensing of all source materials. Inclusion of derived
+  data here does **not** place the underlying sources in the public domain or grant
+  unrestricted redistribution rights over them.
+
 ## 5. Honest limitations (what we explicitly do NOT claim)
 
 - We do **not** claim that all source materials are public domain.

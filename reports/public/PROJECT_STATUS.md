@@ -38,3 +38,11 @@ working from-scratch Belarusian pipeline, not a production-quality model.
 - The corpus is **not** public domain and **not** fully redistributable (see
   `DATA_RIGHTS_AND_PERMISSIONS.md`).
 - Pretrained multilingual models are used **only** as eval baselines, never as a training base.
+
+## Project owner
+
+Belka is maintained by Vadim Vladymtsev.
+
+- Website: https://vadimohka.com
+- Contact: vadimohkav@gmail.com
+- GitHub: https://github.com/Vadimohka

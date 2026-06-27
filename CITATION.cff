@@ -7,9 +7,11 @@ abstract: >-
   owner-obtained research permission, and redistribution status. Research preview.
 type: software
 authors:
-  - given-names: Vadim
-    family-names: ""
+  - family-names: Vladymtsev
+    given-names: Vadim
     affiliation: "Belka project (independent research)"
+    website: "https://vadimohka.com"
+    email: "vadimohkav@gmail.com"
 version: "0.1.0"
 date-released: "2026-06-27"
 license: MIT
