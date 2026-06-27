@@ -1,3 +1,0 @@
-?? reports/eval_belka_d4_smoke_v4_before_safe.json
-?? reports/releases/
-?? reports/training_logs/server_safe_eval.log

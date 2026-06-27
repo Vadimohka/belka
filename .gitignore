@@ -46,3 +46,7 @@ dist/*.bundle
 dist/*.patch
 dist/*.diffstat.txt
 dist/context/
+.coverage
+htmlcov/
+tree*.txt
+reports/**/*.xlsx
