@@ -21,6 +21,9 @@
     "V3B_TRAIN_ROWS": 302991,
     "V3B_TRAIN_CHARS": 594660215,
     "V3B_EST_TOKENS": 59376843,
+    "V3B_EST_TOKENS_NOTE": "early ~10 chars/token estimate; superseded by V3B_ACTUAL_TOKENS_16K",
+    "V3B_ACTUAL_TOKENS_16K": 180611125,
+    "V3B_CHARS_PER_TOKEN_16K": 3.292,
     "BOOKS_CLEAN_V2_ROWS": 485,
     "BEWIKISOURCE_ROWS_FINAL": 3493,
     "BEWIKIBOOKS_ROWS_FINAL": 177,
@@ -51,11 +54,22 @@
     "PROVENANCE_RISK": "MEDIUM"
   },
   "next_allowed_actions": [
+    "build corpus v4 (all rights-cleared sources, per docs/CORPUS_V4_EXPANSION_PLAN.md)",
+    "H200 max-quality run after corpus v4 acceptance (ops/local/run_belka_h200_maxquality.sh)",
     "repo integrity cleanup",
     "recreate missing QC scripts",
-    "rebuild/audit XLSX reproducibly",
-    "corpus expansion planning"
+    "rebuild/audit XLSX reproducibly"
   ],
+  "owner_decisions": {
+    "2026-08-16_H200": {
+      "decision": "training hardware moves from RTX 3070 Ti to H200 server; target is max quality on all available rights-cleared data",
+      "dtype_policy": "auto (bf16 on H200); fp16 remains explicit legacy opt-in for 3070 Ti scripts",
+      "runbook": "ops/local/run_belka_h200_maxquality.sh",
+      "profiles": "configs/profiles_h200.yaml",
+      "plan": "reports/strategy/H200_MAX_QUALITY_PLAN.md",
+      "training_gate": "TRAINING_ALLOWED stays NO until corpus v4 accepted (data-limited, not hardware-limited); owner overrides via BELKA_OWNER_APPROVED_TRAINING as usual"
+    }
+  },
   "blocked_actions": [
     "training",
     "SFT",

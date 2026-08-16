@@ -57,6 +57,34 @@ profiles:
     purpose: "cloud_kaggle_colab"
     target_gpu: "A10G_24GB_or_better"
 
+  belka_h200_d16_quality:
+    n_layer: 16
+    n_embd: 1024        # depth * aspect_ratio 64
+    n_head: 8
+    n_kv_head: 8
+    max_seq_len: 2048
+    vocab_size: 32768
+    approx_params: "150-200M"
+    device_batch_size: 32
+    total_batch_size: 262144
+    purpose: "max_quality_primary"
+    target_gpu: "H200_141GB"
+    note: "epoch-driven token budget (~3 epochs), corpus v4 required for full benefit"
+
+  belka_h200_d24_max:
+    n_layer: 24
+    n_embd: 1536
+    n_head: 12
+    n_kv_head: 12
+    max_seq_len: 2048
+    vocab_size: 32768
+    approx_params: "400M+"
+    device_batch_size: 32
+    total_batch_size: 524288
+    purpose: "max_quality_large"
+    target_gpu: "H200_141GB"
+    note: "requires corpus v4 >= 500M unique tokens; multi-epoch degradation risk below that"
+
 tokenizer_defaults:
   algorithm: "bpe_byte_fallback"
   recommended_vocab: 16384

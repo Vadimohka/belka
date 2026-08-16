@@ -1,0 +1,74 @@
+# H200 (Hopper, 141GB HBM3e) — max-quality profiles.
+# Owner decision 2026-08-16: training moves off RTX 3070 Ti to an H200 server;
+# goal is maximum quality on ALL available rights-cleared data.
+# See reports/strategy/H200_MAX_QUALITY_PLAN.md.
+#
+# Hardware notes:
+# - dtype: leave NANOCHAT_DTYPE unset -> auto bf16 (SM90). Do NOT set float16 here.
+# - FA3 is used automatically on Hopper for bf16 (no patch needed).
+# - FP8: optional (BELKA_FP8=YES in the runbook). ~1.3x throughput, tested by
+#   upstream speedrun (leaderboard entry #2); off by default for max quality.
+# - nanochat autotunes width/LR/WD from --depth; batch sizes below are per H200.
+# - Token budgets are EPOCH-driven, not fixed: the runbook counts corpus tokens
+#   with tools/count_corpus_tokens.py and derives --num-iterations.
+
+profiles:
+  smoke:
+    description: "Fast server sanity check after env install; not a quality model."
+    depth: 6
+    max_seq_len: 512
+    device_batch_size: 16
+    total_batch_size: 32768
+    base_iterations: 100
+    sft_iterations: 100
+    tokenizer_vocab_size: 16384
+    target_epochs: null  # fixed iteration count
+    fp8: false
+
+  quality_v4:
+    description: >-
+      Main max-quality run on the full rights-cleared corpus (v4 target, v3b fallback).
+      Depth 16 -> n_embd 1024 (~150-200M params with 32k vocab). ~3 epochs on the
+      deduplicated corpus: more epochs degraded quality on v3b (multi-epoch
+      degradation recorded for d8 at ~8 epochs), so scale data, not epochs.
+    depth: 16
+    max_seq_len: 2048
+    device_batch_size: 32
+    total_batch_size: 262144
+    target_epochs: 3
+    sft_iterations: 1500
+    tokenizer_vocab_size: 32768
+    window_pattern: "SSSL"
+    fp8: false
+
+  max_d24:
+    description: >-
+      Only after corpus v4 reaches >=500M unique tokens: depth 24 -> n_embd 1536
+      (~400M+ params). Repeat-epoch risk on smaller corpora is real; do not use
+      with v3b.
+    depth: 24
+    max_seq_len: 2048
+    device_batch_size: 32
+    total_batch_size: 524288
+    target_epochs: 3
+    sft_iterations: 2000
+    tokenizer_vocab_size: 32768
+    window_pattern: "SSSL"
+    fp8: false
+
+common_env:
+  # Everything unset-on-purpose is listed so the intent is explicit.
+  NANOCHAT_DTYPE: ""          # auto -> bfloat16 on H200
+  PYTORCH_CUDA_ALLOC_CONF: "expandable_segments:True"
+  BELKA_DISABLE_GENERIC_EVALS: "YES"
+  WANDB_MODE: "disabled"      # flip to online on the server if desired
+
+sft:
+  source: seed_sft v8 mixture via tools/build_sft_mix.py (identity_conversations*.jsonl)
+  chatcore_every: -1          # English generic evals disabled for Belarusian-only SFT
+
+quality_policy:
+  dedup: exact + near (simhash), same as corpus v3b/v4 policy
+  orthography: narkamauka primary, tarask tracked (do not merge)
+  eval: strict holdout 209 prompts + language-lock suites stay untouched by training data
+  tokenizer: retrain per corpus version; vocab 32768 for depth>=16 (ablation-supported)

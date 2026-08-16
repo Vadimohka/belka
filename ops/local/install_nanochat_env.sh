@@ -5,7 +5,9 @@ PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 source "$PACK_DIR/ops/local/pack_paths.sh"
 bash "$PACK_DIR/ops/local/repo_guard.sh"
 
-NANOCHAT_GIT_REF="${NANOCHAT_GIT_REF:-master}"
+# Pinned upstream commit: keep in sync with .workspace/nanochat on refresh
+# (see reports/repo_integrity/nanochat_upstream_refresh_*.md).
+NANOCHAT_GIT_REF="${NANOCHAT_GIT_REF:-92d63d4}"
 NANOCHAT_GIT_URL="${NANOCHAT_GIT_URL:-https://github.com/karpathy/nanochat.git}"
 DRY_RUN=0
 SKIP_GIT_PULL=0
@@ -20,7 +22,7 @@ Usage: bash ops/local/install_nanochat_env.sh --nanochat-dir PATH [options]
 
 Options:
   --nanochat-dir PATH       nanochat checkout directory (default: $PACK_DIR/.workspace/nanochat)
-  --git-ref REF             branch/tag/commit to checkout (default: master)
+  --git-ref REF             branch/tag/commit to checkout (default: pinned 92d63d4)
   --base-dir PATH           NANOCHAT_BASE_DIR (default: $PACK_DIR/.workspace/nanochat_base)
   --skip-git-pull           do not fetch/pull an existing git checkout
   --init-submodules         run git submodule update only inside a real git checkout
@@ -94,7 +96,7 @@ else
     else
       echo "git not found; downloading nanochat zip to $DOWNLOAD_DIR"
       mkdir -p "$DOWNLOAD_DIR"
-      NANOCHAT_ZIP_URL="https://github.com/karpathy/nanochat/archive/refs/heads/${NANOCHAT_GIT_REF}.zip"
+      NANOCHAT_ZIP_URL="${NANOCHAT_GIT_URL%.git}/archive/${NANOCHAT_GIT_REF}.zip"
       curl -LsSf "$NANOCHAT_ZIP_URL" -o "$DOWNLOAD_DIR/nanochat.zip"
       unzip -q "$DOWNLOAD_DIR/nanochat.zip" -d "$TMPDIR"
       mv "$TMPDIR/nanochat-${NANOCHAT_GIT_REF}" "$NANOCHAT_DIR"
@@ -202,6 +204,13 @@ PY
 fi
 
 if [[ "$DRY_RUN" != "1" ]]; then
+  # Belka fork files on top of the pristine upstream checkout
+  # (see ops/nanochat_fork/README.md).
+  mkdir -p "$NANOCHAT_DIR/tasks" "$NANOCHAT_DIR/scripts" "$NANOCHAT_DIR/nanochat"
+  cp "$PACK_DIR/ops/nanochat_fork/tasks/customjson.py" "$NANOCHAT_DIR/tasks/customjson.py"
+  cp "$PACK_DIR/ops/nanochat_fork/scripts/chat_web.py" "$NANOCHAT_DIR/scripts/chat_web.py"
+  cp "$PACK_DIR/ops/nanochat_fork/nanochat/ui.html" "$NANOCHAT_DIR/nanochat/ui.html"
+  cp "$PACK_DIR/ops/nanochat_fork/nanochat/logo.svg" "$NANOCHAT_DIR/nanochat/logo.svg"
   "$PYTHON" "$PACK_DIR/tools/build_sft_mix.py" --pack-dir "$PACK_DIR" --base-dir "$NANOCHAT_BASE_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_for_belarusian.py" --nanochat-dir "$NANOCHAT_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_dtype_fp16.py" --nanochat-dir "$NANOCHAT_DIR"

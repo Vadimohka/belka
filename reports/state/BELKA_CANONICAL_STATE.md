@@ -1,9 +1,16 @@
 # Belka Canonical State
 Generated: 2026-05-18
+Updated: 2026-08-16 (owner decision: H200 max-quality; see reports/strategy/H200_MAX_QUALITY_PLAN.md)
 
 ## Project
 - PROJECT=Belka Belarusian LLM from scratch
 - CURRENT_ALLOWED_ACTION=QC_AND_CORPUS_EXPANSION_ONLY
+
+## Owner Decisions
+- 2026-08-16: training hardware moves from RTX 3070 Ti to H200 server; max quality on all
+  available rights-cleared data; dtype auto (bf16), runbook ops/local/run_belka_h200_maxquality.sh,
+  profiles configs/profiles_h200.yaml. TRAINING_ALLOWED stays NO until corpus v4 accepted
+  (data-limited, not hardware-limited).
 
 ## Training Gates
 - TRAINING_ALLOWED=NO
@@ -18,7 +25,9 @@ Generated: 2026-05-18
 ## Corpus
 - CORPUS_V3B_STATUS=ACCEPTED
 - V3B_TRAIN_ROWS=302991
-- V3B_EST_TOKENS=59376843
+- V3B_EST_TOKENS=59376843 (early ~10 chars/token estimate; superseded by actual count below)
+- V3B_ACTUAL_TOKENS_16K=180611125 (3.292 chars/token, measured with the trained 16k tokenizer,
+  tools/count_corpus_tokens.py; use real counts for epoch math)
 - BOOKS_CLEAN_V2_ROWS=485
 - BEWIKISOURCE_ROWS_FINAL=3493
 - BEWIKIBOOKS_ROWS_FINAL=177
