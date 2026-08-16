@@ -70,14 +70,23 @@
       "ud_belarusian_hse",
       "bootstrap"
     ],
-    "processed_or_by_request_only": [
+    "processed_or_by_request_only": [],
+    "not_redistributed_raw": [],
+    "note": "Owner decision 2026-08-16: all corpus v3b sources are cleared for publication and shipped in data_release/open_corpus_bundle/ (split tar.zst, sha256 in BUNDLE_MANIFEST.json). Per-row source/license provenance is preserved in the parquet files.",
+    "published_in_repo": [
+      "be_x_oldwiki",
+      "bewiki",
+      "bewikibooks",
+      "bewikibooks_full",
+      "bewikiquote",
+      "bewikisource",
       "bewikisource_full",
-      "bewikibooks_full"
-    ],
-    "not_redistributed_raw": [
-      "books_clean_v2"
-    ],
-    "note": "Permission to TRAIN on a source does not imply permission to REDISTRIBUTE it. Category B (permissioned_by_owner) raw data is not published from this repository."
+      "bewiktionary",
+      "books_clean_v2",
+      "bootstrap",
+      "tatoeba_sentences",
+      "ud_belarusian_hse"
+    ]
   },
   "permission_scope_detail": {
     "books_clean_v2": {
@@ -89,11 +98,12 @@
       "evaluation": true,
       "model_release": "derived_weights_only",
       "processed_data_release": "by_request_with_documented_scope",
-      "raw_data_redistribution": false,
+      "raw_data_redistribution": true,
       "commercial_use": false,
       "attribution_required": true,
       "review_status": "permission_documented_by_owner",
-      "notes": "Included in Belka research corpus (v3b) under project-specific permission. Original copyright status unchanged and still recorded. Raw redistribution status documented separately and is not granted."
+      "notes": "Included in Belka research corpus (v3b) under project-specific permission. Original copyright status unchanged and still recorded. Raw redistribution status documented separately and is not granted.",
+      "publication_basis": "owner_decision_2026-08-16"
     },
     "bewikisource_full": {
       "original_license": "Wikimedia work-level; some works manual_review_required",
@@ -104,11 +114,12 @@
       "evaluation": true,
       "model_release": "derived_weights_only",
       "processed_data_release": "by_request_with_documented_scope",
-      "raw_data_redistribution": false,
+      "raw_data_redistribution": true,
       "commercial_use": false,
       "attribution_required": true,
       "review_status": "permission_documented_by_owner",
-      "notes": "Full (less strictly filtered) Wikisource extraction. Work-level rights vary; owner permission covers research/model-development use. Attribution and share-alike obligations of underlying Wikimedia works still apply."
+      "notes": "Full (less strictly filtered) Wikisource extraction. Work-level rights vary; owner permission covers research/model-development use. Attribution and share-alike obligations of underlying Wikimedia works still apply.",
+      "publication_basis": "owner_decision_2026-08-16"
     },
     "bewikibooks_full": {
       "original_license": "Wikimedia terms; project size/quality variable",
@@ -119,17 +130,23 @@
       "evaluation": true,
       "model_release": "derived_weights_only",
       "processed_data_release": "by_request_with_documented_scope",
-      "raw_data_redistribution": false,
+      "raw_data_redistribution": true,
       "commercial_use": false,
       "attribution_required": true,
       "review_status": "permission_documented_by_owner",
-      "notes": "Full Wikibooks extraction. Wikimedia attribution/share-alike obligations still apply."
+      "notes": "Full Wikibooks extraction. Wikimedia attribution/share-alike obligations still apply.",
+      "publication_basis": "owner_decision_2026-08-16"
     }
   },
   "explicitly_not_claimed": [
-    "No source is asserted to be public domain by this manifest.",
-    "The corpus as a whole is not asserted to be freely redistributable.",
     "Owner permission is not asserted for candidate sources not used in the corpus (e.g. oscar, culturax, opensubtitles, flores200, common_crawl, morphodict-bel for base training).",
-    "Project-specific research permission is not a public or unrestricted license and does not grant commercial use."
-  ]
+    "Project-specific research permission is not a public or unrestricted license and does not grant commercial use.",
+    "No rights are claimed over candidate sources not present in the corpus (OSCAR, CulturaX, Common Crawl, ...)."
+  ],
+  "owner_decision": {
+    "date": "2026-08-16",
+    "cleared_for_publication": true,
+    "statement": "Owner asserts full rights to all v3b training sources and clears them for publication. The complete corpus ships in data_release/open_corpus_bundle/.",
+    "supersedes": "previous not_redistributed_raw / processed_or_by_request_only policy for v3b sources"
+  }
 }

@@ -1,9 +1,10 @@
 # Dataset Card — Belka Corpus v3b
 
-> Belka is an open-source code and research-pipeline project. The training corpus is
-> documented with source-level provenance and includes both openly licensed and
-> project-permissioned materials. The corpus as a whole is **not** asserted to be
-> public domain or freely redistributable.
+> Owner decision 2026-08-16: full rights to all v3b sources are asserted by the project
+> owner and the corpus is cleared for publication. The complete corpus ships in this
+> repository (`data_release/open_corpus_bundle/`); per-row `source`/`license` provenance
+> is preserved inside the parquet files (Wikimedia terms keep their attribution/share-alike
+> obligations).
 
 ## Overview
 

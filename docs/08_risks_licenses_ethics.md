@@ -21,20 +21,18 @@
 
 ## Project-specific permissions (overlay)
 
-Some materials originally marked copyright / manual-review (notably
-`data_input/be_texts/books_clean_v2/`, including RuLit-style literary works, and the
-`*_full` literary extractions) are **permissioned by the owner for Belka research use**:
-the project owner obtained explicit written permission for research and model-development
-use. This is **not a code-license restriction** and **not a relicensing** of the source.
+Some materials were originally marked copyright / manual-review (notably
+`books_clean_v2`, including RuLit-style literary works, and the `*_full` literary
+extractions). **Owner decision 2026-08-16:** the owner asserts full rights to all
+v3b sources and clears them for publication; the complete corpus ships in this
+repository (`data_release/open_corpus_bundle/`). This is **not a relicensing** of
+the sources:
 
-- The original source license/status is preserved and still recorded.
-- Permission scope is documented (research_use, ml_training, evaluation, derived
-  model_release); raw-data redistribution status is **separate from training/model-release
-  status** and is **not** granted.
+- The original source license/status is preserved and still recorded (per-row in the
+  published parquet; Wikimedia terms keep their attribution/share-alike obligations).
+- The earlier research-only overlay is retired; the machine-readable record is
+  `reports/DATA_RIGHTS_MANIFEST.json` (`owner_decision` block).
 - Permission evidence is retained privately by the owner and is confirmable at review.
-- Before public release, the permission scope must be documented publicly (see
-  `DATA_RIGHTS_AND_PERMISSIONS.md`); raw data is not published unless redistribution is
-  explicitly covered.
 
 ## PII risks
 

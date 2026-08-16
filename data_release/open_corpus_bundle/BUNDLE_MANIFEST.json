@@ -1,0 +1,94 @@
+{
+  "bundle": "belka-corpus",
+  "version": "2",
+  "created": "2026-08-16T10:17:21+00:00",
+  "parent_corpus": "v3b",
+  "scope": "full",
+  "rights": {
+    "owner_decision": "2026-08-16: owner asserts full rights to all v3b training sources; publication allowed",
+    "provenance": "per-row source/license metadata preserved in the parquet files"
+  },
+  "splits": {
+    "train": {
+      "rows_total": 302991,
+      "rows_kept": 302991,
+      "rows_excluded": 0,
+      "chars": 594660215,
+      "sources": {
+        "bewiki": 204600,
+        "be_x_oldwiki": 74742,
+        "ud_belarusian_hse": 13957,
+        "tatoeba_sentences": 3633,
+        "bewikisource_full": 3493,
+        "bewiktionary": 1266,
+        "bewikiquote": 561,
+        "books_clean_v2": 485,
+        "bewikibooks_full": 177,
+        "bootstrap": 74,
+        "morphodict-bel": 3
+      },
+      "licenses": {
+        "free/attribution_sharealike": 281169,
+        "free/attribution": 17590,
+        "unknown/manual_review": 3670,
+        "manual_review_required/research_only": 485,
+        "synthetic/research": 74,
+        "non_commercial/attribution_sharealike": 3
+      }
+    },
+    "val": {
+      "rows_total": 6183,
+      "rows_kept": 6183,
+      "rows_excluded": 0,
+      "chars": 6530771,
+      "sources": {
+        "bewiki": 5029,
+        "ud_belarusian_hse": 810,
+        "tatoeba_sentences": 193,
+        "bewikisource_full": 87,
+        "bewiktionary": 54,
+        "bewikiquote": 6,
+        "bewikibooks_full": 3,
+        "morphodict-bel": 1
+      },
+      "licenses": {
+        "free/attribution_sharealike": 5089,
+        "free/attribution": 1003,
+        "unknown/manual_review": 90,
+        "non_commercial/attribution_sharealike": 1
+      }
+    }
+  },
+  "tokenizer": {
+    "sha256_tokenizer_pkl": "d9272e817e3978aa218597f34856056a577642aeedb1576299a1301dca5e71ac",
+    "note": "trained on the full v3b corpus; vocab/merges only"
+  },
+  "archive": {
+    "name": "belka_corpus_v3b.tar.zst",
+    "format": "tar + zstd-19, split parts; reassemble with cat <name>.?? | zstd -d | tar -x",
+    "total_bytes": 329008525,
+    "total_sha256": "250c670e3a385ac3acd3fae42269ea1a11502c0136ad9d4ad3f0b43d70fd395b",
+    "parts": [
+      {
+        "file": "belka_corpus_v3b.tar.zst.aa",
+        "bytes": 99614720,
+        "sha256": "77a972de31d64d01e47a78d1e3d7fab96ed93695a195ebbdcddffe1982c6624e"
+      },
+      {
+        "file": "belka_corpus_v3b.tar.zst.ab",
+        "bytes": 99614720,
+        "sha256": "7107a6e1c67f347989d27f5c0c387841be4aa4c4fcf3f2d944a77437360838a8"
+      },
+      {
+        "file": "belka_corpus_v3b.tar.zst.ac",
+        "bytes": 99614720,
+        "sha256": "8b09f8431599b2cd4429e4abfbf8185c3772df509d627274d031d7f7090f204b"
+      },
+      {
+        "file": "belka_corpus_v3b.tar.zst.ad",
+        "bytes": 30164365,
+        "sha256": "932d5f17c3b5700a9047e6af7ad98d34b8a16fc2dd54c87109b051f82440703c"
+      }
+    ]
+  }
+}

@@ -5,8 +5,8 @@ curated Belarusian corpus → custom tokenizer → randomly-initialized nanochat
 model → base pretraining → Belarusian-only SFT → language-lock evaluation.
 
 > **Research preview.** Belka is an open-source code and research-pipeline project. It is
-> not a production model, and its training corpus is **not** claimed to be public domain
-> or freely redistributable. See [Data Rights](#data-rights-permissions-and-provenance).
+> not a production model. The training corpus is published in this repository
+> (see [Data Rights](#data-rights-permissions-and-provenance)).
 
 ## Mission
 
@@ -44,21 +44,27 @@ summaries under [`reports/public/`](reports/public/).
 
 Details: [`reports/public/PROJECT_STATUS.md`](reports/public/PROJECT_STATUS.md).
 
-## Quickstart (clean clone, no GPU, no external data)
+## Quickstart (clean clone, GPU or CPU, corpus included)
+
+```bash
+git clone https://github.com/Vadimohka/belka && cd belka
+bash ops/local/quickstart.sh
+```
+
+One command: installs the nanochat env (GPU if present, CPU otherwise), restores
+the bundled corpus + tokenizer from `data_release/`, and runs a tiny end-to-end
+training (base → Belarusian SFT) as a pipeline proof. Real training:
+`ops/local/run_belka_h200_maxquality.sh` (GPU) or the printed CPU commands.
+
+Checks only (no install):
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements_pack.txt
-
 PYTHONPATH="$PWD" pytest -q tests
 python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
 python tools/validate_public_release.py
-python tools/check_train_eval_decontamination.py --dry-run
-python tools/build_source_expansion_board.py --dry-run
 ```
-
-Reproducing the corpus, tokenizer, and training requires external data and a GPU — see
-[`reports/public/REPRODUCIBILITY_SUMMARY.md`](reports/public/REPRODUCIBILITY_SUMMARY.md).
 
 ## Repository layout
 
@@ -88,28 +94,26 @@ but it is not required for a basic review of the project.
 
 ## Data Rights, Permissions, and Provenance
 
-Belka uses an **auditable data-provenance model** that keeps original source license,
-project-specific permission, and redistribution status separate.
+The project owner asserts **full rights to all v3b training sources** and clears
+them for publication (owner decision, 2026-08-16). The **complete corpus** ships
+in this repository as a compressed, checksummed bundle:
 
-- Some sources are **public / open-licensed** (Wikimedia-derived text, UD, Tatoeba,
-  synthetic seed) and carry their own attribution/share-alike obligations.
-- Some materials — including the cleaned literary corpus `books_clean_v2` — are used under
-  **explicit permission obtained by the project owner for research and model-development
-  use**. Original status is preserved; the permission is an overlay, not a relicensing.
-- **Raw-data redistribution differs from model/code release.** Raw permissioned data is
-  not redistributed from this repository, and the corpus is not public domain.
+- Bundle: `data_release/open_corpus_bundle/` (~329MB in 4 git-friendly parts)
+- Restore: `bash ops/local/restore_bundled_corpus.sh`
+- Rebuild: `tools/build_open_corpus_bundle.py`
 
-See [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md),
-[`DATA_LICENSES.md`](DATA_LICENSES.md),
-[`configs/dataset_sources.yaml`](configs/dataset_sources.yaml),
-[`reports/DATA_RIGHTS_MANIFEST.json`](reports/DATA_RIGHTS_MANIFEST.json). Project **code**
-is licensed separately via the root [`LICENSE`](LICENSE) (MIT).
+Per-row `source`/`license` provenance is preserved inside the parquet files —
+Wikimedia-derived text keeps its CC BY-SA attribution/share-alike obligations.
+Eval-only datasets (BelarusianGLUE, FLORES-200) stay out of the training corpus.
+Details: [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md),
+[`DATA_LICENSES.md`](DATA_LICENSES.md), [`configs/dataset_sources.yaml`](configs/dataset_sources.yaml).
+Project **code** is licensed separately via the root [`LICENSE`](LICENSE) (MIT).
 
 ## Corpus summary
 
 `v3b`: ~180.6M tokens (measured with the trained 16k BPE; earlier docs cited a
 ~59M estimate), Belarusian (narkamauka + tarask tracked). Open Wikimedia/UD/Tatoeba +
-permissioned literary prose. Source mix, processing, and rights:
+owner-cleared literary prose (published in this repo — see Data Rights). Source mix, processing, and rights:
 [`data_cards/corpus_v3b.md`](data_cards/corpus_v3b.md). Expansion toward `v4`:
 [`docs/CORPUS_V4_EXPANSION_PLAN.md`](docs/CORPUS_V4_EXPANSION_PLAN.md).
 
@@ -131,7 +135,6 @@ and [`reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md`](reports/public/LEAKAGE_AND
 - Small model on a ~180M-token corpus — limited fluency and knowledge.
 - Eval suites are small; no production-quality claim.
 - Orthography variants are tracked but not perfectly separated.
-- Some corpus material is permissioned, not open; raw data is not redistributed.
 
 ## Reproducibility
 

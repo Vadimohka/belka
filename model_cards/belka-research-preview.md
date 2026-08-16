@@ -2,7 +2,7 @@
 
 > Research preview of a from-scratch Belarusian language model. This card documents data
 > provenance and rights honestly: model-release rights may differ from raw-data
-> redistribution rights, and the training corpus is **not** claimed to be public domain.
+> redistribution. The training corpus is published in this repository (owner decision 2026-08-16).
 
 ## Model summary
 
@@ -34,7 +34,7 @@
 
 The model is trained on the Belka corpus `v3b`
 ([`data_cards/corpus_v3b.md`](../data_cards/corpus_v3b.md)): openly licensed
-Wikimedia/UD/Tatoeba/synthetic data **plus** project-permissioned literary material.
+Wikimedia/UD/Tatoeba/synthetic data **plus** owner-cleared literary material.
 
 ### Permissioned data statement
 
@@ -53,9 +53,9 @@ privately by the owner and can be **confirmed at review**. See
 - **Code, eval scripts, manifests, recipes, and this card** are openly published (code
   under the root [`LICENSE`](../LICENSE), MIT).
 - **Derived model weights** may be released as a research preview.
-- **Raw permissioned training data is NOT redistributed** from this repository.
-  *Model-release rights may differ from raw-data redistribution rights.* Do not infer a
-  right to redistribute the corpus from the availability of the model or code.
+- **The complete training corpus IS published** in this repository
+  (`data_release/open_corpus_bundle/`, owner decision 2026-08-16). Per-row
+  `source`/`license` provenance is preserved; honor Wikimedia CC BY-SA attribution.
 
 ## Evaluation
 

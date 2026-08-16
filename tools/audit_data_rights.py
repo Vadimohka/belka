@@ -4,10 +4,11 @@
 Checks:
   * the manifest parses and has the three layers;
   * every permissioned-by-owner source has a permission_scope_detail entry;
-  * no source claims raw_data redistribution while also being permissioned-by-owner
-    (permission to train must not silently imply raw redistribution);
-  * sources listed in configs/dataset_sources.yaml that are used in the corpus carry an
-    original license and (if restricted) a permission overlay.
+  * no source claims raw_data redistribution while also being permissioned-by-owner,
+    UNLESS an explicit owner publication clearance is recorded
+    (owner_decision 2026-08-16: all v3b sources cleared for publication);
+  * permissioned sources are covered either by a publication clearance or by the
+    not_redistributed_raw / processed_or_by_request_only categories.
 
 Exit code 0 = pass, 1 = problems found. Read-only; never modifies data.
 """
@@ -25,31 +26,39 @@ def load_json(p: Path):
     return json.loads(p.read_text(encoding="utf-8"))
 
 
+def owner_clears_publication(manifest: dict) -> bool:
+    decision = manifest.get("owner_decision", {})
+    return bool(decision.get("cleared_for_publication")) and bool(decision.get("date"))
+
+
 def audit(manifest: dict) -> list[str]:
     problems: list[str] = []
     for layer in ("original_license_category", "project_permission_category", "redistribution_category"):
         if layer not in manifest:
             problems.append(f"missing layer: {layer}")
 
+    cleared = owner_clears_publication(manifest)
     perm = manifest.get("project_permission_category", {}).get("permissioned_by_owner", [])
     detail = manifest.get("permission_scope_detail", {})
+    published = set(manifest.get("redistribution_category", {}).get("published_in_repo", []))
     for sid in perm:
         if sid not in detail:
             problems.append(f"permissioned source '{sid}' has no permission_scope_detail entry")
             continue
         d = detail[sid]
-        if d.get("raw_data_redistribution") is True:
-            problems.append(f"'{sid}' is permissioned_by_owner but claims raw_data_redistribution=true")
+        if d.get("raw_data_redistribution") is True and not (cleared and sid in published):
+            problems.append(f"'{sid}' is permissioned_by_owner but claims raw_data_redistribution=true without owner clearance")
         for field in ("original_license", "permission_status", "permission_basis", "review_status"):
             if not d.get(field):
                 problems.append(f"'{sid}' missing rights field: {field}")
 
-    # cross-check redistribution layer: not_redistributed_raw must include permissioned raw-restricted sources
+    # cross-check redistribution layer: permissioned sources must be either explicitly
+    # published under the owner clearance or listed as not redistributed
     not_redis = set(manifest.get("redistribution_category", {}).get("not_redistributed_raw", [])) | \
         set(manifest.get("redistribution_category", {}).get("processed_or_by_request_only", []))
     for sid in perm:
-        if sid not in not_redis:
-            problems.append(f"'{sid}' permissioned but not listed under not_redistributed_raw / processed_or_by_request_only")
+        if sid not in not_redis and sid not in published:
+            problems.append(f"'{sid}' permissioned but neither published_in_repo nor not_redistributed_raw / processed_or_by_request_only")
     return problems
 
 

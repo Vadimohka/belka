@@ -54,9 +54,10 @@ Actual count with the trained 16k tokenizer (`tools/count_corpus_tokens.py`):
 
 ## What is NOT changing
 
-- Rights framework: "all available data" = rights-cleared sources only (open +
-  permissioned-within-policy). Priority C sources (CC100/HPLT/FineWeb2/Leipzig/
-  OSCAR/CC) stay excluded until license verification — see release blockers.
+- Rights (updated 2026-08-16): the owner cleared ALL v3b sources for publication and
+  the full corpus now ships in the repo. Priority C web sources (CC100/HPLT/FineWeb2/
+  Leipzig/OSCAR/CC) still need license verification before use — that gate is about
+  third-party terms, not owner permissions.
 - Strict holdout (209 prompts) stays out of any training mixture.
 - Legacy 3070 Ti scripts remain in `ops/local/` untouched for reproducibility;
   owner-run history (`ops/owner_runs/`) is checksum-pinned and unchanged.

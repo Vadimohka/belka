@@ -20,7 +20,7 @@ profiles:
     device_batch_size: 16
     total_batch_size: 32768
     base_iterations: 100
-    sft_iterations: 100
+    sft_iterations: -1  # -1 = one full epoch (chat_sft stops at dataset end)
     tokenizer_vocab_size: 16384
     target_epochs: null  # fixed iteration count
     fp8: false
@@ -36,7 +36,7 @@ profiles:
     device_batch_size: 32
     total_batch_size: 262144
     target_epochs: 3
-    sft_iterations: 1500
+    sft_iterations: -1  # -1 = one full epoch (chat_sft stops at dataset end)
     tokenizer_vocab_size: 32768
     window_pattern: "SSSL"
     fp8: false
@@ -51,7 +51,7 @@ profiles:
     device_batch_size: 32
     total_batch_size: 524288
     target_epochs: 3
-    sft_iterations: 2000
+    sft_iterations: -1  # -1 = one full epoch (chat_sft stops at dataset end)
     tokenizer_vocab_size: 32768
     window_pattern: "SSSL"
     fp8: false
@@ -68,7 +68,7 @@ profiles:
     device_batch_size: 16
     total_batch_size: 1048576
     target_epochs: 3
-    sft_iterations: 2000
+    sft_iterations: -1  # -1 = one full epoch (chat_sft stops at dataset end)
     tokenizer_vocab_size: 32768
     window_pattern: "SSSL"
     fp8: false

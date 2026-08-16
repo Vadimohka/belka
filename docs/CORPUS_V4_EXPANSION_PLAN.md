@@ -40,8 +40,9 @@ Interpretation:
 
 - **Open core (Priority A):** Wikimedia family, HPLT v2 (license recorded), FineWeb2
   (config + license recorded), Tatoeba, UD, Common Voice transcripts.
-- **Permissioned (Priority B, ≤25%):** `books_clean_v2`, `bewikisource_full`,
-  `bewikibooks_full` — no raw redistribution.
+- **Literary (Priority B, ≤25%):** `books_clean_v2`, `bewikisource_full`,
+  `bewikibooks_full` — owner-cleared for publication (2026-08-16); the cap is now a
+  source-diversity policy, not a rights limit.
 - **Blocked until owner approval (Priority C):** CC100, Leipzig, OPUS subsets, OSCAR,
   CulturaX, OpenSubtitles, Common Crawl. **Not** counted toward v4 until approved.
 

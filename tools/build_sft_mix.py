@@ -37,8 +37,10 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=20260511)
     args = ap.parse_args()
     seed_dir = args.pack_dir / "seed_sft"
-    train_paths = [seed_dir / "identity_conversations.be.jsonl", seed_dir / "meetmesh_domain_sft.be.jsonl"]
-    val_paths = [seed_dir / "identity_conversations_val.be.jsonl", seed_dir / "meetmesh_domain_sft_val.be.jsonl"]
+    # Current SFT dataset: v8 (450 train / 120 val). Older v1 seed files stay in
+    # seed_sft/ as research history; do not mix them into the training mixture.
+    train_paths = [seed_dir / "sft_v8_train.be.jsonl"]
+    val_paths = [seed_dir / "sft_v8_val.be.jsonl"]
     train = read_rows(train_paths)
     val = read_rows(val_paths)
     random.Random(args.seed).shuffle(train)

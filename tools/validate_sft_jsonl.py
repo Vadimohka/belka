@@ -75,7 +75,12 @@ def validate_file(path: Path, *, allow_user_nonbe: bool, strict_all: bool, min_a
                 if check_language:
                     det = detect_belarusian(content, min_chars=10, allow_short=True, accept_threshold=min_assistant_score, quarantine_threshold=1.0)
                     if det.score < min_assistant_score:
-                        level = "ERROR" if role == "assistant" or strict_all else "WARN"
+                        # A Belarusian sentence can legitimately contain no і/ў/ё
+                        # (e.g. "Я не бачу надзейнага пацверджання такой даты.").
+                        # Missing specific letters alone is a warning, not an error;
+                        # genuinely Russian text triggers marker penalties instead.
+                        benign = det.reasons == ["mostly_cyrillic", "no_bel_specific_letters"]
+                        level = "ERROR" if (role == "assistant" or strict_all) and not benign else "WARN"
                         print(f"{level} {path}:{lineno}: message {idx} role={role} low Belarusian score={det.score}, reasons={det.reasons}, text={content[:100]!r}")
                         if level == "ERROR":
                             stats["errors"] += 1

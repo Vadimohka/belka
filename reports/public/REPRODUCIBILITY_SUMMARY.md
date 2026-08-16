@@ -29,11 +29,13 @@ python eval/run_openai_compatible_eval.py --base-url http://127.0.0.1:8000 --mod
 - Data-rights / public-release / decontamination audits.
 - SFT JSONL validation; source-board generation.
 
-## What requires external data
+## Data: bundled in this repository (updated 2026-08-16)
 
-- Corpus build (`v3b`/`v4`) needs the source corpora under `data_input/` (not
-  redistributed; ~38 GB; some permissioned, some license-verify-pending).
-- Tokenizer training needs the built corpus.
+- The complete `v3b` corpus + trained 16k tokenizer ship in
+  `data_release/open_corpus_bundle/` (owner-cleared for publication). Restore with
+  `bash ops/local/restore_bundled_corpus.sh` — training can start immediately.
+- Rebuilding the corpus from the original raw sources (~38 GB under `data_input/`,
+  not in git) is only needed to re-derive it end to end.
 
 ## What requires a GPU
 

@@ -5,8 +5,7 @@ Belka — исследовательский проект по созданию 
 nanochat/GPT-модель → базовый pretraining → беларускамоўный SFT → оценка language-lock.
 
 > **Research preview.** Belka — это open-source проект кода и исследовательского пайплайна.
-> Это не продакшн-модель, и обучающий корпус **не** объявляется public domain и **не**
-> является свободно перераспространяемым. См. раздел
+> Это не продакшн-модель. Обучающий корпус публикуется в этом репозитории — см.
 > [Права на данные](#права-на-данные-разрешения-и-происхождение).
 
 ## Миссия
@@ -35,21 +34,28 @@ training/eval пайплайн для кириллического, морфол
 
 Подробно: [`reports/public/PROJECT_STATUS.md`](reports/public/PROJECT_STATUS.md).
 
-## Быстрый старт (чистый clone, без GPU и внешних данных)
+## Быстрый старт (чистый clone, GPU или CPU, корпус включён)
+
+```bash
+git clone https://github.com/Vadimohka/belka && cd belka
+bash ops/local/quickstart.sh
+```
+
+Одна команда: ставит окружение nanochat (GPU при наличии, иначе CPU),
+разворачивает корпус и токенизатор из `data_release/` и прогоняет крошечное
+сквозное обучение (base → беларускамоўны SFT) как проверку пайплайна.
+Реальное обучение: `ops/local/run_belka_h200_maxquality.sh` (GPU) или
+напечатанные CPU-команды.
+
+Только проверки (без установки):
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements_pack.txt
-
 PYTHONPATH="$PWD" pytest -q tests
 python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
 python tools/validate_public_release.py
-python tools/check_train_eval_decontamination.py --dry-run
-python tools/build_source_expansion_board.py --dry-run
 ```
-
-Сборка корпуса, токенизатора и обучение требуют внешних данных и GPU — см.
-[`reports/public/REPRODUCIBILITY_SUMMARY.md`](reports/public/REPRODUCIBILITY_SUMMARY.md).
 
 ## Структура репозитория
 
@@ -80,22 +86,20 @@ ops/            опциональные owner/agent workflow-файлы (не �
 
 ## Права на данные, разрешения и происхождение
 
-Belka различает исходную лицензию источника, разрешение проекта и статус
-перераспространения.
+Владелец проекта подтверждает **полные права на все обучающие источники v3b** и
+разрешает их публикацию (решение владельца от 2026-08-16). **Полный корпус**
+поставляется в этом репозитории в сжатом виде с контрольными суммами:
 
-- Часть источников — **публичные/открытые** (тексты на основе Wikimedia, UD, Tatoeba,
-  синтетический seed) с сохранением атрибуции и share-alike.
-- Часть материалов — включая очищенный литературный корпус `books_clean_v2` —
-  используется по **явному разрешению владельца для исследований и разработки модели**.
-  Исходный статус сохраняется; разрешение — надстройка, а не смена лицензии.
-- **Перераспространение сырых данных отличается от публикации модели/кода.** Сырые
-  разрешённые данные не перераспространяются из этого репозитория; корпус не public domain.
+- Бандл: `data_release/open_corpus_bundle/` (~329МБ в 4 частях)
+- Разворачивание: `bash ops/local/restore_bundled_corpus.sh`
+- Пересборка: `tools/build_open_corpus_bundle.py`
 
-См. [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md),
-[`DATA_LICENSES.md`](DATA_LICENSES.md),
-[`configs/dataset_sources.yaml`](configs/dataset_sources.yaml),
-[`reports/DATA_RIGHTS_MANIFEST.json`](reports/DATA_RIGHTS_MANIFEST.json). Код проекта
-лицензируется отдельно через корневой [`LICENSE`](LICENSE) (MIT).
+Провенанс `source`/`license` сохранён в каждой строке parquet — тексты на основе
+Wikimedia сохраняют обязательства CC BY-SA (атрибуция/share-alike). Eval-датасеты
+(BelarusianGLUE, FLORES-200) в обучающий корпус не входят.
+Подробности: [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md),
+[`DATA_LICENSES.md`](DATA_LICENSES.md), [`configs/dataset_sources.yaml`](configs/dataset_sources.yaml).
+Код проекта лицензируется отдельно через корневой [`LICENSE`](LICENSE) (MIT).
 
 ## Корпус, модель, оценка
 
@@ -110,7 +114,7 @@ Belka различает исходную лицензию источника, �
 - Маленькая модель на ~180M токенов — ограниченные знания и беглость.
 - Наборы оценки небольшие; нет претензий на продакшн-качество.
 - Орфографии размечаются, но не идеально разделены.
-- Часть корпуса — разрешённая, не открытая; сырые данные не перераспространяются.
+
 
 ## Цитирование и вклад
 

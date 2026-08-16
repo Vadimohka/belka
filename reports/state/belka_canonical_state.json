@@ -68,6 +68,11 @@
       "profiles": "configs/profiles_h200.yaml",
       "plan": "reports/strategy/H200_MAX_QUALITY_PLAN.md",
       "training_gate": "TRAINING_ALLOWED stays NO until corpus v4 accepted (data-limited, not hardware-limited); owner overrides via BELKA_OWNER_APPROVED_TRAINING as usual"
+    },
+    "2026-08-16_RIGHTS": {
+      "decision": "licenses-as-restriction retired: owner asserts full rights to all v3b training sources and clears them for publication",
+      "corpus_bundle": "data_release/open_corpus_bundle (full v3b + tokenizer, split tar.zst, sha256 manifest)",
+      "docs": "DATA_RIGHTS_AND_PERMISSIONS.md, DATA_LICENSES.md, reports/DATA_RIGHTS_MANIFEST.json (owner_decision block)"
     }
   },
   "blocked_actions": [

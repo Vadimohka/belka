@@ -13,7 +13,7 @@
 | CONTRIBUTING / CITATION / DATA_LICENSES | ✅ added |
 | CI workflow | ✅ added (`.github/workflows/ci.yml`) |
 | Private ops separated | ⏳ manifest prepared (`manifests/cleanup/private_ops_manifest.jsonl`); owner to move |
-| History rewrite for public mirror | ⏳ owner decision (data blobs + permissioned books in history) |
+| History rewrite for public mirror | ✅ resolved 2026-08-16 (owner cleared all sources; full corpus now published in-repo) |
 
 ## Hugging Face — model
 
@@ -29,7 +29,7 @@
 |---|---|
 | Dataset card | ✅ `data_cards/corpus_v3b.md` |
 | Raw redistribution | ❌ **not** for permissioned raw data; processed-data release is by-request only |
-| Open-only subset for public dataset | ⏳ owner decision (build an open-licensed-only export?) |
+| Open-only subset for public dataset | ✅ optional via build_open_corpus_bundle.py --only-open (default now ships the FULL corpus) |
 
 ## Zenodo (DOI / archival)
 
@@ -41,7 +41,7 @@
 
 ## Blockers (owner decisions)
 
-1. History-rewrite / fresh-mirror decision (data blobs + permissioned books in git history).
+1. ~~History-rewrite / fresh-mirror decision~~ resolved 2026-08-16: owner cleared all v3b sources for publication; the full corpus ships in data_release/.
 2. Which checkpoint(s) and dataset subset to publish, and under which licenses.
 3. Whether any **processed** book data may be redistributed (raw: no).
 4. Move private ops out of the public surface (manifest ready).
