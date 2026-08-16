@@ -9,8 +9,6 @@ Main public entry points remain:
 
 - `README.md`
 - `README_RU.md`
-- `DATA_RIGHTS_AND_PERMISSIONS.md`
-- `DATA_LICENSES.md`
 - `reports/public/`
 - `data_cards/`
 - `model_cards/`

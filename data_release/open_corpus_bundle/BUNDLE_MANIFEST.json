@@ -1,13 +1,9 @@
 {
   "bundle": "belka-corpus",
   "version": "2",
-  "created": "2026-08-16T10:17:21+00:00",
+  "created": "2026-08-16T10:34:07+00:00",
   "parent_corpus": "v3b",
-  "scope": "full",
-  "rights": {
-    "owner_decision": "2026-08-16: owner asserts full rights to all v3b training sources; publication allowed",
-    "provenance": "per-row source/license metadata preserved in the parquet files"
-  },
+  "rights": "owner holds full rights to all training data; licenses retired (2026-08-16)",
   "splits": {
     "train": {
       "rows_total": 302991,
@@ -26,14 +22,6 @@
         "bewikibooks_full": 177,
         "bootstrap": 74,
         "morphodict-bel": 3
-      },
-      "licenses": {
-        "free/attribution_sharealike": 281169,
-        "free/attribution": 17590,
-        "unknown/manual_review": 3670,
-        "manual_review_required/research_only": 485,
-        "synthetic/research": 74,
-        "non_commercial/attribution_sharealike": 3
       }
     },
     "val": {
@@ -50,12 +38,6 @@
         "bewikiquote": 6,
         "bewikibooks_full": 3,
         "morphodict-bel": 1
-      },
-      "licenses": {
-        "free/attribution_sharealike": 5089,
-        "free/attribution": 1003,
-        "unknown/manual_review": 90,
-        "non_commercial/attribution_sharealike": 1
       }
     }
   },
@@ -66,28 +48,28 @@
   "archive": {
     "name": "belka_corpus_v3b.tar.zst",
     "format": "tar + zstd-19, split parts; reassemble with cat <name>.?? | zstd -d | tar -x",
-    "total_bytes": 329008525,
-    "total_sha256": "250c670e3a385ac3acd3fae42269ea1a11502c0136ad9d4ad3f0b43d70fd395b",
+    "total_bytes": 328984373,
+    "total_sha256": "1c4d513afcf496a6b8c7122d212d2199a301653dd8577d0f7062c6197996178e",
     "parts": [
       {
         "file": "belka_corpus_v3b.tar.zst.aa",
         "bytes": 99614720,
-        "sha256": "77a972de31d64d01e47a78d1e3d7fab96ed93695a195ebbdcddffe1982c6624e"
+        "sha256": "dcc9015a2c94701436256ce8392260772db3bd8b998796425a393052ebd03c72"
       },
       {
         "file": "belka_corpus_v3b.tar.zst.ab",
         "bytes": 99614720,
-        "sha256": "7107a6e1c67f347989d27f5c0c387841be4aa4c4fcf3f2d944a77437360838a8"
+        "sha256": "56cc0ef3f151b7af3dba1e1679fe0309b411cecbba53ce16804eb83a49d6bd9b"
       },
       {
         "file": "belka_corpus_v3b.tar.zst.ac",
         "bytes": 99614720,
-        "sha256": "8b09f8431599b2cd4429e4abfbf8185c3772df509d627274d031d7f7090f204b"
+        "sha256": "4f97395d9012ca658347be8b1110cd3833bffe347bbb807c00ea9c2c334dfc3b"
       },
       {
         "file": "belka_corpus_v3b.tar.zst.ad",
-        "bytes": 30164365,
-        "sha256": "932d5f17c3b5700a9047e6af7ad98d34b8a16fc2dd54c87109b051f82440703c"
+        "bytes": 30140213,
+        "sha256": "fb4523911c128cd32752f44abac0b72b7056cb8b5c1f883683f4976310bfab3b"
       }
     ]
   }

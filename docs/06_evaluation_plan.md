@@ -51,7 +51,7 @@ Use as diagnostic, not primary objective:
 
 - FLORES-200 if Belarusian coverage is verified;
 - Tatoeba/OPUS held-out pairs;
-- WMT/WMT24++ only if Belarusian coverage and license are verified.
+- WMT/WMT24++ only if Belarusian coverage is verified.
 
 Metrics:
 
@@ -134,5 +134,4 @@ passed web health
 reported validation bpb
 reported language-lock metrics
 reported contamination status
-published dataset/license manifest
 ```

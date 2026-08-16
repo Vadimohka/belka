@@ -6,112 +6,100 @@ policy:
   raw_dumps_never_train_directly: true
   every_download_requires_sha256: true
 sources:
-  - id: bewiki_articles
-    name: Belarusian Wikipedia articles
-    url: https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream.xml.bz2
-    type: wikimedia_xml_dump
-    priority: high
-    license: CC BY-SA / GFDL attribution required
-    access: curl
-    output: wikimedia/bewiki-latest-pages-articles-multistream.xml.bz2
-    preprocessing: extract_wikitext_clean_filter_dedup
-  - id: bewiki_index
-    name: Belarusian Wikipedia multistream index
-    url: https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream-index.txt.bz2
-    type: wikimedia_index
-    priority: medium
-    license: CC BY-SA / GFDL attribution required
-    access: curl
-    output: wikimedia/bewiki-latest-pages-articles-multistream-index.txt.bz2
-  - id: be_x_oldwiki_articles
-    name: Belarusian Taraškievica Wikipedia articles
-    url: https://dumps.wikimedia.org/be_x_oldwiki/latest/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2
-    type: wikimedia_xml_dump
-    priority: high
-    license: CC BY-SA / GFDL attribution required
-    access: curl
-    output: wikimedia/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2
-    orthography: tarask
-  - id: bewikisource_articles
-    name: Belarusian Wikisource articles
-    url: https://dumps.wikimedia.org/bewikisource/latest/bewikisource-latest-pages-articles-multistream.xml.bz2
-    type: wikimedia_xml_dump
-    priority: medium
-    license: CC BY-SA / GFDL attribution required
-    access: curl
-    output: wikimedia/bewikisource-latest-pages-articles-multistream.xml.bz2
-    preprocessing: strict_wikisource_cleaning
-  - id: bewiktionary_articles
-    name: Belarusian Wiktionary articles
-    url: https://dumps.wikimedia.org/bewiktionary/latest/bewiktionary-latest-pages-articles-multistream.xml.bz2
-    type: wikimedia_xml_dump
-    priority: medium
-    license: CC BY-SA / GFDL attribution required
-    access: curl
-    output: wikimedia/bewiktionary-latest-pages-articles-multistream.xml.bz2
-    use: lexicon_eval_not_bulk_pretrain
-  - id: bewikibooks_articles
-    name: Belarusian Wikibooks articles
-    url: https://dumps.wikimedia.org/bewikibooks/latest/bewikibooks-latest-pages-articles-multistream.xml.bz2
-    type: wikimedia_xml_dump
-    priority: medium
-    license: CC BY-SA / GFDL attribution required
-    access: curl
-    output: wikimedia/bewikibooks-latest-pages-articles-multistream.xml.bz2
-  - id: bewikiquote_articles
-    name: Belarusian Wikiquote articles
-    url: https://dumps.wikimedia.org/bewikiquote/latest/bewikiquote-latest-pages-articles-multistream.xml.bz2
-    type: wikimedia_xml_dump
-    priority: low
-    license: CC BY-SA / GFDL attribution required
-    access: curl
-    output: wikimedia/bewikiquote-latest-pages-articles-multistream.xml.bz2
-    use: eval_or_quote_filter_only
-  - id: tatoeba_sentences
-    name: Tatoeba sentences export
-    url: https://downloads.tatoeba.org/exports/sentences.tar.bz2
-    type: sentence_export
-    priority: medium
-    license: per-sentence attribution/licensing must be checked
-    access: curl
-    output: tatoeba/sentences.tar.bz2
-    preprocessing: keep_language_be_extract_sentences
-  - id: tatoeba_links
-    name: Tatoeba links export
-    url: https://downloads.tatoeba.org/exports/links.tar.bz2
-    type: parallel_links_export
-    priority: low
-    license: per-sentence attribution/licensing must be checked
-    access: curl
-    output: tatoeba/links.tar.bz2
-  - id: ud_belarusian_hse
-    name: UD Belarusian-HSE GitHub archive
-    url: https://github.com/UniversalDependencies/UD_Belarusian-HSE/archive/refs/heads/master.zip
-    type: treebank
-    priority: medium
-    license: CC BY-SA 4.0
-    access: curl
-    output: ud_belarusian_hse/master.zip
-    use: eval_grammar_low_weight
-  - id: belacorpus_public_repo
-    name: Belacorpus public access instructions
-    url: https://github.com/Belarusian-Corpus/belacorpus_public/archive/refs/heads/main.zip
-    type: access_instructions
-    priority: high
-    license: requires README/access verification
-    access: curl
-    output: belacorpus_public/main.zip
-    use: manual_request_required
+- id: bewiki_articles
+  name: Belarusian Wikipedia articles
+  url: https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream.xml.bz2
+  type: wikimedia_xml_dump
+  priority: high
+  access: curl
+  output: wikimedia/bewiki-latest-pages-articles-multistream.xml.bz2
+  preprocessing: extract_wikitext_clean_filter_dedup
+- id: bewiki_index
+  name: Belarusian Wikipedia multistream index
+  url: https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream-index.txt.bz2
+  type: wikimedia_index
+  priority: medium
+  access: curl
+  output: wikimedia/bewiki-latest-pages-articles-multistream-index.txt.bz2
+- id: be_x_oldwiki_articles
+  name: Belarusian Taraškievica Wikipedia articles
+  url: https://dumps.wikimedia.org/be_x_oldwiki/latest/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2
+  type: wikimedia_xml_dump
+  priority: high
+  access: curl
+  output: wikimedia/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2
+  orthography: tarask
+- id: bewikisource_articles
+  name: Belarusian Wikisource articles
+  url: https://dumps.wikimedia.org/bewikisource/latest/bewikisource-latest-pages-articles-multistream.xml.bz2
+  type: wikimedia_xml_dump
+  priority: medium
+  access: curl
+  output: wikimedia/bewikisource-latest-pages-articles-multistream.xml.bz2
+  preprocessing: strict_wikisource_cleaning
+- id: bewiktionary_articles
+  name: Belarusian Wiktionary articles
+  url: https://dumps.wikimedia.org/bewiktionary/latest/bewiktionary-latest-pages-articles-multistream.xml.bz2
+  type: wikimedia_xml_dump
+  priority: medium
+  access: curl
+  output: wikimedia/bewiktionary-latest-pages-articles-multistream.xml.bz2
+  use: lexicon_eval_not_bulk_pretrain
+- id: bewikibooks_articles
+  name: Belarusian Wikibooks articles
+  url: https://dumps.wikimedia.org/bewikibooks/latest/bewikibooks-latest-pages-articles-multistream.xml.bz2
+  type: wikimedia_xml_dump
+  priority: medium
+  access: curl
+  output: wikimedia/bewikibooks-latest-pages-articles-multistream.xml.bz2
+- id: bewikiquote_articles
+  name: Belarusian Wikiquote articles
+  url: https://dumps.wikimedia.org/bewikiquote/latest/bewikiquote-latest-pages-articles-multistream.xml.bz2
+  type: wikimedia_xml_dump
+  priority: low
+  access: curl
+  output: wikimedia/bewikiquote-latest-pages-articles-multistream.xml.bz2
+  use: eval_or_quote_filter_only
+- id: tatoeba_sentences
+  name: Tatoeba sentences export
+  url: https://downloads.tatoeba.org/exports/sentences.tar.bz2
+  type: sentence_export
+  priority: medium
+  access: curl
+  output: tatoeba/sentences.tar.bz2
+  preprocessing: keep_language_be_extract_sentences
+- id: tatoeba_links
+  name: Tatoeba links export
+  url: https://downloads.tatoeba.org/exports/links.tar.bz2
+  type: parallel_links_export
+  priority: low
+  access: curl
+  output: tatoeba/links.tar.bz2
+- id: ud_belarusian_hse
+  name: UD Belarusian-HSE GitHub archive
+  url: https://github.com/UniversalDependencies/UD_Belarusian-HSE/archive/refs/heads/master.zip
+  type: treebank
+  priority: medium
+  access: curl
+  output: ud_belarusian_hse/master.zip
+  use: eval_grammar_low_weight
+- id: belacorpus_public_repo
+  name: Belacorpus public access instructions
+  url: https://github.com/Belarusian-Corpus/belacorpus_public/archive/refs/heads/main.zip
+  type: access_instructions
+  priority: high
+  access: curl
+  output: belacorpus_public/main.zip
+  use: manual_request_required
 backlog:
-  - id: bnkorpus_full_sentences
-    reason: manual request required; email/access terms
-  - id: common_voice_be_v25
-    reason: accept terms; text/transcripts only unless ASR track
-  - id: hplt_v2_be
-    reason: large source; license/access/storage review
-  - id: oscar_2301_be
-    reason: HF gated/access flow
-  - id: culturax_be
-    reason: HF gated/access flow
-  - id: mc4_be
-    reason: HF/gated or huge storage
+- id: bnkorpus_full_sentences
+  reason: manual request required; email/access terms
+- id: common_voice_be_v25
+  reason: accept terms; text/transcripts only unless ASR track
+- id: hplt_v2_be
+- id: oscar_2301_be
+  reason: HF gated/access flow
+- id: culturax_be
+  reason: HF gated/access flow
+- id: mc4_be
+  reason: HF/gated or huge storage

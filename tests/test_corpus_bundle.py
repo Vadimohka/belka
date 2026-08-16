@@ -22,13 +22,22 @@ def test_bundle_present_with_manifest_and_parts():
         assert part["bytes"] < 100_000_000, f"{part['file']} exceeds the 100MB GitHub limit"
 
 
-def test_bundle_is_full_corpus_per_owner_decision():
+def test_bundle_is_full_corpus_no_license_column():
     m = _manifest()
-    assert m.get("scope") == "full", "owner decision 2026-08-16: bundle ships the FULL corpus"
-    assert m["rights"]["owner_decision"].startswith("2026-08-16")
+    assert m["rights"].startswith("owner holds full rights"), "licenses retired (2026-08-16)"
     train = m["splits"]["train"]
     assert train["rows_kept"] == train["rows_total"], "no rows may be excluded from the full bundle"
     assert train["rows_kept"] == 302991  # v3b train rows
+    assert "licenses" not in train, "license stats must be gone from the manifest"
+
+
+def test_no_license_files_or_audit_tool_remain():
+    for gone in [
+        "DATA_RIGHTS_AND_PERMISSIONS.md", "DATA_LICENSES.md",
+        "reports/DATA_RIGHTS_MANIFEST.json", "reports/LICENSE_MANIFEST.json",
+        "tools/audit_data_rights.py",
+    ]:
+        assert not (PACK / gone).exists(), f"{gone} must be removed (licenses retired)"
 
 
 def test_bundle_part_checksums_match_manifest():

@@ -5,12 +5,12 @@ pretrained_base_allowed: false
 paths:
   require_pack_dir_containment: true
   forbidden_runtime_paths:
-    - "$HOME/src/nanochat"
-    - "$HOME/.cache/nanochat"
-    - "$HOME/data/be_texts"
-    - "/tmp/nanochat.zip"
+  - $HOME/src/nanochat
+  - $HOME/.cache/nanochat
+  - $HOME/data/be_texts
+  - /tmp/nanochat.zip
 training:
-  user_gpu: "RTX 3070 Ti 8GB"
+  user_gpu: RTX 3070 Ti 8GB
   dtype: float16
   wandb_disabled_required: true
   target_peak_vram_gb:
@@ -20,28 +20,28 @@ training:
   downgrade_policy:
     silent_downgrade_for_duration: forbidden
     allowed_reasons:
-      - cuda_oom
-      - nan_or_inf_loss
-      - dtype_crash
-      - missing_checkpoint_after_save_interval
-      - explicit_user_cancel
+    - cuda_oom
+    - nan_or_inf_loss
+    - dtype_crash
+    - missing_checkpoint_after_save_interval
+    - explicit_user_cancel
     required_evidence:
-      - log_file
-      - error_line
-      - previous_profile
-      - proposed_profile
-      - mitigation_attempted
+    - log_file
+    - error_line
+    - previous_profile
+    - proposed_profile
+    - mitigation_attempted
   profile_order:
-    - belka_d8_40m_fast_base_v2
-    - belka_d12_80m_probe
-    - belka_d12_80m_base_v2
-    - belka_d16_150m_cloud_only
+  - belka_d8_40m_fast_base_v2
+  - belka_d12_80m_probe
+  - belka_d12_80m_base_v2
+  - belka_d16_150m_cloud_only
   no_more_sft_until:
-    - books_encoding_fixed
-    - more_sources_downloaded_or_marked_unavailable
-    - corpus_rebuilt
-    - vram_tuning_done
-    - base_v2_attempted_or_user_overrode
+  - books_encoding_fixed
+  - more_sources_downloaded_or_marked_unavailable
+  - corpus_rebuilt
+  - vram_tuning_done
+  - base_v2_attempted_or_user_overrode
 sft:
   max_category_share: 0.18
   duplicate_assistant_answer_max: 0.12
@@ -50,7 +50,6 @@ sft:
   fivegram_overlap_max: 0.05
 data:
   require_source_accounting: true
-  require_license_manifest: true
   require_download_sha256: true
   require_books_clean_v2: true
   unknown_rights_books_default: research_only

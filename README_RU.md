@@ -5,8 +5,7 @@ Belka — исследовательский проект по созданию 
 nanochat/GPT-модель → базовый pretraining → беларускамоўный SFT → оценка language-lock.
 
 > **Research preview.** Belka — это open-source проект кода и исследовательского пайплайна.
-> Это не продакшн-модель. Обучающий корпус публикуется в этом репозитории — см.
-> [Права на данные](#права-на-данные-разрешения-и-происхождение).
+> Это не продакшн-модель. Обучающий корпус публикуется в этом репозитории.
 
 ## Миссия
 
@@ -53,7 +52,6 @@ bash ops/local/quickstart.sh
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements_pack.txt
 PYTHONPATH="$PWD" pytest -q tests
-python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
 python tools/validate_public_release.py
 ```
 
@@ -62,7 +60,7 @@ python tools/validate_public_release.py
 ```text
 configs/        профили обучения, реестр источников, кандидаты на расширение, политики
 data_pipeline/  нормализация / language-фильтр / dedup / split
-tools/          инструменты: корпус, права, leakage, source-board, валидация
+tools/          инструменты: корпус, leakage, source-board, валидация
 eval/           наборы language-lock / holdout / regression / refusal + runner
 seed_sft/       беларускамоўные SFT seed-диалоги (актуально v8)
 data_ready/     небольшие bundled bootstrap/seed/eval jsonl
@@ -84,22 +82,14 @@ ops/            опциональные owner/agent workflow-файлы (не �
 Опциональные owner/agent workflow-файлы вынесены в `ops/` для прозрачности,
 но не нужны для базового чтения проекта.
 
-## Права на данные, разрешения и происхождение
+## Данные
 
-Владелец проекта подтверждает **полные права на все обучающие источники v3b** и
-разрешает их публикацию (решение владельца от 2026-08-16). **Полный корпус**
-поставляется в этом репозитории в сжатом виде с контрольными суммами:
-
-- Бандл: `data_release/open_corpus_bundle/` (~329МБ в 4 частях)
-- Разворачивание: `bash ops/local/restore_bundled_corpus.sh`
-- Пересборка: `tools/build_open_corpus_bundle.py`
-
-Провенанс `source`/`license` сохранён в каждой строке parquet — тексты на основе
-Wikimedia сохраняют обязательства CC BY-SA (атрибуция/share-alike). Eval-датасеты
-(BelarusianGLUE, FLORES-200) в обучающий корпус не входят.
-Подробности: [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md),
-[`DATA_LICENSES.md`](DATA_LICENSES.md), [`configs/dataset_sources.yaml`](configs/dataset_sources.yaml).
-Код проекта лицензируется отдельно через корневой [`LICENSE`](LICENSE) (MIT).
+Владелец располагает **полными правами на все обучающие данные** (лицензионные
+ограничения сняты 2026-08-16). Полный корпус и токенизатор публикуются в этом
+репозитории: `data_release/open_corpus_bundle/` (разворачивание:
+`bash ops/local/restore_bundled_corpus.sh`). Реестр источников:
+[`configs/dataset_sources.yaml`](configs/dataset_sources.yaml). Лицензия кода:
+[`LICENSE`](LICENSE) (MIT).
 
 ## Корпус, модель, оценка
 
@@ -130,5 +120,4 @@ Belka поддерживается Вадимом Уладымцавым.
 
 ## Лицензия
 
-Код: [`LICENSE`](LICENSE) (MIT). Данные: по источникам — см.
-[`DATA_LICENSES.md`](DATA_LICENSES.md) и `DATA_RIGHTS_AND_PERMISSIONS.md`.
+Код: [`LICENSE`](LICENSE) (MIT). Данные: принадлежат проекту, публикуются в репозитории.

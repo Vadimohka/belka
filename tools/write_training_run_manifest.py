@@ -24,7 +24,6 @@ def main():
         "dataset_dir": str(base_dir / "base_data_climbmix_v3b"),
         "train_parquet_path": str(base_dir / "base_data_climbmix_v3b/train_00000.parquet"),
         "val_parquet_path": str(base_dir / "base_data_climbmix_v3b/val_00000.parquet"),
-        "license_manifest_path": "reports/LICENSE_MANIFEST.json",
         "from_scratch": True, "sft_used": False,
         "wandb_disabled": True, "generic_english_eval_disabled": True,
         "depth": int(os.environ.get("DEPTH", 8)),

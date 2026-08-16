@@ -37,7 +37,7 @@ def main():
         w = weights.get(src, 0.3)
         effective = int(accepted * w)
         print(f"  {src}: accepted={accepted} weight={w} effective≈{effective} "
-              f"license={stats.get('license','?')}")
+              )
 
     if args.dry_run:
         print("Dry run — no files written.")

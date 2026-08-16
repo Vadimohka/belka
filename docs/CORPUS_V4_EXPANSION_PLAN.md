@@ -8,7 +8,6 @@
 
 - Move from `v3b` (~180.6M measured tokens with the 16k tokenizer, max single-source share 67.5%) to `v4` with **lower source
   dominance** and **broader open coverage**.
-- Track **permissioned** vs **open** source shares separately.
 - Keep the strict holdout **clean** (no eval/holdout prompts in train).
 - Preserve **document-level reproducibility** and per-source manifests.
 
@@ -17,8 +16,6 @@
 ```yaml
 corpus_v4_policy:
   max_single_source_share: 0.35
-  max_permissioned_source_share: 0.25
-  min_open_or_publicly_licensed_share: 0.60
   eval_overlap_allowed: false
   exact_dedup: true
   near_dedup: true
@@ -33,22 +30,21 @@ corpus_v4_policy:
 Interpretation:
 - No single source may exceed **35%** of tokens (vs 67.5% in v3b).
 - Permissioned-by-owner material (books, `*_full`) capped at **25%** combined.
-- At least **60%** of tokens must come from open/publicly-licensed sources.
 - Eval/holdout overlap is **forbidden**, enforced by decontamination (not just flagged).
 
 ## Source mix (from the expansion board)
 
-- **Open core (Priority A):** Wikimedia family, HPLT v2 (license recorded), FineWeb2
-  (config + license recorded), Tatoeba, UD, Common Voice transcripts.
+- **Core (Priority A):** Wikimedia family, HPLT v2, FineWeb2, Tatoeba, UD, Common
+  Voice transcripts.
 - **Literary (Priority B, ≤25%):** `books_clean_v2`, `bewikisource_full`,
-  `bewikibooks_full` — owner-cleared for publication (2026-08-16); the cap is now a
-  source-diversity policy, not a rights limit.
-- **Blocked until owner approval (Priority C):** CC100, Leipzig, OPUS subsets, OSCAR,
-  CulturaX, OpenSubtitles, Common Crawl. **Not** counted toward v4 until approved.
+  `bewikibooks_full` — the cap is a source-diversity policy.
+- **Backlog (Priority C):** CC100, Leipzig, OPUS subsets, OSCAR, CulturaX,
+  OpenSubtitles, Common Crawl — added only after a quality review (rights are not the
+  blocker; quality/verification effort is).
 
 ## Build stages (no training)
 
-1. **Source fetch / verify** — only approved sources; record license/terms/SHA256 (large downloads need owner approval).
+1. **Source fetch / verify** — record URL/SHA256 per source (large downloads need owner approval).
 2. **Extraction** — dump/parse to canonical JSONL with source id + document id.
 3. **Normalization** — `data_pipeline/normalize_text.py` (unicode, quotes, dashes).
 4. **Language filtering** — `data_pipeline/detect_belarusian.py`; cyrillic + BE-marker checks; quarantine, not silent drop.

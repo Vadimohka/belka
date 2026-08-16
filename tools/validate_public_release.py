@@ -6,8 +6,7 @@ Checks (against the git-tracked fileset):
   * no logs tracked;
   * no raw data tracked (data_input/, parquet, zst, xz, bz2, tar.gz);
   * no owner-absolute paths in public-facing text files;
-  * required docs/cards present (DATA_RIGHTS_AND_PERMISSIONS.md, data card, model card,
-    DATA_RIGHTS_MANIFEST.json, LICENSE, reports/public/);
+  * required docs/cards present (data card, model card, LICENSE, reports/public/);
   * README internal links resolve.
 
 Exit 0 = ready, 1 = problems. Read-only; never modifies anything.
@@ -29,14 +28,13 @@ OWNER_PATHS = re.compile(r"(/home/[a-z]+/|/Users/|C:\\\\Users)")
 
 REQUIRED_FILES = [
     "LICENSE",
-    "DATA_RIGHTS_AND_PERMISSIONS.md",
-    "reports/DATA_RIGHTS_MANIFEST.json",
     "data_cards/corpus_v3b.md",
     "model_cards/belka-research-preview.md",
     "reports/public/REPORTS_INDEX.md",
+    "data_release/open_corpus_bundle/BUNDLE_MANIFEST.json",
 ]
 
-PUBLIC_TEXT_GLOBS = ["README.md", "README_RU.md", "DATA_RIGHTS_AND_PERMISSIONS.md"]
+PUBLIC_TEXT_GLOBS = ["README.md", "README_RU.md"]
 PUBLIC_TEXT_DIRS = ["docs", "data_cards", "model_cards", "reports/public"]
 
 

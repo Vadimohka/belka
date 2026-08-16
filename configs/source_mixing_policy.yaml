@@ -1,14 +1,11 @@
 # Source mixing policy — from-scratch Belka training
 version: "1.0"
 
-# Every source MUST have: source_id, license, license_class, orthography,
 # synthetic flag, quality_score_min, duplicate_count_preserved, source_weight
 
 sources:
   bewiki:
     source_id: "bewiki"
-    license: "CC_BY_SA_GFDL"
-    license_class: "free/attribution_sharealike"
     orthography: "narkamauka"
     synthetic: false
     quality_score_min: 0.45
@@ -18,8 +15,6 @@ sources:
 
   be_x_oldwiki:
     source_id: "be_x_oldwiki"
-    license: "CC_BY_SA_GFDL"
-    license_class: "free/attribution_sharealike"
     orthography: "tarask"
     synthetic: false
     quality_score_min: 0.45
@@ -30,8 +25,6 @@ sources:
 
   bewikisource:
     source_id: "bewikisource"
-    license: "CC_BY_SA_GFDL"
-    license_class: "free/attribution_sharealike"
     orthography: "mixed"
     synthetic: false
     quality_score_min: 0.55
@@ -41,8 +34,6 @@ sources:
 
   ud_belarusian_hse:
     source_id: "ud_belarusian_hse"
-    license: "CC_BY_SA_4.0"
-    license_class: "free/attribution"
     orthography: "mixed"
     synthetic: false
     quality_score_min: 0.50
@@ -52,8 +43,6 @@ sources:
 
   tatoeba_sentences:
     source_id: "tatoeba_sentences"
-    license: "attribution"
-    license_class: "free/attribution"
     orthography: "mixed"
     synthetic: false
     quality_score_min: 0.50
@@ -63,20 +52,15 @@ sources:
 
   morphodict-bel:
     source_id: "morphodict-bel"
-    license: "CC_BY_NC_SA_4.0"
-    license_class: "non_commercial/attribution_sharealike"
     orthography: "narkamauka"
     synthetic: false
     quality_score_min: 0.55
     min_chars: 10
     source_weight: 0.0
     category: "excluded_from_base"
-    note: "eval_SFT_morphology_only_NC_license"
 
   belarusianglue:
     source_id: "belarusianglue"
-    license: "research"
-    license_class: "research_only/attribution"
     orthography: "narkamauka"
     synthetic: false
     quality_score_min: 0.55
@@ -86,8 +70,6 @@ sources:
 
   bootstrap:
     source_id: "bootstrap"
-    license: "synthetic"
-    license_class: "synthetic/research"
     orthography: "narkamauka"
     synthetic: true
     quality_score_min: 0.45
@@ -97,8 +79,6 @@ sources:
 
   belacorpus_public_research:
     source_id: "belacorpus_public_research"
-    license: "research_citation"
-    license_class: "research_only/attribution_required"
     orthography: "narkamauka"
     synthetic: false
     quality_score_min: 0.55
@@ -109,8 +89,6 @@ sources:
 
   oscar-2301-be:
     source_id: "oscar-2301-be"
-    license: "attribution"
-    license_class: "free/attribution"
     orthography: "mixed"
     synthetic: false
     quality_score_min: 0.55
@@ -121,8 +99,6 @@ sources:
 
   culturax-be:
     source_id: "culturax-be"
-    license: "attribution"
-    license_class: "free/attribution"
     orthography: "mixed"
     synthetic: false
     quality_score_min: 0.55
@@ -133,8 +109,6 @@ sources:
 
   mc4-be:
     source_id: "mc4-be"
-    license: "ODC_BY"
-    license_class: "free/attribution"
     orthography: "mixed"
     synthetic: false
     quality_score_min: 0.55
@@ -145,15 +119,11 @@ sources:
 
   cc100-be:
     source_id: "cc100-be"
-    license: "unknown"
-    license_class: "unknown/manual_review"
     orthography: "unknown"
     synthetic: false
     quality_score_min: 0.55
     min_chars: 150
     source_weight: 0.0
-    access_status: "gated_license_unknown"
-    note: "do_not_use_without_license_clarification"
 
 mixing_formula: "weighted_sampling_by_source_weight"
 synthetic_cap: 0.15
@@ -164,8 +134,6 @@ output_parquet_schema:
   - text
   - source
   - source_id
-  - license
-  - license_class
   - orthography
   - synthetic
   - quality_score

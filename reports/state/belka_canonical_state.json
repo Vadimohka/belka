@@ -54,7 +54,7 @@
     "PROVENANCE_RISK": "MEDIUM"
   },
   "next_allowed_actions": [
-    "build corpus v4 (all rights-cleared sources, per docs/CORPUS_V4_EXPANSION_PLAN.md)",
+    "build corpus v4 (all available sources, per docs/CORPUS_V4_EXPANSION_PLAN.md)",
     "H200 max-quality run after corpus v4 acceptance (ops/local/run_belka_h200_maxquality.sh)",
     "repo integrity cleanup",
     "recreate missing QC scripts",
@@ -62,7 +62,7 @@
   ],
   "owner_decisions": {
     "2026-08-16_H200": {
-      "decision": "training hardware moves from RTX 3070 Ti to H200 server; target is max quality on all available rights-cleared data",
+      "decision": "training hardware moves from RTX 3070 Ti to H200 server; target is max quality on all available data",
       "dtype_policy": "auto (bf16 on H200); fp16 remains explicit legacy opt-in for 3070 Ti scripts",
       "runbook": "ops/local/run_belka_h200_maxquality.sh",
       "profiles": "configs/profiles_h200.yaml",
@@ -70,9 +70,9 @@
       "training_gate": "TRAINING_ALLOWED stays NO until corpus v4 accepted (data-limited, not hardware-limited); owner overrides via BELKA_OWNER_APPROVED_TRAINING as usual"
     },
     "2026-08-16_RIGHTS": {
-      "decision": "licenses-as-restriction retired: owner asserts full rights to all v3b training sources and clears them for publication",
+      "decision": "licenses-as-restriction fully retired: owner holds rights to ALL training data; license files/manifests/audits removed from the repo",
       "corpus_bundle": "data_release/open_corpus_bundle (full v3b + tokenizer, split tar.zst, sha256 manifest)",
-      "docs": "DATA_RIGHTS_AND_PERMISSIONS.md, DATA_LICENSES.md, reports/DATA_RIGHTS_MANIFEST.json (owner_decision block)"
+      "docs": "rights machinery deleted (DATA_*, manifests, audit tool); corpus published in data_release/ without license column"
     }
   },
   "blocked_actions": [

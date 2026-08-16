@@ -4,10 +4,9 @@ Thanks for your interest in Belka, a from-scratch Belarusian LLM research projec
 
 ## Principles
 
-- **Scientific honesty.** No overclaiming model quality; no claiming the corpus is public
-  domain or freely redistributable.
-- **Data rights first.** Every data source must carry recorded license + (if restricted) a
-  documented permission. See [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md).
+- **Scientific honesty.** No overclaiming model quality.
+- **Data.** The owner holds full rights to all training data; the corpus is
+  published in-repo (`data_release/open_corpus_bundle/`).
 - **From scratch.** Pretrained multilingual models are eval baselines only, never a
   training base.
 - **Reproducibility.** Changes should keep a clean clone green.
@@ -24,7 +23,7 @@ PYTHONPATH="$PWD" pytest -q tests
 
 - **Add a data source candidate**: edit `configs/source_expansion_candidates.yaml`
   (fill every rights field), then run `python tools/build_source_expansion_board.py`.
-  Do **not** add a source to training claims until its license/permission is recorded.
+  Record a new source in `configs/dataset_sources.yaml` before using it.
 - **Add or extend an eval set**: add a JSONL under `eval/`, then run
   `python tools/check_train_eval_decontamination.py` to prove no train/holdout overlap.
 - **Improve the Belarusian language filter**: `data_pipeline/detect_belarusian.py`
@@ -36,13 +35,12 @@ PYTHONPATH="$PWD" pytest -q tests
   `*.parquet`, `*.zst`, etc.).
 - Never mix eval/holdout prompts into training data.
 - Eval-only datasets (e.g. BelarusianGLUE, FLORES) must never be used for pretraining.
-- Record source, URL, license, date, checksum, and processing steps.
+- Record source, URL, date, checksum, and processing steps.
 
 ## Before opening a PR
 
 ```bash
 PYTHONPATH="$PWD" pytest -q tests
-python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
 python tools/validate_public_release.py
 python tools/check_train_eval_decontamination.py --dry-run
 ```

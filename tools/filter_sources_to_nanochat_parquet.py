@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
 Belarusian-only corpus filter with full record accounting, per-source thresholds,
-exact+paragraph+simhash dedup, orthography split, license manifest, and metadata-rich output.
+exact+paragraph+simhash dedup, orthography split, and metadata-rich output.
 
 Every input record MUST land in exactly one category:
   accepted, quarantine, rejected, skipped_empty, skipped_short,
   skipped_namespace, skipped_redirect, skipped_parse_error,
-  skipped_duplicate_exact, skipped_duplicate_near, skipped_license_excluded
+  skipped_duplicate_exact, skipped_duplicate_near
 
 Assertion: raw_seen == sum(all categories)
 """
@@ -28,7 +28,7 @@ SOURCE_THRESHOLDS = {
     "ud_belarusian_hse": {"min_score": 0.50, "min_chars": 30, "orthography": None, "not_for_base": True},
     "tatoeba_sentences": {"min_score": 0.50, "min_chars": 30, "orthography": None, "sentence_level": True},
     "belarusianglue": {"min_score": 0.55, "min_chars": 50, "orthography": None, "eval_or_sft_only": True},
-    "morphodict-bel": {"min_score": 0.55, "min_chars": 10, "orthography": None, "not_for_base": True, "license_class": "non_commercial"},
+    "morphodict-bel": {"min_score": 0.55, "min_chars": 10, "orthography": None, "not_for_base": True},
     "books_clean_v2": {"min_score": 0.50, "min_chars": 300, "orthography": "narkamauka"},
     "oscar-2301-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
     "culturax-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
@@ -36,27 +36,6 @@ SOURCE_THRESHOLDS = {
     "cc100-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
     "bootstrap": {"min_score": 0.45, "min_chars": 60, "orthography": "narkamauka"},
     "belarusian_seed": {"min_score": 0.45, "min_chars": 60, "orthography": "narkamauka"},
-}
-
-LICENSE_CLASSES = {
-    "bewiki": "free/attribution_sharealike",
-    "be_x_oldwiki": "free/attribution_sharealike",
-    "bewikisource": "free/attribution_sharealike",
-    "bewiktionary": "free/attribution_sharealike",
-    "bewikiquote": "free/attribution_sharealike",
-    "bewikibooks": "free/attribution_sharealike",
-    "belacorpus_public_research": "research_only/attribution_required",
-    "ud_belarusian_hse": "free/attribution",
-    "tatoeba_sentences": "free/attribution",
-    "belarusianglue": "research_only/attribution",
-    "morphodict-bel": "non_commercial/attribution_sharealike",
-    "oscar-2301-be": "free/attribution",
-    "culturax-be": "free/attribution",
-    "mc4-be": "free/attribution",
-    "cc100-be": "unknown/manual_review",
-    "bootstrap": "synthetic/research",
-    "belarusian_seed": "synthetic/research",
-    "books_clean_v2": "manual_review_required/research_only",
 }
 
 BE_WORDS = {'гэта','які','якая','якія','быў','была','былі','ёсць','няма','для','праз','пасля',
@@ -203,7 +182,6 @@ def main():
     ap.add_argument('--strict-source-thresholds', action='store_true', default=True)
     ap.add_argument('--split-orthography', action='store_true', default=True)
     ap.add_argument('--dedup', default='exact,paragraph,simhash')
-    ap.add_argument('--write-license-manifest', action='store_true', default=True)
     ap.add_argument('--max-docs', type=int, default=0)
     args = ap.parse_args()
 
@@ -236,7 +214,6 @@ def main():
     skipped_redirect = 0
     skipped_duplicate_exact = 0
     skipped_duplicate_near = 0
-    skipped_license_excluded = 0
 
     accepted_records = []
     quarantine_records = []
@@ -286,12 +263,6 @@ def main():
             skipped_short += 1
             source_stats[source]['skipped_short'] += 1
             continue
-
-        # License check
-        lic = LICENSE_CLASSES.get(source, 'unknown/manual_review')
-        obj_license = obj.get('license', '')
-        if 'non_commercial' in lic and 'commercial' not in lic:
-            pass  # Keep for research, but mark
 
         # Exact dedup
         h_exact = hashlib.sha256(text.encode()).hexdigest()
@@ -345,7 +316,6 @@ def main():
             'reasons': reasons,
             'chars': len(text),
             'orthography': orthography or obj.get('orthography'),
-            'license': lic,
             'doc_id': f"{source}_{hashlib.sha256(text.encode()).hexdigest()[:12]}",
         }
 
@@ -428,7 +398,6 @@ def main():
         'skipped_no_text_field': skipped_no_text_field,
         'skipped_namespace': skipped_namespace,
         'skipped_redirect': skipped_redirect,
-        'skipped_license_excluded': skipped_license_excluded,
         'TOTAL_ACCOUNTED': total_accounted,
         'ACCOUNTING_ASSERTION': 'PASS' if total_accounted == raw_seen else 'FAIL',
         'train_narkamauka': len(narkamauka) - max(1, int(len(narkamauka) * args.val_ratio)),
@@ -441,7 +410,6 @@ def main():
     per_source = {}
     for src, stats in sorted(source_stats.items()):
         per_source[src] = dict(stats)
-        per_source[src]['license'] = LICENSE_CLASSES.get(src, 'unknown')
         per_source[src]['threshold_min_score'] = SOURCE_THRESHOLDS.get(src, {}).get('min_score', 0.45)
         per_source[src]['threshold_min_chars'] = SOURCE_THRESHOLDS.get(src, {}).get('min_chars', 80)
 
@@ -461,42 +429,6 @@ def main():
         for r in rejected_records[:1000]:
             f.write(json.dumps(r, ensure_ascii=False) + '\n')
 
-    # ----- License manifest -----
-    lic_manifest = {
-        'generated_at': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),
-        'categories': {
-            'commercial_ok': [],
-            'research_only': [],
-            'non_commercial': [],
-            'attribution_required': [],
-            'sharealike_required': [],
-            'unknown_or_manual_review': [],
-        }
-    }
-    for src in sorted(source_stats):
-        lic = LICENSE_CLASSES.get(src, 'unknown/manual_review')
-        if 'non_commercial' in lic:
-            lic_manifest['categories']['non_commercial'].append(src)
-        elif 'research_only' in lic:
-            lic_manifest['categories']['research_only'].append(src)
-        else:
-            lic_manifest['categories']['commercial_ok'].append(src)
-        if 'attribution' in lic:
-            lic_manifest['categories']['attribution_required'].append(src)
-        if 'sharealike' in lic:
-            lic_manifest['categories']['sharealike_required'].append(src)
-        if 'unknown' in lic or 'manual' in lic:
-            lic_manifest['categories']['unknown_or_manual_review'].append(src)
-    (report_dir / 'LICENSE_MANIFEST.json').write_text(
-        json.dumps(lic_manifest, ensure_ascii=False, indent=2), encoding='utf-8')
-
-    # ----- SHA256 of parquet outputs -----
-    for fpath in [tp, vp]:
-        if fpath and Path(fpath).exists():
-            sha = hashlib.sha256(Path(fpath).read_bytes()).hexdigest()
-            name = Path(fpath).name
-            print(f"{name.upper().replace('.','_')}_SHA256={sha}")
-
     # ----- Summary -----
     print(f"PACK_DIR_REALPATH={pack}")
     print(f"RAW_SEEN={raw_seen}")
@@ -514,7 +446,6 @@ def main():
     print(f"TRAIN_PARQUET={tp}")
     print(f"VAL_PARQUET={vp}")
     print(f"SOURCE_MANIFEST={report_dir / 'source_filter_report.json'}")
-    print(f"LICENSE_MANIFEST={report_dir / 'LICENSE_MANIFEST.json'}")
 
 
 if __name__ == '__main__':

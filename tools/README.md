@@ -10,9 +10,8 @@ and evaluation. Canonical tools by purpose:
 - `validate_sft_v7.py` — SFT v7 dataset validator.
 - `validate_sft_v8.py` — SFT v8 dataset validator (current).
 
-## Rights / provenance
+## Provenance
 
-- `audit_data_rights.py` — validate `reports/DATA_RIGHTS_MANIFEST.json`.
 - `audit_corpus_manifest.py` — audit corpus source manifests.
 - `audit_training_provenance.py` — audit training-run provenance.
 

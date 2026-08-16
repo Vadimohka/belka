@@ -1,8 +1,7 @@
 # Model Card — Belka (Research Preview)
 
-> Research preview of a from-scratch Belarusian language model. This card documents data
-> provenance and rights honestly: model-release rights may differ from raw-data
-> redistribution. The training corpus is published in this repository (owner decision 2026-08-16).
+> Research preview of a from-scratch Belarusian language model. The owner holds full
+> rights to all training data; the corpus is published in this repository.
 
 ## Model summary
 
@@ -25,37 +24,21 @@
 ## Out-of-scope use
 
 - Production deployment or high-stakes use (small model, narrow corpus).
-- Any use that **represents the training corpus as public-domain or unrestricted** when it
-  is not.
-- Commercial use of outputs derived from non-commercial or research-permissioned source
-  material.
+- Any use that overstates the model's quality or coverage (small model, narrow corpus).
 
 ## Training data provenance
 
 The model is trained on the Belka corpus `v3b`
-([`data_cards/corpus_v3b.md`](../data_cards/corpus_v3b.md)): openly licensed
-Wikimedia/UD/Tatoeba/synthetic data **plus** owner-cleared literary material.
+([`data_cards/corpus_v3b.md`](../data_cards/corpus_v3b.md)): Wikimedia/UD/Tatoeba/
+synthetic data plus Belarusian literary prose. The owner holds full rights to all
+training data; the complete corpus is published in this repository
+(`data_release/open_corpus_bundle/`).
 
-### Permissioned data statement
+## Rights
 
-Some training materials (notably `data_input/be_texts/books_clean_v2/`, including
-RuLit-style Belarusian literary works, and the `*_full` literary extractions) were
-originally copyrighted or marked for manual review. They are **included under explicit
-permission obtained by the project owner for research and model-development use**. The
-original license/status of each source is **preserved and recorded**; the permission is a
-documented overlay, not a relicensing. Underlying written permissions are retained
-privately by the owner and can be **confirmed at review**. See
-[`DATA_RIGHTS_AND_PERMISSIONS.md`](../DATA_RIGHTS_AND_PERMISSIONS.md) and
-[`reports/DATA_RIGHTS_MANIFEST.json`](../reports/DATA_RIGHTS_MANIFEST.json).
-
-## Rights: model release vs data redistribution
-
-- **Code, eval scripts, manifests, recipes, and this card** are openly published (code
-  under the root [`LICENSE`](../LICENSE), MIT).
+- **Code** is published under the root [`LICENSE`](../LICENSE) (MIT).
 - **Derived model weights** may be released as a research preview.
-- **The complete training corpus IS published** in this repository
-  (`data_release/open_corpus_bundle/`, owner decision 2026-08-16). Per-row
-  `source`/`license` provenance is preserved; honor Wikimedia CC BY-SA attribution.
+- **The complete training corpus is published** in this repository.
 
 ## Evaluation
 

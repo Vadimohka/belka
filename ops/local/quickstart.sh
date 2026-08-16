@@ -69,7 +69,6 @@ REAL training (bigger models, full corpus):
       --chatcore-every=-1 --num-iterations=1500
 
 The bundled corpus is the COMPLETE v3b corpus (302,991 rows / ~595M chars,
-tokenizer included). Per-row source/license provenance is in the parquet files;
-see DATA_RIGHTS_AND_PERMISSIONS.md for the rights statement.
+tokenizer included).
 ==============================================================================
 EOF

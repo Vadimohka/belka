@@ -2,7 +2,6 @@
 
 ## Goals
 
-Build a clean, reproducible Belarusian-only corpus with full accounting and license provenance. Every raw record must be accounted for as accepted, quarantine, rejected, or skipped with a reason.
 
 ## Directory layout
 
@@ -19,8 +18,6 @@ data_input/
 reports/
   source_filter_report.json
   sources_manifest.jsonl
-  LICENSE_MANIFEST.json
-  LICENSE_MANIFEST.md
   quarantine_samples.jsonl
   rejected_samples.jsonl
   decontamination_report.json
@@ -33,8 +30,6 @@ reports/
   "text": "...",
   "source_id": "bewiki",
   "source_url": "...",
-  "license": "CC-BY-SA/GFDL",
-  "license_class": "attribution_sharealike",
   "orthography": "narkamauka",
   "synthetic": false,
   "quality_score": 0.78,
@@ -55,7 +50,6 @@ Before downloading, add source metadata to `configs/dataset_sources.yaml`:
 
 - source name and URL;
 - access method;
-- license/terms;
 - expected use;
 - priority;
 - preprocessing notes;
@@ -76,10 +70,8 @@ Rules:
 Source-specific extraction examples:
 
 - Wikimedia: namespace 0, skip redirects, strip templates/tables/references, keep title/revision id.
-- Wikisource: remove headers/footers/OCR artifacts; verify work-level rights (open license or documented owner permission; record outcome in the data-rights manifest).
 - OPUS/Tatoeba: parse sentence pairs, keep language pair and corpus name.
 - Common Voice: extract transcripts/prompts only if terms allow.
-- HF web corpora: stream sample first, verify language field and license.
 
 ### 4. Normalization
 
@@ -192,7 +184,6 @@ reports/val_metadata.jsonl
 ```text
 RAW_SEEN == TOTAL_ACCOUNTED
 FORBIDDEN_PATH_REFERENCES_CODE=0
-LICENSE_MANIFEST exists
 SOURCE_MANIFEST exists
 DECONTAMINATION_REPORT exists
 TRAIN_PARQUET_SHA256 recorded

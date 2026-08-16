@@ -5,8 +5,7 @@ curated Belarusian corpus → custom tokenizer → randomly-initialized nanochat
 model → base pretraining → Belarusian-only SFT → language-lock evaluation.
 
 > **Research preview.** Belka is an open-source code and research-pipeline project. It is
-> not a production model. The training corpus is published in this repository
-> (see [Data Rights](#data-rights-permissions-and-provenance)).
+> not a production model. The training corpus is published in this repository.
 
 ## Mission
 
@@ -62,7 +61,6 @@ Checks only (no install):
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements_pack.txt
 PYTHONPATH="$PWD" pytest -q tests
-python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
 python tools/validate_public_release.py
 ```
 
@@ -71,7 +69,7 @@ python tools/validate_public_release.py
 ```text
 configs/        training profiles, data-source registry, expansion candidates, policies
 data_pipeline/  Belarusian normalization / language filter / dedup / split
-tools/          corpus, rights, leakage, source-board, and validation tools
+tools/          corpus, leakage, source-board, and validation tools
 eval/           language-lock / holdout / regression / refusal eval suites + runner
 seed_sft/       Belarusian SFT seed conversations (v8 current)
 data_ready/     small bundled bootstrap/seed/eval jsonl
@@ -92,35 +90,27 @@ The main research-preview surface is `README.md`, `configs/`, `data_pipeline/`,
 Optional owner/agent workflow material is kept under `ops/` for transparency,
 but it is not required for a basic review of the project.
 
-## Data Rights, Permissions, and Provenance
+## Data
 
-The project owner asserts **full rights to all v3b training sources** and clears
-them for publication (owner decision, 2026-08-16). The **complete corpus** ships
-in this repository as a compressed, checksummed bundle:
-
-- Bundle: `data_release/open_corpus_bundle/` (~329MB in 4 git-friendly parts)
-- Restore: `bash ops/local/restore_bundled_corpus.sh`
-- Rebuild: `tools/build_open_corpus_bundle.py`
-
-Per-row `source`/`license` provenance is preserved inside the parquet files —
-Wikimedia-derived text keeps its CC BY-SA attribution/share-alike obligations.
-Eval-only datasets (BelarusianGLUE, FLORES-200) stay out of the training corpus.
-Details: [`DATA_RIGHTS_AND_PERMISSIONS.md`](DATA_RIGHTS_AND_PERMISSIONS.md),
-[`DATA_LICENSES.md`](DATA_LICENSES.md), [`configs/dataset_sources.yaml`](configs/dataset_sources.yaml).
-Project **code** is licensed separately via the root [`LICENSE`](LICENSE) (MIT).
+The owner holds **full rights to all training data** (former license
+restrictions retired 2026-08-16). The complete corpus + tokenizer ship in this
+repository: `data_release/open_corpus_bundle/` (restore:
+`bash ops/local/restore_bundled_corpus.sh`). Source registry:
+[`configs/dataset_sources.yaml`](configs/dataset_sources.yaml). Code license:
+[`LICENSE`](LICENSE) (MIT).
 
 ## Corpus summary
 
 `v3b`: ~180.6M tokens (measured with the trained 16k BPE; earlier docs cited a
 ~59M estimate), Belarusian (narkamauka + tarask tracked). Open Wikimedia/UD/Tatoeba +
-owner-cleared literary prose (published in this repo — see Data Rights). Source mix, processing, and rights:
+literary prose. Source mix and processing:
 [`data_cards/corpus_v3b.md`](data_cards/corpus_v3b.md). Expansion toward `v4`:
 [`docs/CORPUS_V4_EXPANSION_PLAN.md`](docs/CORPUS_V4_EXPANSION_PLAN.md).
 
 ## Model summary
 
 `belka-d8-base-v3-pilot` + `sft_v8`: a small nanochat/GPT-style decoder trained from
-scratch. Intended use, limitations, and the permissioned-data statement:
+scratch. Intended use and limitations:
 [`model_cards/belka-research-preview.md`](model_cards/belka-research-preview.md).
 
 ## Evaluation summary
@@ -169,5 +159,4 @@ Belarusian language filter.
 
 ## License
 
-Code: [`LICENSE`](LICENSE) (MIT). Data: per-source — see
-[`DATA_LICENSES.md`](DATA_LICENSES.md) and `DATA_RIGHTS_AND_PERMISSIONS.md`.
+Code: [`LICENSE`](LICENSE) (MIT). Data: owned by the project, published in-repo.

@@ -1,37 +1,32 @@
-# Public Belarusian source registry for expanding the corpus.
-# Do not claim these sources are included in the ready seed data until downloaded and filtered locally.
 sources:
-  - id: bewiki_latest
-    name: Belarusian Wikipedia dump
-    kind: wikimedia_xml_bz2
-    url: https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream.xml.bz2
-    license: CC-BY-SA-4.0/GFDL for Wikimedia text; verify page-level terms
-    target_dir: data_input/be_texts/bewiki
-    notes: Extract plain text, filter Belarusian-only, deduplicate, keep attribution manifest.
-  - id: bewikisource_latest
-    name: Belarusian Wikisource dump
-    kind: wikimedia_xml_bz2
-    url: https://dumps.wikimedia.org/bewikisource/latest/bewikisource-latest-pages-articles-multistream.xml.bz2
-    license: Per-work licenses; verify before training/publishing
-    target_dir: data_input/be_texts/bewikisource
-    notes: Use only texts whose license is compatible with your model/dataset release.
-  - id: bewiktionary_latest
-    name: Belarusian Wiktionary dump
-    kind: wikimedia_xml_bz2
-    url: https://dumps.wikimedia.org/bewiktionary/latest/bewiktionary-latest-pages-articles-multistream.xml.bz2
-    license: CC-BY-SA-4.0/GFDL for Wikimedia text; verify page-level terms
-    target_dir: data_input/be_texts/bewiktionary
-    notes: Useful for lexical coverage; filter templates aggressively.
-  - id: belarusian_glue
-    name: maaxap/BelarusianGLUE
-    kind: huggingface_dataset
-    hf_repo: maaxap/BelarusianGLUE
-    license: Check Hugging Face dataset card before redistribution/training
-    notes: Small Belarusian NLU benchmark data; use mainly for eval/diagnostics, not bulk pretraining.
-  - id: culturax_be
-    name: CulturaX Belarusian subset
-    kind: huggingface_dataset
-    hf_repo: uonlp/CulturaX
-    language: be
-    license: Check Hugging Face gated terms and source-level obligations
-    notes: Very large multilingual cleaned corpus; may require access approval and storage planning.
+- id: bewiki_latest
+  name: Belarusian Wikipedia dump
+  kind: wikimedia_xml_bz2
+  url: https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream.xml.bz2
+  target_dir: data_input/be_texts/bewiki
+  notes: Extract plain text, filter Belarusian-only, deduplicate, keep attribution
+    manifest.
+- id: bewikisource_latest
+  name: Belarusian Wikisource dump
+  kind: wikimedia_xml_bz2
+  url: https://dumps.wikimedia.org/bewikisource/latest/bewikisource-latest-pages-articles-multistream.xml.bz2
+  target_dir: data_input/be_texts/bewikisource
+- id: bewiktionary_latest
+  name: Belarusian Wiktionary dump
+  kind: wikimedia_xml_bz2
+  url: https://dumps.wikimedia.org/bewiktionary/latest/bewiktionary-latest-pages-articles-multistream.xml.bz2
+  target_dir: data_input/be_texts/bewiktionary
+  notes: Useful for lexical coverage; filter templates aggressively.
+- id: belarusian_glue
+  name: maaxap/BelarusianGLUE
+  kind: huggingface_dataset
+  hf_repo: maaxap/BelarusianGLUE
+  notes: Small Belarusian NLU benchmark data; use mainly for eval/diagnostics, not
+    bulk pretraining.
+- id: culturax_be
+  name: CulturaX Belarusian subset
+  kind: huggingface_dataset
+  hf_repo: uonlp/CulturaX
+  language: be
+  notes: Very large multilingual cleaned corpus; may require access approval and storage
+    planning.

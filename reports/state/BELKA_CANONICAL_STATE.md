@@ -8,7 +8,7 @@ Updated: 2026-08-16 (owner decision: H200 max-quality; see reports/strategy/H200
 
 ## Owner Decisions
 - 2026-08-16: training hardware moves from RTX 3070 Ti to H200 server; max quality on all
-  available rights-cleared data; dtype auto (bf16), runbook ops/local/run_belka_h200_maxquality.sh,
+  available data; dtype auto (bf16), runbook ops/local/run_belka_h200_maxquality.sh,
   profiles configs/profiles_h200.yaml. TRAINING_ALLOWED stays NO until corpus v4 accepted
   (data-limited, not hardware-limited).
 

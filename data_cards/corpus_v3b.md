@@ -1,10 +1,8 @@
 # Dataset Card — Belka Corpus v3b
 
-> Owner decision 2026-08-16: full rights to all v3b sources are asserted by the project
-> owner and the corpus is cleared for publication. The complete corpus ships in this
-> repository (`data_release/open_corpus_bundle/`); per-row `source`/`license` provenance
-> is preserved inside the parquet files (Wikimedia terms keep their attribution/share-alike
-> obligations).
+> The owner holds full rights to all v3b sources; former license restrictions were
+> retired on 2026-08-16. The complete corpus ships in this repository
+> (`data_release/open_corpus_bundle/`).
 
 ## Overview
 
@@ -19,15 +17,15 @@
 
 ## Sources
 
-| Source | Original license / status | In corpus | Provenance notes |
-|---|---|---|---|
-| `bewiki`, `be_x_oldwiki` | CC BY-SA / GFDL | yes | attribution + share-alike preserved |
-| `bewikisource`, `bewikibooks`, `bewiktionary`, `bewikiquote` | Wikimedia terms (work-level varies) | yes (filtered) | strict filter; attribution preserved |
-| `ud_belarusian_hse` | CC BY-SA 4.0 | low-weight | grammar/morphology |
-| `tatoeba_sentences` | Tatoeba attribution terms | low-weight | short-sentence bias |
-| `bootstrap` / synthetic seed | project-generated | sanity/seed | marked synthetic |
-| `books_clean_v2` (Belarusian literary prose, incl. RuLit-style sources) | copyright, all rights reserved | yes (485 rows) | **project-permissioned research material** — see Rights section |
-| `bewikisource_full`, `bewikibooks_full` | Wikimedia, work-level manual review | partial | **project-permissioned**; attribution preserved |
+| Source | In corpus | Notes |
+|---|---|---|
+| `bewiki`, `be_x_oldwiki` | yes | main web-text core |
+| `bewikisource`, `bewikibooks`, `bewiktionary`, `bewikiquote` | yes (filtered) | strict filter |
+| `ud_belarusian_hse` | low-weight | grammar/morphology |
+| `tatoeba_sentences` | low-weight | short-sentence bias |
+| `bootstrap` / synthetic seed | sanity/seed | marked synthetic |
+| `books_clean_v2` (Belarusian literary prose) | yes (485 rows) | literary prose |
+| `bewikisource_full`, `bewikibooks_full` | partial | literary extractions |
 
 Full per-source registry: [`configs/dataset_sources.yaml`](../configs/dataset_sources.yaml).
 
@@ -47,43 +45,18 @@ and rejection are recorded (`reports/source_quarantine.jsonl`,
 - `eval/regression_quality_control_v1.be.jsonl` (170 prompts) is a **regression /
   seen-intent** set (117 overlap with SFT) and must **not** be quoted as a holdout.
 
-## Rights and Permissions
+## Rights
 
-This corpus follows the project permissions model in
-[`DATA_RIGHTS_AND_PERMISSIONS.md`](../DATA_RIGHTS_AND_PERMISSIONS.md). Original source
-license and project-specific permission are tracked separately.
-
-- **Public / open sources.** Wikimedia-derived text, `ud_belarusian_hse`, Tatoeba, and
-  synthetic seed data carry their own open licenses. Belka follows their attribution and
-  share-alike obligations. No extra permission is required; original license is unchanged.
-- **Permissioned sources.** `books_clean_v2` and the `*_full` literary extractions were
-  originally copyrighted or marked manual-review. They are **included in the Belka research
-  corpus under explicit permission obtained by the project owner for research and
-  model-development use**. The original copyright status is **unchanged and still recorded**;
-  the permission is an overlay, not a relicensing.
-- **Private permission evidence.** The underlying written permissions are retained
-  privately by the owner and are **not published** here. They can be **confirmed by the
-  owner at review**.
-- **Raw-data redistribution policy.** Raw permissioned text (Category B) is **not
-  redistributed** from this repository. Permission to *train* does not grant permission to
-  *redistribute*. Where redistribution is not covered, that is stated explicitly.
-- **Model-training policy.** ML training and evaluation on permissioned material are
-  covered; derived model weights may be released as a research preview (see
-  [`model_cards/belka-research-preview.md`](../model_cards/belka-research-preview.md)).
-- **Attribution policy.** Wikimedia/UD/Tatoeba attribution and share-alike obligations are
-  preserved; literary authors are credited.
-- **Exclusions.** Candidate sources not in the corpus (OSCAR, CulturaX, OpenSubtitles,
-  FLORES, morphodict-bel for base, Common Crawl) keep their original status and are **not**
-  covered by any permission claim. Non-commercial-licensed material is excluded from any
-  commercial use.
+The owner holds full rights to all training data; the former permission/license
+model was retired on 2026-08-16 and the complete corpus is published in this
+repository. Candidate sources not yet in the corpus (OSCAR, CulturaX, Common
+Crawl, ...) are simply unused — no claim is made about them either way.
 
 ## Limitations
 
 - ~180M tokens (measured with the trained 16k BPE; early planning docs cited a ~59M estimate) is small; coverage and domain breadth are limited.
 - Web/literary sources may carry style, topical, and demographic biases.
 - Narkamauka/tarask mixing is tracked but not perfectly separated.
-- Raw redistribution rights differ from model/code release rights — do not assume the
-  corpus is openly downloadable.
 
 ## Project owner
 

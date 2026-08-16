@@ -8,8 +8,7 @@ This inventory lists candidate data sources for a Belarusian language model. “
 > use. Original source status is preserved; permission is tracked separately and does not
 > grant raw-data redistribution. Candidate sources listed here that are **not** in the
 > corpus keep their original status and are not covered by any permission claim. See
-> `DATA_RIGHTS_AND_PERMISSIONS.md`, `configs/dataset_sources.yaml`, and
-> `reports/DATA_RIGHTS_MANIFEST.json`.
+
 
 ## Priority summary
 
@@ -72,6 +71,5 @@ Every time a source is added or changed, update:
 
 - `configs/dataset_sources.yaml`;
 - this document;
-- `reports/LICENSE_MANIFEST.*`;
 - source accounting report;
 - dataset card.

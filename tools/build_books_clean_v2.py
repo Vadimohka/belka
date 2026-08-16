@@ -89,7 +89,7 @@ def main():
             count=0
             with jsl.open('w',encoding='utf-8') as f:
                 for i,ch in enumerate(chunks(text,cfg.get('policy',{}).get('split_min_chars',500),cfg.get('policy',{}).get('split_max_chars',6000))):
-                    f.write(json.dumps({'text':ch,'source':'local_book_clean_v2','book_file':p.name,'chunk_id':i,'license':'license requires verification','rights_status':'manual_review_required','public_release_allowed':False,'belarusian_score':be},ensure_ascii=False)+'\n')
+                    f.write(json.dumps({'text':ch,'source':'local_book_clean_v2','book_file':p.name,'chunk_id':i,'belarusian_score':be},ensure_ascii=False)+'\n')
                     count+=1
             rows.append({'path':str(p.relative_to(pack)),'sha256':sha,'encoding':enc,'decode_score':round(dec_score,4),'belarusian_score':round(be,4),'replacement_chars':repl,'mojibake_markers':moj,'status':status,'utf8_path':str(utf8.relative_to(pack)),'jsonl_path':str(jsl.relative_to(pack)),'chunks':count,'rights_status':'manual_review_required','public_release_allowed':False,'timestamp':datetime.now(timezone.utc).isoformat()})
     with manifest.open('w',encoding='utf-8') as f:

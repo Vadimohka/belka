@@ -2,35 +2,15 @@ schema_version: '2026-06-27'
 policy:
   project: Belka Belarusian LM from scratch
   large_downloads_require_explicit_approval: true
-  no_dataset_without_license_record: true
   raw_dumps_not_committed: true
   all_paths_repo_contained: true
   pretrained_models_only_eval_baselines: true
-  # Permissions model: original source license and project-specific owner permission are
-  # tracked SEPARATELY. A permission overlay is not a relicensing and never asserts
-  # public-domain or unrestricted-redistribution status. See DATA_RIGHTS_AND_PERMISSIONS.md
-  # and reports/DATA_RIGHTS_MANIFEST.json.
-  permissions_model:
-    tracks_separately:
-      - original_license
-      - permission_status
-      - permission_scope
-      - redistribution_status
-    permission_basis_values: [public_license, owner_research_permission]
-    permission_evidence_private: true   # underlying permissions retained by owner; confirmable at review
-    raw_permissioned_data_redistributed: false
-    commercial_use_of_permissioned_material: false
-# Per-source fields below may include the permission overlay:
-#   original_license, permission_status, permission_basis, permission_scope{...},
-#   permission_evidence{...}, redistribution_status, review_status.
-# Sources without an overlay rely on their public license (permission_status: not_required).
 sources:
 - id: bewiki
   name: Belarusian Wikipedia
   url: https://dumps.wikimedia.org/bewiki/latest/
   type: wikimedia_dump
   language: Belarusian official/narkamauka
-  license: CC BY-SA / GFDL for most text; verify media/page terms
   access_method: automatic dump download
   priority: high
   status: configured
@@ -43,7 +23,6 @@ sources:
   url: https://dumps.wikimedia.org/be_x_oldwiki/latest/
   type: wikimedia_dump
   language: Belarusian tarask/classical
-  license: CC BY-SA / GFDL for most text
   access_method: automatic dump download
   priority: high
   status: configured
@@ -55,36 +34,19 @@ sources:
   url: https://dumps.wikimedia.org/bewikisource/latest/
   type: wikimedia_dump
   language: Belarusian/mixed
-  license: work-level license review required; Wikimedia terms
   access_method: automatic dump + manual rights review
   priority: high
   status: configured_strict
   suitable_for: pretraining literary/prose after strict filter
   preprocessing_notes: remove headers/templates/OCR; min_score>=0.55; min_chars>=400
   risks: copyright status, OCR noise, multilingual pages
-  original_license: Wikimedia work-level; some works require manual review
-  permission_status: explicit_permission_obtained   # applies to the bewikisource_full extraction
-  permission_basis: owner_research_permission
-  permission_scope:
-    research_use: true
-    ml_training: true
-    evaluation: true
-    model_release: derived_weights_only
-    processed_data_release: by_request_with_documented_scope
-    raw_data_redistribution: false
-    commercial_use: false
-  permission_evidence:
-    private_record_available: true
-    public_summary: Owner-obtained research permission; confirmable at review; not published in repo
   attribution_required: true
-  review_status: permission_documented_by_owner
-  notes: Wikimedia attribution/share-alike obligations of underlying works still apply; permission overlay covers research/model-development use, not raw redistribution.
+  notes: Wikimedia attribution/share-alike obligations of underlying works still apply;
 - id: bewiktionary
   name: Belarusian Wiktionary
   url: https://dumps.wikimedia.org/bewiktionary/latest/
   type: wikimedia_dump
   language: Belarusian/multilingual lexical
-  license: Wikimedia terms
   access_method: automatic optional
   priority: medium
   status: candidate
@@ -96,7 +58,6 @@ sources:
   url: https://dumps.wikimedia.org/bewikibooks/latest/
   type: wikimedia_dump
   language: Belarusian if available
-  license: Wikimedia terms
   access_method: automatic optional
   priority: low
   status: candidate
@@ -108,7 +69,6 @@ sources:
   url: https://dumps.wikimedia.org/bewikiquote/latest/
   type: wikimedia_dump
   language: Belarusian/mixed quotes
-  license: quote rights require review
   access_method: automatic optional
   priority: low
   status: manual_review
@@ -120,7 +80,6 @@ sources:
   url: https://www.wikidata.org/wiki/Wikidata:Database_download
   type: structured_dump
   language: Belarusian labels/descriptions
-  license: Wikidata dump terms; verify
   access_method: dump or SPARQL/API
   priority: medium
   status: candidate
@@ -132,11 +91,9 @@ sources:
   url: https://bnkorpus.info/index.en.html
   type: corpus_portal
   language: Modern Belarusian, multiple subcorpora
-  license: license/access requires verification
   access_method: manual/API/contact
   priority: high
   status: manual_review
-  suitable_for: reference, eval, possible training if licensed
   preprocessing_notes: do not scrape without terms
   risks: copyright, access, PII
 - id: belacorpus_public
@@ -144,7 +101,6 @@ sources:
   url: https://github.com/Belarusian-Corpus/belacorpus_public
   type: research_corpus
   language: Standard Belarusian
-  license: access conditions in README; verify
   access_method: manual request/README conditions
   priority: high
   status: manual_request_required
@@ -156,43 +112,36 @@ sources:
   url: https://corpora.uni-leipzig.de/en?corpusId=bel_wikipedia_2021
   type: sentence_corpus
   language: Belarusian
-  license: Leipzig terms require verification
   access_method: download from Leipzig
   priority: medium
   status: candidate
   suitable_for: pretraining supplement/eval
   preprocessing_notes: dedup against Wikimedia
-  risks: license verification, duplicated Wikipedia
 - id: hplt_v2_be
   name: HPLT v2 Belarusian subset
   url: https://hplt-project.org/datasets/v2.0
   type: web_corpus
   language: Belarusian LID subset
-  license: HPLT terms/license require verification
   access_method: HPLT download
   priority: high
   status: candidate_large
   suitable_for: pretraining after audit
   preprocessing_notes: strict LID/filter/PII/dedup
-  risks: web noise, license provenance
 - id: fineweb2_be
   name: FineWeb2 Belarusian subset
   url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
   type: web_corpus
   language: Belarusian subset/config to verify
-  license: ODC-By family reported; verify current dataset terms
   access_method: Hugging Face
   priority: high
   status: candidate_large
   suitable_for: pretraining after audit
-  preprocessing_notes: verify config; apply Belarusian filters; license manifest
   risks: web noise, subset naming, PII
 - id: oscar_2301_be
   name: OSCAR 23.01 Belarusian
   url: https://huggingface.co/datasets/oscar-corpus/OSCAR-2301
   type: web_corpus
   language: Belarusian subset
-  license: HF gated/access conditions + Common Crawl lineage
   access_method: HF login/access request
   priority: high
   status: gated_pending
@@ -204,19 +153,16 @@ sources:
   url: https://huggingface.co/datasets/uonlp/CulturaX
   type: web_corpus
   language: Belarusian among 167 languages
-  license: HF/dataset terms and source obligations
   access_method: HF/datalad/scripts
   priority: high
   status: gated_or_large_pending
   suitable_for: pretraining after audit
   preprocessing_notes: subset only, strict filter, dedup
-  risks: large storage, source license
 - id: mc4_be
   name: mC4 Belarusian / C4 multilingual
   url: https://huggingface.co/datasets/allenai/c4
   type: web_corpus
   language: Belarusian if multilingual config includes be
-  license: ODC-By + Common Crawl terms; verify
   access_method: HF/TFDS
   priority: medium
   status: candidate_large
@@ -228,43 +174,35 @@ sources:
   url: https://huggingface.co/datasets/SEACrowd/cc100
   type: web_corpus
   language: Belarusian subset
-  license: license requires verification
   access_method: HF/CC-Net
   priority: medium_low
   status: manual_review
   suitable_for: optional legacy pretraining
   preprocessing_notes: manual legal review
-  risks: unknown license/noise
 - id: common_crawl_direct
   name: Common Crawl direct Belarusian mining
   url: https://commoncrawl.org/
   type: raw_web
   language: requires LID
-  license: Common Crawl terms + source web rights
   access_method: direct crawl processing
   priority: low
   status: not_ready
   suitable_for: future large-scale mining
-  preprocessing_notes: requires robust ETL, PII, license policy
   risks: copyright, PII, cost
 - id: opus_collection_be
   name: OPUS Belarusian parallel corpora
   url: https://opus.nlpl.eu/
   type: parallel_corpus_collection
   language: Belarusian pairs where available
-  license: per-corpus license
   access_method: OPUS API/download/mtdata
   priority: medium
   status: candidate
   suitable_for: translation SFT/eval
-  preprocessing_notes: enumerate be pairs and licenses
-  risks: mixed domains/licenses
 - id: tatoeba_be
   name: Tatoeba Belarusian sentences/translations
   url: https://tatoeba.org/eng/downloads
   type: sentence_parallel
   language: Belarusian
-  license: Tatoeba attribution/terms; verify
   access_method: Tatoeba downloads/HF mirrors
   priority: medium
   status: configured_or_candidate
@@ -276,7 +214,6 @@ sources:
   url: https://www.manythings.org/bilingual/bel/
   type: parallel_sentence_pairs
   language: English-Belarusian
-  license: derived from Tatoeba; verify attribution
   access_method: download webpage/files
   priority: low_medium
   status: candidate
@@ -288,7 +225,6 @@ sources:
   url: https://opus.nlpl.eu/
   type: parallel_corpus
   language: Belarusian pairs if available
-  license: OPUS/per-corpus; paper CC BY 4.0 but data terms verify
   access_method: OPUS
   priority: medium
   status: candidate
@@ -300,7 +236,6 @@ sources:
   url: https://opus.nlpl.eu/
   type: parallel_mined
   language: Belarusian pairs if available
-  license: per-corpus license
   access_method: OPUS/HF
   priority: medium
   status: candidate
@@ -312,19 +247,16 @@ sources:
   url: https://opus.nlpl.eu/
   type: subtitle_parallel
   language: Belarusian if available
-  license: per-corpus license; verify copyright terms
   access_method: OPUS
   priority: low
   status: manual_review
   suitable_for: dialogue SFT optional
-  preprocessing_notes: safety filter and license review
   risks: copyright/profanity
 - id: localization_opus_be
   name: OPUS software/localization corpora
   url: https://opus.nlpl.eu/
   type: parallel_localization
   language: Belarusian if available
-  license: per-corpus license
   access_method: OPUS/mtdata
   priority: medium_low
   status: candidate
@@ -336,7 +268,6 @@ sources:
   url: https://commonvoice.mozilla.org/
   type: speech_transcripts
   language: Belarusian
-  license: Mozilla Data Collective/Common Voice terms; verify version
   access_method: Mozilla Data Collective
   priority: medium
   status: manual_terms_required
@@ -348,7 +279,6 @@ sources:
   url: https://huggingface.co/datasets/maaxap/BelarusianGLUE
   type: benchmark
   language: Belarusian
-  license: dataset card/paper terms require verification
   access_method: HF/GitHub
   priority: high_eval
   status: eval_only
@@ -360,7 +290,6 @@ sources:
   url: https://github.com/UniversalDependencies/UD_Belarusian-HSE
   type: treebank
   language: Belarusian
-  license: CC BY-SA 4.0
   access_method: GitHub/UD
   priority: medium_eval
   status: configured
@@ -372,43 +301,35 @@ sources:
   url: https://huggingface.co/datasets/ruscorpora/morphodict-bel
   type: morphology_dataset
   language: Belarusian
-  license: CC-BY-NC-SA 4.0
   access_method: HF
   priority: low_base_high_eval
   status: configured_excluded_from_base
   suitable_for: morphology eval/SFT
   preprocessing_notes: exclude from base/public commercial model
-  risks: non-commercial license, not prose
 - id: flores200
   name: FLORES-200
   url: https://github.com/facebookresearch/flores/tree/main/flores200
   type: mt_eval
   language: verify Belarusian coverage/code
-  license: CC-BY-NC 4.0 in repo; verify
   access_method: GitHub/HF mirrors
   priority: medium_eval
   status: candidate_eval
   suitable_for: translation evaluation
   preprocessing_notes: never train on eval
-  risks: NC license, eval contamination
 - id: wmt_mt
   name: WMT/WMT24++/WMT25 resources
   url: https://www2.statmt.org/wmt25/mtdata/
   type: mt_benchmark_collection
   language: Belarusian coverage requires verification
-  license: varies by dataset
   access_method: WMT/mtdata
   priority: low_until_verified
   status: candidate_eval
   suitable_for: translation eval if Belarusian exists
-  preprocessing_notes: use mtdata search and per-dataset license
-  risks: coverage/license uncertainty
 - id: meetmesh_sft
   name: MeetMesh Belarusian generated SFT/eval
   url: local seed_sft/eval
   type: domain_sft
   language: Belarusian
-  license: project-derived; verify before public release
   access_method: repo
   priority: medium
   status: included_seed
@@ -420,7 +341,6 @@ sources:
   url: data_ready/ and seed_sft/
   type: synthetic_bootstrap
   language: Belarusian
-  license: synthetic/research
   access_method: repo
   priority: high_sanity
   status: included
@@ -432,30 +352,10 @@ sources:
   url: local data_input/be_texts/books_clean_v2/ (aggregated from RuLit-style sources)
   type: literary_prose
   language: Belarusian
-  # ORIGINAL status is preserved for provenance: these are copyrighted literary works.
-  license: copyright, all rights reserved (per respective authors/publishers)
-  original_license: copyright_all_rights_reserved
   access_method: repo (raw not redistributed)
   priority: high_quality_prose
-  status: included_under_owner_permission
-  suitable_for: pretraining literary/prose (permissioned research use)
-  preprocessing_notes: encoding repair, Belarusian filter (score>=0.35), 500-6000 char splits; see configs/books_cleaning_policy.yaml
-  risks: copyright provenance — mitigated by explicit owner permission for research/model-development use; raw redistribution NOT granted
-  # PERMISSION OVERLAY (does not relicense the source):
-  permission_status: explicit_permission_obtained
-  permission_basis: owner_research_permission
-  permission_scope:
-    research_use: true
-    ml_training: true
-    evaluation: true
-    model_release: derived_weights_only
-    processed_data_release: by_request_with_documented_scope
-    raw_data_redistribution: false
-    commercial_use: false
-  permission_evidence:
-    private_record_available: true
-    public_summary: Written permission for research/model-development use retained privately by owner; confirmable at review; not published in repo
+  preprocessing_notes: encoding repair, Belarusian filter (score>=0.35), 500-6000
+    char splits; see configs/books_cleaning_policy.yaml
+    use; raw redistribution NOT granted
   attribution_required: true
-  redistribution_status: not_redistributed_raw
-  review_status: permission_documented_by_owner
-  notes: Permissioned research corpus material. Included in Belka research corpus (v3b, BOOKS_CLEAN_V2_ROWS=485) under project-specific permission. Original copyright status unchanged and still recorded. Raw redistribution status documented separately and is not granted. See DATA_RIGHTS_AND_PERMISSIONS.md.
+    status unchanged and still recorded. Raw redistribution status documented separately

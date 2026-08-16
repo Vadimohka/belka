@@ -109,8 +109,7 @@ def main() -> None:
             print(f"linked corpus -> {live} ({len(list(open_dir.glob('*.parquet')))} parquet files)")
 
     train_stats = manifest["splits"]["train"]
-    print(f"corpus: {train_stats['rows_kept']:,} train rows / {train_stats['chars']:,} chars (scope: {manifest.get('scope', '?')})")
-    print("note: per-row source/license provenance is preserved inside the parquet files")
+    print(f"corpus: {train_stats['rows_kept']:,} train rows / {train_stats['chars']:,} chars")
 
 
 if __name__ == "__main__":

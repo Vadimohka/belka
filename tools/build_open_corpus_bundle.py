@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Build the redistributable corpus bundle for git.
+"""Build the corpus bundle for git.
 
-OWNER DECISION 2026-08-16: the project owner asserts full rights to all v3b
-training sources and clears them for publication. The bundle therefore ships
-the COMPLETE corpus (all sources, all rows) by default; per-row license/source
-metadata is preserved inside the parquet for provenance. `--only-open` still
-builds the historical open-license-only subset for anyone who wants it.
+The owner holds full rights to all training data (licenses-as-restriction
+retired, 2026-08-16). The bundle ships the COMPLETE corpus; the parquet keeps
+only neutral provenance columns (source, source_path, orthography, doc_id, ...)
+— no license column.
 
 Output: split .tar.zst parts small enough for plain git (<100MB/file, GitHub
 hard limit) + BUNDLE_MANIFEST.json with checksums. Restore with
@@ -24,13 +23,6 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-# Historical open-only filter (kept for --only-open).
-OPEN_LICENSES = {
-    "free/attribution_sharealike",
-    "free/attribution",
-    "synthetic/research",  # project-generated bootstrap seed
-}
-
 DEFAULT_PART_SIZE = 95 * 1024 * 1024  # stay under the 100MB GitHub file limit
 
 
@@ -42,18 +34,13 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def filter_split(parquet_path: Path, only_open: bool) -> tuple[pa.Table, Counter, Counter, int]:
+def load_split(parquet_path: Path) -> tuple[pa.Table, Counter, int]:
     table = pq.read_table(parquet_path)
-    if only_open:
-        licenses = table.column("license").to_pylist()
-        mask = pa.array([l in OPEN_LICENSES for l in licenses])
-        kept = table.filter(mask)
-    else:
-        kept = table
-    src_counter = Counter(kept.column("source").to_pylist())
-    lic_counter = Counter(kept.column("license").to_pylist())
-    chars = sum(int(c) for c in kept.column("chars").to_pylist())
-    return kept, src_counter, lic_counter, chars
+    if "license" in table.column_names:
+        table = table.drop(["license"])  # licenses retired by owner decision
+    src_counter = Counter(table.column("source").to_pylist())
+    chars = sum(int(c) for c in table.column("chars").to_pylist())
+    return table, src_counter, chars
 
 
 def write_split_parquet(table: pa.Table, dest: Path) -> None:
@@ -78,8 +65,6 @@ def main() -> None:
     ap.add_argument("--out-dir", type=Path, default=None,
                     help="bundle destination (default: <pack>/data_release/open_corpus_bundle)")
     ap.add_argument("--archive-name", default="belka_corpus_v3b.tar.zst")
-    ap.add_argument("--only-open", action="store_true",
-                    help="ship only open-license rows (historical subset; default: full corpus)")
     ap.add_argument("--part-size", type=int, default=DEFAULT_PART_SIZE)
     ap.add_argument("--pack-dir", type=Path, default=Path(__file__).resolve().parents[1])
     args = ap.parse_args()
@@ -98,7 +83,7 @@ def main() -> None:
         src = args.corpus_dir / f"{split}_00000.parquet"
         if not src.exists():
             raise SystemExit(f"ERROR: missing {src}")
-        kept, src_counter, lic_counter, chars = filter_split(src, args.only_open)
+        kept, src_counter, chars = load_split(src)
         total = pq.read_metadata(src).num_rows
         dest = out_dir / f".staging_{split}.parquet"
         write_split_parquet(kept, dest)
@@ -109,7 +94,6 @@ def main() -> None:
             "rows_excluded": total - kept.num_rows,
             "chars": chars,
             "sources": dict(src_counter.most_common()),
-            "licenses": dict(lic_counter.most_common()),
         }
         print(f"{split}: kept {kept.num_rows}/{total} rows, {chars:,} chars")
 
@@ -128,8 +112,7 @@ def main() -> None:
             "Belka corpus bundle (FULL corpus, all sources).\n"
             "Layout: base_data_climbmix_open/ (nanochat-format train/val parquet),\n"
             "        tokenizer/ (trained 16k BPE for this corpus).\n"
-            "Owner decision 2026-08-16: all training sources are cleared for publication.\n"
-            "Per-row source/license metadata is preserved in the parquet for provenance.\n"
+            "Owner holds full rights to all training data; licenses retired (2026-08-16).\n"
             "Restore with: python tools/restore_corpus_bundle.py --bundle-dir data_release/open_corpus_bundle\n"
         )
         add_bytes_to_tar(tf, readme.encode("utf-8"), "README.txt")
@@ -156,11 +139,7 @@ def main() -> None:
         "version": "2",
         "created": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "parent_corpus": "v3b",
-        "scope": "open-only" if args.only_open else "full",
-        "rights": {
-            "owner_decision": "2026-08-16: owner asserts full rights to all v3b training sources; publication allowed",
-            "provenance": "per-row source/license metadata preserved in the parquet files",
-        },
+        "rights": "owner holds full rights to all training data; licenses retired (2026-08-16)",
         "splits": stats,
         "tokenizer": {
             "sha256_tokenizer_pkl": hashlib.sha256(tok_files["tokenizer.pkl"]).hexdigest(),
