@@ -35,10 +35,11 @@ summaries under [`reports/public/`](reports/public/).
 
 | Item | Value |
 |---|---|
-| Corpus | `v3b` — ACCEPTED (~302,991 rows, ~59.4M tokens, max source share 67.5%) |
+| Corpus | `v3b` — ACCEPTED (302,991 rows, ~595M chars / ~180.6M tokens measured with the 16k tokenizer, max source share 67.5%) |
 | Tokenizer | custom BPE, SHA256 `d9272e81…71ac` |
 | Base model | `belka-d8-base-v3-pilot` (research preview baseline) |
 | SFT | `sft_v8` |
+| Next target | H200 server, max-quality run: [`reports/strategy/H200_MAX_QUALITY_PLAN.md`](reports/strategy/H200_MAX_QUALITY_PLAN.md) |
 | Strict holdout | 209 prompts, 0 SFT overlap (leakage-clean) |
 
 Details: [`reports/public/PROJECT_STATUS.md`](reports/public/PROJECT_STATUS.md).
@@ -106,7 +107,8 @@ is licensed separately via the root [`LICENSE`](LICENSE) (MIT).
 
 ## Corpus summary
 
-`v3b`: ~59M tokens, Belarusian (narkamauka + tarask tracked). Open Wikimedia/UD/Tatoeba +
+`v3b`: ~180.6M tokens (measured with the trained 16k BPE; earlier docs cited a
+~59M estimate), Belarusian (narkamauka + tarask tracked). Open Wikimedia/UD/Tatoeba +
 permissioned literary prose. Source mix, processing, and rights:
 [`data_cards/corpus_v3b.md`](data_cards/corpus_v3b.md). Expansion toward `v4`:
 [`docs/CORPUS_V4_EXPANSION_PLAN.md`](docs/CORPUS_V4_EXPANSION_PLAN.md).
@@ -126,7 +128,7 @@ and [`reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md`](reports/public/LEAKAGE_AND
 
 ## Limitations
 
-- Small model on a ~59M-token corpus — limited fluency and knowledge.
+- Small model on a ~180M-token corpus — limited fluency and knowledge.
 - Eval suites are small; no production-quality claim.
 - Orthography variants are tracked but not perfectly separated.
 - Some corpus material is permissioned, not open; raw data is not redistributed.

@@ -7,7 +7,7 @@
 | Item | Value |
 |---|---|
 | Project | Belka — Belarusian LLM trained from scratch |
-| Corpus | `v3b` — **ACCEPTED** (302,991 train rows, ~59.4M tokens, max single-source share 67.5%) |
+| Corpus | `v3b` — **ACCEPTED** (302,991 train rows, ~595M chars / ~180.6M tokens measured with the 16k tokenizer, max single-source share 67.5%) |
 | Tokenizer | custom BPE, SHA256 `d9272e81…71ac` |
 | Base model | `belka-d8-base-v3-pilot` — accepted baseline (research preview) |
 | SFT | `sft_v8` (current); validated by `tools/validate_sft_v8.py` |

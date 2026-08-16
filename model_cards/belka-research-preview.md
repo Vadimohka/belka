@@ -66,7 +66,7 @@ privately by the owner and can be **confirmed at review**. See
 
 ## Limitations and responsible use
 
-- Small model trained on a ~59M-token corpus — limited knowledge and fluency.
+- Small model trained on a ~180M-token corpus — limited knowledge and fluency.
 - May reproduce source phrasing, biases, or errors from web/literary data.
 - Belarusian orthography variants (narkamauka/tarask) are tracked but not perfectly split.
 - Outputs are not authoritative; verify facts independently.

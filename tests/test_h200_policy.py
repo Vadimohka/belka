@@ -61,8 +61,37 @@ def test_fork_files_match_workspace_when_present():
 def test_h200_profiles_yaml_no_fp16_dtype():
     import yaml
 
-    cfg = yaml.safe_load((PACK / "configs/profiles_h200.yaml").read_text(encoding="utf-8"))
-    assert set(cfg["profiles"]) >= {"smoke", "quality_v4", "max_d24"}
+    cfg = yaml.safe_load((PACK / "configs" / "profiles_h200.yaml").read_text(encoding="utf-8"))
+    assert set(cfg["profiles"]) >= {"smoke", "quality_v4", "max_d24", "full_node"}
     for name, prof in cfg["profiles"].items():
         assert prof.get("dtype") != "float16", f"H200 profile {name} must not use fp16"
     assert cfg["common_env"]["NANOCHAT_DTYPE"] == "", "H200 common env must leave dtype on auto"
+    assert cfg["profiles"]["full_node"]["ngpus"] == 8, "full_node targets an 8-GPU node"
+
+
+def test_h200_runbook_supports_multi_gpu_ddp():
+    text = (PACK / "ops/local" / "run_belka_h200_maxquality.sh").read_text(encoding="utf-8")
+    assert "run_distributed" in text, "runbook must wrap training in run_distributed()"
+    assert "torch.distributed.run" in text, "multi-GPU uses torchrun per upstream speedrun"
+    assert "--nproc_per_node" in text
+    assert 'NGPUS="${NGPUS:-1}"' in text
+
+
+def test_belka_branding_is_applied_by_patcher():
+    src = (PACK / "ops/local" / "patch_nanochat_branding.py").read_text(encoding="utf-8")
+    assert "BELKA_BRANDING_BANNER" in src
+    assert "BELKA" in src.replace("BELKA_BRANDING_BANNER", "").replace("patch_nanochat_branding", "")
+    installer = (PACK / "ops/local" / "install_nanochat_env.sh").read_text(encoding="utf-8")
+    assert "patch_nanochat_branding.py" in installer, "installer must run the branding patcher"
+    verifier = (PACK / "ops/local" / "verify_nanochat_patch.py").read_text(encoding="utf-8")
+    assert "BELKA_BRANDING_BANNER" in verifier, "verifier must check the BELKA banner"
+    assert "<title>Belka</title>" in verifier, "verifier must check the web UI title"
+
+
+def test_web_ui_and_logo_are_belka_branded():
+    ui = (PACK / "ops/nanochat_fork" / "nanochat" / "ui.html").read_text(encoding="utf-8")
+    assert "<title>Belka</title>" in ui
+    assert "<h1>Belka</h1>" in ui
+    assert "nanochat" not in ui.replace("nanochat/", ""), "no nanochat branding text left in the UI"
+    logo = (PACK / "ops/nanochat_fork" / "nanochat" / "logo.svg").read_text(encoding="utf-8")
+    assert "BELKA" in logo, "logo must be the BELKA wordmark"

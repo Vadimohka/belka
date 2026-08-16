@@ -2,34 +2,61 @@
 set -euo pipefail
 # BELKA H200 max-quality runbook (owner decision 2026-08-16: move off RTX 3070 Ti).
 # bf16 + FA3 (auto), MuonEq optimizer (upstream 92d63d4), epoch-driven token budget.
-# Profiles: configs/profiles_h200.yaml (smoke | quality_v4 | max_d24).
+# Profiles: configs/profiles_h200.yaml (smoke | quality_v4 | max_d24 | full_node).
 #
 # Usage:
 #   BELKA_OWNER_APPROVED_TRAINING=YES bash ops/local/run_belka_h200_maxquality.sh \
 #     --data-dir /path/to/base_data_climbmix_v4        # ready parquet corpus
 #   # or --local-text-dir /path/to/be_texts            # build corpus from raw texts
-# Options (env): PROFILE=quality_v4 DEPTH=16 SEQ_LEN=2048 DEV_BATCH=32 TOTAL_BATCH=262144
-#                TARGET_EPOCHS=3 VOCAB=32768 BELKA_FP8=NO TRAIN_TOKENIZER=YES SKIP_BASE=NO
+# Options (env): PROFILE=full_node (defaults from configs/profiles_h200.yaml; explicit
+#                envs win): DEPTH SEQ_LEN DEV_BATCH TOTAL_BATCH TARGET_EPOCHS VOCAB
+#                NGPUS SFT_ITERS MODEL_TAG BELKA_FP8 TRAIN_TOKENIZER SKIP_BASE
 PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "$PACK_DIR/ops/local/pack_paths.sh"
 bash "$PACK_DIR/ops/local/repo_guard.sh"
 
 PROFILE="${PROFILE:-quality_v4}"
+DATA_DIR="${DATA_DIR:-}"
+LOCAL_TEXT_DIR_ARG="${LOCAL_TEXT_DIR_ARG:-}"
+BASE_ITERS="${BASE_ITERS:-}"
+MODEL_TAG="${MODEL_TAG:-}"
+BELKA_FP8="${BELKA_FP8:-}"
+TRAIN_TOKENIZER="${TRAIN_TOKENIZER:-}"
+SKIP_BASE="${SKIP_BASE:-}"
+
+# ---- Profile defaults (configs/profiles_h200.yaml); explicit envs win ----
+read_profile_defaults() {
+  local py="$PACK_DIR/.workspace/nanochat/.venv/bin/python"
+  [[ -x "$py" && -f "$PACK_DIR/configs/profiles_h200.yaml" ]] || return 0
+  "$py" - "$PROFILE" <<'PY' 2>/dev/null || return 0
+import sys, os, yaml
+cfg = yaml.safe_load(open(os.path.join(os.environ["PACK_DIR"], "configs/profiles_h200.yaml"), encoding="utf-8"))
+p = cfg.get("profiles", {}).get(sys.argv[1]) or {}
+m = {"DEPTH": "depth", "SEQ_LEN": "max_seq_len", "DEV_BATCH": "device_batch_size",
+     "TOTAL_BATCH": "total_batch_size", "VOCAB": "tokenizer_vocab_size",
+     "WINDOW": "window_pattern", "NGPUS": "ngpus", "SFT_ITERS": "sft_iterations",
+     "TARGET_EPOCHS": "target_epochs"}
+for env, key in m.items():
+    if key in p and env not in os.environ:
+        print(f"{env}={p[key]}")
+PY
+}
+while IFS='=' read -r k v; do [[ -n "$k" ]] && export "$k=$v"; done < <(read_profile_defaults)
+
+# ---- Final fallbacks (used when the profile lacks a key and no env is set) ----
 DEPTH="${DEPTH:-16}"
 SEQ_LEN="${SEQ_LEN:-2048}"
 DEV_BATCH="${DEV_BATCH:-32}"
 TOTAL_BATCH="${TOTAL_BATCH:-262144}"
 TARGET_EPOCHS="${TARGET_EPOCHS:-3}"
-BASE_ITERS="${BASE_ITERS:-}"
 VOCAB="${VOCAB:-32768}"
 SFT_ITERS="${SFT_ITERS:-1500}"
-MODEL_TAG="${MODEL_TAG:-belka-h200-d16-v4}"
+MODEL_TAG="${MODEL_TAG:-belka-h200-d${DEPTH}-v4}"
 WINDOW="${WINDOW:-SSSL}"
 BELKA_FP8="${BELKA_FP8:-NO}"
 TRAIN_TOKENIZER="${TRAIN_TOKENIZER:-YES}"
 SKIP_BASE="${SKIP_BASE:-NO}"
-DATA_DIR="${DATA_DIR:-}"
-LOCAL_TEXT_DIR_ARG="${LOCAL_TEXT_DIR_ARG:-}"
+NGPUS="${NGPUS:-1}"            # >1 -> torchrun DDP (upstream speedrun convention: 8xH100/H200 node)
 
 usage() {
   cat <<'EOF'
@@ -59,14 +86,14 @@ if [[ "${BELKA_OWNER_APPROVED_TRAINING:-NO}" != "YES" ]]; then
 fi
 
 # H200 policy: auto dtype (bf16 on SM90); leave NANOCHAT_DTYPE unset.
-export BELKA_DISABLE_GENERIC_EVALS=YES PYTHONNOUSERSITE=1
+export BELKA_DISABLE_GENERIC_EVALS=YES PYTHONNOUSERSITE=1 OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 
 echo "=========================================="
 echo " BELKA H200 MAX-QUALITY (profile: $PROFILE)"
 echo "=========================================="
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || { echo "ERROR: nvidia-smi not available"; exit 2; }
-echo "DEPTH=$DEPTH SEQ=$SEQ_LEN DEV_BATCH=$DEV_BATCH TOTAL_BATCH=$TOTAL_BATCH EPOCHS=$TARGET_EPOCHS VOCAB=$VOCAB FP8=$BELKA_FP8"
+echo "DEPTH=$DEPTH SEQ=$SEQ_LEN DEV_BATCH=$DEV_BATCH TOTAL_BATCH=$TOTAL_BATCH EPOCHS=$TARGET_EPOCHS VOCAB=$VOCAB FP8=$BELKA_FP8 NGPUS=$NGPUS"
 
 bash "$PACK_DIR/ops/local/install_nanochat_env.sh" --nanochat-dir "$NANOCHAT_DIR"
 
@@ -95,6 +122,17 @@ else
 fi
 
 VENV_PY="$NANOCHAT_DIR/.venv/bin/python"
+# DDP per upstream runs/speedrun.sh: torchrun --standalone --nproc_per_node=N.
+# The trailing "--" separates torchrun flags from script args (single-process has none).
+run_distributed() { # run_distributed MODULE [ARGS...]
+  local module="$1"; shift
+  if (( NGPUS > 1 )); then
+    echo "DDP: torchrun --standalone --nproc_per_node=$NGPUS -m $module"
+    "$VENV_PY" -m torch.distributed.run --standalone --nproc_per_node="$NGPUS" -m "$module" -- "$@"
+  else
+    "$VENV_PY" -m "$module" "$@"
+  fi
+}
 cd "$NANOCHAT_DIR"
 
 # ---- Epoch-driven token budget ----
@@ -119,7 +157,7 @@ exec > >(tee -a "$LOG") 2>&1
 
 # ---- Base pretraining (MuonEq, bf16, FA3 auto) ----
 if [[ "$SKIP_BASE" != "YES" ]]; then
-  "$VENV_PY" -m scripts.base_train --run dummy --depth="$DEPTH" \
+  run_distributed scripts.base_train --run dummy --depth="$DEPTH" \
     --model-tag="$MODEL_TAG" --max-seq-len="$SEQ_LEN" \
     --device-batch-size="$DEV_BATCH" --total-batch-size="$TOTAL_BATCH" \
     --window-pattern="$WINDOW" $FP8_FLAG \
@@ -128,7 +166,7 @@ if [[ "$SKIP_BASE" != "YES" ]]; then
 fi
 
 # ---- Belarusian-only SFT ----
-"$VENV_PY" -m scripts.chat_sft_be --run dummy \
+run_distributed scripts.chat_sft_be --run dummy \
   --model-tag="$MODEL_TAG" --max-seq-len="$SEQ_LEN" \
   --device-batch-size="$DEV_BATCH" --total-batch-size="$TOTAL_BATCH" \
   --eval-tokens=65536 --chatcore-every=-1 --num-iterations="$SFT_ITERS"

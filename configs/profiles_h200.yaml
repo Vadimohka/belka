@@ -56,6 +56,31 @@ profiles:
     window_pattern: "SSSL"
     fp8: false
 
+  full_node:
+    description: >-
+      The big full from-scratch run on top hardware per original nanochat
+      recommendations (8xH100/H200 node, runs/speedrun.sh conventions):
+      NGPUS=8 torchrun DDP, depth 24, vocab 32768, FP8 optional. Requires
+      corpus v4 at full size; budget still epoch-driven (~3 epochs).
+    ngpus: 8
+    depth: 24
+    max_seq_len: 2048
+    device_batch_size: 16
+    total_batch_size: 1048576
+    target_epochs: 3
+    sft_iterations: 2000
+    tokenizer_vocab_size: 32768
+    window_pattern: "SSSL"
+    fp8: false
+
+multi_gpu:
+  launcher: >-
+    torchrun --standalone --nproc_per_node=NGPUS (see run_distributed() in
+    ops/local/run_belka_h200_maxquality.sh; NGPUS=1 runs single-process).
+  notes:
+    - device_batch_size is PER GPU; total_batch_size is the global token batch.
+    - OMP_NUM_THREADS=1 is set by the runbook (upstream convention).
+
 common_env:
   # Everything unset-on-purpose is listed so the intent is explicit.
   NANOCHAT_DTYPE: ""          # auto -> bfloat16 on H200

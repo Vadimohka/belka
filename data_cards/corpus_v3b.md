@@ -78,7 +78,7 @@ license and project-specific permission are tracked separately.
 
 ## Limitations
 
-- ~59M tokens is small; coverage and domain breadth are limited.
+- ~180M tokens (measured with the trained 16k BPE; early planning docs cited a ~59M estimate) is small; coverage and domain breadth are limited.
 - Web/literary sources may carry style, topical, and demographic biases.
 - Narkamauka/tarask mixing is tracked but not perfectly separated.
 - Raw redistribution rights differ from model/code release rights — do not assume the

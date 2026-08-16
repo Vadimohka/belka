@@ -214,6 +214,7 @@ if [[ "$DRY_RUN" != "1" ]]; then
   "$PYTHON" "$PACK_DIR/tools/build_sft_mix.py" --pack-dir "$PACK_DIR" --base-dir "$NANOCHAT_BASE_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_for_belarusian.py" --nanochat-dir "$NANOCHAT_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_dtype_fp16.py" --nanochat-dir "$NANOCHAT_DIR"
+  "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_branding.py" --nanochat-dir "$NANOCHAT_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/verify_nanochat_patch.py" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --pack-dir "$PACK_DIR" --require-dtype-patch
 fi
 

@@ -6,7 +6,7 @@
 
 ## Goals
 
-- Move from `v3b` (~59M tokens, max single-source share 67.5%) to `v4` with **lower source
+- Move from `v3b` (~180.6M measured tokens with the 16k tokenizer, max single-source share 67.5%) to `v4` with **lower source
   dominance** and **broader open coverage**.
 - Track **permissioned** vs **open** source shares separately.
 - Keep the strict holdout **clean** (no eval/holdout prompts in train).

@@ -42,6 +42,10 @@ def main() -> None:
     ok &= check(repo / "scripts" / "chat_sft.py", "upstream chat_sft.py exists", results)
     ok &= file_contains(repo / "scripts" / "chat_sft_be.py", "Belarusian-only CustomJSON", "Belarusian SFT variant marker", results)
     ok &= file_contains(repo / "scripts" / "chat_sft_be.py", "identity_conversations_val.jsonl", "Belarusian val CustomJSON path", results)
+    ok &= file_contains(repo / "scripts" / "chat_sft_be.py", "BELKA_DISABLE_GENERIC_EVALS", "generic evals gate", results)
+    ok &= file_contains(repo / "nanochat" / "common.py", "BELKA_BRANDING_BANNER", "BELKA startup banner", results)
+    ok &= file_contains(repo / "nanochat" / "ui.html", "<title>Belka</title>", "Belka web UI title", results)
+    ok &= file_contains(repo / "tasks" / "customjson.py", "class CustomJSON", "Belka customjson task", results)
     ok &= check(base_dir / "identity_conversations.jsonl", "train SFT JSONL copied/merged", results)
     ok &= check(base_dir / "identity_conversations_val.jsonl", "val SFT JSONL copied/merged", results)
     if args.require_dtype_patch:

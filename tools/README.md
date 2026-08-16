@@ -33,3 +33,9 @@ Generators, downloaders, and tokenizer utilities (`generate_*`, `download_*`,
 `build_*`, `train_tokenizer_ablation.py`, `eval_tokenizer_fertility.py`, etc.).
 Older single-version utilities are retained as research history unless explicitly
 deprecated.
+
+## Training-budget utilities
+
+- `count_corpus_tokens.py` — real token counts for nanochat-format parquet corpora
+  with the trained tokenizer (epoch-driven budgets for the H200 runbook; measured
+  v3b = 180.6M tokens with the 16k BPE vs the old ~59M estimate).
