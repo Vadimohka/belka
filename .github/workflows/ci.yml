@@ -24,7 +24,7 @@ jobs:
         run: python tools/check_source_syntax.py
 
       - name: Tests
-        run: PYTHONPATH="$PWD" pytest -q -ra tests
+        run: PYTHONPATH="$PWD" pytest -q tests -ra
 
       - name: Public-release validation
         run: python tools/validate_public_release.py
