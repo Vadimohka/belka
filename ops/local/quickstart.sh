@@ -6,7 +6,7 @@ set -euo pipefail
 #
 # What it does:
 #   1. installs the nanochat env (GPU if nvidia-smi is present, CPU otherwise)
-#   2. restores the bundled open-license corpus + tokenizer (data_release/)
+#   2. restores the bundled corpus + tokenizer (data_release/)
 #   3. runs a tiny end-to-end training (base -> Belarusian SFT) as a pipeline proof
 # The smoke run is deliberately small. For real training see the printed next
 # steps (GPU: ops/local/run_belka_h200_maxquality.sh, CPU: the command below).
@@ -48,13 +48,14 @@ if [[ "$SKIP_TRAIN" != "YES" ]]; then
   cd "$PACK_DIR"
 fi
 
+printf '\n================================ BELKA READY ================================\n'
+if [[ "$SKIP_TRAIN" == "YES" ]]; then
+  echo "Setup completed. Training was skipped (SKIP_TRAIN=YES); no model was trained by this invocation."
+else
+  printf 'Smoke model trained: %s (tiny, pipeline proof only).\n' "$MODEL_TAG"
+  printf '\nChat with the smoke model:\n  bash ops/local/run_chat_web.sh --model-tag %q\n' "$MODEL_TAG"
+fi
 cat <<'EOF'
-
-================================ BELKA READY ================================
-Smoke model trained (tiny, pipeline proof only).
-
-Chat with the smoke model:
-  bash ops/local/run_chat_web.sh --model-tag belka-quickstart-smoke
 
 REAL training (bigger models, full corpus):
   GPU (recommended):  bash ops/local/run_belka_h200_maxquality.sh --help

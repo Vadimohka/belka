@@ -37,7 +37,7 @@ def test_legacy_3070_scripts_keep_explicit_fp16():
 
 def test_installer_pins_upstream_and_copies_fork_files():
     text = (PACK / "ops/local" / "install_nanochat_env.sh").read_text(encoding="utf-8")
-    assert 'NANOCHAT_GIT_REF="${NANOCHAT_GIT_REF:-92d63d4}"' in text, (
+    assert 'NANOCHAT_GIT_REF="${NANOCHAT_GIT_REF:-92d63d4e8bb4df75c3b71618f31ddde2378b2bcd}"' in text, (
         "installer must pin the validated upstream commit"
     )
     for fork in ["tasks/customjson.py", "scripts/chat_web.py", "nanochat/ui.html", "nanochat/logo.svg"]:

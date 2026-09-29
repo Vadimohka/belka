@@ -22,10 +22,11 @@ PYTHONPATH="$PWD" pytest -q tests
 ## Good first contributions
 
 - **Add a data source candidate**: edit `configs/source_expansion_candidates.yaml`
-  (fill every rights field), then run `python tools/build_source_expansion_board.py`.
+  (fill the current source availability and quality fields), then run `python tools/build_source_expansion_board.py`.
   Record a new source in `configs/dataset_sources.yaml` before using it.
 - **Add or extend an eval set**: add a JSONL under `eval/`, then run
-  `python tools/check_train_eval_decontamination.py` to prove no train/holdout overlap.
+  `python tools/check_train_eval_decontamination.py` to inspect the reported train/holdout overlap.
+  A zero exit code alone does not prove that all files or contamination modes were checked.
 - **Improve the Belarusian language filter**: `data_pipeline/detect_belarusian.py`
   (add a `tests/` case).
 
@@ -45,7 +46,7 @@ python tools/validate_public_release.py
 python tools/check_train_eval_decontamination.py --dry-run
 ```
 
-All four should pass. CI runs the same checks (`.github/workflows/ci.yml`).
+All three commands should exit successfully; inspect the reports as well. CI runs the same checks (`.github/workflows/ci.yml`).
 
 ## Scope note
 

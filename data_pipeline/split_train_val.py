@@ -5,10 +5,34 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
+def validate_ratio(val_ratio: float) -> None:
+    if not math.isfinite(val_ratio) or not 0.0 <= val_ratio <= 1.0:
+        raise ValueError("val_ratio must be finite and between 0 and 1 inclusive")
+
+
+def validate_paths(*paths: Path) -> None:
+    """Reject input/output aliases before any file can be truncated.
+
+    resolve() covers spelling and symbolic-link aliases; samefile() additionally
+    covers existing hard links. This is a preflight, not protection against a
+    different process changing paths concurrently.
+    """
+    resolved = [path.resolve() for path in paths]
+    for i, path in enumerate(paths):
+        for j in range(i):
+            other = paths[j]
+            if resolved[i] == resolved[j] or (
+                path.exists() and other.exists() and path.samefile(other)
+            ):
+                raise ValueError(f"input, train output and validation output must be distinct: {path} aliases {other}")
+
+
 def assign_split(line: str, val_ratio: float, salt: str) -> str:
+    validate_ratio(val_ratio)
     h = hashlib.sha256((salt + line).encode("utf-8")).hexdigest()
     x = int(h[:16], 16) / float(16**16)
     return "val" if x < val_ratio else "train"
@@ -22,6 +46,11 @@ def main() -> None:
     ap.add_argument("--val-ratio", type=float, default=0.01)
     ap.add_argument("--salt", default="belarusian-superpack-v1")
     args = ap.parse_args()
+    try:
+        validate_ratio(args.val_ratio)
+        validate_paths(args.input, args.train_out, args.val_out)
+    except (ValueError, OSError, RuntimeError) as exc:
+        ap.error(str(exc))
     args.train_out.parent.mkdir(parents=True, exist_ok=True)
     args.val_out.parent.mkdir(parents=True, exist_ok=True)
     counts = {"train": 0, "val": 0}

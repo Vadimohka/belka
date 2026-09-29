@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 cd "$PACK_DIR"
 mkdir -p reports/governor reports/owner_run_plan reports/data reports/books reports/training_ladder ops/owner_runs dist/context
 TS="$(date -u +%Y%m%dT%H%M%SZ)"

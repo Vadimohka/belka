@@ -45,3 +45,68 @@ class E:
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "BELARUSIAN_SUPERPACK_DTYPE_ENGINE" in (repo / "nanochat" / "engine.py").read_text(encoding="utf-8")
     assert "BELARUSIAN_SUPERPACK_DTYPE_SDPA" in (repo / "nanochat" / "flash_attention.py").read_text(encoding="utf-8")
+
+
+def test_sft_patcher_compiles_candidate_with_future_import_and_is_idempotent(tmp_path):
+    repo = tmp_path / "nanochat"
+    (repo / "scripts").mkdir(parents=True)
+    (repo / "tasks").mkdir()
+    (repo / "tasks" / "customjson.py").write_text("class CustomJSON: pass\n", encoding="utf-8")
+    source = '''from __future__ import annotations
+import os
+from tasks.common import TaskMixture
+# SFT data mixture and DataLoader
+train_tasks = []
+train_dataset = TaskMixture(train_tasks)
+val_dataset = TaskMixture([])
+# DataLoader is defined here
+for step in range(1):
+    if args.chatcore_every > 0 and (last_step or (step > 0 and step % args.chatcore_every == 0)):
+        pass
+'''
+    (repo / "scripts" / "chat_sft.py").write_text(source, encoding="utf-8")
+    command = [sys.executable, str(PACK / "ops/local" / "patch_nanochat_for_belarusian.py"), "--nanochat-dir", str(repo)]
+    first = subprocess.run(command, text=True, capture_output=True)
+    assert first.returncode == 0, first.stdout + first.stderr
+    variant = repo / "scripts" / "chat_sft_be.py"
+    text = variant.read_text(encoding="utf-8")
+    compile(text, str(variant), "exec", dont_inherit=True)
+    assert text.index("from __future__") < text.index("import os")
+    before = variant.read_bytes()
+    second = subprocess.run(command, text=True, capture_output=True)
+    assert second.returncode == 0, second.stdout + second.stderr
+    assert variant.read_bytes() == before
+
+
+def test_sft_patcher_preserves_destination_when_candidate_is_invalid(tmp_path):
+    repo = tmp_path / "nanochat"
+    (repo / "scripts").mkdir(parents=True)
+    (repo / "tasks").mkdir()
+    (repo / "tasks" / "customjson.py").write_text("class CustomJSON: pass\n", encoding="utf-8")
+    (repo / "scripts" / "chat_sft.py").write_text('''import os
+# SFT data mixture and DataLoader
+train_tasks = [
+train_dataset = TaskMixture(train_tasks)
+val_dataset = TaskMixture([])
+# DataLoader is defined here
+if args.chatcore_every > 0 and (last_step or (step > 0 and step % args.chatcore_every == 0)):
+    pass
+''', encoding="utf-8")
+    destination = repo / "scripts" / "chat_sft_be.py"
+    destination.write_text("keep-existing\n", encoding="utf-8")
+    proc = subprocess.run([sys.executable, str(PACK / "ops/local" / "patch_nanochat_for_belarusian.py"), "--nanochat-dir", str(repo), "--overwrite"], text=True, capture_output=True)
+    assert proc.returncode == 1
+    assert "candidate does not compile" in proc.stdout
+    assert destination.read_text(encoding="utf-8") == "keep-existing\n"
+
+
+def test_sft_patcher_rejects_incomplete_existing_variant(tmp_path):
+    repo = tmp_path / "nanochat"
+    (repo / "scripts").mkdir(parents=True)
+    (repo / "tasks").mkdir()
+    (repo / "tasks" / "customjson.py").write_text("class CustomJSON: pass\n", encoding="utf-8")
+    (repo / "scripts" / "chat_sft.py").write_text("# unused\n", encoding="utf-8")
+    (repo / "scripts" / "chat_sft_be.py").write_text("# Belarusian-only CustomJSON\n", encoding="utf-8")
+    proc = subprocess.run([sys.executable, str(PACK / "ops/local" / "patch_nanochat_for_belarusian.py"), "--nanochat-dir", str(repo)], text=True, capture_output=True)
+    assert proc.returncode == 1
+    assert "invalid or incomplete" in proc.stdout

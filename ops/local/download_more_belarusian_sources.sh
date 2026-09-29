@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-PACK_DIR="${PACK_DIR:-$(pwd)}"
-DOWNLOAD_DIR="${DOWNLOAD_DIR:-$PACK_DIR/data_input/downloads}"
+PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+# shellcheck disable=SC1090
+source "$PACK_DIR/ops/local/pack_paths.sh"
+bash "$PACK_DIR/ops/local/repo_guard.sh"
 mkdir -p "$DOWNLOAD_DIR"/{wikimedia,tatoeba,opus}
 cd "$PACK_DIR"
 fetch() {

@@ -1,0 +1,3837 @@
+{
+  "schema_version": 1,
+  "head": "849634589f4bf3e19a597733bdffe09a019cd71f",
+  "repository": "/home/vadimohka/WORK/vadimohka",
+  "file_count": 423,
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "review": "not_reviewed",
+      "bytes": 664,
+      "kind": "config",
+      "sha256": "2432ea0d547340d49e40f20152925425b511cd1326895c7c130977431f4fbca2",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": ".gitignore",
+      "review": "not_reviewed",
+      "bytes": 696,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "CITATION.cff",
+      "review": "not_reviewed",
+      "bytes": 1067,
+      "kind": "config",
+      "sha256": "1cfcc75614e53226b8372144f1804cfc3387c8239b852b1a1ad8d7723e02b65a",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "review": "not_reviewed",
+      "bytes": 2361,
+      "kind": "documentation",
+      "sha256": "cbe6ba1d51e09b2bac310c8c57701cafca8309706bf0d67f513a66ecfcb154ef",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "LICENSE",
+      "review": "not_reviewed",
+      "bytes": 1062,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "QUICKSTART_3070TI.md",
+      "review": "not_reviewed",
+      "bytes": 1281,
+      "kind": "documentation",
+      "sha256": "bf188cf446cf48f879e078e0af6ef9d82683714d037a8e8db8bbfc10a931c745",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "README.md",
+      "review": "not_reviewed",
+      "bytes": 6865,
+      "kind": "documentation",
+      "sha256": "ac62ec972ebccf5421aaf090d308613378f8c97fb183ed0514b2d420d182a761",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "README_RU.md",
+      "review": "not_reviewed",
+      "bytes": 7147,
+      "kind": "documentation",
+      "sha256": "29c6a4eb6a8a8945cb77ed4150b46e45ad8ec987b3872c234917096004df4629",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "SHA256SUMS.txt",
+      "review": "not_reviewed",
+      "bytes": 1028,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/AUDIT_SCOPE.md",
+      "review": "not_reviewed",
+      "bytes": 5759,
+      "kind": "documentation",
+      "sha256": "90bd7bc340c48d66a81dfb4177433f6721a2cb5356051c9f6e9ecd1dfb494449",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/CHANGESET.json",
+      "review": "not_reviewed",
+      "bytes": 4722,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/LICENSE_SOURCE.txt",
+      "review": "not_reviewed",
+      "bytes": 1062,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/MANIFEST.json",
+      "review": "not_reviewed",
+      "bytes": 9122,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/PATCH_REVIEW.md",
+      "review": "not_reviewed",
+      "bytes": 9346,
+      "kind": "documentation",
+      "sha256": "557f00aca95b0c76931391426cdeee96c6c857533c17745f20ec1ba77681854c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/README_START_HERE.md",
+      "review": "not_reviewed",
+      "bytes": 6301,
+      "kind": "documentation",
+      "sha256": "f6adfc15d84d74fa99aba6538e41ad8fcdcc626abe0cdeb972d08fe8d8d1b3ec",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/RESUME_PROMPT.md",
+      "review": "not_reviewed",
+      "bytes": 1957,
+      "kind": "documentation",
+      "sha256": "571a2c3a2d1adfb0187447a8c91fcb5d8da16f38aedd35993e895ba9b0c26eba",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/START_PROMPT.md",
+      "review": "not_reviewed",
+      "bytes": 7570,
+      "kind": "documentation",
+      "sha256": "e5774bf51a10f1df45095c16236310e5e934d1021cc280cfedb779492c570120",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/TASKS.json",
+      "review": "not_reviewed",
+      "bytes": 96097,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/TASKS.md",
+      "review": "not_reviewed",
+      "bytes": 76747,
+      "kind": "documentation",
+      "sha256": "06d51fb06290dfd339c4c41a1e1aeb1e506a2f8b522cd2f4c0d602c1b1c9e505",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/UPSTREAM_STATUS.md",
+      "review": "not_reviewed",
+      "bytes": 2527,
+      "kind": "documentation",
+      "sha256": "54bf5042b2f45e19b69381954c47ab0a2d21a3ad0ee8489ea5f97cdcac717478",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/.github/workflows/ci.yml",
+      "review": "not_reviewed",
+      "bytes": 789,
+      "kind": "config",
+      "sha256": "5a08aef8a73661267165d2ca30d352a51d0ac192cb13fe122b7b838ba49312bd",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/CONTRIBUTING.md",
+      "review": "not_reviewed",
+      "bytes": 2173,
+      "kind": "documentation",
+      "sha256": "8599c89e53c9db28f017293fefcc584f708d759241a7b796aa151af5d3b57c9c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/data_pipeline/prepare_belarusian_corpus.py",
+      "review": "not_reviewed",
+      "bytes": 12997,
+      "kind": "code",
+      "sha256": "6d8b8143cd9e886516e1ba90d95ee142967b0a253f4f7d17b6a7a7399046cab8",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "BuildStats",
+        "_open_jsonl",
+        "iter_local_texts",
+        "iter_smoke_texts",
+        "write_jsonl",
+        "write_parquet_shards",
+        "prepare",
+        "load_streams",
+        "main"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/data_pipeline/split_train_val.py",
+      "review": "not_reviewed",
+      "bytes": 1531,
+      "kind": "code",
+      "sha256": "14afbee5cbe594c8a09cf186ad77787a1233658a47a3850e96b859612ba1e29e",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "assign_split",
+        "main"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/ops/local/install_nanochat_env.sh",
+      "review": "not_reviewed",
+      "bytes": 8213,
+      "kind": "code",
+      "sha256": "6b659a10e2f74cfa784e633619d6b2e39243ab061263dfca88c11230c76563f5",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/ops/local/pack_paths.sh",
+      "review": "not_reviewed",
+      "bytes": 781,
+      "kind": "code",
+      "sha256": "19b33817f7bb17f0c343622d8b61c1b1935de465f040b0dbe4edcf68184b2938",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/ops/local/quickstart.sh",
+      "review": "not_reviewed",
+      "bytes": 3201,
+      "kind": "code",
+      "sha256": "22a3cb269fd9c9944b9b33969bbee1e8fd4aca1cccfb435ec65692182d291b20",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/ops/local/repo_guard.sh",
+      "review": "not_reviewed",
+      "bytes": 1167,
+      "kind": "code",
+      "sha256": "2d4d39f118c53a4e323fbe67526b662907fcb6e17e884274b3d2778f4537270a",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/base_snapshot/ops/nanochat_fork/tasks/customjson.py",
+      "review": "not_reviewed",
+      "bytes": 2939,
+      "kind": "code",
+      "sha256": "a028d5515e55864366a9c62755889c1ad7408015b7be926975f065ef8db9fb5c",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "CustomJSON"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/ARCHIVE_CHECKS.json",
+      "review": "not_reviewed",
+      "bytes": 616,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/BASELINE.json",
+      "review": "not_reviewed",
+      "bytes": 1045,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/CI_BASELINE.json",
+      "review": "not_reviewed",
+      "bytes": 792,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/SOURCES.md",
+      "review": "not_reviewed",
+      "bytes": 4010,
+      "kind": "documentation",
+      "sha256": "620291a91494aeb4e789b8e47d0a2b41b8f05adb8d1f1974f5ea84151594f93d",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/SOURCE_HASHES.json",
+      "review": "not_reviewed",
+      "bytes": 2167,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/STATIC_CHECKS.json",
+      "review": "not_reviewed",
+      "bytes": 570,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/TEST_ENVIRONMENT.json",
+      "review": "not_reviewed",
+      "bytes": 338,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/VALIDATION.md",
+      "review": "not_reviewed",
+      "bytes": 8262,
+      "kind": "documentation",
+      "sha256": "7ad74147b0c65cce472fadf2cc8f481ce511771fcf59174d0a7287a1e6438b0f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/test_baseline.log",
+      "review": "not_reviewed",
+      "bytes": 66900,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/test_extracted_tools.log",
+      "review": "not_reviewed",
+      "bytes": 99,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/test_patched.log",
+      "review": "not_reviewed",
+      "bytes": 180,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/evidence/test_tools.log",
+      "review": "not_reviewed",
+      "bytes": 99,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/.github/workflows/ci.yml",
+      "review": "not_reviewed",
+      "bytes": 664,
+      "kind": "config",
+      "sha256": "2432ea0d547340d49e40f20152925425b511cd1326895c7c130977431f4fbca2",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/CONTRIBUTING.md",
+      "review": "not_reviewed",
+      "bytes": 2361,
+      "kind": "documentation",
+      "sha256": "cbe6ba1d51e09b2bac310c8c57701cafca8309706bf0d67f513a66ecfcb154ef",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/data_pipeline/prepare_belarusian_corpus.py",
+      "review": "not_reviewed",
+      "bytes": 13882,
+      "kind": "code",
+      "sha256": "b0223a3c396105a1ccfabdcf9737d9bdbbdddce46a531312aaf81dcfde705d24",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "BuildStats",
+        "_open_jsonl",
+        "iter_local_texts",
+        "iter_smoke_texts",
+        "write_jsonl",
+        "write_parquet_shards",
+        "prepare",
+        "load_streams",
+        "main"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/data_pipeline/split_train_val.py",
+      "review": "not_reviewed",
+      "bytes": 2698,
+      "kind": "code",
+      "sha256": "a76e5e745a37a7ba25d8ff7679745d35739292b377bf41fac18199a1367c042d",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "validate_ratio",
+        "validate_paths",
+        "assign_split",
+        "main"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/ops/local/install_nanochat_env.sh",
+      "review": "not_reviewed",
+      "bytes": 8904,
+      "kind": "code",
+      "sha256": "09dab6bbc57cba9d98f536e22a5c0ea834e48c11d5935edbcbd7b01b9a254ed9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/ops/local/pack_paths.sh",
+      "review": "not_reviewed",
+      "bytes": 2157,
+      "kind": "code",
+      "sha256": "f88d7a745fe702a7ca1344833ff6da91609a28b97ee470e8c4437991e608675e",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/ops/local/quickstart.sh",
+      "review": "not_reviewed",
+      "bytes": 3390,
+      "kind": "code",
+      "sha256": "b6d79edb2a2611fc56dfdd6817b780f1e4953839ec03482ab0ad1f0e226d7d1d",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/ops/local/repo_guard.sh",
+      "review": "not_reviewed",
+      "bytes": 438,
+      "kind": "code",
+      "sha256": "e2ef71f34b0b549bd2f8f163eee13e88b54c69489a7a2b7e33adde1a3610a708",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/ops/nanochat_fork/tasks/customjson.py",
+      "review": "not_reviewed",
+      "bytes": 2285,
+      "kind": "code",
+      "sha256": "7c0fbf3e54a939348ba26596bd91ba44fd631b68810400d3bfc7c11755ab37e9",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "CustomJSON"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/full_files/tests/test_pipeline_audit_regressions.py",
+      "review": "not_reviewed",
+      "bytes": 19652,
+      "kind": "code",
+      "sha256": "ce9c2eacb29c7f31fac8929cbf3787b0b9f0eaab2b056c437c55f8658b97734d",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "load_module",
+        "clean_env",
+        "run",
+        "copy_paths",
+        "tree",
+        "test_standalone_root_from_another_working_directory",
+        "test_guard_is_read_only",
+        "test_reject_every_external_path_before_creating_any_directory",
+        "test_path_boundary_edge_cases",
+        "test_installer_planning_does_not_create_anything",
+        "test_installer_checks_cli_paths_before_side_effects",
+        "test_installer_missing_option_value_is_actionable",
+        "fake_executable",
+        "installer_fixture",
+        "test_installer_pip_fallback_uses_defined_python",
+        "test_installer_uv_cpu_selects_cpu_extra",
+        "test_installer_does_not_hide_gpu_install_failure",
+        "split_command",
+        "test_split_rejects_invalid_ratios_before_truncation",
+        "test_split_rejects_aliases_before_truncation",
+        "test_split_preserves_legacy_hash_assignment",
+        "test_split_preserves_all_records_and_final_newline",
+        "customjson",
+        "test_customjson_missing_file_raises_without_download_advice",
+        "test_customjson_rejects_empty_dataset",
+        "test_customjson_schema_errors_have_file_and_line",
+        "test_customjson_invalid_json_has_location",
+        "test_customjson_valid_dataset_preserves_task_api",
+        "test_customjson_validation_survives_python_optimized_mode",
+        "test_ci_does_not_reference_retired_audit",
+        "corpus_builder_preflight",
+        "corpus_arguments",
+        "test_corpus_invalid_settings_preserve_corpus_and_reports",
+        "test_corpus_insufficient_data_preserves_previous_shards",
+        "test_quickstart_status_matches_mock_training_path",
+        "test_contribution_document_does_not_overclaim_decontamination"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/patches/0001-pipeline-safety.patch",
+      "review": "not_reviewed",
+      "bytes": 40795,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/specs/01_APPLY_AND_CI.md",
+      "review": "not_reviewed",
+      "bytes": 7053,
+      "kind": "documentation",
+      "sha256": "47f6a413d874bb8951431231cddf567bd16fd3a57647366a93738b3332c65961",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/specs/02_RUNTIME_AND_OPERATIONS.md",
+      "review": "not_reviewed",
+      "bytes": 7660,
+      "kind": "documentation",
+      "sha256": "b08cad8d5c2a218b1cfed63bc021ea15445e41e62532d7921e2937a4c5ab5b09",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/specs/03_DATA_INTEGRITY.md",
+      "review": "not_reviewed",
+      "bytes": 8474,
+      "kind": "documentation",
+      "sha256": "dad37a22a9a5a7e741600550a0160e00f7ce43e9fdd226367f6180f75dfdfb01",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/specs/04_LANGUAGE_AND_SFT.md",
+      "review": "not_reviewed",
+      "bytes": 6818,
+      "kind": "documentation",
+      "sha256": "a7d6edb0fbe5c1ce98d88e521b154ece8a1bae1f9118ec110089665c6c8d0ed9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/specs/05_TRAINING_AND_CHECKPOINTS.md",
+      "review": "not_reviewed",
+      "bytes": 8456,
+      "kind": "documentation",
+      "sha256": "0ebbb1cfc7b5298cb92082815f98d47fd1ad552b157cad8d7fb6c30cc57c656c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/specs/06_EVAL_INFERENCE_EXPORT.md",
+      "review": "not_reviewed",
+      "bytes": 7897,
+      "kind": "documentation",
+      "sha256": "22d9ed5766856375b3790068ff8e177fb08bda8d6daadf0cbc94bdf828bd213a",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/specs/07_MODULE_AUDIT_AND_RELEASE.md",
+      "review": "not_reviewed",
+      "bytes": 7431,
+      "kind": "documentation",
+      "sha256": "2cc91d426da6227110e0802901b236eee6c6d925e2c60205ebcec4ec5b6c0964",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/tests/test_handoff_tools.py",
+      "review": "not_reviewed",
+      "bytes": 8086,
+      "kind": "code",
+      "sha256": "69e9ce5e6d31bb019890f779a79b9c65cf00eb9f6c2e84146c0016b5b6f6b61a",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "git",
+        "fixture_repo",
+        "test_check_is_read_only_and_apply_is_idempotent",
+        "test_refuse_changed_target",
+        "test_refuse_staged_change_even_if_worktree_matches_baseline",
+        "test_refuse_changed_context_dependency",
+        "test_refuse_symlink_even_when_bytes_match",
+        "test_refuse_corrupt_patch",
+        "test_descendant_requires_explicit_opt_in",
+        "test_unknown_baseline_cannot_be_bypassed_with_descendant_flag",
+        "test_refuse_partial_application",
+        "test_manifest_path_validation",
+        "test_inventory_does_not_execute_python_or_read_corpus",
+        "test_inventory_marks_syntax_errors_and_skips_symlinks",
+        "test_bundle_verifier_detects_changed_file",
+        "test_task_slice_returns_only_selected_tasks_and_rejects_unknown"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/tools/apply_fixes.py",
+      "review": "not_reviewed",
+      "bytes": 5801,
+      "kind": "code",
+      "sha256": "7e89eb209a77f65be638334d557bb9452aee829f0d42891c2cd0d7f646370e0b",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "Refusal",
+        "git",
+        "digest",
+        "contained",
+        "audit",
+        "main"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/tools/inventory_modules.py",
+      "review": "not_reviewed",
+      "bytes": 3420,
+      "kind": "code",
+      "sha256": "5811a426ce5d7d5e3ac4361f85e5d7efa47673fe5c27797050b86f2f589c06cf",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "git",
+        "inventory"
+      ]
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/tools/task_slice.py",
+      "review": "not_reviewed",
+      "bytes": 741,
+      "kind": "code",
+      "sha256": "62f207f4fa4b1eca439faf8c24dc913e3c348cfa02ea8e6b8153ac9a6878fb95",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": []
+    },
+    {
+      "path": "belka_handoff_2026-09-22/BELKA_HANDOFF/tools/verify_bundle.py",
+      "review": "not_reviewed",
+      "bytes": 1251,
+      "kind": "code",
+      "sha256": "52a17485a481ea1b05686c0481cc1662f9dbe32a21cd73e563829ab09e2aa79a",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "verify"
+      ]
+    },
+    {
+      "path": "configs/agent_execution_contract.yaml",
+      "review": "not_reviewed",
+      "bytes": 1719,
+      "kind": "config",
+      "sha256": "b449997af32883b43c9034a1bff4d77f4b324f1aa7ddf8d707c0ac2cc3d4e5f4",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/agent_governor_policy.yaml",
+      "review": "not_reviewed",
+      "bytes": 1378,
+      "kind": "config",
+      "sha256": "84b2e21d0688b45b6dd4c37d1f92ef90d5a9287d8b6aca8fe9ad6a156349e8f7",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/belarusian_public_sources.yaml",
+      "review": "not_reviewed",
+      "bytes": 1325,
+      "kind": "config",
+      "sha256": "b8f3fd6e12b0fcee2a8efa734c330762e23f2b3fa8d481e45f4db2fc0919f835",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/belarusian_sources_full.yaml",
+      "review": "not_reviewed",
+      "bytes": 6711,
+      "kind": "config",
+      "sha256": "13f5d46baedf5fb2c4ff67f21ec102091845f580fdcfa2d2c6570a8d2b1837a6",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/books_cleaning_policy.yaml",
+      "review": "not_reviewed",
+      "bytes": 572,
+      "kind": "config",
+      "sha256": "6ee933f0597559fd5d86c13d42ac7532b9a099a1d8343e0cbc092e5867fa9a29",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/config.example.env",
+      "review": "not_reviewed",
+      "bytes": 879,
+      "kind": "config",
+      "sha256": "4c9bd63e2006a263cee5688ac00b4cafa25f136b0be6a069e55c4081d4be1ec0",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/curriculum_stages.yaml",
+      "review": "not_reviewed",
+      "bytes": 2187,
+      "kind": "config",
+      "sha256": "d3dd49038fb9cad84282d10ea8d983ddc18d007baef4e159e225d9e7b0c5f8ac",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/data_sources_v2_curl.yaml",
+      "review": "not_reviewed",
+      "bytes": 3947,
+      "kind": "config",
+      "sha256": "518b75e770ec5130a3edc05cf802204871277b2079127731b053642706d43757",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/dataset_sources.yaml",
+      "review": "not_reviewed",
+      "bytes": 12417,
+      "kind": "config",
+      "sha256": "9442473bc6c3a3d85e4f57d74c606fb8a8dbc56c1600bb53feb748384eb2aa16",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/from_scratch_training_plan.yaml",
+      "review": "not_reviewed",
+      "bytes": 2615,
+      "kind": "config",
+      "sha256": "03063486b192fffb1bb9e8ec347baa6547f4dc5fb9a3c7117f4c90f802214e51",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/language_filter.yaml",
+      "review": "not_reviewed",
+      "bytes": 834,
+      "kind": "config",
+      "sha256": "3071babc89a38c1bc5769a02704b23e07ae15ed360b67abe9f46ea09ab22e4d9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/model_scales_from_scratch.yaml",
+      "review": "not_reviewed",
+      "bytes": 2431,
+      "kind": "config",
+      "sha256": "075cdc7488919faa9eec586083820af6690ea57d36e8e3cc45ed47c3332ed4ef",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/owner_execution_contract.yaml",
+      "review": "not_reviewed",
+      "bytes": 1047,
+      "kind": "config",
+      "sha256": "4544763ebceda7abe4798b1c3cc8c518690dc7f219fe055a1cdf81e41a788585",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/path_policy.env",
+      "review": "not_reviewed",
+      "bytes": 1301,
+      "kind": "config",
+      "sha256": "ae0c1486c5a46212475d11ba4f277220e8bc5e71ebec7f84564bcd81c27b1120",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/profiles_3070ti.yaml",
+      "review": "not_reviewed",
+      "bytes": 1112,
+      "kind": "config",
+      "sha256": "564d1de840e685786605c8ee318f73580941d49abadc2e3cca12c7de7d13da2e",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/profiles_h200.yaml",
+      "review": "not_reviewed",
+      "bytes": 4030,
+      "kind": "config",
+      "sha256": "651477530bec7854c26e6ff8874499361e5bf1a11a69d5f505bc7883a7567f81",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/source_expansion_candidates.yaml",
+      "review": "not_reviewed",
+      "bytes": 19839,
+      "kind": "config",
+      "sha256": "5056f31eb9ffcaf282a3a0517fc4e31fa0374a498a439590e9768f5bca54ee87",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/source_mixing_policy.yaml",
+      "review": "not_reviewed",
+      "bytes": 3180,
+      "kind": "config",
+      "sha256": "ef5987c0a5c7f6b8e4d2ab4b75c3f450d254015b3a1c661e9c65aa838339b904",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/tokenizer_ablation.yaml",
+      "review": "not_reviewed",
+      "bytes": 786,
+      "kind": "config",
+      "sha256": "6ca55b103cac33111a45f8dbc76e01516799cc3c0f4dae42e5749ab0da7d701e",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/training_baselines.yaml",
+      "review": "not_reviewed",
+      "bytes": 1559,
+      "kind": "config",
+      "sha256": "ab1967105108ce19664c3f7b77eeaab051b98d2f381a8762beea485476756166",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "configs/training_ladder_8gb.yaml",
+      "review": "not_reviewed",
+      "bytes": 1324,
+      "kind": "config",
+      "sha256": "80fe99a645f7aed04784ac0f01bd6c8ad2c0a0eedbcaae325dd7b2b96f5191bb",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "data_cards/corpus_v3b.md",
+      "review": "not_reviewed",
+      "bytes": 3029,
+      "kind": "documentation",
+      "sha256": "0a6029b35ac1affc5abfce3d403723122e38486fcd5d4b190ab50260886498a7",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "data_pipeline/__init__.py",
+      "review": "not_reviewed",
+      "bytes": 0,
+      "kind": "code",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": []
+    },
+    {
+      "path": "data_pipeline/build_manifest.py",
+      "review": "not_reviewed",
+      "bytes": 1957,
+      "kind": "code",
+      "sha256": "36c3bf1fd083a660fe5f490554f07121af010236713ed0a5846fe146530433a3",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "sha256_file",
+        "build_manifest",
+        "main"
+      ]
+    },
+    {
+      "path": "data_pipeline/convert_project_to_be_sft.py",
+      "review": "not_reviewed",
+      "bytes": 6976,
+      "kind": "code",
+      "sha256": "7fbeb56224fecf7e277636bc473689300e818d4cec94f1e9781bea45f8ac3411",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "exists",
+        "has_text",
+        "conv",
+        "generate",
+        "main"
+      ]
+    },
+    {
+      "path": "data_pipeline/deduplicate.py",
+      "review": "not_reviewed",
+      "bytes": 2352,
+      "kind": "code",
+      "sha256": "835caa06be129e277f63d4d53c3397f8282ede870e6156e9459861ecfa2939eb",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "canonical_for_dedup",
+        "text_hash",
+        "main"
+      ]
+    },
+    {
+      "path": "data_pipeline/detect_belarusian.py",
+      "review": "not_reviewed",
+      "bytes": 10530,
+      "kind": "code",
+      "sha256": "263f5854b9b8534308fcfa30d39303a365a5552dd2dcfedde90cb2493b3e50f9",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "DetectionResult",
+        "_tokens",
+        "detect_belarusian",
+        "_open_text",
+        "iter_jsonl_text",
+        "write_detection_report",
+        "main"
+      ]
+    },
+    {
+      "path": "data_pipeline/normalize_text.py",
+      "review": "not_reviewed",
+      "bytes": 2412,
+      "kind": "code",
+      "sha256": "728e55ce50a7aea3513efbd1ddfc3d47dde3338fb5eb10f7485b54ce3433d2b4",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "normalize_text",
+        "main"
+      ]
+    },
+    {
+      "path": "data_pipeline/prepare_belarusian_corpus.py",
+      "review": "not_reviewed",
+      "bytes": 13882,
+      "kind": "code",
+      "sha256": "b0223a3c396105a1ccfabdcf9737d9bdbbdddce46a531312aaf81dcfde705d24",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "BuildStats",
+        "_open_jsonl",
+        "iter_local_texts",
+        "iter_smoke_texts",
+        "write_jsonl",
+        "write_parquet_shards",
+        "prepare",
+        "load_streams",
+        "main"
+      ]
+    },
+    {
+      "path": "data_pipeline/quarantine_report.py",
+      "review": "not_reviewed",
+      "bytes": 2132,
+      "kind": "code",
+      "sha256": "b8e4969c975228deef81ee6925691d3f591900677ee7d532b336435c866ec073",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "summarize",
+        "main"
+      ]
+    },
+    {
+      "path": "data_pipeline/split_train_val.py",
+      "review": "not_reviewed",
+      "bytes": 2698,
+      "kind": "code",
+      "sha256": "a76e5e745a37a7ba25d8ff7679745d35739292b377bf41fac18199a1367c042d",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "validate_ratio",
+        "validate_paths",
+        "assign_split",
+        "main"
+      ]
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_bootstrap_train.jsonl",
+      "review": "not_reviewed",
+      "bytes": 981120,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_bootstrap_val.jsonl",
+      "review": "not_reviewed",
+      "bytes": 81760,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_seed_train.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1460475,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/base_jsonl/belarusian_seed_val.jsonl",
+      "review": "not_reviewed",
+      "bytes": 121977,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/eval_jsonl/belarusian_language_lock_eval.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1275,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/eval_jsonl/language_lock_data_sources_eval.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 479,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/sft_jsonl/identity_and_data_sources_extra.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 2502,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/sft_jsonl/identity_and_data_sources_val_extra.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1253,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/sft_jsonl/identity_conversations.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 224340,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/sft_jsonl/identity_conversations_val.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 87022,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/sft_jsonl/meetmesh_domain_sft.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 43144,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_ready/sft_jsonl/meetmesh_domain_sft_val.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 10008,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_release/open_corpus_bundle/BUNDLE_MANIFEST.json",
+      "review": "not_reviewed",
+      "bytes": 2284,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_release/open_corpus_bundle/belka_corpus_v3b.tar.zst.aa",
+      "review": "not_reviewed",
+      "bytes": 99614720,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_release/open_corpus_bundle/belka_corpus_v3b.tar.zst.ab",
+      "review": "not_reviewed",
+      "bytes": 99614720,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_release/open_corpus_bundle/belka_corpus_v3b.tar.zst.ac",
+      "review": "not_reviewed",
+      "bytes": 99614720,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "data_release/open_corpus_bundle/belka_corpus_v3b.tar.zst.ad",
+      "review": "not_reviewed",
+      "bytes": 30140213,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "deploy/export_to_gguf.sh",
+      "review": "not_reviewed",
+      "bytes": 1273,
+      "kind": "code",
+      "sha256": "6962b5ee30a3dd4b692f0e6cb0c588d524d3ed0b5041b2f87bac76372da80e05",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "deploy/serve_llamacpp.sh",
+      "review": "not_reviewed",
+      "bytes": 674,
+      "kind": "code",
+      "sha256": "64bc729724d11b5201d9b01efaac1c8430e6653e5b8b5ecc156164853ff034c9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "deploy/serve_vllm.sh",
+      "review": "not_reviewed",
+      "bytes": 665,
+      "kind": "code",
+      "sha256": "17657662aa80e2bbc8c1343340a4e737fc22229d98c13d37696ce52ad40f45ee",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/00_project_audit.md",
+      "review": "not_reviewed",
+      "bytes": 6106,
+      "kind": "documentation",
+      "sha256": "48e314524b3dc34e3753edcd1c941d092b2ff16a316a3262e19451ad85ee4bb5",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/01_research_llm_training_from_scratch.md",
+      "review": "not_reviewed",
+      "bytes": 5918,
+      "kind": "documentation",
+      "sha256": "695f2f8815e2c95be63312882869e8d6d147add96a1b8c13421e35c40de41fe8",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/02_belarusian_data_inventory.md",
+      "review": "not_reviewed",
+      "bytes": 11516,
+      "kind": "documentation",
+      "sha256": "5732ac010e6fe6ffa34887686bf5e315058db09c5f850960c4548902a3567ff2",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/03_data_pipeline_plan.md",
+      "review": "not_reviewed",
+      "bytes": 4387,
+      "kind": "documentation",
+      "sha256": "96db8d3c732a276858699d8eeefe9559cf40652d1b6654e1fcf65d82fad0a915",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/04_tokenizer_plan.md",
+      "review": "not_reviewed",
+      "bytes": 2717,
+      "kind": "documentation",
+      "sha256": "e64bf794078e3a3293bfaa4682d3b358d59c7b9e0f66dbf95d3e2f6428b133df",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/05_training_strategy.md",
+      "review": "not_reviewed",
+      "bytes": 3934,
+      "kind": "documentation",
+      "sha256": "9d544c3df8d667ea5f6bc675147f870a09597ae35ba90619ba883048ac2f2962",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/06_evaluation_plan.md",
+      "review": "not_reviewed",
+      "bytes": 2975,
+      "kind": "documentation",
+      "sha256": "e5c4280219d37180632057205f501714ea18ab5779d0e66fd23a1c76d48c4b5b",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/07_repo_roadmap.md",
+      "review": "not_reviewed",
+      "bytes": 2759,
+      "kind": "documentation",
+      "sha256": "aebf5d9e5f8f2ee2418a30f42662804eaf296dfd9e4322354fb3df58e2a65881",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/08_risks_licenses_ethics.md",
+      "review": "not_reviewed",
+      "bytes": 4030,
+      "kind": "documentation",
+      "sha256": "6ecc89f5e27e11f436cb4a7c8ff5ce0fee9d5aff1e679c789866984b25796bc0",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/09_experiment_log_template.md",
+      "review": "not_reviewed",
+      "bytes": 1367,
+      "kind": "documentation",
+      "sha256": "b44668fafdd19ee2368705447fc5ce6064e3084fddff40753c0401de9ef98e8c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "docs/CORPUS_V4_EXPANSION_PLAN.md",
+      "review": "not_reviewed",
+      "bytes": 3241,
+      "kind": "documentation",
+      "sha256": "49524c22220e2f1d0acde5b15a7d6d00ac3cc83febd6a9a52d62daba8d6cc099",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "eval/belarusian_language_lock_eval.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1275,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/belarusian_language_lock_eval.jsonl",
+      "review": "not_reviewed",
+      "bytes": 2970,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/belka_eval_suite_v2.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1357,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/hallucination_refusal_eval.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 942,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/holdout_quality_control_v1.schema.json",
+      "review": "not_reviewed",
+      "bytes": 284,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/language_lock_contrastive.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 2802,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/meetmesh_domain_eval.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 3101,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/regression_quality_control_v1.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 61416,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/run_local_eval.py",
+      "review": "not_reviewed",
+      "bytes": 840,
+      "kind": "code",
+      "sha256": "f457e308091b370c8fde2781fdba3ac0b1f273c3fbcc3b94060a2322c0af2252",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "eval/run_openai_compatible_eval.py",
+      "review": "not_reviewed",
+      "bytes": 4084,
+      "kind": "code",
+      "sha256": "f2c898ce647ba45fc6e597613c936b12cd6d9ebe991fb245439ada3b6c96cf0c",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "load_jsonl",
+        "complete",
+        "evaluate_response",
+        "main"
+      ]
+    },
+    {
+      "path": "eval/sft_v8_manual_eval.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 73829,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/strict_holdout_quality_control_v2.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 100124,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "eval/tokenizer_fertility_prompts.be.txt",
+      "review": "not_reviewed",
+      "bytes": 1016,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "export/export_to_hf.sh",
+      "review": "not_reviewed",
+      "bytes": 1770,
+      "kind": "code",
+      "sha256": "6d78dcf910d211ead452a54cce63596fb06d090e1e9f2054029ca46571e3d648",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "export/patch_hf_chat_template.py",
+      "review": "not_reviewed",
+      "bytes": 1185,
+      "kind": "code",
+      "sha256": "8721e32c848e7ebdd6c85a2cab058694aa1a5fb76c54f7fc41b1377285432755",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "manifests/source_manifest_template.yaml",
+      "review": "not_reviewed",
+      "bytes": 352,
+      "kind": "config",
+      "sha256": "9ad52fd9aca1ef0fa25119e0be1daf92ded844f3f31ecc087dd42d2aa0c10ce3",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "manifests/wikimedia_download_manifest.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1548,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "model_cards/belka-research-preview.md",
+      "review": "not_reviewed",
+      "bytes": 2848,
+      "kind": "documentation",
+      "sha256": "8e88b3c553ccfefa225bc0a920c58a2549d0c60bde01706e90ad1bde3fedba2b",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/OWNER_ONE_BUTTON_WORKFLOW.md",
+      "review": "not_reviewed",
+      "bytes": 595,
+      "kind": "documentation",
+      "sha256": "146d0bcb526f142f2d47ac9bcf027e6030df2c8e6977e5bcbb1b91f4475fe68b",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/OWNER_ONLY_EXECUTION_PROTOCOL.md",
+      "review": "not_reviewed",
+      "bytes": 777,
+      "kind": "documentation",
+      "sha256": "a512d62669e92e815aa8605f00929738b253cfc255b91797769583ae27d351c5",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/README.md",
+      "review": "not_reviewed",
+      "bytes": 505,
+      "kind": "documentation",
+      "sha256": "a5994d58763ff20a0d5f509e6c3e107032c7678de8b9a66b59528b6500a6b88b",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/agents/AGENTS.md",
+      "review": "not_reviewed",
+      "bytes": 3521,
+      "kind": "documentation",
+      "sha256": "4566db17c670da428b41460c81084422ea1f8a92fdd2d955d44a1e32bcd60ce2",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/agents/AGENT_EXECUTION_CONTRACT.md",
+      "review": "not_reviewed",
+      "bytes": 1371,
+      "kind": "documentation",
+      "sha256": "e26c63268a8878e69edff55fbc4cd9a50bf904704143dd09f7fd5fd4d53c9617",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/agents/AGENT_METHOD_GOVERNOR.md",
+      "review": "not_reviewed",
+      "bytes": 2307,
+      "kind": "documentation",
+      "sha256": "5120b94aa04b7229527971bbfc96efc3fdb36d5fc9b497c8f62afac0ec5819a9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/agents/AGENT_START_HERE.md",
+      "review": "not_reviewed",
+      "bytes": 2778,
+      "kind": "documentation",
+      "sha256": "586863bff6fca16b942173846767e2dced70145d2466d88074953c1b7859fa7c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/agent_analyze_owner_run.sh",
+      "review": "not_reviewed",
+      "bytes": 1694,
+      "kind": "code",
+      "sha256": "7c3f86affe42e658549b6634d841e6ff2be9ab23131beeced40aa447d1b0eb36",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/agent_preflight_governor.sh",
+      "review": "not_reviewed",
+      "bytes": 945,
+      "kind": "code",
+      "sha256": "b34409669cc0e7e18495eff3091f3b90b34722ec40c351c4b983285880d44493",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/agent_prepare_next.sh",
+      "review": "not_reviewed",
+      "bytes": 8494,
+      "kind": "code",
+      "sha256": "d8c5adef8b7d84c98837a1a87efa9d0d447c21c12c7639275511df41c80f1341",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/auto_tune_3070ti_plan.sh",
+      "review": "not_reviewed",
+      "bytes": 541,
+      "kind": "code",
+      "sha256": "ce463769b6fa89834de82af012ea16546ee41b1248512d78aa4280ff9fe9ba98",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/build_all_public_sources.sh",
+      "review": "not_reviewed",
+      "bytes": 1172,
+      "kind": "code",
+      "sha256": "f10378a90b8ed4a4b1f7db827554ba80ee00c3f1c5cb42274cbfa99a9d48ac1c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/build_real_corpus.sh",
+      "review": "not_reviewed",
+      "bytes": 2662,
+      "kind": "code",
+      "sha256": "71afa72fd2b354fea11821573595c9c3703a5b3978635fd929d6212d8b91387c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/build_smoke_corpus.sh",
+      "review": "not_reviewed",
+      "bytes": 1654,
+      "kind": "code",
+      "sha256": "ebdfb27aa633b42ff2e39ede16a7b68ab26e91e5b022e07aaabe2cf1a8ac69f7",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/clean_rebuild_env.sh",
+      "review": "not_reviewed",
+      "bytes": 1031,
+      "kind": "code",
+      "sha256": "709a5a3e30da553672f1dbd9aa2a8858bb258c28981a46e0be9fd56b49379f3a",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/collect_for_chatgpt_pro.sh",
+      "review": "not_reviewed",
+      "bytes": 1942,
+      "kind": "code",
+      "sha256": "9887c897297a87949161e85da367482a52a36eef8a1dd704a4f1c08111868cb5",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/download_belarusian_sources_v2.sh",
+      "review": "not_reviewed",
+      "bytes": 958,
+      "kind": "code",
+      "sha256": "9b9e7e149f472fa4497325870432da7009a1a843edff84e868d80a9f6ba8b1ea",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/download_more_belarusian_sources.sh",
+      "review": "not_reviewed",
+      "bytes": 1989,
+      "kind": "code",
+      "sha256": "6ce4b2632b5357a2ba438d75c813d99c2232a2a076ae7d43d7366c054d29e5b2",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/import_ready_training_data.sh",
+      "review": "not_reviewed",
+      "bytes": 720,
+      "kind": "code",
+      "sha256": "200d97342efbe73d963a786c8c981bd075144cc48b8bdae78955384fc25fa2fa",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/install_nanochat_env.sh",
+      "review": "not_reviewed",
+      "bytes": 8904,
+      "kind": "code",
+      "sha256": "09dab6bbc57cba9d98f536e22a5c0ea834e48c11d5935edbcbd7b01b9a254ed9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/pack_paths.sh",
+      "review": "not_reviewed",
+      "bytes": 2157,
+      "kind": "code",
+      "sha256": "f88d7a745fe702a7ca1344833ff6da91609a28b97ee470e8c4437991e608675e",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/patch_nanochat_branding.py",
+      "review": "not_reviewed",
+      "bytes": 3163,
+      "kind": "code",
+      "sha256": "9aa841e863fab83a71e26c4397b4188b0269afa9fb2c54375c4b55b10e1593c1",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "patch_common",
+        "main"
+      ]
+    },
+    {
+      "path": "ops/local/patch_nanochat_dtype_fp16.py",
+      "review": "not_reviewed",
+      "bytes": 5642,
+      "kind": "code",
+      "sha256": "6ad09df3cd07f7be77cb37162a23a633de1be40fd5bb63bbc50162229aac9400",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "backup",
+        "patch_engine",
+        "patch_flash_attention",
+        "main"
+      ]
+    },
+    {
+      "path": "ops/local/patch_nanochat_for_belarusian.py",
+      "review": "not_reviewed",
+      "bytes": 7268,
+      "kind": "code",
+      "sha256": "ae8ba2482900326399b6b29b07ebaa61ee6d7addf1ebaf0934e1d5825b6bcfb8",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "ensure_imports",
+        "line_start",
+        "replace_by_markers",
+        "find_matching_bracket",
+        "replace_by_bracket_scan",
+        "add_generic_evals_gate",
+        "create_variant",
+        "main"
+      ]
+    },
+    {
+      "path": "ops/local/plan_train_ladder.sh",
+      "review": "not_reviewed",
+      "bytes": 476,
+      "kind": "code",
+      "sha256": "b6151c1e2f7562df72950272c469a3a1e3443ba94c7b8e855433fc826f0fc643",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/preflight_ubuntu_wsl.sh",
+      "review": "not_reviewed",
+      "bytes": 1941,
+      "kind": "code",
+      "sha256": "90847d5d0b8cba9ed7df1e3fcd9290c373fd49357684707587da28d1f1d6fde9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/quickstart.sh",
+      "review": "not_reviewed",
+      "bytes": 3390,
+      "kind": "code",
+      "sha256": "b6d79edb2a2611fc56dfdd6817b780f1e4953839ec03482ab0ad1f0e226d7d1d",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/repo_guard.sh",
+      "review": "not_reviewed",
+      "bytes": 438,
+      "kind": "code",
+      "sha256": "e2ef71f34b0b549bd2f8f163eee13e88b54c69489a7a2b7e33adde1a3610a708",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/restore_bundled_corpus.sh",
+      "review": "not_reviewed",
+      "bytes": 901,
+      "kind": "code",
+      "sha256": "42a1346e00a1e1ade7e45a60a8cb1f7fa03ef1377f3404a7df1f97583396e5f2",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_all_3070ti_aggressive.sh",
+      "review": "not_reviewed",
+      "bytes": 2177,
+      "kind": "code",
+      "sha256": "1832708cff7e6d3a4230f4468a1c670e9bbca1ad405153af8de74bf59e23b9e8",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_all_3070ti_safe.sh",
+      "review": "not_reviewed",
+      "bytes": 2307,
+      "kind": "code",
+      "sha256": "7496172ee2c2e63f6d68a534cd9161d3b6fe3300047124932cb022fdab2a8670",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_all_3070ti_smoke.sh",
+      "review": "not_reviewed",
+      "bytes": 2519,
+      "kind": "code",
+      "sha256": "40c47093a7041dadbc5bca95281a778086c3af14a87c907691fd0e57466fb286",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_belka_from_scratch_safe.sh",
+      "review": "not_reviewed",
+      "bytes": 3367,
+      "kind": "code",
+      "sha256": "d0d0f5672e53c087ed242181d2cad8d8e87ed6447e0a0918705a220f1d6c3671",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_belka_from_scratch_smoke.sh",
+      "review": "not_reviewed",
+      "bytes": 2815,
+      "kind": "code",
+      "sha256": "0bd24d9e9f1b2529005bbc18edc1f759f25a537e2db22eb1b7777b9ca9b0339f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_belka_h200_maxquality.sh",
+      "review": "not_reviewed",
+      "bytes": 8273,
+      "kind": "code",
+      "sha256": "d030b5769ba04307c0e547baac206da748d4e72b6481e0e51449fa8b44c3d8dd",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_belka_one_button.sh",
+      "review": "not_reviewed",
+      "bytes": 934,
+      "kind": "code",
+      "sha256": "f6fff19bbe5ecdc2c8a76822501e8050b79162b3ef36eff57a01283906c6c0bb",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_chat_web.sh",
+      "review": "not_reviewed",
+      "bytes": 1958,
+      "kind": "code",
+      "sha256": "6a9b2cffd2142254f28e79e4e677f094f6d0a46f6ff988519ec4ba03968a6737",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/run_data_foundry_v2.sh",
+      "review": "not_reviewed",
+      "bytes": 1085,
+      "kind": "code",
+      "sha256": "be24a54cabdde6e564473012bb42021818d3e200e0c91e98959b85cea4ac82e4",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/test_chat_web_health.sh",
+      "review": "not_reviewed",
+      "bytes": 2869,
+      "kind": "code",
+      "sha256": "dd8aaffedc918ff6b4c658964015aa4034f2e84a55b6b25a1032533d9b546858",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/train_tokenizer_real.sh",
+      "review": "not_reviewed",
+      "bytes": 855,
+      "kind": "code",
+      "sha256": "9e0f7b134ec60f76356935bc47b9a2f8edab75e37f39fab1cbad705d17fce934",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/train_tokenizer_smoke.sh",
+      "review": "not_reviewed",
+      "bytes": 854,
+      "kind": "code",
+      "sha256": "bf0e3beac5e7c38a9fe7870df5609d800326ff1495d51705bf1dedf352895f81",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/local/verify_nanochat_patch.py",
+      "review": "not_reviewed",
+      "bytes": 3942,
+      "kind": "code",
+      "sha256": "2c175a8a5349870b51cbd27fea154d7b6ffa784caff939712eab8d78b2b8d1e5",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "check",
+        "file_contains",
+        "file_contains_any",
+        "main"
+      ]
+    },
+    {
+      "path": "ops/nanochat_fork/README.md",
+      "review": "not_reviewed",
+      "bytes": 1671,
+      "kind": "documentation",
+      "sha256": "ea141c519422063037c5dbff0233101351c4a4c18b38ed4438742fa6b0f35713",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/nanochat_fork/nanochat/logo.svg",
+      "review": "not_reviewed",
+      "bytes": 1150,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "ops/nanochat_fork/nanochat/ui.html",
+      "review": "not_reviewed",
+      "bytes": 19107,
+      "kind": "code",
+      "sha256": "4efb79d45f4bbc045e4d308a231b40e9f48424999f9ddcbff94e7b530190a5fa",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/nanochat_fork/scripts/chat_web.py",
+      "review": "not_reviewed",
+      "bytes": 15621,
+      "kind": "code",
+      "sha256": "f88b768edc7bc6c3ecb9b23b402a9795bdf8d48d22ae2e1ce962970d26f9d8da",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "Worker",
+        "WorkerPool",
+        "ChatMessage",
+        "ChatRequest",
+        "validate_chat_request",
+        "lifespan",
+        "root",
+        "logo",
+        "generate_stream",
+        "chat_completions",
+        "health",
+        "stats"
+      ]
+    },
+    {
+      "path": "ops/nanochat_fork/tasks/customjson.py",
+      "review": "not_reviewed",
+      "bytes": 2285,
+      "kind": "code",
+      "sha256": "7c0fbf3e54a939348ba26596bd91ba44fd631b68810400d3bfc7c11755ab37e9",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "CustomJSON"
+      ]
+    },
+    {
+      "path": "ops/owner_runs/02B_OWNER_EXPAND_DATASET_FROM_EXISTING_RAW.sh",
+      "review": "not_reviewed",
+      "bytes": 10344,
+      "kind": "code",
+      "sha256": "30038c4d2f2a1e405ee16f0e69e13a6320aabf22ad1c859432f9e1ef1ba79531",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh",
+      "review": "not_reviewed",
+      "bytes": 5178,
+      "kind": "code",
+      "sha256": "7404704a801f1d5630910258b05ce193603ad0a7f9f4540a65ffc57a0cbef822",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh",
+      "review": "not_reviewed",
+      "bytes": 7778,
+      "kind": "code",
+      "sha256": "a324610e17b72733f3b3c659013bef669845fd1db0ba73238a085297ad98383f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh",
+      "review": "not_reviewed",
+      "bytes": 1581,
+      "kind": "code",
+      "sha256": "c946138e561bf9494333534d64a35fdb4d205a997d9a5f2604626669fe75d733",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+      "review": "not_reviewed",
+      "bytes": 2314,
+      "kind": "code",
+      "sha256": "54c82f756b216f0cffd5629ecad5c4ac54a267b31f219d4efc5471f6c87ee338",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/35_OWNER_EVAL_D8_BASE_V3B_PILOT.sh",
+      "review": "not_reviewed",
+      "bytes": 1822,
+      "kind": "code",
+      "sha256": "126230440386ebf697d8bf71b9a99e1bb255c7aa951a30153fe5ea13e0752769",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/36_OWNER_PLAN_CORPUS_EXPANSION_200M.sh",
+      "review": "not_reviewed",
+      "bytes": 290,
+      "kind": "code",
+      "sha256": "604198923a5aa389b105aea6b75f5a67dc20437543f9cbbd1bb1a3141c585481",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh",
+      "review": "not_reviewed",
+      "bytes": 814,
+      "kind": "code",
+      "sha256": "98bd99025aa5a6cd194d85e5f1cfba983cd3b560cd5ede20a497c968b131b0db",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh",
+      "review": "not_reviewed",
+      "bytes": 1169,
+      "kind": "code",
+      "sha256": "53c7998549e4922e57a698d6b87844c4fbc19b23c49f8c5d22709172800de89f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh",
+      "review": "not_reviewed",
+      "bytes": 1300,
+      "kind": "code",
+      "sha256": "18b1e9426a1dcb9d4a2c260af0b5797c462bb5df6be39fc3d0ef5d8c360de290",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh",
+      "review": "not_reviewed",
+      "bytes": 1189,
+      "kind": "code",
+      "sha256": "35262b0f7f4fd67a1abc45a680b1d9c0164e47ee79fc03e14b2cdc923bd20e46",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh",
+      "review": "not_reviewed",
+      "bytes": 2698,
+      "kind": "code",
+      "sha256": "cf623aabd61d31fdd066bc94701cf318fe658d683fdfca5046168e8b5c3deee1",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/45_OWNER_REPO_CLEANUP_DRY_RUN.sh",
+      "review": "not_reviewed",
+      "bytes": 9107,
+      "kind": "code",
+      "sha256": "bd123619538f7bbea7d250de05841727b0c53fe01d73cbaff8f875b33164ac4a",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/46_OWNER_REPO_CLEANUP_APPLY.sh",
+      "review": "not_reviewed",
+      "bytes": 5347,
+      "kind": "code",
+      "sha256": "2662295dafc2cf3b3d1499fbbc2b53b84fbb536de5e509be60ce6c5bbed5a072",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/47_OWNER_BUILD_CORPUS_EXPANSION_SOURCE_BOARD.sh",
+      "review": "not_reviewed",
+      "bytes": 5492,
+      "kind": "code",
+      "sha256": "0afe9f0e4f3ebfb6375470d1bfd3f4b4e8417b2d2052f5a9eee3214e6b80636f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/48_OWNER_BUILD_CORPUS_EXPANSION_SOURCE_BOARD_V2.sh",
+      "review": "not_reviewed",
+      "bytes": 4594,
+      "kind": "code",
+      "sha256": "ce1ab31ff642e3300da6c81bc784290fbdc62cdbd85d5d11f4c005966135bd41",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/OWNER_RUN_NEXT.sh",
+      "review": "not_reviewed",
+      "bytes": 1070,
+      "kind": "code",
+      "sha256": "359b53dd84b3f673d3bcb9e6f0a88bd9733579b7ed9b377260e4781c05dd2f1b",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "ops/owner_runs/OWNER_RUN_NEXT.sha256",
+      "review": "not_reviewed",
+      "bytes": 99,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "ops/owner_runs/OWNER_SCRIPTS.sha256",
+      "review": "not_reviewed",
+      "bytes": 2032,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "owner.sh",
+      "review": "not_reviewed",
+      "bytes": 4911,
+      "kind": "code",
+      "sha256": "e76db722e462321813effb0c758326f09f822468a44d61747be9f0b6ee84c0ca",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "pytest.ini",
+      "review": "not_reviewed",
+      "bytes": 42,
+      "kind": "config",
+      "sha256": "b160d82f7811555051f8966d8e02750a985227c1d022208c784e606946f2eada",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "release/FINAL_POLISH_AUDIT.md",
+      "review": "not_reviewed",
+      "bytes": 2872,
+      "kind": "documentation",
+      "sha256": "bf87f6b856b501be1560bea329381a9e648d211118f3c4caae474e422e7dce8c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "release/FINAL_POLISH_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 6899,
+      "kind": "documentation",
+      "sha256": "1e419c39b844c4b3900e6552b44676309beb6ac537ca08f0888907b7b804bdb6",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "release/GITHUB_RELEASE_v0.1.0-research-preview.md",
+      "review": "not_reviewed",
+      "bytes": 1438,
+      "kind": "documentation",
+      "sha256": "96a3f4103ab7237b9661c4e5cfe355d1803885a1de85937477cc776d32f70ff1",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "release/MAIN_PUBLICATION_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 2859,
+      "kind": "documentation",
+      "sha256": "a09cdcf74572673e97813f1d97ea1c0fb3dd954e4127c20cc0a36e3180c5c229",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "release/PUBLIC_RELEASE_NOTES_v0.1.0.md",
+      "review": "not_reviewed",
+      "bytes": 2757,
+      "kind": "documentation",
+      "sha256": "442619a523d2fc76e5a86f92935b4831f2616ae5f15c97560ab9aa79dc9f1083",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "release/RELEASE_CHECKLIST.md",
+      "review": "not_reviewed",
+      "bytes": 2867,
+      "kind": "documentation",
+      "sha256": "c7b84f878c1949714dc5c00aa1b40de7623751ae01a0c2e106392557ea7d58a9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/FROM_SCRATCH_MODERN_PLAN.md",
+      "review": "not_reviewed",
+      "bytes": 1741,
+      "kind": "documentation",
+      "sha256": "ffda5ad078ad54b496e633a16a8edab84a333e7ce79166b9358e6c7d952d2ae5",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/SAFE_TRAINING_ACCEPTED_belka-d8-40m-safe-v1.md",
+      "review": "not_reviewed",
+      "bytes": 357,
+      "kind": "documentation",
+      "sha256": "8d6dcda70bdb695daf6b300edd55cf8ff37c53ee97aa8c019b8348f3e7d3075c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/SAFE_TRAINING_REPORT_belka-d8-40m-safe-v1.md",
+      "review": "not_reviewed",
+      "bytes": 1245,
+      "kind": "documentation",
+      "sha256": "f8258ca18bdec4a077b019586c970f12fae18e0f71d49fd9d9151d30d6b95487",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/audit/DATASET_USAGE_AUDIT.md",
+      "review": "not_reviewed",
+      "bytes": 1352,
+      "kind": "documentation",
+      "sha256": "a1b3e3867724825d4c3f605c98268a2af6ce47487cafe55af4b658400301420d",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/audit/TRAINING_PROVENANCE_AUDIT.md",
+      "review": "not_reviewed",
+      "bytes": 7323,
+      "kind": "documentation",
+      "sha256": "fabcccfe87e869414bc2a0b69d22819f035a9e7aafe2d46a308d7b478608f364",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/audit/training_provenance_audit.json",
+      "review": "not_reviewed",
+      "bytes": 16787,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/audits/sft_v2_leakage_report.json",
+      "review": "not_reviewed",
+      "bytes": 301,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/audits/sft_v2_leakage_report.md",
+      "review": "not_reviewed",
+      "bytes": 197,
+      "kind": "documentation",
+      "sha256": "82b1ffd20fb67b910355509736060a85e3dd8624cc3b180142fbf5e72f125f25",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/audits/sft_v2_leakage_report_v2.json",
+      "review": "not_reviewed",
+      "bytes": 303,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/audits/sft_v2_leakage_report_v2.md",
+      "review": "not_reviewed",
+      "bytes": 192,
+      "kind": "documentation",
+      "sha256": "96d4a6d9aefa17787e556df6be07dd808312e7f45d4a5843fb36267301aaeb32",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/audits/sft_v2_val_bpb_investigation.md",
+      "review": "not_reviewed",
+      "bytes": 638,
+      "kind": "documentation",
+      "sha256": "cfba58d0bbfa441c3a9f1b8471b1825b6c93e6f30d402811c71996cec91bccc1",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/base_v2/BASE_V2_ANALYSIS.md",
+      "review": "not_reviewed",
+      "bytes": 1228,
+      "kind": "documentation",
+      "sha256": "f5d3a0355fb74563328921cdd1131a5a7b0868f3ed5b472fd397c726f3c4c2e9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/belka_handoff/MODULE_INVENTORY.json",
+      "review": "not_reviewed",
+      "bytes": 0,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/books/books_clean_v2_manifest.jsonl",
+      "review": "not_reviewed",
+      "bytes": 0,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/books_clean_v2_manifest.jsonl",
+      "review": "not_reviewed",
+      "bytes": 37682,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/books_manifest.jsonl",
+      "review": "not_reviewed",
+      "bytes": 29232,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/checkpoints_manifest/README.md",
+      "review": "not_reviewed",
+      "bytes": 602,
+      "kind": "documentation",
+      "sha256": "51e7f46cfbe618af565b2a430e1d51e8449cfd69c2837855bfe269a81c6b25bc",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/checkpoints_manifest/belka-d12-base-v2.model_006000.sha256",
+      "review": "not_reviewed",
+      "bytes": 173,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/checkpoints_manifest/belka-d12-sft-v6.model_000006.sha256",
+      "review": "not_reviewed",
+      "bytes": 175,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/checkpoints_manifest/belka-d12-sft-v7.model_000075.pt.sha256",
+      "review": "not_reviewed",
+      "bytes": 175,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/checkpoints_manifest/belka-d12-sft-v8.model_000022.sha256",
+      "review": "not_reviewed",
+      "bytes": 144,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/checkpoints_manifest/belka-d8-40m-safe-v1.model_000019.sha256",
+      "review": "not_reviewed",
+      "bytes": 148,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/checkpoints_manifest/belka-d8-40m-sft-v2.sha256",
+      "review": "not_reviewed",
+      "bytes": 147,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/checkpoints_manifest/belka-d8-40m-sft-v3.model_000130.sha256",
+      "review": "not_reviewed",
+      "bytes": 147,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/corpus_expansion/CORPUS_EXPANSION_SOURCE_BOARD.md",
+      "review": "not_reviewed",
+      "bytes": 7277,
+      "kind": "documentation",
+      "sha256": "43a2352cd4bbcb04cffd097e0e008c714e7cd548bdedc22208ac14901852b926",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/corpus_expansion/CORPUS_EXPANSION_SOURCE_BOARD_V2.md",
+      "review": "not_reviewed",
+      "bytes": 5577,
+      "kind": "documentation",
+      "sha256": "f31c92f1ff7af4c18e5b72be27c14d5018758f01d2bdd44c64035ab8e4bdc3d3",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/corpus_expansion/CORPUS_EXPANSION_V2_GAP_ANALYSIS.md",
+      "review": "not_reviewed",
+      "bytes": 3982,
+      "kind": "documentation",
+      "sha256": "0f406cb0f0627692c2c12bb104989357a5f356c9a82ec65f4af5d3976c43a1cd",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/corpus_expansion/corpus_expansion_source_board.json",
+      "review": "not_reviewed",
+      "bytes": 22299,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/corpus_expansion/corpus_expansion_source_board_v2.json",
+      "review": "not_reviewed",
+      "bytes": 53857,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/d8_base_v3/D8_PILOT_ACCEPTED_LONG_REJECTED.md",
+      "review": "not_reviewed",
+      "bytes": 925,
+      "kind": "documentation",
+      "sha256": "9f3ac09c079885db4a32cfa6cd9385feedda49018903f1e17105c9f102b8ef42",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/d8_base_v3/d8_pilot_accepted_long_rejected.json",
+      "review": "not_reviewed",
+      "bytes": 388,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/d8_base_v3b/D8_V3B_PILOT_COMPARISON_FINAL.md",
+      "review": "not_reviewed",
+      "bytes": 322,
+      "kind": "documentation",
+      "sha256": "4db39315a6c85c4db3a12970ce929202ac4e3e13c05d15f64896ab1624e648fb",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/data/CORPUS_V3B_ACCEPTED.md",
+      "review": "not_reviewed",
+      "bytes": 289,
+      "kind": "documentation",
+      "sha256": "13767df146c9a75251a7c94abab1c3b3c34f75f5e6de6a63acde5d2e14cf9e0f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/data/corpus_v3_build_report.json",
+      "review": "not_reviewed",
+      "bytes": 399,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/corpus_v3_source_distribution.json",
+      "review": "not_reviewed",
+      "bytes": 197,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/corpus_v3b_final_parquet_proof.json",
+      "review": "not_reviewed",
+      "bytes": 283,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/corpus_v3b_source_distribution.json",
+      "review": "not_reviewed",
+      "bytes": 275,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/data_readiness_v2.json",
+      "review": "not_reviewed",
+      "bytes": 10000,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/readiness_v2.json",
+      "review": "not_reviewed",
+      "bytes": 20391,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/source_download_plan_v2.jsonl",
+      "review": "not_reviewed",
+      "bytes": 7209,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/v3b_mini_bewikibooks_accepted.jsonl",
+      "review": "not_reviewed",
+      "bytes": 12935,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/v3b_mini_bewikibooks_quarantine.jsonl",
+      "review": "not_reviewed",
+      "bytes": 6020,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/v3b_mini_bewikibooks_rejected.jsonl",
+      "review": "not_reviewed",
+      "bytes": 0,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/v3b_mini_bewikisource_accepted.jsonl",
+      "review": "not_reviewed",
+      "bytes": 13038,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/v3b_mini_bewikisource_quarantine.jsonl",
+      "review": "not_reviewed",
+      "bytes": 7243,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data/v3b_mini_bewikisource_rejected.jsonl",
+      "review": "not_reviewed",
+      "bytes": 5213,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data_foundry_v2/books_clean_v2_manifest_20260513T124955Z.jsonl",
+      "review": "not_reviewed",
+      "bytes": 0,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/data_foundry_v2/data_readiness_v2_20260513T124955Z.json",
+      "review": "not_reviewed",
+      "bytes": 10000,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/downloads/README.md",
+      "review": "not_reviewed",
+      "bytes": 537,
+      "kind": "documentation",
+      "sha256": "f54b02cdac5e76ae21c8ba90970e18a0ca62a68fd1bd51e52efbddfa9977ec07",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/downloads/download_plan_manifest.jsonl",
+      "review": "not_reviewed",
+      "bytes": 15673,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/downloads/download_status.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1981,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/downloads/download_v2_manifest.jsonl",
+      "review": "not_reviewed",
+      "bytes": 15913,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/downloads/download_v2_sha256.txt",
+      "review": "not_reviewed",
+      "bytes": 1980,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/downloads/download_v2_sha256_20260513T124223Z.txt",
+      "review": "not_reviewed",
+      "bytes": 1980,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/downloads/download_v2_sha256_20260513T124942Z.txt",
+      "review": "not_reviewed",
+      "bytes": 1849,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/downloads/download_v2_sha256_latest.txt",
+      "review": "not_reviewed",
+      "state": "symlink_or_outside_not_read"
+    },
+    {
+      "path": "reports/eval/BELKA_QUALITY_CONTROL.csv",
+      "review": "not_reviewed",
+      "bytes": 25275,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/eval/HOLDOUT_LEAKAGE_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 292,
+      "kind": "documentation",
+      "sha256": "478eb169413f97c2226295c6d625e16a86244d0ffe96e959babab9fe87f22596",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/eval/HOLDOUT_V1_REJECTED_DUE_TO_SFT_OVERLAP.md",
+      "review": "not_reviewed",
+      "bytes": 316,
+      "kind": "documentation",
+      "sha256": "3652a10ed61a3f913f60db8ec4375017b0b67c008be5fd00e90fe55ff46fe605",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/eval/QUALITY_CONTROL_XLSX_AUDIT.json",
+      "review": "not_reviewed",
+      "bytes": 2093,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/eval/QUALITY_CONTROL_XLSX_AUDIT.md",
+      "review": "not_reviewed",
+      "bytes": 1395,
+      "kind": "documentation",
+      "sha256": "0c9af54ca905a7c3c91cdff8097ca20e6c7ee4878ddd5d9fb282eb08d2a7c0a1",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/eval/holdout_leakage_report.json",
+      "review": "not_reviewed",
+      "bytes": 332,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/public/BELKA_PUBLIC_RELEASE_CLEANUP_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 10648,
+      "kind": "documentation",
+      "sha256": "067d32d8f27c20066bbb8b4a5adc8ae55f5655be4287d82adb3f1f0a6e26c224",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/DATA_PROVENANCE_SUMMARY.md",
+      "review": "not_reviewed",
+      "bytes": 2397,
+      "kind": "documentation",
+      "sha256": "25d913123bb4800ceb455af65eb7062e51ff885e1146d9e483213cb5ff0439d9",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/DECONTAMINATION_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 399,
+      "kind": "documentation",
+      "sha256": "23c85a8c080ce4a9e84b4c390b14846a359a6f97719f74e0e31c57df8d1a4984",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/EVALUATION_SUMMARY.md",
+      "review": "not_reviewed",
+      "bytes": 2960,
+      "kind": "documentation",
+      "sha256": "67882b5033c21e5e7102285281af51b342e3bee4d3b88caa2d1d193c313bfeff",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md",
+      "review": "not_reviewed",
+      "bytes": 1645,
+      "kind": "documentation",
+      "sha256": "f2750f43b50768599d781be9f956d72f15d4d6207900bbd89b21e6eadd519e3b",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/PROJECT_STATUS.md",
+      "review": "not_reviewed",
+      "bytes": 2056,
+      "kind": "documentation",
+      "sha256": "9ca394253028542ce60bf934302aaacfb181d53914d705061c74ef7a24ce704e",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/RELEASE_READINESS.md",
+      "review": "not_reviewed",
+      "bytes": 2074,
+      "kind": "documentation",
+      "sha256": "449ea55f61828cdab2dc906f8a44a97c10395e6dfcb7b61fd1ecba540e42e3fe",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/REPORTS_INDEX.md",
+      "review": "not_reviewed",
+      "bytes": 2844,
+      "kind": "documentation",
+      "sha256": "68ebf9b3a1727c30515edfcf9a82d75d45a063403439345ef07ef6a22d6af6d2",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/REPRODUCIBILITY_SUMMARY.md",
+      "review": "not_reviewed",
+      "bytes": 2042,
+      "kind": "documentation",
+      "sha256": "e79a230a6de7cb129b2c9b06b99e18ca0cc8ca762bbd91930977b8f4ef55bf8f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/SFT_VALIDATION_FIX_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 3636,
+      "kind": "documentation",
+      "sha256": "e3f1fcbd3bd5565e9d3cc6a7e49995ac50d9d036ae6628dafa98f8858e30fa3a",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/SOURCE_EXPANSION_BOARD.md",
+      "review": "not_reviewed",
+      "bytes": 6839,
+      "kind": "documentation",
+      "sha256": "e10f55b1788f5243a50cabcc891f54ad61b2e57e37c0acb7ef199ea501b9954f",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/SOURCE_EXPANSION_OWNER_DECISIONS.md",
+      "review": "not_reviewed",
+      "bytes": 3090,
+      "kind": "documentation",
+      "sha256": "2d1947534c4c858d4c01c34424680f5354940f9d286110a191b76c8d4dd8dc65",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/decontamination_report.json",
+      "review": "not_reviewed",
+      "bytes": 1501,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/public/maintenance/CHECKSUM_CLEANUP_AUDIT.md",
+      "review": "not_reviewed",
+      "bytes": 5967,
+      "kind": "documentation",
+      "sha256": "6b830787f813bcbb1bcc0440765cf739e4474cf1689019accfa32c3865894c07",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/maintenance/FINAL_MAIN_CLEANUP_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 4793,
+      "kind": "documentation",
+      "sha256": "3e3eda087decab898b2cc483db7e0aec3526c298508a55abdf2081a1eaabda59",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/maintenance/JUNK_CLEANUP_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 2415,
+      "kind": "documentation",
+      "sha256": "5da0d8859def75775f6635c8ba8b9f68a7d279f9ca8f55420e5f3140c4e714fc",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/public/source_expansion_board.json",
+      "review": "not_reviewed",
+      "bytes": 17574,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/ready_data_validation.txt",
+      "review": "not_reviewed",
+      "bytes": 29,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/release_candidates/belka_d12_sft_v8_rc1.json",
+      "review": "not_reviewed",
+      "bytes": 845,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/release_candidates/belka_d12_sft_v8_rc1_REVOKED_TOKENIZER_MISMATCH.md",
+      "review": "not_reviewed",
+      "bytes": 232,
+      "kind": "documentation",
+      "sha256": "47c498227f410f391f1c82f568c96719265f4475d9e440a0d5bb919b920dcb39",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/repo_integrity/REPO_INTEGRITY_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 2142,
+      "kind": "documentation",
+      "sha256": "f3c7a16a87b5f7a2696dda563a7309b14b2fce2fab74b0357a94becf7fb56a22",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/repo_integrity/nanochat_upstream_refresh_2026-08-16.md",
+      "review": "not_reviewed",
+      "bytes": 3337,
+      "kind": "documentation",
+      "sha256": "c38e8d276f550f98c421d03c8cbae87771f14d957113668bd4b7fb9cef0f0c6a",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/repo_integrity/repo_integrity_report.json",
+      "review": "not_reviewed",
+      "bytes": 3734,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v5_balanced_seed_report.json",
+      "review": "not_reviewed",
+      "bytes": 1081,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v5_leakage_report.json",
+      "review": "not_reviewed",
+      "bytes": 312,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v5_leakage_report.md",
+      "review": "not_reviewed",
+      "bytes": 198,
+      "kind": "documentation",
+      "sha256": "a20d9765bc8aa7804dfc6da563076636b9a99d0edfb73bff97adc6adb24ce925",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v6/SFT_V6_SMOKE_TEST.md",
+      "review": "not_reviewed",
+      "bytes": 1179,
+      "kind": "documentation",
+      "sha256": "ca2cdecd195e756e587a67782a50af74762e41d560c6329bfb9b4459ea59172c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v6_governed_seed_report.json",
+      "review": "not_reviewed",
+      "bytes": 415,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v6_leakage_report.json",
+      "review": "not_reviewed",
+      "bytes": 305,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v6_leakage_report.md",
+      "review": "not_reviewed",
+      "bytes": 200,
+      "kind": "documentation",
+      "sha256": "c6d55ee3fcc67440b0bf2e38c821af8f0ce1c5a66654b486baff915f37e519bc",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v6b/SFT_V6B_ACCEPTED_WITH_WARNINGS.md",
+      "review": "not_reviewed",
+      "bytes": 1183,
+      "kind": "documentation",
+      "sha256": "355720d22d9ec0e804fc1794662a99bb97ea60397bab1d28ee7f875ec6199e02",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v6b/SFT_V6B_SMOKE_TEST.md",
+      "review": "not_reviewed",
+      "bytes": 1192,
+      "kind": "documentation",
+      "sha256": "b3980ffb50b00749970dffa3b0bf1bc8ab4bae1f9ea0c22e804037a717ff1008",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v6b/sft_v6b_accepted_with_warnings.json",
+      "review": "not_reviewed",
+      "bytes": 871,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v7/SFT_V7_DATA_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 1084,
+      "kind": "documentation",
+      "sha256": "32ad57d76cc1c8fa0352932dbed849f495333b747b4f5ad493c05fcf208af0e5",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v7/SFT_V7_PARTIAL_72_DRAFT.md",
+      "review": "not_reviewed",
+      "bytes": 192,
+      "kind": "documentation",
+      "sha256": "e5ed5641b52dfdfeb3a556139ed886ce59856fb585ccdada715deeac8bfedf6b",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v7/SFT_V7_REJECTED_FOR_BEHAVIOR.md",
+      "review": "not_reviewed",
+      "bytes": 1094,
+      "kind": "documentation",
+      "sha256": "e0e63b136aeb8dd3f5005388ca80216f41d7837bdd51203c0ec6c24750e6c620",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v7/eval_belka_d12_sft_v7.json",
+      "review": "not_reviewed",
+      "bytes": 4180,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v7/fact_bank_for_chatgpt.jsonl",
+      "review": "not_reviewed",
+      "bytes": 622994,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v7/fact_bank_summary.md",
+      "review": "not_reviewed",
+      "bytes": 341,
+      "kind": "documentation",
+      "sha256": "77e89c0d7510bca57dc45646b2c1cabde4c0031a55ae0232723dc2175fc46ed1",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v7/sft_v7_data_report.json",
+      "review": "not_reviewed",
+      "bytes": 1298,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v7/sft_v7_eval_metadata.jsonl",
+      "review": "not_reviewed",
+      "bytes": 28990,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v7/sft_v7_failure_labels.jsonl",
+      "review": "not_reviewed",
+      "bytes": 4294,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v7/sft_v7_train_metadata.jsonl",
+      "review": "not_reviewed",
+      "bytes": 105005,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v7/sft_v7_val_metadata.jsonl",
+      "review": "not_reviewed",
+      "bytes": 20981,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v8/SFT_V8_ACCEPTED_WITH_WARNINGS.md",
+      "review": "not_reviewed",
+      "bytes": 1210,
+      "kind": "documentation",
+      "sha256": "f5bd3c5a64ab7e0b1864c7304ef43722c066183a83e5bb697c62e4b18c3c0820",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v8/SFT_V8_DATA_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 1827,
+      "kind": "documentation",
+      "sha256": "ef4d9813fbd694bfc66d0731305fa63b8af5a077b30bb5ff15a2dc6ea4929ba0",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v8/SFT_V8_DATA_SPEC.md",
+      "review": "not_reviewed",
+      "bytes": 1891,
+      "kind": "documentation",
+      "sha256": "db487e535c52bd9896c1d7b8d1179a5d6e78e6fd44e55ddb593b56a09daf056c",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v8/SFT_V8_FIXED_EVAL_REPORT.md",
+      "review": "not_reviewed",
+      "bytes": 739,
+      "kind": "documentation",
+      "sha256": "78ebbbde808becaf389315d05ce4eaadb7d56471e4f13c3a5c20de320fdce1d5",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v8/SFT_V8_TRAINING_BLOCKED_UNTIL_DATA_PASS.md",
+      "review": "not_reviewed",
+      "bytes": 341,
+      "kind": "documentation",
+      "sha256": "381b7e387636ea93c4e82c9a1b7fa21b942a9133781b2eca20f9e15ebe82c6f4",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/sft_v8/sft_v7_failure_labels_used.jsonl",
+      "review": "not_reviewed",
+      "bytes": 4294,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v8/sft_v8_accepted_with_warnings.json",
+      "review": "not_reviewed",
+      "bytes": 845,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v8/sft_v8_data_report.json",
+      "review": "not_reviewed",
+      "bytes": 2229,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v8/sft_v8_eval_metadata.jsonl",
+      "review": "not_reviewed",
+      "bytes": 16692,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v8/sft_v8_train_metadata.jsonl",
+      "review": "not_reviewed",
+      "bytes": 61696,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/sft_v8/sft_v8_val_metadata.jsonl",
+      "review": "not_reviewed",
+      "bytes": 10888,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/source_filter_report.json",
+      "review": "not_reviewed",
+      "bytes": 3948,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/state/BELKA_CANONICAL_STATE.md",
+      "review": "not_reviewed",
+      "bytes": 2645,
+      "kind": "documentation",
+      "sha256": "2943f36134c036aa90704bdcb11e9e51543684e6a5ebf1f3e7d034242047b7a0",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/state/belka_canonical_state.json",
+      "review": "not_reviewed",
+      "bytes": 3761,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/strategy/BASE_RECOVERY_PLAN.md",
+      "review": "not_reviewed",
+      "bytes": 1778,
+      "kind": "documentation",
+      "sha256": "01284bc9c95e37c5b611cd5ef82681cbc4541d6d4bebe0815b2f12544a124a3e",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/strategy/CORPUS_EXPANSION_200M_SUMMARY.md",
+      "review": "not_reviewed",
+      "bytes": 327,
+      "kind": "documentation",
+      "sha256": "317b334f6f6844310ba6a4b0cb41604f8fbabba3b8a97623061ea9d2c1973377",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/strategy/CORPUS_EXPANSION_200M_TOKENS_PLAN.md",
+      "review": "not_reviewed",
+      "bytes": 626,
+      "kind": "documentation",
+      "sha256": "2846096daa537ab2e6d4069561c05647ff6831f9bfa55e844fa4a72f35559c20",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/strategy/H200_MAX_QUALITY_PLAN.md",
+      "review": "not_reviewed",
+      "bytes": 4172,
+      "kind": "documentation",
+      "sha256": "0cc13a2d0ebae777807ed0df0d85478eb3aed342a9f43ad605554f45d41a8b04",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/strategy/d8_base_v3_plan.json",
+      "review": "not_reviewed",
+      "bytes": 1073,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "reports/tokenizer_v2/TOKENIZER_OVERWRITE_INCIDENT.md",
+      "review": "not_reviewed",
+      "bytes": 360,
+      "kind": "documentation",
+      "sha256": "d8c801c1911e78a9fb7c3209ff2c124942836a042f44a64569ba34fad358fc24",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "reports/tokenizer_v2/tokenizer_v2_d8.sha256",
+      "review": "not_reviewed",
+      "bytes": 121,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "requirements_pack.txt",
+      "review": "not_reviewed",
+      "bytes": 257,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/identity_conversations.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 224340,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/identity_conversations.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 11491,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/identity_conversations_v3_diverse_val.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 47437,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/identity_conversations_val.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 87022,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/identity_conversations_val.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 1700,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 43144,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 16634,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft_val.be.extra.jsonl",
+      "review": "not_reviewed",
+      "bytes": 10008,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/meetmesh_domain_sft_val.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 2795,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v5_balanced_train.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 834069,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v5_balanced_val.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 137230,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v6_governed_balanced_train.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 632348,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v6_governed_balanced_val.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 103078,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v7_train.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 493490,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v7_val.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 112650,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v8_train.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 166025,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "seed_sft/sft_v8_val.be.jsonl",
+      "review": "not_reviewed",
+      "bytes": 49274,
+      "kind": "data_or_other",
+      "state": "metadata_only"
+    },
+    {
+      "path": "tests/test_belka_disable_generic_eval.py",
+      "review": "not_reviewed",
+      "bytes": 1601,
+      "kind": "code",
+      "sha256": "0d2f96477389e081f0d65d9aa751ca054dc98ca2f0667cc6a448d2ac5c978f72",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_chat_sft_has_disable_flag",
+        "test_owner_sft_scripts_export_disable",
+        "test_no_words_alpha_download_in_owner_scripts"
+      ]
+    },
+    {
+      "path": "tests/test_corpus_bundle.py",
+      "review": "not_reviewed",
+      "bytes": 3116,
+      "kind": "code",
+      "sha256": "10e7413266fc6de80917692af8068d9971eb101a90811fb923123d2454fb9ab7",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "_manifest",
+        "test_bundle_present_with_manifest_and_parts",
+        "test_bundle_is_full_corpus_no_license_column",
+        "test_no_license_files_or_audit_tool_remain",
+        "test_bundle_part_checksums_match_manifest",
+        "test_tokenizer_in_bundle_matches_canonical_sha",
+        "test_sft_mix_uses_v8_current_dataset",
+        "test_restore_and_build_tools_exist"
+      ]
+    },
+    {
+      "path": "tests/test_h200_policy.py",
+      "review": "not_reviewed",
+      "bytes": 5032,
+      "kind": "code",
+      "sha256": "c4e289c964786a4b9e79e12ed24496de3cadf1f4bfd60fa00abcde8a8a1998b6",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_path_policy_dtype_is_auto_not_fp16",
+        "test_h200_runbook_uses_bf16_and_owner_gate",
+        "test_legacy_3070_scripts_keep_explicit_fp16",
+        "test_installer_pins_upstream_and_copies_fork_files",
+        "test_fork_files_match_workspace_when_present",
+        "test_h200_profiles_yaml_no_fp16_dtype",
+        "test_h200_runbook_supports_multi_gpu_ddp",
+        "test_belka_branding_is_applied_by_patcher",
+        "test_web_ui_and_logo_are_belka_branded"
+      ]
+    },
+    {
+      "path": "tests/test_jsonl_schema.py",
+      "review": "not_reviewed",
+      "bytes": 410,
+      "kind": "code",
+      "sha256": "7a8a95876b66398d569be2fb91d3d1c8141c28b4239ad92a55e045f501044eb6",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_seed_sft_jsonl_validates"
+      ]
+    },
+    {
+      "path": "tests/test_language_filter.py",
+      "review": "not_reviewed",
+      "bytes": 1013,
+      "kind": "code",
+      "sha256": "2189914dea7bd87c89826209b30aa947c37022a3812aa06201456bfdc2bd7424",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_accepts_belarusian_text",
+        "test_rejects_english_dominant_text",
+        "test_russian_without_belarusian_markers_not_accepted"
+      ]
+    },
+    {
+      "path": "tests/test_owner_entrypoint_static.py",
+      "review": "not_reviewed",
+      "bytes": 4279,
+      "kind": "code",
+      "sha256": "461cb1992399098d8499052bed0c09002417fba65bd24f3e3d6592a7e06f07c8",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_owner_sh_exists",
+        "test_owner_sh_has_set_euo_pipefail",
+        "test_owner_sh_contains_required_commands",
+        "test_owner_sh_does_not_contain_training_commands",
+        "test_cleanup_apply_requires_approval",
+        "test_training_requires_approval",
+        "test_integrity_calls_script_44",
+        "test_qc_calls_required_scripts",
+        "test_status_reads_canonical_state",
+        "test_contains_training_allowed_no",
+        "test_contains_sft_allowed_no",
+        "test_help_command_exists",
+        "test_owner_sh_bash_syntax",
+        "test_owner_sh_referenced_scripts_exist"
+      ]
+    },
+    {
+      "path": "tests/test_patchers.py",
+      "review": "not_reviewed",
+      "bytes": 2245,
+      "kind": "code",
+      "sha256": "eeeaa4a6510fd5e76e9a985b57a09970d3d78bec9bd896b668499f614e294270",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_sft_patcher_creates_variant",
+        "test_dtype_patcher_creates_markers"
+      ]
+    },
+    {
+      "path": "tests/test_pipeline_audit_regressions.py",
+      "review": "not_reviewed",
+      "bytes": 19652,
+      "kind": "code",
+      "sha256": "ce9c2eacb29c7f31fac8929cbf3787b0b9f0eaab2b056c437c55f8658b97734d",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "load_module",
+        "clean_env",
+        "run",
+        "copy_paths",
+        "tree",
+        "test_standalone_root_from_another_working_directory",
+        "test_guard_is_read_only",
+        "test_reject_every_external_path_before_creating_any_directory",
+        "test_path_boundary_edge_cases",
+        "test_installer_planning_does_not_create_anything",
+        "test_installer_checks_cli_paths_before_side_effects",
+        "test_installer_missing_option_value_is_actionable",
+        "fake_executable",
+        "installer_fixture",
+        "test_installer_pip_fallback_uses_defined_python",
+        "test_installer_uv_cpu_selects_cpu_extra",
+        "test_installer_does_not_hide_gpu_install_failure",
+        "split_command",
+        "test_split_rejects_invalid_ratios_before_truncation",
+        "test_split_rejects_aliases_before_truncation",
+        "test_split_preserves_legacy_hash_assignment",
+        "test_split_preserves_all_records_and_final_newline",
+        "customjson",
+        "test_customjson_missing_file_raises_without_download_advice",
+        "test_customjson_rejects_empty_dataset",
+        "test_customjson_schema_errors_have_file_and_line",
+        "test_customjson_invalid_json_has_location",
+        "test_customjson_valid_dataset_preserves_task_api",
+        "test_customjson_validation_survives_python_optimized_mode",
+        "test_ci_does_not_reference_retired_audit",
+        "corpus_builder_preflight",
+        "corpus_arguments",
+        "test_corpus_invalid_settings_preserve_corpus_and_reports",
+        "test_corpus_insufficient_data_preserves_previous_shards",
+        "test_quickstart_status_matches_mock_training_path",
+        "test_contribution_document_does_not_overclaim_decontamination"
+      ]
+    },
+    {
+      "path": "tests/test_smoke_scripts_static.py",
+      "review": "not_reviewed",
+      "bytes": 1691,
+      "kind": "code",
+      "sha256": "6e1f587860e278a0b4753dad1a778082513c5aed256949f840a5048bd96880e0",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_shell_scripts_have_strict_mode_and_no_absolute_user_path",
+        "test_wandb_disabled_via_pack_paths_policy"
+      ]
+    },
+    {
+      "path": "tests/test_tokenizer_isolation.py",
+      "review": "not_reviewed",
+      "bytes": 2268,
+      "kind": "code",
+      "sha256": "2c3934d32163bc838a871c7584207e5d0b25d04ba5ca64f26e1b6b585897efd9",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "test_d8_scripts_use_d8_base_dir",
+        "test_d12_current_best_revoked",
+        "test_d8_workspace_exists",
+        "test_tokenizer_v2_script_has_guard"
+      ]
+    },
+    {
+      "path": "tools/README.md",
+      "review": "not_reviewed",
+      "bytes": 1492,
+      "kind": "documentation",
+      "sha256": "e4501de27972c2e3382f651f6dd143448de881eced5ffd0805ff5b095f400094",
+      "state": "hashed_not_reviewed"
+    },
+    {
+      "path": "tools/agent_governor.py",
+      "review": "not_reviewed",
+      "bytes": 7572,
+      "kind": "code",
+      "sha256": "47ee6e4a59ab5da1900cd75a3c89ff9d29e974248524bd68cfc1c21398ec780f",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "read_yaml",
+        "run",
+        "is_inside",
+        "grep_code_forbidden",
+        "parse_peak_vram_from_logs",
+        "find_downgrade_evidence",
+        "preflight",
+        "training_plan",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/agent_training_guard.py",
+      "review": "not_reviewed",
+      "bytes": 2588,
+      "kind": "code",
+      "sha256": "f8b3eeededb814ceedf9b1af7ba32da8e9df16849bb5e5800f00492fa7a8a8ca",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "classify_phase",
+        "scan_command",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/audit_corpus_manifest.py",
+      "review": "not_reviewed",
+      "bytes": 3489,
+      "kind": "code",
+      "sha256": "f0add7fa1d4b80f6182d5397466076eeaf40ac2c2db4cbfcd43dd5c99c18acca",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "first_present",
+        "iter_records",
+        "resolve_paths",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/audit_corpus_outputs.py",
+      "review": "not_reviewed",
+      "bytes": 6963,
+      "kind": "code",
+      "sha256": "659523f8c9cbf3a5a46c026c18e88eab34f84aea2d4c4ef5be256f4443b194d4",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/audit_quality_control_workbook.py",
+      "review": "not_reviewed",
+      "bytes": 6987,
+      "kind": "code",
+      "sha256": "889d44079a5defaef309c316c56f15f04b84209d72b56651a26d5d389081a3a9",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/audit_repo_integrity.py",
+      "review": "not_reviewed",
+      "bytes": 6209,
+      "kind": "code",
+      "sha256": "55df4bf0449c00212a5394f98db5bfad245a36ee28465bd7bcfdffeed7b34bb9",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "exists",
+        "sha256_hex",
+        "count_lines",
+        "dir_file_count",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/audit_sft_leakage.py",
+      "review": "not_reviewed",
+      "bytes": 3975,
+      "kind": "code",
+      "sha256": "4172f9cc63418c69e9aaf37ae455de9d2efb5397305c1477f04a14b7ef6bad57",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "load_messages",
+        "ngrams",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/audit_training_provenance.py",
+      "review": "not_reviewed",
+      "bytes": 5298,
+      "kind": "code",
+      "sha256": "8dbdb98bea18563dfc5699f499ff286647e7648fe6079fca4b85962db244eb20",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "sha256_file",
+        "find_checkpoints",
+        "find_run_manifests",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_belka_mixture.py",
+      "review": "not_reviewed",
+      "bytes": 2100,
+      "kind": "code",
+      "sha256": "02976a71dfb95e6b5b708a8da67f1887c12e037999a9f5abbc0aeabb5c8c45c2",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_books_clean_v2.py",
+      "review": "not_reviewed",
+      "bytes": 5545,
+      "kind": "code",
+      "sha256": "90961908f81ee43985ce0c790b2516be609b011738f5596cb68d44ee5392d71a",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "score_be",
+        "try_decode",
+        "clean_text",
+        "chunks",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_contrastive_sft.py",
+      "review": "not_reviewed",
+      "bytes": 1028,
+      "kind": "code",
+      "sha256": "9bff6eff947e688f4dff84b8fbffa2d6fcdf81f09fbcbeaed5cc095b0b257bc2",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_corpus_mixture_plan.py",
+      "review": "not_reviewed",
+      "bytes": 4542,
+      "kind": "code",
+      "sha256": "40b6ecc36a67d8cd27de89be8dbeceee64ae84bee93be4a13f558c14f66c4d41",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "load_board",
+        "usable",
+        "plan",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_open_corpus_bundle.py",
+      "review": "not_reviewed",
+      "bytes": 6740,
+      "kind": "code",
+      "sha256": "6c185dc3b4aab88996c53b1544614d5658f92c8cbf9b53e9f0a7d10c24a385af",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "sha256_file",
+        "load_split",
+        "write_split_parquet",
+        "add_bytes_to_tar",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_sft_mix.py",
+      "review": "not_reviewed",
+      "bytes": 2405,
+      "kind": "code",
+      "sha256": "3ee01e7d2423ae356113c4ff87538c596fdb8d3c6bdd730ac519c649ac97ea03",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "read_rows",
+        "write_rows",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_sft_v3_dataset.py",
+      "review": "not_reviewed",
+      "bytes": 21152,
+      "kind": "code",
+      "sha256": "f492508ebeac25432b1000451e0c27199ca419fb928add8997711e8b812eb374",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "build_entry",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/build_source_expansion_board.py",
+      "review": "not_reviewed",
+      "bytes": 4862,
+      "kind": "code",
+      "sha256": "d61508591d7deab3cedc2a5996acb76ecf35b0d03e55fdd18ae8d7022903dd18",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "_load_yaml",
+        "_available",
+        "build_rows",
+        "next_step",
+        "render_md",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/check_eval_leakage.py",
+      "review": "not_reviewed",
+      "bytes": 6170,
+      "kind": "code",
+      "sha256": "bb4c2ec24a4cbb91c4b52edd30c682351b7553286d0c12e92a216df3a106a0fd",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "load_prompts",
+        "exact_overlap",
+        "build_5gram_set",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/check_train_eval_decontamination.py",
+      "review": "not_reviewed",
+      "bytes": 5233,
+      "kind": "code",
+      "sha256": "5c1968f1315b3b1ef1cb3b54eeea15a9b816b1e5c925777de3e9fbb129c34d20",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "expand",
+        "record_text",
+        "iter_texts",
+        "norm",
+        "ngrams",
+        "build_train_index",
+        "check_eval",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/count_corpus_tokens.py",
+      "review": "not_reviewed",
+      "bytes": 2656,
+      "kind": "code",
+      "sha256": "311fa1ca23a1759560ac9acd22ad78beda493a625fd832d301ef707f7ae86757",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/create_quality_control_workbook.py",
+      "review": "not_reviewed",
+      "bytes": 17637,
+      "kind": "code",
+      "sha256": "f0414eb9c3aa22acaa63a68496d2354d098dad56082d2effda6dd305ad7fb806",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "style_header",
+        "style_data",
+        "load_json",
+        "load_jsonl",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/download_belarusian_sources.py",
+      "review": "not_reviewed",
+      "bytes": 5067,
+      "kind": "code",
+      "sha256": "b0df94b0e24b8a686edadec3e9b8223cd176ce4bfde8564472a8f61d45a5ecac",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "inside",
+        "http_download",
+        "write_jsonl",
+        "extract_belacorpus",
+        "extract_ud",
+        "extract_tatoeba",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/download_public_be_sources.py",
+      "review": "not_reviewed",
+      "bytes": 5332,
+      "kind": "code",
+      "sha256": "777735b80f0ca98f67d83e278118afc7a807ee312ef7574b34fa1c0e31f87430",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "clean_wikitext",
+        "download",
+        "iter_pages_bz2",
+        "extract",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/download_wikimedia_be.py",
+      "review": "not_reviewed",
+      "bytes": 5007,
+      "kind": "code",
+      "sha256": "9795d5be1cff566d4d6110c0ac292aaa7d7bc50278bf8f4aa1061beffea3b15c",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "inside",
+        "sha256_file",
+        "download",
+        "clean",
+        "extract",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/eval_tokenizer_fertility.py",
+      "review": "not_reviewed",
+      "bytes": 4505,
+      "kind": "code",
+      "sha256": "139750d4fbedeba822f37f121d41792e735b3f513425185f8d9225308d621aa2",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "eval_tokenizer",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/filter_sources_to_nanochat_parquet.py",
+      "review": "not_reviewed",
+      "bytes": 18965,
+      "kind": "code",
+      "sha256": "2b29c1888d3e5e07b900b3f8fbe57c7d7e57a64c010aafbf0d4b0c238dbe350a",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "detect_source",
+        "score_be",
+        "SimHash",
+        "iter_jsonl",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/find_latest_checkpoint.py",
+      "review": "not_reviewed",
+      "bytes": 2116,
+      "kind": "code",
+      "sha256": "cfb40519c32619349dda101d399b156acbc257fdf849e29084add1b99287923a",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "find_largest_model",
+        "find_last_step",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/fix_books_encoding.py",
+      "review": "not_reviewed",
+      "bytes": 3759,
+      "kind": "code",
+      "sha256": "16d97e5e0414d54964f469b808b76976c69bac24ff832319791352025751d390",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "score_text",
+        "decode_best",
+        "clean_text",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/generate_language_lock_pairs.py",
+      "review": "not_reviewed",
+      "bytes": 3222,
+      "kind": "code",
+      "sha256": "09266f0097f4ad5fd1723b5ac3d563343f7631097519f1d87c4d37bb0585d849",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/generate_ready_belarusian_seed_data.py",
+      "review": "not_reviewed",
+      "bytes": 11892,
+      "kind": "code",
+      "sha256": "0ef36c0d1c3c5a7357f7a1a8a42f071c104c8ed2591bfc1a1e7ddd4ade1c9257",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "paragraph",
+        "write_jsonl",
+        "conv",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/generate_sft_v5_balanced_seed.py",
+      "review": "not_reviewed",
+      "bytes": 25828,
+      "kind": "code",
+      "sha256": "34efdc773a27f93b184626bc6f0bfcb7c718495122d889f0ef8c22e04e687dbd",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "rec",
+        "identity_answer",
+        "ru_en_answer",
+        "unknown_answer",
+        "safety_answer",
+        "make_extra",
+        "fill_split",
+        "write_jsonl"
+      ]
+    },
+    {
+      "path": "tools/generate_sft_v6_governed_seed.py",
+      "review": "not_reviewed",
+      "bytes": 14077,
+      "kind": "code",
+      "sha256": "14c4043a44a8c64ff872b676a20719b2934aa85d47c0da2d4f3e77611f213a4d",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "variants",
+        "record",
+        "build",
+        "write_jsonl",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/generate_sft_v7_diverse.py",
+      "review": "not_reviewed",
+      "bytes": 32289,
+      "kind": "code",
+      "sha256": "98fb58427c446ffab156d3e870e500eafd1bd65a5acba4de8b1850856d1a32c6",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "add",
+        "write_jsonl",
+        "fill",
+        "fill_to_target"
+      ]
+    },
+    {
+      "path": "tools/generate_sft_v7_final.py",
+      "review": "not_reviewed",
+      "bytes": 21118,
+      "kind": "code",
+      "sha256": "cd1000bcbf16e2fbf796e3342edf38af314906a29cbdc74a3d479bfbcedf74fa",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "add",
+        "w",
+        "fill"
+      ]
+    },
+    {
+      "path": "tools/glue_leakage_guard.py",
+      "review": "not_reviewed",
+      "bytes": 4853,
+      "kind": "code",
+      "sha256": "affb605e732350e7e69a1c382974b6d9897a18caace7db5c36a1f0e6fc56ee40",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "check_parquet",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/hf_stream_belarusian_sources.py",
+      "review": "not_reviewed",
+      "bytes": 3419,
+      "kind": "code",
+      "sha256": "49d7c425cd483ff78f9f46f5626e608e3eda8192294316c14819da087833fe43",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "flatten",
+        "inside",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/restore_corpus_bundle.py",
+      "review": "not_reviewed",
+      "bytes": 4813,
+      "kind": "code",
+      "sha256": "2ee2d0ce1c1b94aa1e6e489ae98a86500c7818b8021e8efc22a19d738502064c",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "sha256_file",
+        "iter_parts",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/run_belarusianglue_eval.py",
+      "review": "not_reviewed",
+      "bytes": 2142,
+      "kind": "code",
+      "sha256": "357f8bce141333b099e7316160c9f16129dab3b78e440c1a8bb46ea19adb58ef",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/run_belka_eval_suite.py",
+      "review": "not_reviewed",
+      "bytes": 3698,
+      "kind": "code",
+      "sha256": "d742081360b8be3fc476929e8429a9a5b9e329cb1b850619df031065df192e1b",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/score_belka_generations.py",
+      "review": "not_reviewed",
+      "bytes": 4001,
+      "kind": "code",
+      "sha256": "cddd92be8f489bb7e9bfdfa554c1648e78cb4c2976258d1305531f609fee865d",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "score",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/source_urls_emit_curl.py",
+      "review": "not_reviewed",
+      "bytes": 1832,
+      "kind": "code",
+      "sha256": "6adaec20ba29ad2f18fdf6dc183e75ef251fd073a9670a42733b43f4fddb140c",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/train_tokenizer_ablation.py",
+      "review": "not_reviewed",
+      "bytes": 2857,
+      "kind": "code",
+      "sha256": "452b12abb8d0578d774ed7bef5841cc7b398a64427edc1b260273d8f73d0265a",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    },
+    {
+      "path": "tools/validate_data_readiness_v2.py",
+      "review": "not_reviewed",
+      "bytes": 1819,
+      "kind": "code",
+      "sha256": "4aa4f8672d7a815417ac65930b8d4158357502187780fabdc5a9f350b08234cc",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "count_jsonl",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/validate_public_release.py",
+      "review": "not_reviewed",
+      "bytes": 4108,
+      "kind": "code",
+      "sha256": "52137caa0819edb5de4afd1ad0f5475fd2a7dbd5d1b5108230bda63db04c0706",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "tracked_files",
+        "md_links",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/validate_ready_and_sources.py",
+      "review": "not_reviewed",
+      "bytes": 1569,
+      "kind": "code",
+      "sha256": "d243955e7d291c2a36a05ce0472321d8c6afac5986f7182daf614644374336fa",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "be_score",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/validate_ready_data.py",
+      "review": "not_reviewed",
+      "bytes": 3218,
+      "kind": "code",
+      "sha256": "9bd24ead88c382dc151a3abf6c9a0ee002d43dd13b398bf880c2b49cad9686d5",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "score_text",
+        "iter_jsonl",
+        "text_from_row",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/validate_sft_jsonl.py",
+      "review": "not_reviewed",
+      "bytes": 6115,
+      "kind": "code",
+      "sha256": "472a1656a1cad5ec480270e8995f6d3c94fa19fad5ea32658533ad0837ae7a4a",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "row_messages",
+        "validate_file",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/validate_sft_v7.py",
+      "review": "not_reviewed",
+      "bytes": 970,
+      "kind": "code",
+      "sha256": "47b59f7e6b408e7513d1e285f191cba39010736cb8ee89a0a7a1c44fa8360986",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": []
+    },
+    {
+      "path": "tools/validate_sft_v8.py",
+      "review": "not_reviewed",
+      "bytes": 4572,
+      "kind": "code",
+      "sha256": "f3cab639d14125a15cb76490db1bdb2e2953f37172dd6ad1c3d034d185d15bc4",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "load_jsonl",
+        "load_meta",
+        "assert_raw_conversations",
+        "norm",
+        "first_words",
+        "main"
+      ]
+    },
+    {
+      "path": "tools/write_training_run_manifest.py",
+      "review": "not_reviewed",
+      "bytes": 1911,
+      "kind": "code",
+      "sha256": "13089bb1687cb069ea2b3da8f0441d5177e610ab0fa268b70c5c05d1c8137f60",
+      "state": "hashed_not_reviewed",
+      "top_level_symbols": [
+        "main"
+      ]
+    }
+  ],
+  "warning": "Inventory/AST parsing does not mean code was audited. Corpus contents were not opened."
+}

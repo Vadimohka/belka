@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 cd "$PACK_DIR"
 PHASE="prepare-and-plan"
 while [[ $# -gt 0 ]]; do

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 cd "$PACK_DIR"
 mkdir -p reports/owner_run_analysis dist
 TS="$(date -u +%Y%m%dT%H%M%SZ)"

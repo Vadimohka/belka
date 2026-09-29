@@ -13,6 +13,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import math
 import random
 import sys
 from dataclasses import asdict, dataclass
@@ -143,6 +144,14 @@ def prepare(
     seed: int,
     allow_short: bool,
 ) -> dict:
+    # Validate before any output or report can be removed or overwritten.
+    if not math.isfinite(val_ratio) or not 0.0 < val_ratio < 1.0:
+        raise ValueError("val_ratio must be finite and strictly between 0 and 1")
+    for name, value in (("train_shard_docs", train_shard_docs), ("val_shard_docs", val_shard_docs)):
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise ValueError(f"{name} must be a positive integer")
+    if min_chars < 0:
+        raise ValueError("min_chars must be nonnegative")
     output_dir.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
     for old in ["accepted.jsonl", "quarantine.jsonl", "rejected.jsonl", "duplicates.jsonl"]:
@@ -181,6 +190,11 @@ def prepare(
         stats.kept += 1
         accepted.append((text, {"source": source, "meta": meta}, asdict(det)))
         write_jsonl(report_dir / "accepted.jsonl", {"text": text, "source": source, "meta": meta, "detection": asdict(det)})
+
+    # An unsuccessful rebuild must not destroy the previous usable corpus.
+    # This guard does not make the later multi-file write crash-atomic.
+    if len(accepted) < 2:
+        raise ValueError("At least two accepted unique documents are required for nonempty train/val splits; previous parquet shards are unchanged")
 
     rng = random.Random(seed)
     rng.shuffle(accepted)

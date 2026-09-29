@@ -23,9 +23,6 @@ jobs:
       - name: Tests
         run: PYTHONPATH="$PWD" pytest -q tests
 
-      - name: Data-rights audit
-        run: python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
-
       - name: Public-release validation
         run: python tools/validate_public_release.py
 

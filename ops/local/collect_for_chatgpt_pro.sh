@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "$PACK_DIR/ops/local/pack_paths.sh"
 mkdir -p "$DIST_DIR" "$REPORT_DIR/context"
 stamp="$(date +%Y%m%d_%H%M%S)"

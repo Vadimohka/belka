@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "$PACK_DIR/ops/local/pack_paths.sh"
 # Legacy 8GB profile: keep fp16 even though the repo default is now auto-detect.
 export NANOCHAT_DTYPE="${NANOCHAT_DTYPE:-float16}"

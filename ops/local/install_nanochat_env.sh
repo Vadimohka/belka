@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
-source "$PACK_DIR/ops/local/pack_paths.sh"
-bash "$PACK_DIR/ops/local/repo_guard.sh"
+PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Pinned upstream commit: keep in sync with .workspace/nanochat on refresh
 # (see reports/repo_integrity/nanochat_upstream_refresh_*.md).
-NANOCHAT_GIT_REF="${NANOCHAT_GIT_REF:-92d63d4}"
+NANOCHAT_GIT_REF="${NANOCHAT_GIT_REF:-92d63d4e8bb4df75c3b71618f31ddde2378b2bcd}"
 NANOCHAT_GIT_URL="${NANOCHAT_GIT_URL:-https://github.com/karpathy/nanochat.git}"
 DRY_RUN=0
 SKIP_GIT_PULL=0
@@ -33,11 +31,18 @@ Options:
 EOF
 }
 
+require_value() {
+  if [[ $# -lt 2 || -z "${2:-}" || "${2:-}" == --* ]]; then
+    printf 'ERROR: %s requires a value\n' "$1" >&2
+    exit 2
+  fi
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --nanochat-dir) NANOCHAT_DIR="$2"; shift 2 ;;
-    --git-ref) NANOCHAT_GIT_REF="$2"; shift 2 ;;
-    --base-dir) export NANOCHAT_BASE_DIR="$2"; shift 2 ;;
+    --nanochat-dir) require_value "$@"; export NANOCHAT_DIR="$2"; shift 2 ;;
+    --git-ref) require_value "$@"; export NANOCHAT_GIT_REF="$2"; shift 2 ;;
+    --base-dir) require_value "$@"; export NANOCHAT_BASE_DIR="$2"; shift 2 ;;
     --skip-git-pull) SKIP_GIT_PULL=1; shift ;;
     --init-submodules) INIT_SUBMODULES=1; shift ;;
     --skip-rust) SKIP_RUST=1; shift ;;
@@ -49,7 +54,18 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-export PATH="$HOME/.ops/local/bin:$PATH"
+# Parse overrides first, then validate them without creating directories.
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
+if [[ "$DRY_RUN" == 1 ]]; then
+  echo "DRY-RUN: validated repository-local paths; no directories or environment changes written."
+  echo "DRY-RUN: nanochat=$NANOCHAT_DIR ref=$NANOCHAT_GIT_REF cpu=$CPU_ONLY"
+  echo "DRY-RUN: installation and imports are not validated by this planning mode."
+  exit 0
+fi
+BELKA_PATHS_CREATE=1 source "$PACK_DIR/ops/local/pack_paths.sh"
+bash "$PACK_DIR/ops/local/repo_guard.sh"
+PYTHON="$NANOCHAT_DIR/.venv/bin/python"
+export PATH="$HOME/.local/bin:$PATH"
 
 run() {
   echo "+ $*"
@@ -147,13 +163,10 @@ fi
 if [[ -f pyproject.toml ]]; then
   if [[ "$USE_UV" == "1" ]]; then
     if [[ "$CPU_ONLY" == "1" ]]; then
-      run uv sync
+      run uv sync --extra cpu
     else
-      if [[ "$DRY_RUN" == "1" ]]; then
-        echo "+ uv sync --extra gpu || uv sync"
-      else
-        uv sync --extra gpu || uv sync
-      fi
+      # Do not silently change the compute backend after a failed GPU install.
+      run uv sync --extra gpu
     fi
   else
     echo "Installing nanochat dependencies via pip (no uv)."
@@ -165,7 +178,6 @@ if [[ -f pyproject.toml ]]; then
   fi
 fi
 
-PYTHON="$NANOCHAT_DIR/.venv/bin/python"
 if [[ "$DRY_RUN" != "1" ]]; then
   "$PYTHON" -m ensurepip --upgrade || true
   "$PYTHON" -m pip install --upgrade pip setuptools wheel
