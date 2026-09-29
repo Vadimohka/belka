@@ -1,0 +1,65 @@
+name: Runtime contracts
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  source-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/checkout@v4
+        with:
+          repository: karpathy/nanochat
+          ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
+          path: .workspace/nanochat
+          persist-credentials: false
+      - name: Archive tracked text sources only
+        run: |
+          python - <<'PY'
+          import hashlib, json, subprocess, zipfile
+          from pathlib import Path
+          root = Path.cwd()
+          out = root / "reports/runtime_contracts"
+          out.mkdir(parents=True, exist_ok=True)
+          inventory = {}
+          allowed = {'.py', '.sh', '.md', '.json', '.jsonl', '.yaml', '.yml', '.env', '.txt', '.toml', '.html', '.svg', '.ini', '.cff'}
+          with zipfile.ZipFile(out / 'source_snapshot.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+              for name, repo in [('belka', root), ('nanochat', root / '.workspace/nanochat')]:
+                  sha = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
+                  files = []
+                  paths = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '-z']).split(b'\0')
+                  for raw in paths:
+                      if not raw:
+                          continue
+                      rel = Path(raw.decode('utf-8'))
+                      path = repo / rel
+                      if path.is_symlink() or not path.is_file() or path.stat().st_size > 4 * 1024 * 1024:
+                          continue
+                      if rel.suffix not in allowed and str(rel) not in ('LICENSE', '.gitignore'):
+                          continue
+                      data = path.read_bytes()
+                      try:
+                          data.decode('utf-8')
+                      except UnicodeError:
+                          continue
+                      archive.writestr(name + '/' + rel.as_posix(), data)
+                      files.append({'path': rel.as_posix(), 'sha256': hashlib.sha256(data).hexdigest()})
+                  inventory[name] = {'commit': sha, 'files': files}
+              archive.writestr('SOURCE_MANIFEST.json', json.dumps(inventory, indent=2))
+          print(json.dumps({key: {'commit': value['commit'], 'text_files': len(value['files'])} for key, value in inventory.items()}, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pinned-text-sources
+          path: reports/runtime_contracts/source_snapshot.zip
+          retention-days: 7
