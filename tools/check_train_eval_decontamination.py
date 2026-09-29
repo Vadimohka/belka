@@ -6,8 +6,14 @@ files (holdout, regression, language-lock). Reports, per eval file:
   * exact-overlap count (eval prompts found verbatim in train),
   * 5-gram overlap ratio (mean fraction of eval 5-grams seen in the train n-gram set).
 
-Outputs markdown + JSON. Read-only; never modifies data. A clean holdout should show
-0 exact overlap and a low n-gram ratio.
+Writes reports only; never modifies training or evaluation data. Missing files,
+unreadable/invalid JSONL, empty datasets, and invalid arguments are errors (exit 2).
+Use --fail-on-overlap to return exit 1 on exact overlap, including with --dry-run.
+Without that option, overlap is reported without failing (legacy reporting mode).
+
+Scope is the legacy concatenated user/system prompt or text fields, not assistant
+responses, pretraining Parquet, individual-turn matching, or semantic duplicates.
+Zero exact overlap is not proof that a holdout is uncontaminated.
 """
 from __future__ import annotations
 
@@ -29,11 +35,31 @@ DEFAULT_EVAL = [
 _WORD = re.compile(r"\w+", re.UNICODE)
 
 
+class InputError(ValueError):
+    """A requested input could not be checked completely."""
+
+
+def inside_repo(path: Path) -> Path:
+    resolved = path.resolve()
+    if not resolved.is_relative_to(REPO.resolve()):
+        raise InputError(f"path escapes repository: {path}")
+    return resolved
+
+
 def expand(patterns: list[str]) -> list[Path]:
-    out: list[Path] = []
+    if not patterns:
+        raise InputError("at least one input pattern is required")
+    out: set[Path] = set()
     for pat in patterns:
-        out.extend(Path(p) for p in glob.glob(str(REPO / pat)))
-    return sorted(set(out))
+        matches = glob.glob(str(REPO / pat))
+        if not matches:
+            raise InputError(f"input pattern matched no files: {pat}")
+        for match in matches:
+            path = inside_repo(Path(match))
+            if not path.is_file():
+                raise InputError(f"input is not a regular file: {match}")
+            out.add(path)
+    return sorted(out)
 
 
 def record_text(rec) -> str:
@@ -52,22 +78,31 @@ def record_text(rec) -> str:
     return "\n".join(parts).strip()
 
 
+def _reject_constant(value: str):
+    raise ValueError(f"non-standard JSON constant: {value}")
+
+
 def iter_texts(paths: list[Path]):
     for p in paths:
+        count = 0
         try:
-            for line in p.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    rec = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                t = record_text(rec)
-                if t:
-                    yield t
-        except (UnicodeDecodeError, OSError):
-            continue
+            with p.open(encoding="utf-8") as src:
+                for lineno, line in enumerate(src, 1):
+                    if not line.strip():
+                        continue
+                    try:
+                        rec = json.loads(line, parse_constant=_reject_constant)
+                    except ValueError as exc:
+                        raise InputError(f"{p}:{lineno}: invalid JSON: {exc}") from exc
+                    text = record_text(rec)
+                    if not norm(text):
+                        raise InputError(f"{p}:{lineno}: no checkable prompt/text fields")
+                    count += 1
+                    yield text
+        except (UnicodeError, OSError) as exc:
+            raise InputError(f"{p}: cannot read UTF-8 input: {exc}") from exc
+        if not count:
+            raise InputError(f"{p}: no checkable records (empty dataset)")
 
 
 def norm(s: str) -> str:
@@ -75,6 +110,8 @@ def norm(s: str) -> str:
 
 
 def ngrams(tokens: list[str], n: int = 5):
+    if n < 1:
+        raise InputError("n-gram size must be positive")
     return {tuple(tokens[i:i + n]) for i in range(len(tokens) - n + 1)} if len(tokens) >= n else set()
 
 
@@ -104,46 +141,72 @@ def check_eval(path: Path, exact: set[str], grams: set[tuple], n: int):
     return {"prompts": total, "exact_overlap": exact_hits, "ngram_overlap_ratio": round(mean_ratio, 4)}
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--train", nargs="*", default=DEFAULT_TRAIN)
-    ap.add_argument("--eval", nargs="*", default=DEFAULT_EVAL)
+    ap.add_argument("--train", nargs="+", default=DEFAULT_TRAIN)
+    ap.add_argument("--eval", nargs="+", default=DEFAULT_EVAL)
     ap.add_argument("--n", type=int, default=5, help="n-gram size")
     ap.add_argument("--out", default="reports/public", help="output directory for md/json")
     ap.add_argument("--dry-run", action="store_true", help="print summary, write nothing")
-    args = ap.parse_args()
+    ap.add_argument("--fail-on-overlap", action="store_true",
+                    help="exit 1 on any exact overlap; also applies to --dry-run")
+    args = ap.parse_args(argv)
+    if args.n < 1:
+        ap.error("--n must be positive")
 
-    train_paths = expand(args.train)
-    eval_paths = expand(args.eval)
-    exact, grams = build_train_index(train_paths, args.n)
+    try:
+        train_paths = expand(args.train)
+        eval_paths = expand(args.eval)
+        out = inside_repo(REPO / args.out)
+        # Validate both outputs before either is opened. Reports must not alias
+        # training/eval data (including through an in-repo symlink or hardlink).
+        report_paths = [inside_repo(out / name) for name in
+                        ("decontamination_report.json", "DECONTAMINATION_REPORT.md")]
+        checked = train_paths + eval_paths
+        for target in report_paths:
+            if target.exists() and not target.is_file():
+                raise InputError(f"report target is not a regular file: {target}")
+            if any(target == source or (target.exists() and source.exists() and target.samefile(source))
+                   for source in checked):
+                raise InputError(f"report target aliases an input or another report: {target}")
+            checked = checked + [target]
+        exact, grams = build_train_index(train_paths, args.n)
+        results = {
+            str(ep.relative_to(REPO.resolve())): check_eval(ep, exact, grams, args.n)
+            for ep in eval_paths
+        }
+    except (InputError, OSError, RuntimeError) as exc:
+        ap.error(str(exc))
 
-    results = {}
-    for ep in eval_paths:
-        results[str(ep.relative_to(REPO))] = check_eval(ep, exact, grams, args.n)
+    exact_total = sum(item["exact_overlap"] for item in results.values())
+    exit_code = 1 if args.fail_on_overlap and exact_total else 0
 
     report = {
-        "train_files": [str(p.relative_to(REPO)) for p in train_paths],
+        "train_files": [str(p.relative_to(REPO.resolve())) for p in train_paths],
         "ngram_n": args.n,
         "results": results,
+        "exact_overlap_total": exact_total,
+        "fail_on_overlap": args.fail_on_overlap,
+        "status": "exact_overlap_found" if exact_total else "no_exact_overlap_in_checked_fields",
+        "scope": "legacy concatenated prompt/text fields only; not a full contamination audit",
     }
     print(json.dumps(report, indent=2, ensure_ascii=False))
 
     if args.dry_run:
-        return 0
+        return exit_code
 
-    out = REPO / args.out
     out.mkdir(parents=True, exist_ok=True)
     (out / "decontamination_report.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     md = ["# Train/Eval Decontamination Report\n",
-          "*Generated by `tools/check_train_eval_decontamination.py`. 0 exact overlap = clean holdout.*\n",
-          "| eval file | prompts | exact overlap | 5-gram ratio |",
+          "*Checked prompt/text fields only. Zero exact overlap does not prove an uncontaminated holdout.*\n",
+          f"| eval file | prompts | exact overlap | {args.n}-gram ratio |",
           "|---|---|---|---|"]
     for f, r in results.items():
         md.append(f"| {f} | {r['prompts']} | {r['exact_overlap']} | {r['ngram_overlap_ratio']} |")
     (out / "DECONTAMINATION_REPORT.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print(f"wrote decontamination report -> {out}/")
-    return 0
+    return exit_code
 
 
 if __name__ == "__main__":
