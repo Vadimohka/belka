@@ -1,0 +1,60 @@
+name: Audit source snapshot
+
+on:
+  push:
+    branches: [codex/belka-completion-2026-09-30]
+    paths: [.github/workflows/audit-source.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: karpathy/nanochat
+          ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
+          path: .workspace/nanochat-upstream
+      - name: Archive tracked text sources without large corpus payloads
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, subprocess, zipfile
+          root = pathlib.Path.cwd()
+          records = []
+          destination = root / '.workspace/audit-source.zip'
+          with zipfile.ZipFile(destination, 'w', zipfile.ZIP_DEFLATED) as archive:
+              for name, checkout in [('belka', root), ('nanochat', root / '.workspace/nanochat-upstream')]:
+                  sha = subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip()
+                  paths = subprocess.check_output(['git', '-C', str(checkout), 'ls-files', '-z']).split(b'\0')
+                  for raw in paths:
+                      if not raw:
+                          continue
+                      relative = raw.decode('utf-8')
+                      path = checkout / relative
+                      if path.is_symlink() or not path.is_file():
+                          raise SystemExit(f'unsupported source entry: {name}/{relative}')
+                      size = path.stat().st_size
+                      record = {'repository': name, 'commit': sha, 'path': relative, 'bytes': size}
+                      if size > 8 * 1024 * 1024:
+                          record['included'] = False
+                      else:
+                          data = path.read_bytes()
+                          record.update(included=True, sha256=hashlib.sha256(data).hexdigest())
+                          archive.writestr(f'{name}/{relative}', data)
+                      records.append(record)
+              archive.writestr('SOURCE_INVENTORY.json', json.dumps(records, ensure_ascii=False, indent=2))
+          print(json.dumps({'archive_bytes': destination.stat().st_size, 'tracked_files': len(records),
+                            'excluded_large_files': [r for r in records if not r['included']]}, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: belka-audit-source
+          path: .workspace/audit-source.zip
+          retention-days: 7
+          if-no-files-found: error
