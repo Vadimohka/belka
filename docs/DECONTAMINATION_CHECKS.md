@@ -10,8 +10,10 @@ modify the datasets. It is not a full corpus or model contamination audit.
 # Existing default scope; print only, do not write report files.
 python tools/check_train_eval_decontamination.py --dry-run
 
-# Same scope, but fail on any exact overlap as well as invalid input.
-python tools/check_train_eval_decontamination.py --dry-run --fail-on-overlap
+# Strict holdout gate, using the broad historical seed scope conservatively.
+python tools/check_train_eval_decontamination.py \
+  --eval eval/strict_holdout_quality_control_v2.be.jsonl \
+  --dry-run --fail-on-overlap
 
 # Write JSON and Markdown reports under reports/public/.
 python tools/check_train_eval_decontamination.py
@@ -52,12 +54,12 @@ independently, inspect Parquet pretraining data, or detect semantic duplicates.
 It is not a full JSONL conversation-schema validator. A zero count therefore does
 not establish that a holdout is uncontaminated or that a model is better.
 
-The default training globs include historical seed files, not necessarily the
-actual active SFT mixture. Select and record the active training files and the
-intended strict holdout before making this flag a mandatory release gate.
-Do not remove eval records or weaken the check merely to obtain a passing result.
-The existing CI reporting command is deliberately not changed into a new strict
-gate without that dataset-scope review.
+The default training globs include historical seed files, including validation
+files, not just the actual active SFT mixture. CI retains a broad informational
+report and separately blocks exact overlap with the named strict holdout. The
+regression dataset is not relabeled as an independent sealed holdout or silently
+removed to turn a failing metric green. A versioned active-data manifest remains
+necessary for a precise training-specific claim.
 
 ## Follow-up work
 

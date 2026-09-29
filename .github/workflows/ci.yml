@@ -29,6 +29,9 @@ jobs:
       - name: Public-release validation
         run: python tools/validate_public_release.py
 
+      - name: Validate active SFT mixture without publishing
+        run: python tools/build_sft_mix.py --check-only
+
       - name: Train/eval decontamination (dry-run)
         run: python tools/check_train_eval_decontamination.py --dry-run
 
