@@ -20,11 +20,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements_pack.txt
 
+      - name: Tracked Python and shell syntax
+        run: python tools/check_source_syntax.py
+
       - name: Tests
-        run: PYTHONPATH="$PWD" pytest -q tests
+        run: PYTHONPATH="$PWD" pytest -q tests -ra
 
       - name: Public-release validation
         run: python tools/validate_public_release.py
 
+      - name: Validate active SFT mixture without publishing
+        run: python tools/build_sft_mix.py --check-only
+
       - name: Train/eval decontamination (dry-run)
         run: python tools/check_train_eval_decontamination.py --dry-run
+
+      - name: Strict holdout exact-overlap gate
+        run: >-
+          python tools/check_train_eval_decontamination.py
+          --eval eval/strict_holdout_quality_control_v2.be.jsonl
+          --dry-run --fail-on-overlap
