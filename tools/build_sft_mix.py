@@ -77,7 +77,8 @@ def build(args: argparse.Namespace) -> dict:
     base = inside_pack(base, pack)
     seed_dir = pack / "seed_sft"
     # v8 only; older seed files are research history, not mixture inputs.
-    inputs = [inside_pack(seed_dir / f"sft_v8_{split}.be.jsonl", pack) for split in ("train", "val")]
+    inputs = [inside_pack(seed_dir / name, pack) for name in
+              ("sft_v8_train.be.jsonl", "sft_v8_val.be.jsonl")]
     outputs = []
     for explicit, name in ((args.train_out, "identity_conversations.jsonl"),
                            (args.val_out, "identity_conversations_val.jsonl")):
