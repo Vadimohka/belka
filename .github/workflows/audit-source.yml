@@ -20,11 +20,11 @@ jobs:
           repository: karpathy/nanochat
           ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
           path: .workspace/nanochat-upstream
-      - name: Archive tracked text sources without large corpus payloads
+      - name: Archive tracked sources without following symlinks or copying large payloads
         shell: bash
         run: |
           python - <<'PY'
-          import hashlib, json, pathlib, subprocess, zipfile
+          import hashlib, json, os, pathlib, subprocess, zipfile
           root = pathlib.Path.cwd()
           records = []
           destination = root / '.workspace/audit-source.zip'
@@ -37,20 +37,22 @@ jobs:
                           continue
                       relative = raw.decode('utf-8')
                       path = checkout / relative
-                      if path.is_symlink() or not path.is_file():
-                          raise SystemExit(f'unsupported source entry: {name}/{relative}')
-                      size = path.stat().st_size
-                      record = {'repository': name, 'commit': sha, 'path': relative, 'bytes': size}
-                      if size > 8 * 1024 * 1024:
-                          record['included'] = False
+                      record = {'repository': name, 'commit': sha, 'path': relative, 'included': False}
+                      if path.is_symlink():
+                          record.update(kind='symlink', target=os.readlink(path))
+                      elif not path.is_file():
+                          record.update(kind='nonregular')
                       else:
-                          data = path.read_bytes()
-                          record.update(included=True, sha256=hashlib.sha256(data).hexdigest())
-                          archive.writestr(f'{name}/{relative}', data)
+                          size = path.stat().st_size
+                          record.update(kind='file', bytes=size)
+                          if size <= 8 * 1024 * 1024:
+                              data = path.read_bytes()
+                              record.update(included=True, sha256=hashlib.sha256(data).hexdigest())
+                              archive.writestr(f'{name}/{relative}', data)
                       records.append(record)
               archive.writestr('SOURCE_INVENTORY.json', json.dumps(records, ensure_ascii=False, indent=2))
           print(json.dumps({'archive_bytes': destination.stat().st_size, 'tracked_files': len(records),
-                            'excluded_large_files': [r for r in records if not r['included']]}, indent=2))
+                            'excluded': [r for r in records if not r['included']]}, indent=2))
           PY
       - uses: actions/upload-artifact@v4
         with:
