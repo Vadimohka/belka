@@ -1,0 +1,63 @@
+name: Runtime contracts
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  upstream-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Checkout pinned upstream (no training)
+        uses: actions/checkout@v4
+        with:
+          repository: karpathy/nanochat
+          ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
+          path: .workspace/nanochat-upstream
+          persist-credentials: false
+      - name: Snapshot tracked text sources for audit
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, subprocess, zipfile
+          roots = {'belka': pathlib.Path('.'), 'nanochat': pathlib.Path('.workspace/nanochat-upstream')}
+          evidence = pathlib.Path('.workspace/audit-evidence')
+          evidence.mkdir(parents=True, exist_ok=True)
+          manifest = {'scope': 'tracked UTF-8 source/config/seed text only; no checkpoints, credentials or corpus archive parts', 'repositories': {}}
+          with zipfile.ZipFile(evidence / 'source-snapshot.zip', 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+              for name, root in roots.items():
+                  info = {'head': subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip(), 'files': [], 'excluded': []}
+                  tracked = subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode().split('\0')
+                  for relative in sorted(filter(None, tracked)):
+                      path = root / relative
+                      if path.is_symlink() or not path.is_file() or path.stat().st_size > 4_000_000:
+                          info['excluded'].append(relative)
+                          continue
+                      raw = path.read_bytes()
+                      try:
+                          raw.decode('utf-8')
+                      except UnicodeDecodeError:
+                          info['excluded'].append(relative)
+                          continue
+                      archive.writestr(name + '/' + relative, raw)
+                      info['files'].append({'path': relative, 'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)})
+                  manifest['repositories'][name] = info
+              archive.writestr('SNAPSHOT.json', json.dumps(manifest, ensure_ascii=False, indent=2))
+          (evidence / 'snapshot-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8')
+          print(json.dumps({name: {'head': info['head'], 'text_files': len(info['files']), 'excluded_files': len(info['excluded'])} for name, info in manifest['repositories'].items()}, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: runtime-audit-snapshot
+          path: .workspace/audit-evidence/
+          retention-days: 7
+          if-no-files-found: error
