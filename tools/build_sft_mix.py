@@ -76,7 +76,7 @@ def build(args: argparse.Namespace) -> dict:
         base = pack / base
     base = inside_pack(base, pack)
     seed_dir = pack / "seed_sft"
-    # v8 only; older seed files are research history, not mixture inputs.
+    # v9 is deterministically derived from the archived v8 pair; v1-v7 never enter the mixture.
     inputs = [inside_pack(seed_dir / name, pack) for name in
               ("sft_v8_train.be.jsonl", "sft_v8_val.be.jsonl")]
     outputs = []
@@ -90,7 +90,14 @@ def build(args: argparse.Namespace) -> dict:
     if not validator.is_file():
         raise ValueError(f"missing SFT validator: {validator}")
     validate_targets(outputs, inputs + [validator, Path(__file__).resolve()])
-    train, val = read_rows([inputs[0]]), read_rows([inputs[1]])
+    migration = None
+    if args.dataset_version == "v9":
+        # Versioned migration reads archived v8 seeds; no source file is changed.
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from prepare_sft_v9 import build_v9
+        train, val, migration = build_v9(pack)
+    else:
+        train, val = read_rows([inputs[0]]), read_rows([inputs[1]])
     random.Random(args.seed).shuffle(train)
     random.Random(args.seed + 1).shuffle(val)
     staged: list[Path] = []
@@ -102,9 +109,9 @@ def build(args: argparse.Namespace) -> dict:
             stage = Path(name)
             staged.append(stage)
             write_rows(stage, rows)
-        # Preserve the existing language policy; all-role strict calibration is
-        # separate work. Crucially, failure cannot replace either final dataset.
-        subprocess.run([sys.executable, str(validator), *(str(path) for path in staged)], check=True)
+        # Every natural-language training role must satisfy the versioned
+        # language-evidence contract before either final dataset is replaced.
+        subprocess.run([sys.executable, str(validator), "--strict-all", "--warnings-as-errors", *(str(path) for path in staged)], check=True)
         if not args.check_only:
             validate_targets(outputs, inputs + [validator, Path(__file__).resolve()])
             for stage, target in zip(staged, outputs):
@@ -114,7 +121,8 @@ def build(args: argparse.Namespace) -> dict:
             stage.unlink(missing_ok=True)
     return {"train_out": str(outputs[0]), "val_out": str(outputs[1]),
             "train_rows": len(train), "val_rows": len(val),
-            "published": not args.check_only, "validation_policy": "existing validator defaults"}
+            "published": not args.check_only, "validation_policy": "all_roles_fail_closed",
+            "dataset_version": args.dataset_version, "migration": migration}
 
 
 def main() -> None:
@@ -123,6 +131,8 @@ def main() -> None:
     ap.add_argument("--base-dir", type=Path, help="default: NANOCHAT_BASE_DIR or PACK_DIR/.workspace/nanochat_base")
     ap.add_argument("--train-out", type=Path)
     ap.add_argument("--val-out", type=Path)
+    ap.add_argument("--dataset-version", choices=["v9", "v8"], default="v9",
+                    help="v9: Belarusian prompts and disjoint prompt groups; v8: archive audit, still strictly validated")
     ap.add_argument("--seed", type=int, default=20260511)
     ap.add_argument("--check-only", action="store_true", help="validate staged copies without replacing final datasets")
     args = ap.parse_args()

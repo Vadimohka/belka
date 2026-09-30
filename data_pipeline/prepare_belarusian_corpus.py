@@ -15,6 +15,9 @@ import hashlib
 import json
 import math
 import random
+import os
+import shutil
+import tempfile
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -25,7 +28,7 @@ try:
     import pyarrow as pa
     import pyarrow.parquet as pq
 except ModuleNotFoundError as exc:
-    raise SystemExit("pyarrow is required. Run local/install_nanochat_env.sh first or set PYTHON_BIN to a venv Python with pyarrow installed.") from exc
+    raise SystemExit("pyarrow is required. Run ops/local/install_nanochat_env.sh first or set PYTHON_BIN to a venv Python with pyarrow installed.") from exc
 
 HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
@@ -34,6 +37,8 @@ if str(HERE) not in sys.path:
 from normalize_text import normalize_text
 from detect_belarusian import detect_belarusian
 from deduplicate import text_hash
+sys.path.insert(0, str(HERE.parent))
+from data_pipeline.strict_io import DataError, iter_jsonl as strict_jsonl, sha256_file, atomic_write
 
 SMOKE_DOCS = [
     "Беларуская мова мае свае адметныя літары: ў, і, ё. Гэта важна для навучання мадэлі, якая адказвае па-беларуску.",
@@ -59,48 +64,32 @@ class BuildStats:
     parse_errors: int = 0
 
 
-def _open_jsonl(path: Path):
-    if str(path).endswith(".gz"):
-        return gzip.open(path, "rt", encoding="utf-8", errors="ignore")
-    return path.open("rt", encoding="utf-8", errors="ignore")
-
-
 def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
+    root = root.resolve(strict=True)
     for path in sorted(root.rglob("*")):
-        if path.is_dir():
+        if path.is_dir() or path.name.startswith("."):
             continue
-        if path.name.startswith("."):
-            continue
-        suffixes = "".join(path.suffixes).lower()
+        if not path.resolve().is_relative_to(root):
+            raise DataError(f"input symlink escapes source directory: {path}")
         rel = str(path.relative_to(root))
+        suffixes = "".join(path.suffixes).lower()
         if path.suffix.lower() in {".txt", ".md"}:
-            yield "local", path.read_text(encoding="utf-8", errors="ignore"), {"path": rel}
+            yield "local", path.read_text(encoding="utf-8", errors="strict"), {"path": rel}
         elif suffixes.endswith(".jsonl") or suffixes.endswith(".jsonl.gz"):
-            with _open_jsonl(path) as f:
-                for lineno, line in enumerate(f, start=1):
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        obj = json.loads(line)
-                    except json.JSONDecodeError:
-                        yield "local_jsonl_raw", line, {"path": rel, "line": lineno}
-                        continue
-                    if isinstance(obj, str):
-                        text = obj
-                    elif isinstance(obj, dict):
-                        text = str(obj.get("text") or obj.get("content") or "")
-                    else:
-                        text = str(obj)
-                    yield "local_jsonl", text, {"path": rel, "line": lineno}
+            for lineno, obj in strict_jsonl(path):
+                text = obj if isinstance(obj, str) else obj.get("text", obj.get("content")) if isinstance(obj, dict) else None
+                if not isinstance(text, str):
+                    raise DataError(f"{path}:{lineno}: expected string text/content, not coerced JSON")
+                yield "local_jsonl", text, {"path": rel, "line": lineno}
         elif path.suffix.lower() == ".parquet":
             pf = pq.ParquetFile(path)
-            for rg_idx in range(pf.num_row_groups):
-                table = pf.read_row_group(rg_idx, columns=["text"] if "text" in pf.schema.names else None)
-                if "text" not in table.column_names:
-                    continue
-                for row_idx, text in enumerate(table.column("text").to_pylist()):
-                    yield "local_parquet", str(text), {"path": rel, "row_group": rg_idx, "row": row_idx}
+            if "text" not in pf.schema.names:
+                raise DataError(f"{path}: missing text column")
+            for batch_idx, table in enumerate(pf.iter_batches(batch_size=1024, columns=["text"])):
+                for row_idx, text in enumerate(table.column(0).to_pylist()):
+                    if not isinstance(text, str):
+                        raise DataError(f"{path}: null/non-string text at batch {batch_idx}, row {row_idx}")
+                    yield "local_parquet", text, {"path": rel, "batch": batch_idx, "row": row_idx}
 
 
 def iter_smoke_texts(repeats: int = 12) -> Iterator[tuple[str, str, dict]]:
@@ -131,7 +120,7 @@ def write_parquet_shards(texts: list[str], output_dir: Path, *, prefix: str, sha
     return files
 
 
-def prepare(
+def _prepare_staged(
     streams: Iterable[tuple[str, str, dict]],
     *,
     output_dir: Path,
@@ -203,9 +192,6 @@ def prepare(
         val_count = min(val_count, len(accepted) - 1)
     val = [x[0] for x in accepted[:val_count]]
     train = [x[0] for x in accepted[val_count:]]
-    # Remove old parquet shards after filtering succeeded.
-    for p in output_dir.glob("*.parquet"):
-        p.unlink()
     train_files = write_parquet_shards(train, output_dir, prefix="train", shard_docs=train_shard_docs)
     val_files = write_parquet_shards(val, output_dir, prefix="val", shard_docs=val_shard_docs)
     manifest = {
@@ -216,10 +202,47 @@ def prepare(
         "splits": {"train_docs": len(train), "val_docs": len(val), "val_ratio_requested": val_ratio},
         "files": train_files + val_files,
         "filter": {"min_chars": min_chars, "allow_short": allow_short},
-        "format": "parquet column text; train shards first, validation shards last",
+        "format": "explicit train_*.parquet / val_*.parquet; use the Belka split-aware loader",
+        "schema_version": 2,
     }
     (output_dir / "_BUILD_MANIFEST.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (report_dir / "summary.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return manifest
+
+
+def prepare(streams, *, output_dir: Path, report_dir: Path, **settings) -> dict:
+    """Build off-path and publish a COMPLETE NEW corpus by one directory rename.
+
+    Never replace an existing nonempty corpus. A new output version is required
+    for a rebuild; consumers select it explicitly. Reports inside the published
+    directory are authoritative; an external latest_corpus.json is only an index.
+    This contract is for a single builder; concurrent writers are not supported.
+    """
+    output_dir = Path(output_dir).absolute()
+    report_dir = Path(report_dir).absolute()
+    if output_dir.is_symlink() or report_dir.is_symlink():
+        raise ValueError("explicit real output/report directories required; never rebuild through a live symlink")
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=".belka-corpus-stage-", dir=output_dir.parent) as name:
+        stage = Path(name)
+        candidate = stage / "corpus"
+        staged_reports = stage / "reports"
+        manifest = _prepare_staged(streams, output_dir=candidate, report_dir=staged_reports, **settings)
+        if output_dir.exists() and (not output_dir.is_dir() or any(output_dir.iterdir())):
+            raise ValueError("existing corpus is immutable; select a NEW output directory for rebuild")
+        manifest["output_dir"] = str(output_dir)
+        manifest["report_dir"] = str(output_dir / "_reports")
+        manifest["publication"] = "new-directory-atomic-rename-v1"
+        for item in manifest["files"]:
+            item["sha256"] = sha256_file(candidate / item["path"])
+        payload = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode()
+        atomic_write(candidate / "_BUILD_MANIFEST.json", payload)
+        atomic_write(staged_reports / "summary.json", payload)
+        os.replace(staged_reports, candidate / "_reports")
+        os.replace(candidate, output_dir)
+    # The corpus and authoritative reports are already complete here. Index
+    # failure is not an excuse to destroy the published generation.
+    atomic_write(report_dir / "latest_corpus.json", payload)
     return manifest
 
 

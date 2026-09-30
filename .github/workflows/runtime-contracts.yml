@@ -1,0 +1,78 @@
+name: Runtime contracts
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cpu-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      NANOCHAT_DTYPE: float32
+      BELKA_RUNTIME_TESTS: "1"
+      BELKA_DISABLE_GENERIC_EVALS: "YES"
+      WANDB_MODE: disabled
+      WANDB_DISABLED: "true"
+      PYTHONNOUSERSITE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Checkout the reviewed upstream commit
+        uses: actions/checkout@v4
+        with:
+          repository: karpathy/nanochat
+          ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
+          path: .workspace/nanochat
+          persist-credentials: false
+      - name: Real CPU installation and source-contract verification (no training)
+        run: |
+          export PACK_DIR="$PWD"
+          unset XDG_CONFIG_HOME XDG_CACHE_HOME HF_HOME TORCH_HOME PIP_CACHE_DIR UV_CACHE_DIR CARGO_HOME RUSTUP_HOME TMPDIR
+          source ops/local/pack_paths.sh
+          mkdir -p reports/runtime_contracts
+          python -m venv .workspace/installer
+          .workspace/installer/bin/python -m pip install uv
+          export PATH="$PACK_DIR/.workspace/installer/bin:$PATH"
+          bash ops/local/install_nanochat_env.sh --cpu --skip-rust --skip-git-pull | tee reports/runtime_contracts/install.log
+          .workspace/nanochat/.venv/bin/python -m pip freeze > reports/runtime_contracts/environment.txt
+      - name: Verify and restore the canonical corpus/tokenizer in the isolated runner
+        run: |
+          export PACK_DIR="$PWD"
+          unset XDG_CONFIG_HOME XDG_CACHE_HOME HF_HOME TORCH_HOME PIP_CACHE_DIR UV_CACHE_DIR CARGO_HOME RUSTUP_HOME TMPDIR
+          source ops/local/pack_paths.sh
+          .workspace/nanochat/.venv/bin/python tools/restore_corpus_bundle.py --verify-only
+          .workspace/nanochat/.venv/bin/python tools/restore_corpus_bundle.py | tee reports/runtime_contracts/restore.json
+      - name: Actual tokenizer, model, KV cache, loader and filesystem contracts
+        run: |
+          export PACK_DIR="$PWD"
+          unset XDG_CONFIG_HOME XDG_CACHE_HOME HF_HOME TORCH_HOME PIP_CACHE_DIR UV_CACHE_DIR CARGO_HOME RUSTUP_HOME TMPDIR
+          source ops/local/pack_paths.sh
+          export PYTHONPATH="$PACK_DIR:$NANOCHAT_DIR"
+          .workspace/nanochat/.venv/bin/python -m pytest -q tests/test_upstream_runtime.py tests/test_algorithm_contracts.py tests/test_checkpoint_contracts.py tests/test_corpus_transactions.py -ra --junitxml=reports/runtime_contracts/results.xml
+          .workspace/nanochat/.venv/bin/python ops/local/verify_nanochat_patch.py --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --require-dtype-patch
+      - name: Record exact generated runtime identity
+        if: always()
+        run: |
+          if test -f .workspace/nanochat/BELKA_RUNTIME_MANIFEST.json; then
+            cp .workspace/nanochat/BELKA_RUNTIME_MANIFEST.json reports/runtime_contracts/
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: runtime-contract-evidence
+          path: reports/runtime_contracts/
+          retention-days: 7
+          if-no-files-found: warn
