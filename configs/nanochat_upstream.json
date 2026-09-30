@@ -1,0 +1,26 @@
+{
+  "repository": "karpathy/nanochat",
+  "commit": "92d63d4e8bb4df75c3b71618f31ddde2378b2bcd",
+  "verified_date": "2026-09-30",
+  "source_sha256": {
+    "scripts/chat_sft.py": "325ed7768eb3ab4ce8be5f147b43dac98745c4b1c697a918c0350139328329cc",
+    "nanochat/gpt.py": "8cdedc2e418b9d4dc45884e07f59904fcdec066bb3d76664b2adf2d415f704e3",
+    "nanochat/optim.py": "7c9b714c6f76e3a9d50fc530044b2767d0cd89391237e609548f1cd730afed8f",
+    "nanochat/checkpoint_manager.py": "aa63399ddaf2a0412dc099287bf0dc879f9cb0cce00f861db50eeec58746f3ba",
+    "nanochat/tokenizer.py": "e6f12cb88fead3e6d0d45a7dd2af4192280712d92bfde83e2399cc4b3a0860fb",
+    "nanochat/loss_eval.py": "00faad1e0ae8912022f79ee4bf583c4f9b4c058e4523c5674144648c49229fd6",
+    "scripts/base_train.py": "87395b8078491d5088e7e8100866162b494638097215759b46d8ceb5d2f0fdcc"
+  },
+  "prepatch_sha256": {
+    "nanochat/engine.py": "8225b9bea02f823be10427e7606b71303b20d0f503634db4fd982c3f582af5d9",
+    "nanochat/flash_attention.py": "b9b5f0ae1f86754f9df1bb524fd5b8e94f33c692aa9e1db44e45480afb3b54f7",
+    "nanochat/dataset.py": "3ec2ad5987875e3d7f3ec72f08d78089fe8a3b20090448b798c21c4efb93d18a",
+    "nanochat/dataloader.py": "5cc72d7207931f112d685ba8e04c112e1a4ab7756dbbb29b95bdb4908a21864d",
+    "scripts/chat_sft_be.py": "63a8bd68c68112e2410ceddf25aea32cd819681b8d57e877a276013b4ef1c255",
+    "nanochat/common.py": "7debb947646caddd59590cf73642422593b202085d4c8d042aa5ed8a3e408d35",
+    "tasks/customjson.py": "50740f2d9c4f2e9375abc9446b6bb60649369e7addc4782240179eed257212fd",
+    "scripts/chat_web.py": "f88b768edc7bc6c3ecb9b23b402a9795bdf8d48d22ae2e1ce962970d26f9d8da",
+    "nanochat/ui.html": "4efb79d45f4bbc045e4d308a231b40e9f48424999f9ddcbff94e7b530190a5fa",
+    "nanochat/logo.svg": "982f490f055f18ac6567880df5c8ccbe17e02cdc16a4483f86a01377f760127c"
+  }
+}

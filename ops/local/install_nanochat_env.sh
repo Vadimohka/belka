@@ -20,7 +20,7 @@ Usage: bash ops/local/install_nanochat_env.sh --nanochat-dir PATH [options]
 
 Options:
   --nanochat-dir PATH       nanochat checkout directory (default: $PACK_DIR/.workspace/nanochat)
-  --git-ref REF             branch/tag/commit to checkout (default: pinned 92d63d4)
+  --git-ref REF             supported full upstream commit SHA (default: pinned 92d63d4...)
   --base-dir PATH           NANOCHAT_BASE_DIR (default: $PACK_DIR/.workspace/nanochat_base)
   --skip-git-pull           do not fetch/pull an existing git checkout
   --init-submodules         run git submodule update only inside a real git checkout
@@ -62,9 +62,23 @@ if [[ "$DRY_RUN" == 1 ]]; then
   echo "DRY-RUN: installation and imports are not validated by this planning mode."
   exit 0
 fi
+# A patch set is bound to one reviewed commit, not an arbitrary moving branch.
+if [[ "$NANOCHAT_GIT_REF" != 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd ]]; then
+  echo "ERROR: unsupported upstream ref; update source contracts and tests before changing the pin" >&2
+  exit 2
+fi
+RUNTIME_PREPARED=0
+if [[ -f "$NANOCHAT_DIR/BELKA_RUNTIME_MANIFEST.json" ]]; then
+  python3 "$PACK_DIR/ops/local/patch_nanochat_runtime.py" --nanochat-dir "$NANOCHAT_DIR"
+  RUNTIME_PREPARED=1
+elif [[ -d "$NANOCHAT_DIR/.git" ]] && ! git -C "$NANOCHAT_DIR" diff --quiet HEAD --; then
+  echo "ERROR: unverified modified nanochat checkout; preserve it and select a NEW --nanochat-dir" >&2
+  exit 2
+fi
 BELKA_PATHS_CREATE=1 source "$PACK_DIR/ops/local/pack_paths.sh"
 bash "$PACK_DIR/ops/local/repo_guard.sh"
 PYTHON="$NANOCHAT_DIR/.venv/bin/python"
+export PYTHONPATH="$PACK_DIR:$NANOCHAT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 export PATH="$HOME/.local/bin:$PATH"
 
 run() {
@@ -129,7 +143,7 @@ cd "$NANOCHAT_DIR"
 if [[ -d .git && "$DRY_RUN" != "1" ]]; then
   git checkout "$NANOCHAT_GIT_REF"
   if [[ "$SKIP_GIT_PULL" != "1" ]]; then
-    git pull --ff-only || echo "WARN: git pull failed or not applicable; continuing with checked-out tree."
+    test "$(git rev-parse HEAD)" = "$NANOCHAT_GIT_REF" || { echo "ERROR: checkout differs from requested full SHA" >&2; exit 1; }
   fi
   if [[ "$INIT_SUBMODULES" == "1" ]]; then
     git submodule update --init --recursive
@@ -146,16 +160,11 @@ if [[ ! -x .venv/bin/python ]]; then
 fi
 if [[ "$DRY_RUN" != "1" ]]; then
   if ! .venv/bin/python -m pip --version >/dev/null 2>&1; then
-    echo "WARN: .venv has no pip; trying ensurepip, then recreating if needed."
+    echo "WARN: .venv has no pip; trying ensurepip without deleting the environment."
     .venv/bin/python -m ensurepip --upgrade || true
     if ! .venv/bin/python -m pip --version >/dev/null 2>&1; then
-      rm -rf .venv
-      if [[ "$USE_UV" == "1" ]]; then
-        uv venv --seed .venv
-      else
-        python3 -m venv .venv
-        .venv/bin/python -m ensurepip --upgrade || true
-      fi
+      echo "ERROR: existing .venv cannot provide pip; preserve it and use a NEW nanochat directory" >&2
+      exit 2
     fi
   fi
 fi
@@ -163,18 +172,27 @@ fi
 if [[ -f pyproject.toml ]]; then
   if [[ "$USE_UV" == "1" ]]; then
     if [[ "$CPU_ONLY" == "1" ]]; then
-      run uv sync --extra cpu
+      run uv sync --frozen --extra cpu
     else
       # Do not silently change the compute backend after a failed GPU install.
-      run uv sync --extra gpu
+      run uv sync --frozen --extra gpu
     fi
   else
     echo "Installing nanochat dependencies via pip (no uv)."
     if [[ "$CPU_ONLY" == "1" ]]; then
-      run "$PYTHON" -m pip install -e ".[cpu]"
-    else
-      run "$PYTHON" -m pip install -e ".[gpu]"
+      run "$PYTHON" -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cpu
     fi
+    # The upstream intentionally has no build-system/package distribution.
+    # Read its declared dependencies instead of a broken `pip install -e .`.
+    "$PYTHON" - "$CPU_ONLY" <<'PYDEPS'
+import pathlib, sys, tomllib
+project = tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]
+extra = "cpu" if sys.argv[1] == "1" else "gpu"
+requirements = project["dependencies"] + project.get("optional-dependencies", {}).get(extra, [])
+pathlib.Path(".venv/upstream-requirements.txt").write_text("\n".join(requirements) + "\n")
+PYDEPS
+    run "$PYTHON" -m pip install -r .venv/upstream-requirements.txt
+
   fi
 fi
 
@@ -219,14 +237,24 @@ if [[ "$DRY_RUN" != "1" ]]; then
   # Belka fork files on top of the pristine upstream checkout
   # (see ops/nanochat_fork/README.md).
   mkdir -p "$NANOCHAT_DIR/tasks" "$NANOCHAT_DIR/scripts" "$NANOCHAT_DIR/nanochat"
+  if [[ "$RUNTIME_PREPARED" == 0 ]]; then
   cp "$PACK_DIR/ops/nanochat_fork/tasks/customjson.py" "$NANOCHAT_DIR/tasks/customjson.py"
   cp "$PACK_DIR/ops/nanochat_fork/scripts/chat_web.py" "$NANOCHAT_DIR/scripts/chat_web.py"
   cp "$PACK_DIR/ops/nanochat_fork/nanochat/ui.html" "$NANOCHAT_DIR/nanochat/ui.html"
   cp "$PACK_DIR/ops/nanochat_fork/nanochat/logo.svg" "$NANOCHAT_DIR/nanochat/logo.svg"
-  "$PYTHON" "$PACK_DIR/tools/build_sft_mix.py" --pack-dir "$PACK_DIR" --base-dir "$NANOCHAT_BASE_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_for_belarusian.py" --nanochat-dir "$NANOCHAT_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_dtype_fp16.py" --nanochat-dir "$NANOCHAT_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_branding.py" --nanochat-dir "$NANOCHAT_DIR"
+  "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_runtime.py" --nanochat-dir "$NANOCHAT_DIR"
+  fi
+  # Installation is not permission to overwrite a previous working SFT dataset.
+  if [[ -e "$NANOCHAT_BASE_DIR/identity_conversations.jsonl" || -e "$NANOCHAT_BASE_DIR/identity_conversations_val.jsonl" ]]; then
+    "$PYTHON" "$PACK_DIR/tools/validate_sft_jsonl.py" --strict-all \
+      "$NANOCHAT_BASE_DIR/identity_conversations.jsonl" "$NANOCHAT_BASE_DIR/identity_conversations_val.jsonl"
+    echo "OK: kept existing validated SFT files unchanged"
+  else
+    "$PYTHON" "$PACK_DIR/tools/build_sft_mix.py" --pack-dir "$PACK_DIR" --base-dir "$NANOCHAT_BASE_DIR"
+  fi
   "$PYTHON" "$PACK_DIR/ops/local/verify_nanochat_patch.py" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --pack-dir "$PACK_DIR" --require-dtype-patch
 fi
 

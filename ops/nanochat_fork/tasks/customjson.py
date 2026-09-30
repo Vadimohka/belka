@@ -28,15 +28,15 @@ class CustomJSON(Task):
                     messages = json.loads(line)
                 except json.JSONDecodeError as exc:
                     raise ValueError(f"{where}: invalid JSON ({exc.msg})") from exc
-                if not isinstance(messages, list) or len(messages) < 2:
-                    raise ValueError(f"{where}: expected an array of at least two messages")
+                if not isinstance(messages, list) or len(messages) < 2 or len(messages) % 2:
+                    raise ValueError(f"{where}: expected complete user/assistant pairs")
                 for i, message in enumerate(messages):
                     if not isinstance(message, dict):
                         raise ValueError(f"{where}: message {i} must be an object")
                     expected_role = "user" if i % 2 == 0 else "assistant"
                     if message.get("role") != expected_role:
                         raise ValueError(f"{where}: message {i} must have role {expected_role!r}")
-                    if not isinstance(message.get("content"), str):
+                    if not isinstance(message.get("content"), str) or not message["content"].strip():
                         raise ValueError(f"{where}: message {i} content must be a string")
                 self.conversations.append(messages)
         if not self.conversations:

@@ -31,8 +31,8 @@ def file_contains_any(path: Path, needles: list[str], description: str, results:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Verify Belarusian nanochat patch state")
     ap.add_argument("--nanochat-dir", type=Path, required=True)
-    ap.add_argument("--base-dir", type=Path, default=Path(os.environ.get("NANOCHAT_BASE_DIR", str(Path.home() / ".cache" / "nanochat"))))
-    ap.add_argument("--pack-dir", type=Path, default=Path(__file__).resolve().parents[1])
+    ap.add_argument("--base-dir", type=Path, default=Path(os.environ.get("NANOCHAT_BASE_DIR", str(Path(__file__).resolve().parents[2] / ".workspace/nanochat_base"))))
+    ap.add_argument("--pack-dir", type=Path, default=Path(__file__).resolve().parents[2])
     ap.add_argument("--require-dtype-patch", action="store_true")
     args = ap.parse_args()
     repo = args.nanochat_dir.expanduser().resolve()
@@ -51,6 +51,16 @@ def main() -> None:
     if args.require_dtype_patch:
         ok &= file_contains_any(repo / "nanochat" / "engine.py", ["BELARUSIAN_SUPERPACK_DTYPE_ENGINE", "COMPUTE_DTYPE if device.type"], "engine dtype patch or upstream COMPUTE_DTYPE", results)
         ok &= file_contains_any(repo / "nanochat" / "flash_attention.py", ["BELARUSIAN_SUPERPACK_DTYPE_SDPA", "k = k.to(dtype=q.dtype)"], "SDPA dtype consistency patch", results)
+    manifest = repo / "BELKA_RUNTIME_MANIFEST.json"
+    if manifest.exists():
+        proc = subprocess.run([sys.executable, str(args.pack_dir / "ops/local/patch_nanochat_runtime.py"),
+                               "--nanochat-dir", str(repo)], text=True, capture_output=True)
+        results.append({"check": "pinned runtime/overlay hashes", "ok": proc.returncode == 0,
+                        "stderr_tail": proc.stderr[-1000:]})
+        ok &= proc.returncode == 0
+    else:
+        results.append({"check": "pinned runtime manifest", "ok": False})
+        ok = False
     validator = args.pack_dir / "tools" / "validate_sft_jsonl.py"
     if validator.exists() and (base_dir / "identity_conversations.jsonl").exists():
         proc = subprocess.run([sys.executable, str(validator), str(base_dir / "identity_conversations.jsonl"), str(base_dir / "identity_conversations_val.jsonl")], text=True, capture_output=True)
