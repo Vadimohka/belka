@@ -12,6 +12,9 @@ jobs:
   contracts:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
     env:
       OMP_NUM_THREADS: '1'
       WANDB_MODE: disabled
@@ -44,6 +47,7 @@ jobs:
       - name: Install real pinned CPU environment (no training)
         run: |
           export PACK_DIR="$PWD" NANOCHAT_DIR="$PWD/.workspace/nanochat" NANOCHAT_BASE_DIR="$PWD/.workspace/ci_assets"
+          export XDG_CONFIG_HOME="$PWD/.workspace/xdg_config" XDG_CACHE_HOME="$PWD/.workspace/xdg_cache"
           export UV_CACHE_DIR="$PWD/.workspace/uv_cache" PIP_CACHE_DIR="$PWD/.workspace/pip_cache"
           mkdir -p reports/runtime_audit/ci
           python -m pip install uv
