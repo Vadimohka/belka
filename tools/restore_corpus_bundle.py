@@ -170,8 +170,9 @@ def restore(bundle:Path,base:Path,*,link=True,force=False,max_compressed_bytes=2
                     if trailing>1<<20 or any(chunk): raise ValueError('unexpected data after tar terminator')
             splits=validate_payload(stage,manifest)
             files=[dict(path=str(p.relative_to(stage)),sha256=sha256_file(p)) for p in sorted(stage.rglob('*')) if p.is_file()]
+            # Keep extraction counters separate from the per-file integrity list.
             (stage/'RESTORE_MANIFEST.json').write_text(json.dumps(dict(schema='belka-restore-v1',
-                bundle_sha256=manifest['archive']['total_sha256'],splits=splits,files=files,**extraction),indent=2)+'\n')
+                bundle_sha256=manifest['archive']['total_sha256'],splits=splits,files=files,extraction=extraction),indent=2)+'\n')
     ensure_bridges()
     return dict(restored=True,generation=str(live.resolve()),splits=splits)
 

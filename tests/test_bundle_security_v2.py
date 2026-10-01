@@ -69,9 +69,35 @@ def test_synthetic_real_zstd_parquet_roundtrip_and_rollback(tmp_path):
     assert (base/'tokenizer/tokenizer.pkl').read_bytes()==tok
     assert len(list((base/'base_data_climbmix').glob('*.parquet')))==2
     generation=(base/'.belka_bundle').resolve()
+    saved_bytes=(generation/'RESTORE_MANIFEST.json').read_bytes()
+    saved=json.loads(saved_bytes)
+    assert saved['schema']=='belka-restore-v1'
+    assert saved['bundle_sha256']==sha
+    assert saved['splits']=={'train':1,'val':1}
+    assert saved['files']==[
+        {'path':name,'sha256':hashlib.sha256(data).hexdigest()}
+        for name,data in sorted(files.items())
+    ]
+    assert saved['extraction']=={
+        'files':len(files),'uncompressed_bytes':sum(map(len,files.values()))
+    }
     assert not module.restore(bundle,base)['restored']
+    assert (base/'.belka_bundle').resolve()==generation
+    assert (generation/'RESTORE_MANIFEST.json').read_bytes()==saved_bytes
+    # A managed forced restore publishes a new generation, retaining the old one.
+    assert module.restore(bundle,base,force=True)['restored']
+    replacement=(base/'.belka_bundle').resolve()
+    assert replacement!=generation
+    assert (generation/'RESTORE_MANIFEST.json').read_bytes()==saved_bytes
+    assert (replacement/'RESTORE_MANIFEST.json').read_bytes()==saved_bytes
+    generation=replacement
     (bundle/'fixture.tar.zst.aa').write_bytes(b'corrupt')
     with pytest.raises(ValueError):module.restore(bundle,base,force=True)
+    assert (base/'.belka_bundle').resolve()==generation
+    # The saved per-file list must still detect corruption on an idempotent restore.
+    (generation/'README.txt').write_bytes(b'corrupt restored payload')
+    with pytest.raises(ValueError,match='existing restored payload is corrupt'):
+        module.restore(bundle,base)
     assert (base/'.belka_bundle').resolve()==generation
     unmanaged=tmp_path/'unmanaged';(unmanaged/'tokenizer').mkdir(parents=True)
     with pytest.raises(FileExistsError):module.restore(bundle,unmanaged,force=True)

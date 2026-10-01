@@ -21,7 +21,7 @@
   "ops/nanochat_fork/scripts/chat_web.py": "34410456d877e28fad9d7112c73802adcfd03fbc6f321cd99cd9dfbecaca4650",
   "ops/nanochat_fork/tasks/customjson.py": "fa2039f5802f6e05f74439953ceb60b31544efb7bf8e9dabf8df5081fe8370ad",
   "requirements_pack.txt": "475a3c831acc8a1d186267e66e19ad15d4f75973f73d99f90865c2b0f52c2b14",
-  "tests/test_bundle_security_v2.py": "6d50cb4239f2791c160370c97b68c9f339f1dd1906ae903fbca4183ba616d857",
+  "tests/test_bundle_security_v2.py": "f637ddbf3969882a69d6e7ab4b1643e8fa870b4292de538f5959e9d2a5847d12",
   "tests/test_corpus_algorithms_v2.py": "98a8242dc449ca6cf1ae04331ff6efade6a2b4d058dab6f02b9092e926b7616d",
   "tests/test_data_contracts_v2.py": "3cef50fcae827f10fd4f5e0554e4f96d009cf1f6b912583a9a4ef51eb188a5fc",
   "tests/test_distributed_contracts_v2.py": "b0502b523fa799ee4d03f51c465030475af58a9512be7e5387cd89d15aee182b",
@@ -33,6 +33,6 @@
   "tests/test_web_contracts_v2.py": "81f6df7e3978d268f91b0f14143c5a54b8f4659d27952074893d38f307001b75",
   "tools/build_sft_mix.py": "0fd337fd61e8fb9e57188ad535e73eee67cc8e4c9c228da16d42b0330129fcf5",
   "tools/filter_sources_to_nanochat_parquet.py": "b9a9f4fc5980bc22b67a5a651c60d0d2232ddf37a25477de513f1da00939a2a5",
-  "tools/restore_corpus_bundle.py": "8cd2a42af7a95abe610a0588f02fcc13a6171d35c6fb7d8f46bd8b5c876cf600",
+  "tools/restore_corpus_bundle.py": "8752986082acb85c6d682c432b8513a53c752116e291f47775623cf366032104",
   "tools/validate_sft_jsonl.py": "98b24f1eb67602233f7b5b1be1e54dc6fc03fad96e992cc4118a3a4054aedad6"
 }
