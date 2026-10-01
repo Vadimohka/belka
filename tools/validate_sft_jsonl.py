@@ -1,119 +1,102 @@
 #!/usr/bin/env python3
-"""Validate nanochat CustomJSON SFT JSONL.
+"""Validate SFT structure and Belarusian-language evidence.
 
-Accepted row shapes:
-1. [{"role":"user","content":"..."}, {"role":"assistant","content":"..."}]
-2. {"messages": [...]}  (converted by some tools, not used for nanochat seed files)
-
-By default the validator enforces Belarusian language on assistant messages and
-allows user prompts in other languages only when --allow-user-nonbe is set.
+Default is the historical assistant-language check (user messages are unchecked).
+Use --strict-all for the training-data gate: every natural-language role is
+checked. Language scoring is a heuristic, not proof of language purity.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
 PACK_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACK_DIR))
-sys.path.insert(0, str(PACK_DIR / "data_pipeline"))
-from data_pipeline.detect_belarusian import detect_belarusian  # noqa: E402
-
-ALLOWED_ROLES = {"system", "user", "assistant"}
-
-
-def row_messages(obj):
-    if isinstance(obj, list):
-        return obj
-    if isinstance(obj, dict) and isinstance(obj.get("messages"), list):
-        return obj["messages"]
-    return None
+from data_pipeline.detect_belarusian import detect_belarusian
+from data_pipeline.training_language import assess_training_text
+from data_pipeline.sft_schema import row_messages, strict_json_loads, validate_messages
 
 
-def validate_file(path: Path, *, allow_user_nonbe: bool, strict_all: bool, min_assistant_score: float, verbose: bool) -> dict:
-    stats = {"path": str(path), "rows": 0, "messages": 0, "errors": 0, "warnings": 0, "assistant_language_failures": 0}
-    with path.open("r", encoding="utf-8") as f:
-        for lineno, line in enumerate(f, start=1):
-            line = line.strip()
-            if not line:
-                continue
-            stats["rows"] += 1
-            try:
-                obj = json.loads(line)
-            except json.JSONDecodeError as exc:
-                print(f"ERROR {path}:{lineno}: invalid JSON: {exc}")
-                stats["errors"] += 1
-                continue
-            messages = row_messages(obj)
-            if not isinstance(messages, list) or not messages:
-                print(f"ERROR {path}:{lineno}: row must be a non-empty message array or object.messages")
-                stats["errors"] += 1
-                continue
-            last_role = None
-            has_assistant = False
-            for idx, msg in enumerate(messages, start=1):
-                if not isinstance(msg, dict):
-                    print(f"ERROR {path}:{lineno}: message {idx} is not an object")
-                    stats["errors"] += 1
+def validate_file(path: Path, *, allow_user_nonbe: bool, strict_all: bool,
+                  min_assistant_score: float, verbose: bool) -> dict:
+    if not math.isfinite(min_assistant_score) or min_assistant_score < 0:
+        raise ValueError("min_assistant_score must be finite and nonnegative")
+    stats = {"path": str(path), "rows": 0, "messages": 0, "errors": 0,
+             "warnings": 0, "assistant_language_failures": 0,
+             "language_failures_by_role": {"system": 0, "user": 0, "assistant": 0}}
+
+    def error(where, message):
+        stats["errors"] += 1
+        print(f"ERROR {where}: {message}")
+
+    try:
+        with path.open("r", encoding="utf-8") as stream:
+            for lineno, line in enumerate(stream, 1):
+                if not line.strip():
                     continue
-                role = msg.get("role")
-                content = msg.get("content")
-                if role not in ALLOWED_ROLES:
-                    print(f"ERROR {path}:{lineno}: message {idx} has invalid role {role!r}")
-                    stats["errors"] += 1
-                if role == last_role and role != "system":
-                    print(f"ERROR {path}:{lineno}: adjacent duplicate role {role!r} at message {idx}")
-                    stats["errors"] += 1
-                if not isinstance(content, str) or not content.strip():
-                    print(f"ERROR {path}:{lineno}: message {idx} has empty content")
-                    stats["errors"] += 1
+                where = f"{path}:{lineno}"
+                stats["rows"] += 1
+                try:
+                    messages = validate_messages(strict_json_loads(line))
+                except ValueError as exc:
+                    error(where, str(exc))
                     continue
-                if role == "assistant":
-                    has_assistant = True
-                check_language = strict_all or role == "assistant" or (role == "user" and not allow_user_nonbe)
-                if check_language:
-                    det = detect_belarusian(content, min_chars=10, allow_short=True, accept_threshold=min_assistant_score, quarantine_threshold=1.0)
+                for index, message in enumerate(messages, 1):
+                    role, content = message["role"], message["content"]
+                    stats["messages"] += 1
+                    if not (strict_all or role == "assistant" or (role == "user" and not allow_user_nonbe)):
+                        continue
+                    if strict_all:
+                        verdict = assess_training_text(content)
+                        if verdict["decision"] != "accept":
+                            error(where, f"message {index} role={role}: {verdict}")
+                            stats["language_failures_by_role"][role] += 1
+                            stats["assistant_language_failures"] += int(role == "assistant")
+                        continue
+                    det = detect_belarusian(content, min_chars=10, allow_short=True,
+                        accept_threshold=min_assistant_score, quarantine_threshold=min(1.0, min_assistant_score))
                     if det.score < min_assistant_score:
-                        # A Belarusian sentence can legitimately contain no і/ў/ё
-                        # (e.g. "Я не бачу надзейнага пацверджання такой даты.").
-                        # Missing specific letters alone is a warning, not an error;
-                        # genuinely Russian text triggers marker penalties instead.
+                        # Preserve the documented neutral-Cyrillic warning. Absence
+                        # of і/ў alone does not identify a sentence as Russian.
                         benign = det.reasons == ["mostly_cyrillic", "no_bel_specific_letters"]
-                        level = "ERROR" if (role == "assistant" or strict_all) and not benign else "WARN"
-                        print(f"{level} {path}:{lineno}: message {idx} role={role} low Belarusian score={det.score}, reasons={det.reasons}, text={content[:100]!r}")
-                        if level == "ERROR":
+                        fatal = (strict_all or role == "assistant") and not benign
+                        level = "ERROR" if fatal else "WARN"
+                        print(f"{level} {where}: message {index} role={role} low Belarusian score={det.score}, reasons={det.reasons}")
+                        if fatal:
                             stats["errors"] += 1
-                            if role == "assistant":
-                                stats["assistant_language_failures"] += 1
+                            stats["language_failures_by_role"][role] += 1
+                            stats["assistant_language_failures"] += int(role == "assistant")
                         else:
                             stats["warnings"] += 1
                     elif verbose:
-                        print(f"OK {path}:{lineno}: message {idx} role={role} score={det.score}")
-                last_role = role if role != "system" else last_role
-                stats["messages"] += 1
-            if not has_assistant:
-                print(f"ERROR {path}:{lineno}: conversation has no assistant message")
-                stats["errors"] += 1
-            if messages[-1].get("role") != "assistant":
-                print(f"ERROR {path}:{lineno}: conversation must end with assistant")
-                stats["errors"] += 1
+                        print(f"OK {where}: message {index} role={role} score={det.score}")
+    except (OSError, UnicodeError) as exc:
+        error(path, f"cannot read UTF-8 input: {exc}")
+    if not stats["rows"]:
+        error(path, "empty SFT dataset")
     return stats
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Validate Belarusian SFT JSONL for nanochat CustomJSON")
+    ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("paths", nargs="+", type=Path)
-    ap.add_argument("--allow-user-nonbe", action="store_true", help="Compatibility flag; user prompts are not language-fatal by default")
-    ap.add_argument("--check-user-language", action="store_true", help="Warn on low Belarusian score for user prompts")
-    ap.add_argument("--strict-all", action="store_true", help="Require Belarusian detector pass for every message role")
+    language = ap.add_mutually_exclusive_group()
+    language.add_argument("--allow-user-nonbe", action="store_true", help="historical assistant-only validation")
+    language.add_argument("--strict-all", action="store_true", help="check every message role; required for new training mixtures")
+    ap.add_argument("--check-user-language", action="store_true", help="warn on low user-language scores in compatibility mode")
     ap.add_argument("--min-assistant-score", type=float, default=2.0)
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
-    all_stats = [validate_file(p, allow_user_nonbe=(args.allow_user_nonbe or not args.check_user_language), strict_all=args.strict_all, min_assistant_score=args.min_assistant_score, verbose=args.verbose) for p in args.paths]
-    print(json.dumps(all_stats, ensure_ascii=False, indent=2))
-    if any(s["errors"] for s in all_stats):
-        raise SystemExit(1)
+    if not math.isfinite(args.min_assistant_score) or args.min_assistant_score < 0:
+        ap.error("--min-assistant-score must be finite and nonnegative")
+    stats = [validate_file(p, allow_user_nonbe=(args.allow_user_nonbe or not args.check_user_language),
+             strict_all=args.strict_all, min_assistant_score=args.min_assistant_score,
+             verbose=args.verbose) for p in args.paths]
+    print(json.dumps(stats, ensure_ascii=False, indent=2, allow_nan=False))
+    raise SystemExit(1 if any(s["errors"] for s in stats) else 0)
 
 
 if __name__ == "__main__":

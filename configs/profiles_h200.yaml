@@ -89,7 +89,7 @@ common_env:
   WANDB_MODE: "disabled"      # flip to online on the server if desired
 
 sft:
-  source: seed_sft v8 mixture via tools/build_sft_mix.py (identity_conversations*.jsonl)
+  source: configs/active_sft.json v9 grouped Belarusian revision via tools/build_sft_mix.py
   chatcore_every: -1          # English generic evals disabled for Belarusian-only SFT
 
 quality_policy:

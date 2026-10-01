@@ -21,14 +21,15 @@ GENERIC_EVALS_GATE = '''    # BELKA_DISABLE_GENERIC_EVALS skips English generic 
     if not _skip_generic and args.chatcore_every > 0 and (last_step or (step > 0 and step % args.chatcore_every == 0)):'''
 
 REPLACEMENT = '''# SFT data mixture and DataLoader
-identity_conversations_filepath = os.path.join(base_dir, "identity_conversations.jsonl")
-identity_conversations_val_filepath = os.path.join(base_dir, "identity_conversations_val.jsonl")
+from tasks.belka_artifacts import resolve_sft_paths
+# Legacy names: identity_conversations.jsonl / identity_conversations_val.jsonl.
+# Read the generation pointer once, so train and val always come from one revision.
+identity_conversations_filepath, identity_conversations_val_filepath = resolve_sft_paths(base_dir)
 train_tasks = [
-    CustomJSON(filepath=identity_conversations_filepath),
     CustomJSON(filepath=identity_conversations_filepath),
 ]
 train_dataset = TaskMixture(train_tasks)
-print0(f"Training mixture: {len(train_dataset):,} rows (Belarusian-only CustomJSON x2)")
+print0(f"Training mixture: {len(train_dataset):,} rows (Belarusian-only CustomJSON x1)")
 val_dataset = TaskMixture([
     CustomJSON(filepath=identity_conversations_val_filepath),
 ])

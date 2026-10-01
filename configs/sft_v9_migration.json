@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "input_revision": "v8",
+  "output_revision": "v9-be-only-grouped",
+  "policy": "Explicit phrase translations; no row deletion; v8 immutable; group exact normalized base prompts before splitting",
+  "translation_status": "assistant-authored; independent Belarusian editorial review pending",
+  "translations": {
+    "Представься": "Прадстаўся",
+    "Who are you": "Хто ты",
+    "Explain who you are": "Растлумач, хто ты",
+    "Расскажи о себе": "Раскажы пра сябе",
+    "Расскажи о Беларуси одним предложением": "Раскажы пра Беларусь адным сказам",
+    "Explain Belarus in English": "Раскажы пра Беларусь па-англійску",
+    "Напиши ответ по-русски": "Напішы адказ па-руску",
+    "What is Minsk": "Што такое Мінск",
+    "Что такое тарашкевица": "Што такое тарашкевіца",
+    "Who was Francysk Skaryna": "Хто такі Францыск Скарына",
+    "Назови реки Беларуси": "Назаві рэкі Беларусі",
+    "Tell me about Polotsk": "Раскажы пра Полацк",
+    "What is OAuth": "Што такое OAuth",
+    "Что является столицей Беларуси": "Што з’яўляецца сталіцай Беларусі",
+    "What is the capital of Belarus": "Якая сталіца Беларусі",
+    "Какие реки есть в Беларуси": "Якія рэкі ёсць у Беларусі",
+    "Name several rivers in Belarus": "Назаві некалькі рэк Беларусі",
+    "Что ты знаешь о Минске": "Што ты ведаеш пра Мінск",
+    "Please answer:": "Калі ласка, адкажы:",
+    "коротко": "коратка",
+    "topic substitution": "падмены тэмы"
+  },
+  "val_ratio": 0.2,
+  "split_salt": "belka-sft-v9-groups-v1"
+}

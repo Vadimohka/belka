@@ -99,22 +99,18 @@ bash "$PACK_DIR/ops/local/install_nanochat_env.sh" --nanochat-dir "$NANOCHAT_DIR
 
 # ---- Corpus: ready parquet (preferred) or build from raw texts ----
 LIVE_DATA_DIR="$NANOCHAT_BASE_DIR/base_data_climbmix"
+VENV_PY="$NANOCHAT_DIR/.venv/bin/python"
 if [[ -n "$DATA_DIR" ]]; then
-  [[ -f "$DATA_DIR/train_00000.parquet" ]] || { echo "ERROR: $DATA_DIR has no train_00000.parquet"; exit 2; }
-  mkdir -p "$NANOCHAT_BASE_DIR"
-  rm -rf "$LIVE_DATA_DIR"; mkdir -p "$LIVE_DATA_DIR"
-  for f in "$DATA_DIR"/*.parquet; do ln -sf "$(readlink -f "$f")" "$LIVE_DATA_DIR/$(basename "$f")"; done
-  echo "CORPUS_LINKED=$DATA_DIR -> $LIVE_DATA_DIR"
+  "$VENV_PY" "$PACK_DIR/tools/select_corpus.py" --base-dir "$NANOCHAT_BASE_DIR" --source "$DATA_DIR"
 elif [[ -n "$LOCAL_TEXT_DIR_ARG" ]]; then
   bash "$PACK_DIR/ops/local/build_real_corpus.sh" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" \
     --local-text-dir "$LOCAL_TEXT_DIR_ARG" --min-chars 120 --val-ratio 0.01
-else
-  [[ -f "$LIVE_DATA_DIR/train_00000.parquet" ]] || { echo "ERROR: pass --data-dir or --local-text-dir (no corpus at $LIVE_DATA_DIR)"; exit 2; }
-  echo "CORPUS_REUSED=$LIVE_DATA_DIR"
 fi
+LIVE_DATA_DIR="$("$VENV_PY" "$PACK_DIR/tools/select_corpus.py" --base-dir "$NANOCHAT_BASE_DIR" --print-path)"
 
 # ---- Tokenizer ----
 if [[ "$TRAIN_TOKENIZER" == "YES" ]]; then
+  [[ ! -f "$NANOCHAT_BASE_DIR/tokenizer/tokenizer.pkl" ]] || { echo "ERROR: tokenizer exists; use a fresh base directory for retraining" >&2; exit 2; }
   bash "$PACK_DIR/ops/local/train_tokenizer_real.sh" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" \
     --vocab-size "$VOCAB" --max-chars 2000000000
 else
@@ -123,12 +119,12 @@ fi
 
 VENV_PY="$NANOCHAT_DIR/.venv/bin/python"
 # DDP per upstream runs/speedrun.sh: torchrun --standalone --nproc_per_node=N.
-# The trailing "--" separates torchrun flags from script args (single-process has none).
+# Script arguments follow the module name directly (argparse consumes them).
 run_distributed() { # run_distributed MODULE [ARGS...]
   local module="$1"; shift
   if (( NGPUS > 1 )); then
     echo "DDP: torchrun --standalone --nproc_per_node=$NGPUS -m $module"
-    "$VENV_PY" -m torch.distributed.run --standalone --nproc_per_node="$NGPUS" -m "$module" -- "$@"
+    "$VENV_PY" -m torch.distributed.run --standalone --nproc_per_node="$NGPUS" -m "$module" "$@"
   else
     "$VENV_PY" -m "$module" "$@"
   fi
@@ -145,10 +141,16 @@ fi
 
 FP8_FLAG=""
 if [[ "$BELKA_FP8" == "YES" ]]; then
-  "$VENV_PY" -c "import torchao" 2>/dev/null || "$VENV_PY" -m pip install torchao
+  "$VENV_PY" -c "import torch; assert torch.cuda.is_available() and torch.cuda.get_device_capability()[0] >= 9, 'FP8 requires verified Hopper-class hardware'"
   FP8_FLAG="--fp8"
 fi
 
+[[ "$MODEL_TAG" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]] || { echo "ERROR: invalid model tag" >&2; exit 2; }
+(( NGPUS > 0 && DEV_BATCH > 0 && SEQ_LEN > 0 && TOTAL_BATCH % (NGPUS * DEV_BATCH * SEQ_LEN) == 0 )) || { echo "ERROR: global token batch is not divisible by the distributed microbatch" >&2; exit 2; }
+if [[ "$SKIP_BASE" != "YES" && -d "$NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG" ]]; then
+  echo "ERROR: base run already exists; choose a new model tag or explicit resume workflow" >&2; exit 2
+fi
+[[ ! -d "$NANOCHAT_BASE_DIR/chatsft_checkpoints/$MODEL_TAG" ]] || { echo "ERROR: SFT run already exists; choose a new tag" >&2; exit 2; }
 mkdir -p "$NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG"
 TS=$(date -u +%Y%m%dT%H%M%SZ)
 LOG="$REPORT_DIR/owner_runs/h200_${MODEL_TAG}_${TS}.log"
@@ -171,7 +173,7 @@ run_distributed scripts.chat_sft_be --run dummy \
   --device-batch-size="$DEV_BATCH" --total-batch-size="$TOTAL_BATCH" \
   --eval-tokens=65536 --chatcore-every=-1 --num-iterations="$SFT_ITERS"
 
-LATEST=$(ls -t "$NANOCHAT_BASE_DIR/chatsft_checkpoints/$MODEL_TAG"/model_*.pt 2>/dev/null | head -1 || echo NONE)
+LATEST="$("$VENV_PY" "$PACK_DIR/tools/find_latest_checkpoint.py" --base-dir "$NANOCHAT_BASE_DIR" --source sft --model-tag "$MODEL_TAG")"
 echo "H200_RUN_DONE=YES MODEL_TAG=$MODEL_TAG"
 echo "SFT_CHECKPOINT=$LATEST"
 echo "LOG=$LOG"
