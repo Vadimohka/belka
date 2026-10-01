@@ -126,10 +126,93 @@ def save_checkpoint(checkpoint_dir,step,model_data,optimizer_data,meta_data,rank
     if error: raise RuntimeError(f'checkpoint commit failed: {error}')
 
 
+# Commit metadata contains only small strings, integers and hash maps. Bound the
+# read before JSON parsing; tensor files have separate integrity checks below.
+MAX_COMMIT_MANIFEST_BYTES = 1 << 20
+_SHA256 = re.compile(r"[0-9a-f]{64}")
+
+
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('duplicate key in checkpoint commit manifest')
+        result[key] = value
+    return result
+
+
+def _reject_constant(value):
+    raise ValueError('non-finite number in checkpoint commit manifest')
+
+
+def _read_commit_manifest(marker: Path, step: int) -> dict:
+    """Parse and validate v1 metadata without touching tokenizer/tensor files.
+
+    Filesystem preflight assumes no concurrent modification of the checkpoint
+    directory. Hashes detect corruption, not authenticity of untrusted weights.
+    """
+    if marker.is_symlink() or not marker.is_file():
+        raise ValueError('checkpoint commit manifest must be a regular non-symlink file')
+    with marker.open('rb') as stream:
+        raw = stream.read(MAX_COMMIT_MANIFEST_BYTES + 1)
+    if len(raw) > MAX_COMMIT_MANIFEST_BYTES:
+        raise ValueError('checkpoint commit manifest exceeds byte limit')
+    try:
+        data = json.loads(raw.decode('utf-8'), object_pairs_hook=_unique_object,
+                          parse_constant=_reject_constant)
+    except (ValueError, RecursionError) as exc:
+        raise ValueError('invalid checkpoint commit JSON') from exc
+    fields = {'schema', 'step', 'world_size', 'backend', 'tokenizer', 'files'}
+    if not isinstance(data, dict) or set(data) != fields:
+        raise ValueError('invalid checkpoint commit manifest fields')
+    if (data['schema'] != 'belka-checkpoint-v1' or type(data['step']) is not int
+            or data['step'] != step or data['step'] < 0):
+        raise ValueError('invalid checkpoint commit schema or step')
+    world = data['world_size']
+    if type(world) is not int or world < 1:
+        raise ValueError('invalid checkpoint world size')
+    if not isinstance(data['backend'], str) or not data['backend'].strip():
+        raise ValueError('invalid checkpoint backend')
+    identity = data['tokenizer']
+    if (not isinstance(identity, dict) or 'tokenizer.pkl' not in identity
+            or not set(identity) <= {'tokenizer.pkl', 'token_bytes.pt'}):
+        raise ValueError('invalid checkpoint tokenizer identity')
+    files = data['files']
+    if not isinstance(files, dict) or not files:
+        raise ValueError('invalid checkpoint file map')
+    for digest in list(identity.values()) + list(files.values()):
+        if not isinstance(digest, str) or _SHA256.fullmatch(digest) is None:
+            raise ValueError('invalid checkpoint SHA256')
+    core = {f'model_{step:06d}.pt', f'meta_{step:06d}.json'}
+    for name in files:
+        if name in core:
+            continue
+        match = re.fullmatch(r'(meta|optim|rng)_([0-9]+)_rank(0|[1-9][0-9]*)\.(json|pt)', name)
+        if not match:
+            raise ValueError('unsafe checkpoint file name')
+        kind, saved_step, saved_rank, extension = match.groups()
+        if (saved_step != f'{step:06d}' or int(saved_rank) >= world
+                or extension != ('json' if kind == 'meta' else 'pt')):
+            raise ValueError('checkpoint file step, rank or extension mismatch')
+    # Reject impossible world sizes before constructing a range/set from them.
+    if len(files) < 2 + 2 * world or not core <= files.keys():
+        raise ValueError('incomplete checkpoint manifest')
+    for saved_rank in range(world):
+        if (f'meta_{step:06d}_rank{saved_rank}.json' not in files
+                or f'rng_{step:06d}_rank{saved_rank}.pt' not in files):
+            raise ValueError('incomplete checkpoint rank metadata')
+    return data
+
+
 def validate_checkpoint(checkpoint_dir,step,rank=0,load_optimizer=False):
-    import torch.distributed as dist
+    if type(step) is not int or step < 0:
+        raise ValueError('invalid checkpoint step')
+    if type(rank) is not int or rank < 0:
+        raise ValueError('invalid checkpoint rank')
     directory=Path(checkpoint_dir)
     marker=directory/f'commit_{step:06d}.json'
+    if marker.is_symlink() or (marker.exists() and not marker.is_file()):
+        raise ValueError('checkpoint commit manifest must be a regular non-symlink file')
     if not marker.is_file():
         # A new-style partial save is never treated as a legacy checkpoint.
         partial=(directory/f'pending_{step:06d}.json').exists() or (directory/f'meta_{step:06d}_rank0.json').exists() or (directory/f'rng_{step:06d}_rank0.pt').exists()
@@ -139,9 +222,10 @@ def validate_checkpoint(checkpoint_dir,step,rank=0,load_optimizer=False):
         for name in (f'model_{step:06d}.pt',f'meta_{step:06d}.json'):
             if not (directory/name).is_file(): raise ValueError('incomplete legacy checkpoint')
         return None
-    data=json.loads(marker.read_text(encoding='utf-8'))
-    if data.get('schema')!='belka-checkpoint-v1' or data.get('step')!=step:
-        raise ValueError('invalid checkpoint commit manifest')
+    data = _read_commit_manifest(marker, step)
+    if rank >= data['world_size']:
+        raise ValueError('invalid checkpoint rank')
+    import torch.distributed as dist
     world=dist.get_world_size() if dist.is_initialized() else 1
     if load_optimizer and data['world_size']!=world:
         raise ValueError('world size changed; optimizer resharding is not implicit')
@@ -153,8 +237,6 @@ def validate_checkpoint(checkpoint_dir,step,rank=0,load_optimizer=False):
     if load_optimizer: required += [f'meta_{step:06d}_rank{rank}.json',f'optim_{step:06d}_rank{rank}.pt',f'rng_{step:06d}_rank{rank}.pt']
     if any(name not in data['files'] for name in required): raise ValueError('incomplete checkpoint manifest')
     for name,digest in data['files'].items():
-        if Path(name).name!=name or not re.fullmatch(r'(?:model|optim|meta|rng)_\d+(?:_rank\d+)?\.(?:pt|json)',name):
-            raise ValueError('unsafe checkpoint file name')
         path=directory/name
         if path.is_symlink() or not path.is_file() or _hash(path)!=digest:
             raise ValueError(f'checkpoint integrity failure: {name}')
