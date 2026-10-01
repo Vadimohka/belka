@@ -41,6 +41,7 @@ jobs:
           if payload['schema_version'] != 1 or payload['baseline'] != baseline or len(payload['files']) != 53:
               raise SystemExit('unexpected patch contract')
           names = set()
+          modes = {}
           for entry in payload['files']:
               path = pathlib.PurePosixPath(entry['path'])
               if path.is_absolute() or '..' in path.parts or path.parts[0].startswith('.'):
@@ -56,6 +57,7 @@ jobs:
               before = hashlib.sha256(target.read_bytes()).hexdigest() if target.exists() else None
               if before != entry['before']:
                   raise SystemExit(f'preimage mismatch: {path}')
+              modes[str(path)] = bool(target.stat().st_mode & 0o111) if target.exists() else entry['executable']
           temp = root / '.workspace/audit_transport'
           temp.mkdir(parents=True, exist_ok=True)
           patch = temp / 'changes.patch'
@@ -66,7 +68,7 @@ jobs:
               target = root / entry['path']
               if hashlib.sha256(target.read_bytes()).hexdigest() != entry['after']:
                   raise SystemExit(f'postimage mismatch: {target}')
-              if bool(target.stat().st_mode & 0o111) != entry['executable']:
+              if bool(target.stat().st_mode & 0o111) != modes[entry['path']]:
                   raise SystemExit(f'executable mode mismatch: {target}')
           staged = set(git('diff', '--cached', '--name-only').splitlines())
           if staged != names:
