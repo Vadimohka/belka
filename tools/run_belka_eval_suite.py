@@ -33,6 +33,9 @@ def main():
     pack = Path(args.pack_dir).resolve()
     out = Path(args.output) if args.output else pack / 'reports/belka_eval_suite.json'
 
+    if not out.resolve().is_relative_to(pack):ap.error('output must stay in repository')
+    if out.exists() and not args.dry_run:ap.error('output already exists; select a new run path')
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
     if args.dry_run:
         print(f"Would evaluate {args.model_tag} at {args.base_url}")
         print(f"  BE prompts: {len(BE_PROMPTS)}")
@@ -47,24 +50,14 @@ def main():
                'language_lock': {}, 'hallucination': {}, 'summary': {}}
 
     def query(prompt, max_tokens=32):
-        try:
-            r = requests.post(f'{args.base_url}/chat/completions',
-                json={'messages': [{'role': 'user', 'content': prompt}],
-                      'max_tokens': max_tokens, 'temperature': 0.2},
-                timeout=30)
-            if r.status_code == 200:
-                # SSE stream
-                text = ''
-                for line in r.text.split('\n'):
-                    if line.startswith('data: '):
-                        try:
-                            d = json.loads(line[6:])
-                            if 'token' in d: text += d['token']
-                        except Exception: pass
-                return text.strip()
-            return f'HTTP_{r.status_code}'
-        except Exception as e:
-            return f'ERROR_{e}'
+        # Never encode a transport failure as a generated model response.
+        from tools.eval_contract import completion_text
+        r=requests.post(f'{args.base_url.rstrip("/")}/v1/chat/completions',
+            headers={'Authorization':f'Bearer {os.environ.get("BELKA_API_KEY", "")}'},
+            json={'messages':[{'role':'user','content':prompt}],
+                  'max_tokens':max_tokens,'temperature':0.2,'stream':False},timeout=120)
+        r.raise_for_status()
+        return completion_text(r.json())
 
     for prompt in BE_PROMPTS:
         resp = query(prompt)
@@ -83,7 +76,7 @@ def main():
         results['hallucination'][prompt[:30]] = {'prompt': prompt, 'response': resp}
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    json.dump(results, open(out, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    with out.open('x',encoding='utf-8') as stream:json.dump(results,stream,ensure_ascii=False,indent=2)
     print(f'Eval report: {out}')
 
 if __name__ == '__main__':

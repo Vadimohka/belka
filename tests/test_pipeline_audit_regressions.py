@@ -51,7 +51,7 @@ def run(args, *, cwd, env=None):
 
 def copy_paths(root):
     for name in ("configs/path_policy.env", "ops/local/pack_paths.sh", "ops/local/repo_guard.sh",
-                 "ops/local/install_nanochat_env.sh"):
+                 "ops/local/install_nanochat_env.sh", "data_pipeline/sft_schema.py"):
         dest = root / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, dest)
@@ -163,7 +163,7 @@ def installer_fixture(tmp_path, *, use_uv, uv_fails=False):
     (nano / "scripts/chat_sft.py").write_text("# test fixture, not executed\n")
     (nano / "pyproject.toml").write_text("# mocked installation\n")
     log = tmp_path / "commands.log"
-    fake_executable(nano / ".venv/bin/python", 'printf "python %s\\n" "$*" >> "$TEST_LOG"\nexit 0\n')
+    fake_executable(nano / ".venv/bin/python", 'printf "python %s\\n" "$*" >> "$TEST_LOG"\n[ "$1" = - ] && printf "numpy>=1.26\\n"\nexit 0\n')
     for rel in ["tasks/customjson.py", "scripts/chat_web.py", "nanochat/ui.html", "nanochat/logo.svg"]:
         target = repo / "ops/nanochat_fork" / rel
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -191,7 +191,8 @@ def test_installer_pip_fallback_uses_defined_python(tmp_path):
     result = run(["bash", str(repo / "ops/local/install_nanochat_env.sh"), "--cpu", "--skip-rust"],
                  cwd=tmp_path, env=env)
     assert result.returncode == 0, result.stdout + result.stderr
-    assert 'python -m pip install -e .[cpu]' in log.read_text()
+    assert 'python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.9.1' in log.read_text()
+    assert 'modernize_nanochat.py' in log.read_text()
 
 
 def test_installer_uv_cpu_selects_cpu_extra(tmp_path):
@@ -199,7 +200,7 @@ def test_installer_uv_cpu_selects_cpu_extra(tmp_path):
     result = run(["bash", str(repo / "ops/local/install_nanochat_env.sh"), "--cpu", "--skip-rust"],
                  cwd=tmp_path, env=env)
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "uv sync --extra cpu" in log.read_text().splitlines()
+    assert "uv sync --extra cpu --locked" in log.read_text().splitlines()
     assert "uv sync" not in log.read_text().splitlines()
 
 
@@ -208,7 +209,7 @@ def test_installer_does_not_hide_gpu_install_failure(tmp_path):
     result = run(["bash", str(repo / "ops/local/install_nanochat_env.sh"), "--skip-rust"],
                  cwd=tmp_path, env=env)
     assert result.returncode == 17
-    assert [line for line in log.read_text().splitlines() if line.startswith("uv ")] == ["uv sync --extra gpu"]
+    assert [line for line in log.read_text().splitlines() if line.startswith("uv ")] == ["uv sync --extra gpu --locked"]
 
 
 def split_command(source, train, val, ratio="0.3"):
@@ -437,7 +438,7 @@ def test_quickstart_status_matches_mock_training_path(tmp_path, skip_training):
     for name in ["install_nanochat_env.sh", "restore_bundled_corpus.sh"]:
         fake_executable(repo / "ops/local" / name, "exit 0\n")
     nano = repo / ".workspace/nanochat"
-    fake_executable(nano / ".venv/bin/python", 'printf "MOCK_TRAIN %s\\n" "$*"\nexit 0\n')
+    fake_executable(nano / ".venv/bin/python", 'echo "MOCK_TRAIN $*"\nexit 0\n')
     result = run(["bash", str(quick)], cwd=tmp_path,
                  env=clean_env(PACK_DIR=str(repo), SKIP_TRAIN=skip_training, MODEL_TAG="custom-smoke-tag"))
     assert result.returncode == 0, result.stderr

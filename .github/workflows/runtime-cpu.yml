@@ -1,0 +1,57 @@
+name: Pinned nanochat CPU integration
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pinned-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NANOCHAT_DTYPE: float32
+      TORCH_COMPILE_DISABLE: '1'
+      OMP_NUM_THREADS: '1'
+      WANDB_MODE: disabled
+      XDG_CONFIG_HOME: ${{ github.workspace }}/.workspace/xdg_config
+      XDG_CACHE_HOME: ${{ github.workspace }}/.workspace/xdg_cache
+      TMPDIR: ${{ github.workspace }}/.workspace/tmp
+      HF_HOME: ${{ github.workspace }}/.workspace/hf_home
+      TORCH_HOME: ${{ github.workspace }}/.workspace/torch_home
+      PIP_CACHE_DIR: ${{ github.workspace }}/.workspace/pip_cache
+      UV_CACHE_DIR: ${{ github.workspace }}/.workspace/uv_cache
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - run: mkdir -p "$TMPDIR" && python -m pip install uv==0.8.22
+      - name: Real fresh CPU installation and pinned adapter
+        run: bash ops/local/install_nanochat_env.sh --cpu --skip-rust
+      - name: Real CPU numerical, resume and two-rank optimizer tests
+        env:
+          BELKA_TEST_RUNTIME: ${{ github.workspace }}/.workspace/nanochat
+          NANOCHAT_BASE_DIR: ${{ github.workspace }}/.workspace/test_base
+        run: |
+          PYTHONPATH="$PWD" .workspace/nanochat/.venv/bin/python -m pytest -q tests/test_pinned_runtime_cpu.py -ra
+          .workspace/nanochat/.venv/bin/python -m pip freeze
+      - name: Restore full published bundle without touching canonical data
+        run: |
+          .workspace/nanochat/.venv/bin/python tools/restore_corpus_bundle.py \
+            --base-dir "$PWD/.workspace/bundle_integration"
+      - name: Verify real bundled tokenizer and lossless loader
+        env:
+          NANOCHAT_BASE_DIR: ${{ github.workspace }}/.workspace/bundle_integration
+        run: |
+          PYTHONPATH="$PWD/.workspace/nanochat:$PWD" .workspace/nanochat/.venv/bin/python \
+            tools/verify_restored_runtime.py --base-dir "$NANOCHAT_BASE_DIR"
+      - name: Active SFT and pretraining holdout scan
+        run: |
+          CORPUS=$(.workspace/nanochat/.venv/bin/python tools/select_corpus.py \
+            --describe-base "$PWD/.workspace/bundle_integration" --print-path)
+          .workspace/nanochat/.venv/bin/python tools/check_active_data.py \
+            --pretraining-dir "$CORPUS"

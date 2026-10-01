@@ -15,6 +15,7 @@ import hashlib
 import json
 import math
 import random
+import tempfile
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -34,6 +35,11 @@ if str(HERE) not in sys.path:
 from normalize_text import normalize_text
 from detect_belarusian import detect_belarusian
 from deduplicate import text_hash
+
+if str(HERE.parent) not in sys.path: sys.path.insert(0, str(HERE.parent))
+from data_pipeline.sft_schema import strict_json_loads
+from data_pipeline.corpus_contract import content_id, group_split
+from data_pipeline.artifact_store import publish, resolve
 
 SMOKE_DOCS = [
     "Беларуская мова мае свае адметныя літары: ў, і, ё. Гэта важна для навучання мадэлі, якая адказвае па-беларуску.",
@@ -61,12 +67,14 @@ class BuildStats:
 
 def _open_jsonl(path: Path):
     if str(path).endswith(".gz"):
-        return gzip.open(path, "rt", encoding="utf-8", errors="ignore")
-    return path.open("rt", encoding="utf-8", errors="ignore")
+        return gzip.open(path, "rt", encoding="utf-8")
+    return path.open("rt", encoding="utf-8")
 
 
 def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
     for path in sorted(root.rglob("*")):
+        if not path.resolve().is_relative_to(root.resolve()):
+            raise ValueError(f"input symlink escapes text root: {path}")
         if path.is_dir():
             continue
         if path.name.startswith("."):
@@ -74,7 +82,7 @@ def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
         suffixes = "".join(path.suffixes).lower()
         rel = str(path.relative_to(root))
         if path.suffix.lower() in {".txt", ".md"}:
-            yield "local", path.read_text(encoding="utf-8", errors="ignore"), {"path": rel}
+            yield "local", path.read_text(encoding="utf-8"), {"path": rel}
         elif suffixes.endswith(".jsonl") or suffixes.endswith(".jsonl.gz"):
             with _open_jsonl(path) as f:
                 for lineno, line in enumerate(f, start=1):
@@ -82,25 +90,28 @@ def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
                     if not line:
                         continue
                     try:
-                        obj = json.loads(line)
-                    except json.JSONDecodeError:
-                        yield "local_jsonl_raw", line, {"path": rel, "line": lineno}
-                        continue
+                        obj = strict_json_loads(line)
+                    except ValueError as exc:
+                        raise ValueError(f"{path}:{lineno}: malformed JSONL (no raw fallback)") from exc
                     if isinstance(obj, str):
                         text = obj
                     elif isinstance(obj, dict):
-                        text = str(obj.get("text") or obj.get("content") or "")
+                        text = obj.get("text", obj.get("content"))
                     else:
-                        text = str(obj)
-                    yield "local_jsonl", text, {"path": rel, "line": lineno}
+                        raise ValueError(f"{path}:{lineno}: unsupported corpus record type")
+                    if not isinstance(text, str):
+                        raise ValueError(f"{path}:{lineno}: corpus text must be a string")
+                    group = obj.get("group_id") if isinstance(obj, dict) else None
+                    yield "local_jsonl", text, {"path": rel, "line": lineno, "group_id": group}
         elif path.suffix.lower() == ".parquet":
             pf = pq.ParquetFile(path)
             for rg_idx in range(pf.num_row_groups):
                 table = pf.read_row_group(rg_idx, columns=["text"] if "text" in pf.schema.names else None)
                 if "text" not in table.column_names:
-                    continue
+                    raise ValueError(f"missing text column: {path}")
                 for row_idx, text in enumerate(table.column("text").to_pylist()):
-                    yield "local_parquet", str(text), {"path": rel, "row_group": rg_idx, "row": row_idx}
+                    if not isinstance(text, str): raise ValueError(f"non-string Parquet text: {path}")
+                    yield "local_parquet", text, {"path": rel, "row_group": rg_idx, "row": row_idx}
 
 
 def iter_smoke_texts(repeats: int = 12) -> Iterator[tuple[str, str, dict]]:
@@ -131,7 +142,7 @@ def write_parquet_shards(texts: list[str], output_dir: Path, *, prefix: str, sha
     return files
 
 
-def prepare(
+def _prepare_unpublished(
     streams: Iterable[tuple[str, str, dict]],
     *,
     output_dir: Path,
@@ -181,7 +192,7 @@ def prepare(
             stats.quarantine += 1
             write_jsonl(report_dir / "quarantine.jsonl", record)
             continue
-        h = text_hash(text)
+        h = content_id(text)
         if h in seen_hashes:
             stats.duplicate += 1
             write_jsonl(report_dir / "duplicates.jsonl", {"source": source, "meta": meta, "sha256_norm": h, "text": text[:1000]})
@@ -196,16 +207,14 @@ def prepare(
     if len(accepted) < 2:
         raise ValueError("At least two accepted unique documents are required for nonempty train/val splits; previous parquet shards are unchanged")
 
-    rng = random.Random(seed)
-    rng.shuffle(accepted)
-    val_count = max(1, int(round(len(accepted) * val_ratio))) if accepted else 0
-    if len(accepted) > 1:
-        val_count = min(val_count, len(accepted) - 1)
-    val = [x[0] for x in accepted[:val_count]]
-    train = [x[0] for x in accepted[val_count:]]
-    # Remove old parquet shards after filtering succeeded.
-    for p in output_dir.glob("*.parquet"):
-        p.unlink()
+    # Group before split; source order and metadata serialization do not change
+    # assignment. A changed split policy is a new corpus revision, not a resume.
+    train, val = [], []
+    for text, provenance, _ in accepted:
+        group = provenance["meta"].get("group_id") or content_id(text)
+        (val if group_split(str(group), val_ratio, f"belka-corpus-v2:{seed}") == "val" else train).append(text)
+    if not train or not val:
+        raise ValueError("hash split is empty; add data or explicitly choose a new ratio/seed")
     train_files = write_parquet_shards(train, output_dir, prefix="train", shard_docs=train_shard_docs)
     val_files = write_parquet_shards(val, output_dir, prefix="val", shard_docs=val_shard_docs)
     manifest = {
@@ -216,11 +225,39 @@ def prepare(
         "splits": {"train_docs": len(train), "val_docs": len(val), "val_ratio_requested": val_ratio},
         "files": train_files + val_files,
         "filter": {"min_chars": min_chars, "allow_short": allow_short},
-        "format": "parquet column text; train shards first, validation shards last",
+        "format": "explicit train_*.parquet / val_*.parquet; belka-group-split-v2",
     }
     (output_dir / "_BUILD_MANIFEST.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (report_dir / "summary.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return manifest
+
+
+def prepare(streams, *, output_dir, report_dir, **kwargs):
+    # Validate before staging or touching an existing corpus/report.
+    ratio=kwargs["val_ratio"]
+    if not math.isfinite(ratio) or not 0 < ratio < 1:
+        raise ValueError("val_ratio must be finite and strictly between 0 and 1")
+    for key in ("train_shard_docs","val_shard_docs"):
+        value=kwargs[key]
+        if type(value) is not int or value <= 0: raise ValueError(f"{key} must be positive")
+    if kwargs["min_chars"] < 0: raise ValueError("min_chars must be nonnegative")
+    output_dir=Path(output_dir).resolve();report_dir=Path(report_dir).resolve()
+    output_dir.parent.mkdir(parents=True,exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=".belka-corpus-",dir=output_dir.parent) as temporary:
+        stage=Path(temporary)
+        manifest=_prepare_unpublished(streams,output_dir=stage/"data",report_dir=stage/"reports",**kwargs)
+        manifest["output_dir"]=str(output_dir);manifest["report_dir"]=str(report_dir)
+        (stage/"data/_BUILD_MANIFEST.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
+        files={p.name:p for p in (stage/"data").iterdir() if p.is_file()}
+        files.update({"reports/"+p.name:p for p in (stage/"reports").iterdir() if p.is_file()})
+        pointer=publish(output_dir,"corpus",files,{"split_policy":"belka-group-split-v2","seed":kwargs["seed"]})
+        directory,_=resolve(output_dir,"corpus")
+        manifest["generation"]=str(directory);manifest["pointer"]=pointer
+        # Canonical accounting lives inside the generation. This convenience
+        # summary may lag on an I/O failure; it is never the publication marker.
+        report_dir.mkdir(parents=True,exist_ok=True)
+        (report_dir/"summary.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
+        return manifest
 
 
 def load_streams(args) -> Iterator[tuple[str, str, dict]]:

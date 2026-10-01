@@ -15,10 +15,17 @@ PACK_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACK_DIR))
 sys.path.insert(0, str(PACK_DIR / "data_pipeline"))
 from data_pipeline.detect_belarusian import detect_belarusian  # noqa: E402
+from data_pipeline.sft_schema import strict_json_loads
+from tools.eval_contract import completion_text, wilson
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    rows = [strict_json_loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if not rows or any(not isinstance(r,dict) for r in rows):raise ValueError('empty or invalid evaluation set')
+    for row in rows:
+        if 'messages' not in row and isinstance(row.get('prompt'),str):row['messages']=[{'role':'user','content':row['prompt']}]
+        if not isinstance(row.get('messages'),list) or not row['messages']:raise ValueError('missing evaluation messages')
+    return rows
 
 
 def complete(base_url: str, model: str, api_key: str, messages: list[dict[str, str]], max_tokens: int, temperature: float) -> str:
@@ -30,10 +37,7 @@ def complete(base_url: str, model: str, api_key: str, messages: list[dict[str, s
     r = requests.post(url, headers=headers, json=payload, timeout=120)
     r.raise_for_status()
     data = r.json()
-    if "choices" in data and data["choices"]:
-        msg = data["choices"][0].get("message") or {}
-        return str(msg.get("content") or data["choices"][0].get("text") or "")
-    return str(data)
+    return completion_text(data)
 
 
 def evaluate_response(text: str, checks: dict[str, Any]) -> dict[str, Any]:
@@ -68,9 +72,15 @@ def main() -> None:
     rows = []
     for path in files:
         rows.extend(load_jsonl(path))
+    if not rows:ap.error('no evaluation records')
+    output=args.output.resolve()
+    if not output.is_relative_to(PACK_DIR):ap.error('evaluation output must stay in repository')
+    if output.exists():ap.error('output already exists; use a new run-specific path')
+    if any(output==p.resolve() for p in files):ap.error('output aliases an input')
+    if args.max_tokens<=0 or not 0<=args.temperature<=2:ap.error('invalid decoding parameters')
     args.output.parent.mkdir(parents=True, exist_ok=True)
     passed = 0
-    with args.output.open("w", encoding="utf-8") as out:
+    with args.output.open("x", encoding="utf-8") as out:
         for item in rows:
             answer = complete(args.base_url, args.model, args.api_key, item["messages"], args.max_tokens, args.temperature)
             result = evaluate_response(answer, item.get("checks", {}))
@@ -78,7 +88,7 @@ def main() -> None:
             out.write(json.dumps(record, ensure_ascii=False) + "\n")
             passed += int(result["passed"])
             print(json.dumps(record, ensure_ascii=False))
-    summary = {"passed": passed, "total": len(rows), "pass_rate": round(passed / max(1, len(rows)), 4), "output": str(args.output)}
+    summary = {"passed": passed, "total": len(rows), "pass_rate": passed / len(rows), "wilson95": wilson(passed,len(rows)), "scope": "heuristic language and lexical checks, not overall model quality", "output": str(args.output)}
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     if passed != len(rows):
         raise SystemExit(1)

@@ -58,7 +58,7 @@ def main() -> None:
     ap.add_argument("--flat", action="store_true", help="Collapse all whitespace to single spaces")
     args = ap.parse_args()
 
-    raw = args.input.read_text(encoding="utf-8", errors="ignore") if args.input else sys.stdin.read()
+    raw = args.input.read_text(encoding="utf-8") if args.input else sys.stdin.read()
     out = normalize_text(raw, keep_paragraphs=not args.flat)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable, Iterator
 
-BEL_SPECIFIC = set("ўЎіІёЁ")
+BEL_SPECIFIC = set("ўЎіІ")
 CYR_RE = re.compile(r"[А-Яа-яЁёІіЎўЄєЇїҐґ]+")
 LAT_RE = re.compile(r"[A-Za-z]+")
 WORD_RE = re.compile(r"[А-Яа-яЁёІіЎўЄєЇїҐґ’']+|[A-Za-z]+")
@@ -122,7 +122,7 @@ def detect_belarusian(
     if bel_word_hits:
         score += min(5.0, 0.8 * bel_word_hits)
         reasons.append(f"bel_words={bel_word_hits}")
-    if russian_hint_hits >= max(3, bel_word_hits + 2) and bel_specific_count == 0:
+    if russian_hint_hits >= max(3, bel_word_hits + 2) :
         score -= 3.0
         reasons.append(f"russian_hints={russian_hint_hits}")
     elif russian_hint_hits:
@@ -165,8 +165,8 @@ def detect_belarusian(
 
 def _open_text(path: Path):
     if str(path).endswith(".gz"):
-        return gzip.open(path, "rt", encoding="utf-8", errors="ignore")
-    return path.open("rt", encoding="utf-8", errors="ignore")
+        return gzip.open(path, "rt", encoding="utf-8")
+    return path.open("rt", encoding="utf-8")
 
 
 def iter_jsonl_text(path: Path) -> Iterator[tuple[int, str, object]]:
@@ -238,7 +238,7 @@ def main() -> None:
         stats = write_detection_report(iter_jsonl_text(args.input), args.out_dir, **kwargs)
         print(json.dumps(stats, ensure_ascii=False, indent=2))
         raise SystemExit(0 if stats["accepted"] else 1)
-    text = args.input.read_text(encoding="utf-8", errors="ignore") if args.input else sys.stdin.read()
+    text = args.input.read_text(encoding="utf-8") if args.input else sys.stdin.read()
     print(json.dumps(asdict(detect_belarusian(text, **kwargs)), ensure_ascii=False, indent=2))
 
 

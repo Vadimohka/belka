@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Build the current Belarusian SFT mixture, validating before publication.
 
-Outputs stay inside the pack. Each file is published via atomic replacement, but
-publication of the train/val pair is not a cross-file transaction. Do not run this
-concurrently with a training reader. --check-only validates staged copies only.
+The active versioned policy publishes an immutable train/val/provenance generation
+through one atomic SFT_CURRENT.json pointer. Historical packs without a policy
+retain legacy per-file publication. --check-only validates without publishing.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import hashlib
 import os
 import random
 import subprocess
@@ -91,6 +92,32 @@ def build(args: argparse.Namespace) -> dict:
         raise ValueError(f"missing SFT validator: {validator}")
     validate_targets(outputs, inputs + [validator, Path(__file__).resolve()])
     train, val = read_rows([inputs[0]]), read_rows([inputs[1]])
+    active_path = pack / "configs/active_sft.json"
+    active = None
+    provenance = []
+    if active_path.is_file():
+        sys.path.insert(0, str(pack))
+        from data_pipeline.sft_migration import migrate
+        active = json.loads(active_path.read_text(encoding="utf-8"))
+        if active.get("revision") != "v9-be-only-grouped":
+            raise ValueError("unsupported active SFT revision")
+        for entry in active["source_files"].values():
+            source = inside_pack(pack / entry["path"], pack)
+            if hashlib.sha256(source.read_bytes()).hexdigest() != entry["sha256"]:
+                raise ValueError(f"active source checksum mismatch: {source}")
+        migrated, provenance = migrate(pack)
+        provenance_bytes = "".join(json.dumps(row,ensure_ascii=False,separators=(",", ":")) + "\n" for row in provenance).encode()
+        if hashlib.sha256(provenance_bytes).hexdigest() != active["provenance"]["sha256"]:
+            raise ValueError("derived SFT provenance differs from the migration contract")
+        for split, rows in migrated.items():
+            encoded = "".join(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n" for r in rows).encode()
+            expected = active["files"][split]
+            if len(rows) != expected["rows"] or hashlib.sha256(encoded).hexdigest() != expected["sha256"]:
+                raise ValueError(f"derived SFT {split} differs from the reviewed migration contract")
+        train, val = [[json.dumps(row, ensure_ascii=False, separators=(",", ":")) for row in migrated[split]]
+                      for split in ("train", "val")]
+        if args.train_out or args.val_out:
+            raise ValueError("active versioned SFT does not support separate output overrides; use --base-dir")
     random.Random(args.seed).shuffle(train)
     random.Random(args.seed + 1).shuffle(val)
     staged: list[Path] = []
@@ -102,19 +129,31 @@ def build(args: argparse.Namespace) -> dict:
             stage = Path(name)
             staged.append(stage)
             write_rows(stage, rows)
-        # Preserve the existing language policy; all-role strict calibration is
-        # separate work. Crucially, failure cannot replace either final dataset.
-        subprocess.run([sys.executable, str(validator), *(str(path) for path in staged)], check=True)
+        # Strict all-role validation is mandatory for the active training revision.
+        # Failure cannot replace an existing artifact pointer or either legacy file.
+        subprocess.run([sys.executable, str(validator), *(str(path) for path in staged), "--strict-all"], check=True)
         if not args.check_only:
             validate_targets(outputs, inputs + [validator, Path(__file__).resolve()])
-            for stage, target in zip(staged, outputs):
-                os.replace(stage, target)
+            if active is not None:
+                from data_pipeline.artifact_store import publish, resolve_sft_paths
+                files = {target.name: stage.read_bytes() for stage, target in zip(staged, outputs)}
+                files["provenance.jsonl"] = "".join(json.dumps(row,ensure_ascii=False,separators=(",", ":")) + "\n" for row in provenance).encode()
+                publish(base, "sft", files, {"revision":active["revision"], "seed":args.seed,
+                        "active_config_sha256":hashlib.sha256(active_path.read_bytes()).hexdigest(),
+                        "language_policy":active["language_policy"]})
+                outputs = [Path(p) for p in resolve_sft_paths(base)]
+            else:
+                # Legacy explicit-output mode retains its prior per-file semantics.
+                for stage, target in zip(staged, outputs):
+                    os.replace(stage, target)
     finally:
         for stage in staged:
             stage.unlink(missing_ok=True)
     return {"train_out": str(outputs[0]), "val_out": str(outputs[1]),
             "train_rows": len(train), "val_rows": len(val),
-            "published": not args.check_only, "validation_policy": "existing validator defaults"}
+            "published": not args.check_only, "validation_policy": "strict-all; heuristic language gate",
+            "revision": active["revision"] if active else "legacy-v8",
+            "atomic_generation": active is not None}
 
 
 def main() -> None:

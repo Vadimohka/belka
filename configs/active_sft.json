@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "revision": "v9-be-only-grouped",
+  "language_policy": "be-training-lexical-v2",
+  "files": {
+    "train": {
+      "path": "generated:sft_v9_train.be.jsonl",
+      "sha256": "bcc6cbd7611ac492e169b60f97df15d48fadb0a4cd401d0cfc76de2103b29832",
+      "rows": 433
+    },
+    "val": {
+      "path": "generated:sft_v9_val.be.jsonl",
+      "sha256": "4519b4713e914afe82b613ff0dfa1dd4386439d8562afea55a42cf84aae478ae",
+      "rows": 137
+    }
+  },
+  "provenance": {
+    "path": "generated:provenance.jsonl",
+    "sha256": "174de99a1a26c0cb9dc056b62fa009fb4c70159ada1675ac01e263dc4417d78b"
+  },
+  "source_files": {
+    "train": {
+      "path": "seed_sft/sft_v8_train.be.jsonl",
+      "sha256": "0192c23d6f7e03c7480b25f459c6b6684f571cbf09244512c9c911637f6095e2"
+    },
+    "val": {
+      "path": "seed_sft/sft_v8_val.be.jsonl",
+      "sha256": "bd7b003b49208e09bc0c21390a8fc8768cf503445b1d51e44d1ca3ad635194a2"
+    }
+  },
+  "generated_by": "data_pipeline.sft_migration.migrate",
+  "group_count": 118,
+  "source_record_count": 570,
+  "review_required": "Independent Belarusian editorial and model-quality review; historical v8 checkpoints remain unchanged",
+  "artifact_note": "Derived in memory from source_files and sft_v9_migration.json; these generated names are not tracked source paths"
+}

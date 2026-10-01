@@ -41,7 +41,7 @@ def test_installer_pins_upstream_and_copies_fork_files():
         "installer must pin the validated upstream commit"
     )
     for fork in ["tasks/customjson.py", "scripts/chat_web.py", "nanochat/ui.html", "nanochat/logo.svg"]:
-        assert fork in text, f"installer must copy fork file {fork}"
+        assert "modernize_nanochat.py" in text, "installer must apply the hash-bound fork recipe"
         assert (PACK / "ops/nanochat_fork" / fork).is_file(), f"fork file missing in ops/nanochat_fork/{fork}"
 
 
@@ -82,7 +82,9 @@ def test_belka_branding_is_applied_by_patcher():
     assert "BELKA_BRANDING_BANNER" in src
     assert "BELKA" in src.replace("BELKA_BRANDING_BANNER", "").replace("patch_nanochat_branding", "")
     installer = (PACK / "ops/local" / "install_nanochat_env.sh").read_text(encoding="utf-8")
-    assert "patch_nanochat_branding.py" in installer, "installer must run the branding patcher"
+    assert "modernize_nanochat.py" in installer, "installer must run the verified branding/algorithm recipe"
+    adapter = (PACK / "ops/local/modernize_nanochat.py").read_text()
+    assert "patch_nanochat_branding.py" in adapter
     verifier = (PACK / "ops/local" / "verify_nanochat_patch.py").read_text(encoding="utf-8")
     assert "BELKA_BRANDING_BANNER" in verifier, "verifier must check the BELKA banner"
     assert "<title>Belka</title>" in verifier, "verifier must check the web UI title"

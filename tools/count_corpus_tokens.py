@@ -1,70 +1,56 @@
 #!/usr/bin/env python3
-"""Count corpus tokens in nanochat-format parquet shards with the trained tokenizer.
+"""Stream exact training token counts including one BOS per document.
 
-Used by the H200 runbook to derive epoch-driven token budgets:
---num-iterations = ceil(target_epochs * corpus_tokens / total_batch_size).
-
-Reads train_*.parquet / val_*.parquet from a data dir (nanochat convention:
-$NANOCHAT_BASE_DIR/base_data_climbmix) and tokenizes the `text` column with the
-rustbpe tokenizer from the base dir (fallback: base_dir/tokenizer).
+The count matches belka-stream-v1 (no document-tail crop). --text-only preserves
+the older text-only fertility convention and is not the training token budget.
 """
 from __future__ import annotations
-
 import argparse
-import glob
 import json
 import os
 import sys
 from pathlib import Path
+PACK=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(PACK))
+from data_pipeline.artifact_store import resolve_training_corpus,resolve_tokenizer_dir,sha256_file
+from data_pipeline.corpus_contract import select_shards
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Count corpus tokens in nanochat parquet shards")
-    ap.add_argument("--data-dir", type=Path, default=None, help="dir with train_*.parquet (default: $NANOCHAT_BASE_DIR/base_data_climbmix)")
-    ap.add_argument("--tokenizer-dir", type=Path, default=None, help="tokenizer dir (default: $NANOCHAT_BASE_DIR/tokenizer)")
-    ap.add_argument("--split", default="train", choices=["train", "val"])
-    ap.add_argument("--pack-dir", type=Path, default=Path(__file__).resolve().parents[1])
-    args = ap.parse_args()
+def count(files,tokenizer,include_bos=True):
+    import pyarrow.parquet as pq
+    docs=chars=text_tokens=0
+    for path in files:
+        pf=pq.ParquetFile(path)
+        for batch in pf.iter_batches(batch_size=128,columns=['text']):
+            texts=batch.column(0).to_pylist()
+            if any(not isinstance(t,str) or not t.strip() for t in texts):raise ValueError('empty/non-string corpus text')
+            docs+=len(texts);chars+=sum(map(len,texts))
+            text_tokens+=sum(len(ids) for ids in tokenizer.encode(texts))
+    if not docs:raise ValueError('empty corpus split')
+    boundaries=docs if include_bos else 0
+    return {'docs':docs,'chars':chars,'text_tokens':text_tokens,'document_boundary_tokens':boundaries,'tokens':text_tokens+boundaries,'count_policy':'text_plus_one_bos' if include_bos else 'text_only'}
 
-    base_dir = Path(os.environ.get("NANOCHAT_BASE_DIR", args.pack_dir / ".workspace" / "nanochat_base"))
-    data_dir = args.data_dir or (base_dir / "base_data_climbmix")
-    tokenizer_dir = args.tokenizer_dir or (base_dir / "tokenizer")
 
-    files = sorted(glob.glob(str(data_dir / f"{args.split}_*.parquet")))
-    if not files:
-        raise SystemExit(f"ERROR: no {args.split}_*.parquet in {data_dir}")
-
-    sys.path.insert(0, str(args.pack_dir / ".workspace" / "nanochat"))
+def main():
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--pack-dir',type=Path,default=PACK)
+    ap.add_argument('--data-dir',type=Path)
+    ap.add_argument('--tokenizer-dir',type=Path)
+    ap.add_argument('--nanochat-dir',type=Path)
+    ap.add_argument('--split',choices=['train','val'],default='train')
+    ap.add_argument('--text-only',action='store_true')
+    args=ap.parse_args();pack=args.pack_dir.resolve()
+    base=Path(os.environ.get('NANOCHAT_BASE_DIR',pack/'.workspace/nanochat_base'))
+    runtime=args.nanochat_dir or Path(os.environ.get('NANOCHAT_DIR',pack/'.workspace/nanochat'))
+    sys.path.insert(0,str(runtime))
     try:
         from nanochat.tokenizer import RustBPETokenizer
-    except ImportError as e:
-        raise SystemExit(f"ERROR: nanochat not importable ({e}); run install_nanochat_env.sh first") from e
-    tok = RustBPETokenizer.from_directory(str(tokenizer_dir))
-
-    import pyarrow.parquet as pq
-
-    docs = 0
-    chars = 0
-    tokens = 0
-    for path in files:
-        table = pq.read_table(path, columns=["text"])
-        texts = table.column("text").to_pylist()
-        docs += len(texts)
-        chars += sum(len(t) for t in texts)
-        tokens += sum(len(ids) for ids in tok.encode(texts))
-
-    report = {
-        "data_dir": str(data_dir),
-        "split": args.split,
-        "files": len(files),
-        "docs": docs,
-        "chars": chars,
-        "tokens": tokens,
-        "chars_per_token": round(chars / tokens, 3) if tokens else None,
-        "tokenizer_dir": str(tokenizer_dir),
-    }
-    print(json.dumps(report, ensure_ascii=False, indent=2))
-
-
-if __name__ == "__main__":
-    main()
+        directory=args.data_dir or resolve_training_corpus(base)
+        tok_dir=args.tokenizer_dir or resolve_tokenizer_dir(base)
+        files=select_shards(directory,args.split)
+        report=count(files,RustBPETokenizer.from_directory(str(tok_dir)),not args.text_only)
+        report.update({'data_dir':str(directory),'split':args.split,'files':[{'path':str(p),'sha256':sha256_file(p)} for p in files],
+                       'tokenizer_dir':str(tok_dir),'tokenizer_sha256':sha256_file(tok_dir/'tokenizer.pkl')})
+    except (ImportError,OSError,ValueError,KeyError) as exc:ap.error(str(exc))
+    print(json.dumps(report,ensure_ascii=False,indent=2))
+if __name__=='__main__':main()
