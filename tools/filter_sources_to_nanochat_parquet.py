@@ -14,6 +14,9 @@ from __future__ import annotations
 import argparse, gzip, hashlib, json, os, random, re, sys
 from collections import Counter, defaultdict
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from data_pipeline.contracts import HammingIndex, content_hash, group_split, corpus_generation, sha256_file, iter_jsonl as strict_iter_jsonl
+from data_pipeline.normalize_text import normalize_text
 
 SOURCE_THRESHOLDS = {
     "bewiki": {"min_score": 0.45, "min_chars": 120, "orthography": "narkamauka"},
@@ -90,11 +93,11 @@ def score_be(text: str, source: str) -> tuple[float, list[str]]:
     low = text.lower()
     cyr = sum(1 for ch in text if 'а' <= ch.lower() <= 'я' or ch in 'ўіё')
     lat = sum(1 for ch in text if 'a' <= ch.lower() <= 'z')
-    markers = sum(low.count(ch) for ch in 'ўіё')
+    markers = sum(low.count(ch) for ch in 'ўі')
     words = re.findall(r"[а-яёіўʼ']+", low)
     be = sum(1 for w in words if w in BE_WORDS)
     ru = sum(1 for w in words if w in RU_MARKERS)
-    uk = sum(low.count(w) for w in UK_MARKERS)
+    uk = sum(w in UK_MARKERS for w in words) + sum(low.count(ch) for ch in 'єїґ')
     score = 0.0
     reasons = []
     if cyr >= 30:
@@ -148,28 +151,22 @@ class SimHash:
 
 
 def iter_jsonl(inp: Path):
-    """Iterate over all JSONL files in a directory tree."""
-    paths = list(inp.rglob('*.jsonl')) + list(inp.rglob('*.jsonl.gz'))
+    """Deterministic strict ingest; a bad file cannot disappear from accounting."""
+    paths = sorted(set(inp.rglob('*.jsonl')) | set(inp.rglob('*.jsonl.gz')))
+    if not paths:
+        raise ValueError(f'no JSONL source files found in {inp}')
     for path in paths:
-        opener = gzip.open if str(path).endswith('.gz') else open
-        try:
-            with opener(path, 'rt', encoding='utf-8', errors='ignore') as f:
-                for line in f:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        obj = json.loads(line)
-                    except json.JSONDecodeError:
-                        yield None, str(path), {"parse_error": True}
-                        continue
-                    text = obj.get('text') or obj.get('content') or ''
-                    if isinstance(text, str):
-                        yield text, str(path), obj
-                    else:
-                        yield None, str(path), {"no_text_field": True}
-        except Exception:
-            continue
+        source_sha = sha256_file(path)
+        for lineno, obj in strict_iter_jsonl(path):
+            if not isinstance(obj, dict):
+                raise ValueError(f'{path}:{lineno}: expected an object')
+            text = obj.get('text', obj.get('content'))
+            if not isinstance(text, str):
+                raise ValueError(f'{path}:{lineno}: missing/non-string text field')
+            obj = dict(obj, input_file=str(path.relative_to(inp)), input_line=lineno, input_sha256=source_sha)
+            yield text, str(path), obj
+        if sha256_file(path) != source_sha:
+            raise ValueError(f'input changed during ingestion: {path}')
 
 
 def main():
@@ -180,10 +177,17 @@ def main():
     ap.add_argument('--val-ratio', type=float, default=0.02)
     ap.add_argument('--write-accounting', action='store_true', default=True)
     ap.add_argument('--strict-source-thresholds', action='store_true', default=True)
-    ap.add_argument('--split-orthography', action='store_true', default=True)
+    ap.add_argument('--split-orthography', action=argparse.BooleanOptionalAction, default=True)
     ap.add_argument('--dedup', default='exact,paragraph,simhash')
     ap.add_argument('--max-docs', type=int, default=0)
     args = ap.parse_args()
+    if not 0 < args.val_ratio < 1:
+        ap.error('--val-ratio must be finite and strictly between 0 and 1')
+    if args.max_docs < 0:
+        ap.error('--max-docs must be nonnegative')
+    modes = set(filter(None, args.dedup.split(',')))
+    if not modes <= {'exact', 'paragraph', 'simhash'}:
+        ap.error('unknown --dedup mode')
 
     try:
         import pandas as pd
@@ -192,16 +196,15 @@ def main():
 
     pack = Path(args.pack_dir).resolve()
     inp = Path(args.input_dir).resolve() if args.input_dir else pack / 'data_input/be_texts'
-    out = Path(args.output_dir).resolve() if args.output_dir else pack / '.workspace/nanochat_base/base_data_climbmix'
+    out = Path(os.path.abspath(args.output_dir)) if args.output_dir else pack / '.workspace/nanochat_base/base_data_climbmix'
     report_dir = pack / 'reports'
-    report_dir.mkdir(parents=True, exist_ok=True)
 
     if pack not in inp.parents and inp != pack:
         raise SystemExit(f'input outside pack: {inp}')
-    if pack not in out.parents and out != pack:
+    if out == pack or not out.resolve().is_relative_to(pack):
         raise SystemExit(f'output outside pack: {out}')
 
-    out.mkdir(parents=True, exist_ok=True)
+    # The live corpus is never opened for writing; publish a new generation below.
 
     # ----- Accounting -----
     raw_seen = 0
@@ -223,11 +226,9 @@ def main():
     exact_seen: set = set()
     paragraph_hashes: set = set()
     simhasher = SimHash(64)
-    # Bucket by top bits to avoid O(N^2) scans over all accepted documents.
-    # We still compare neighbouring buckets exactly with Hamming distance.
-    simhash_buckets: dict[int, list[int]] = defaultdict(list)
-    simhash_threshold = 6  # Hamming distance
-    bucket_shift = 52
+    # Seven disjoint bands guarantee recall within Hamming radius six.
+    # Candidate matches are verified using the complete 64-bit signature.
+    simhash_index = HammingIndex(radius=6)
 
     for text, filepath, obj in iter_jsonl(inp):
         if args.max_docs and raw_seen >= args.max_docs:
@@ -250,7 +251,7 @@ def main():
         parsed_ok += 1
 
         # Clean text
-        text = re.sub(r'\s+', ' ', text).strip()
+        text = normalize_text(text)  # preserve paragraph boundaries before dedup
 
         # Empty
         if not text:
@@ -264,54 +265,48 @@ def main():
             source_stats[source]['skipped_short'] += 1
             continue
 
-        # Exact dedup
-        h_exact = hashlib.sha256(text.encode()).hexdigest()
-        if h_exact in exact_seen:
-            skipped_duplicate_exact += 1
-            source_stats[source]['skipped_duplicate_exact'] += 1
+        # Exclude eval-only/non-prose sources before they can influence dedup.
+        if thresh.get('not_for_base') or thresh.get('eval_or_sft_only'):
+            skipped_namespace += 1
+            source_stats[source]['skipped_namespace'] += 1
             continue
-        exact_seen.add(h_exact)
-
-        # Paragraph-level dedup
-        has_dup_para = False
-        for para in text.split('\n'):
-            para = para.strip()
-            if len(para) < 30:
-                continue
-            h_para = hashlib.sha256(para.encode()).hexdigest()
-            if h_para in paragraph_hashes:
-                has_dup_para = True
-                break
-            paragraph_hashes.add(h_para)
-        if has_dup_para:
-            skipped_duplicate_near += 1
-            source_stats[source]['skipped_duplicate_near'] += 1
+        if obj.get('is_redirect') or obj.get('redirect'):
+            skipped_redirect += 1
+            source_stats[source]['skipped_redirect'] += 1
             continue
-
-        # Near-dedup via SimHash. Compare only nearby high-bit buckets.
-        sh = simhasher.hash(text)
-        bucket = sh >> bucket_shift
-        is_near_dup = False
-        for b in (bucket - 1, bucket, bucket + 1):
-            for existing_sh in simhash_buckets.get(b, []):
-                if SimHash.hamming(sh, existing_sh) <= simhash_threshold:
-                    is_near_dup = True
-                    break
-            if is_near_dup:
-                break
-        if is_near_dup:
-            skipped_duplicate_near += 1
-            source_stats[source]['skipped_duplicate_near'] += 1
+        if obj.get('namespace', obj.get('ns', 0)) not in (0, '0', None):
+            skipped_namespace += 1
+            source_stats[source]['skipped_namespace'] += 1
             continue
-        simhash_buckets[bucket].append(sh)
-
-        # Score
         sc, reasons = score_be(text, source)
+        h_exact = content_hash(text)
+        paragraphs = [(content_hash(p),len(p)) for p in text.split('\n') if len(p.strip()) >= 30]
+        sh = simhasher.hash(text) if 'simhash' in modes else None
+        # Only accepted data populates duplicate indexes. A rejected document
+        # must not cause a later good document to be discarded.
+        if sc >= min_score and source != 'unknown':
+            if 'exact' in modes and h_exact in exact_seen:
+                skipped_duplicate_exact += 1
+                source_stats[source]['skipped_duplicate_exact'] += 1
+                continue
+            repeated = sum(length for key,length in paragraphs if key in paragraph_hashes)
+            para_duplicate = bool(paragraphs) and repeated >= .8 * sum(length for _,length in paragraphs)
+            if (('paragraph' in modes and para_duplicate)
+                    or ('simhash' in modes and simhash_index.contains_near(sh))):
+                skipped_duplicate_near += 1
+                source_stats[source]['skipped_duplicate_near'] += 1
+                continue
+            exact_seen.add(h_exact)
+            paragraph_hashes.update(key for key,_ in paragraphs)
+            if sh is not None: simhash_index.add(sh)
 
         rec = {
             'text': text,
             'source': source,
             'source_path': str(filepath),
+            'input_file': obj['input_file'],
+            'input_line': obj['input_line'],
+            'input_sha256': obj['input_sha256'],
             'score': sc,
             'reasons': reasons,
             'chars': len(text),
@@ -319,69 +314,61 @@ def main():
             'doc_id': f"{source}_{hashlib.sha256(text.encode()).hexdigest()[:12]}",
         }
 
-        if sc >= min_score:
+        if sc >= min_score and source != 'unknown':
             accepted_records.append(rec)
             source_stats[source]['accepted'] += 1
-        elif sc >= min_score - 0.20:
+        elif source == 'unknown' or sc >= min_score - 0.20:
             quarantine_records.append(rec)
             source_stats[source]['quarantine'] += 1
         else:
             rejected_records.append(rec)
             source_stats[source]['rejected'] += 1
 
-    # ----- Write outputs -----
-    random.seed(42)
-    random.shuffle(accepted_records)
-
-    # Split by orthography if requested
-    if args.split_orthography:
-        narkamauka = [r for r in accepted_records if r.get('orthography') != 'tarask']
-        tarask = [r for r in accepted_records if r.get('orthography') == 'tarask']
-    else:
-        narkamauka = accepted_records
-        tarask = []
-
-    def write_nanochat_split(records, out_dir):
-        """Write nanochat-compatible train_00000.parquet + val_00000.parquet."""
-        if not records:
-            return None, None
-        n_val = max(1, int(len(records) * args.val_ratio))
-        val = records[:n_val]
-        train = records[n_val:]
-        tpath = out_dir / 'train_00000.parquet'
-        vpath = out_dir / 'val_00000.parquet'
-        pd.DataFrame(train).to_parquet(tpath, index=False)
-        pd.DataFrame(val).to_parquet(vpath, index=False)
-        return tpath, vpath
-
-    def write_orthography_splits(records_dict, out_dir):
-        """Write orthography-split parquets for reference."""
-        for orth, records in records_dict.items():
-            if records:
-                n_val = max(1, int(len(records) * args.val_ratio))
-                val = records[:n_val]
-                train = records[n_val:]
-                stem = orth or 'unspecified'
-                pd.DataFrame(train).to_parquet(out_dir / f'{stem}_train_00000.parquet', index=False)
-                pd.DataFrame(val).to_parquet(out_dir / f'{stem}_val_00000.parquet', index=False)
-
-    # Primary nanochat-compatible output
-    tp, vp = write_nanochat_split(sorted(narkamauka + tarask, key=lambda r: r.get('score', 0)), out)
-
-    # Orthography-split for reference
-    orth_records = {}
-    for r in narkamauka + tarask:
-        orth = r.get('orthography') or 'narkamauka'
-        if orth not in orth_records:
-            orth_records[orth] = []
-        orth_records[orth].append(r)
-    write_orthography_splits(orth_records, out)
-
+    # Stable content-group split. It does not depend on source order or score.
+    if len(accepted_records) < 2:
+        raise ValueError('not enough accepted documents; existing corpus retained')
+    split_records = {'train': [], 'val': []}
+    for record in accepted_records:
+        record['split'] = group_split(content_hash(record['text']), args.val_ratio)
+        split_records[record['split']].append(record)
+    if not all(split_records.values()):
+        raise ValueError('stable split produced an empty partition; use more data or an explicit different ratio')
+    for records in split_records.values():
+        records.sort(key=lambda r: r['doc_id'])
+    narkamauka = [r for r in accepted_records if r.get('orthography') == 'narkamauka']
+    tarask = [r for r in accepted_records if r.get('orthography') == 'tarask']
     # ----- Accounting assertion -----
     total_accounted = (len(accepted_records) + len(quarantine_records) + len(rejected_records) +
                        skipped_parse_error + skipped_no_text_field + skipped_empty + skipped_short +
-                       skipped_duplicate_exact + skipped_duplicate_near)
-    assert total_accounted == raw_seen, f"ACCOUNTING FAIL: raw_seen={raw_seen} != total_accounted={total_accounted}"
+                       skipped_namespace + skipped_redirect + skipped_duplicate_exact + skipped_duplicate_near)
+    if total_accounted != raw_seen:
+        raise ValueError(f"ACCOUNTING FAIL: raw_seen={raw_seen} != total_accounted={total_accounted}")
+
+    with corpus_generation(out) as stage:
+        for split, records in split_records.items():
+            pd.DataFrame(records).to_parquet(stage / f'{split}_00000.parquet', index=False)
+        if args.split_orthography:
+            reference = stage / 'orthography_reference'
+            reference.mkdir()
+            for orth in sorted({r.get('orthography') or 'unspecified' for r in accepted_records}):
+                if not re.fullmatch(r'[a-z_-]+', orth):
+                    raise ValueError(f'unsafe orthography label: {orth!r}')
+                for split, records in split_records.items():
+                    subset = [r for r in records if (r.get('orthography') or 'unspecified') == orth]
+                    if subset:
+                        pd.DataFrame(subset).to_parquet(reference / f'{orth}_{split}.parquet', index=False)
+        manifest = {'schema':'belka-corpus-v2','split_policy':'belka-content-v2',
+                    'val_ratio':args.val_ratio,'dedup':sorted(modes),
+                    'train_docs':len(split_records['train']),'val_docs':len(split_records['val']),
+                    'reference_files_are_training_shards':False,
+                    'files':[{"path": p.name, "sha256":sha256_file(p)} for p in sorted(stage.glob('*.parquet'))],
+                    'pipeline_sha256':sha256_file(Path(__file__)),
+                    'raw_seen':raw_seen,'total_accounted':total_accounted,
+                    'max_docs_requested':args.max_docs,
+                    'input_scope':'bounded-prefix' if args.max_docs else 'all-discovered-jsonl'}
+        (stage/'_BUILD_MANIFEST.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    tp, vp = out/'train_00000.parquet', out/'val_00000.parquet'
+
 
     # ----- Accounting report -----
     accounting = {
@@ -400,10 +387,10 @@ def main():
         'skipped_redirect': skipped_redirect,
         'TOTAL_ACCOUNTED': total_accounted,
         'ACCOUNTING_ASSERTION': 'PASS' if total_accounted == raw_seen else 'FAIL',
-        'train_narkamauka': len(narkamauka) - max(1, int(len(narkamauka) * args.val_ratio)),
-        'val_narkamauka': max(1, int(len(narkamauka) * args.val_ratio)),
-        'train_tarask': len(tarask) - max(1, int(len(tarask) * args.val_ratio)) if tarask else 0,
-        'val_tarask': max(1, int(len(tarask) * args.val_ratio)) if tarask else 0,
+        'train_narkamauka': sum(r['split'] == 'train' for r in narkamauka),
+        'val_narkamauka': sum(r['split'] == 'val' for r in narkamauka),
+        'train_tarask': sum(r['split'] == 'train' for r in tarask),
+        'val_tarask': sum(r['split'] == 'val' for r in tarask),
     }
 
     # Per-source stats
@@ -415,6 +402,8 @@ def main():
 
     accounting['per_source'] = per_source
 
+    # Reports are secondary views; the generation manifest is authoritative.
+    report_dir.mkdir(parents=True, exist_ok=True)
     # Write accounting report
     (report_dir / 'source_filter_report.json').write_text(
         json.dumps(accounting, ensure_ascii=False, indent=2), encoding='utf-8')

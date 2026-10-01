@@ -34,6 +34,7 @@ if str(HERE) not in sys.path:
 from normalize_text import normalize_text
 from detect_belarusian import detect_belarusian
 from deduplicate import text_hash
+from contracts import content_hash, group_split, corpus_generation, strict_json_loads
 
 SMOKE_DOCS = [
     "Беларуская мова мае свае адметныя літары: ў, і, ё. Гэта важна для навучання мадэлі, якая адказвае па-беларуску.",
@@ -61,8 +62,8 @@ class BuildStats:
 
 def _open_jsonl(path: Path):
     if str(path).endswith(".gz"):
-        return gzip.open(path, "rt", encoding="utf-8", errors="ignore")
-    return path.open("rt", encoding="utf-8", errors="ignore")
+        return gzip.open(path, "rt", encoding="utf-8", errors="strict")
+    return path.open("rt", encoding="utf-8", errors="strict")
 
 
 def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
@@ -74,7 +75,7 @@ def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
         suffixes = "".join(path.suffixes).lower()
         rel = str(path.relative_to(root))
         if path.suffix.lower() in {".txt", ".md"}:
-            yield "local", path.read_text(encoding="utf-8", errors="ignore"), {"path": rel}
+            yield "local", path.read_text(encoding="utf-8", errors="strict"), {"path": rel}
         elif suffixes.endswith(".jsonl") or suffixes.endswith(".jsonl.gz"):
             with _open_jsonl(path) as f:
                 for lineno, line in enumerate(f, start=1):
@@ -82,25 +83,28 @@ def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
                     if not line:
                         continue
                     try:
-                        obj = json.loads(line)
-                    except json.JSONDecodeError:
-                        yield "local_jsonl_raw", line, {"path": rel, "line": lineno}
-                        continue
+                        obj = strict_json_loads(line)
+                    except (ValueError, RecursionError) as exc:
+                        raise ValueError(f"{path}:{lineno}: invalid JSONL") from exc
                     if isinstance(obj, str):
                         text = obj
                     elif isinstance(obj, dict):
-                        text = str(obj.get("text") or obj.get("content") or "")
+                        text = obj.get("text", obj.get("content"))
                     else:
-                        text = str(obj)
+                        raise ValueError(f"{path}:{lineno}: expected object or text")
+                    if not isinstance(text, str) or not text.strip():
+                        raise ValueError(f"{path}:{lineno}: missing or invalid text")
                     yield "local_jsonl", text, {"path": rel, "line": lineno}
         elif path.suffix.lower() == ".parquet":
             pf = pq.ParquetFile(path)
             for rg_idx in range(pf.num_row_groups):
                 table = pf.read_row_group(rg_idx, columns=["text"] if "text" in pf.schema.names else None)
                 if "text" not in table.column_names:
-                    continue
+                    raise ValueError(f"{path}: missing text column")
                 for row_idx, text in enumerate(table.column("text").to_pylist()):
-                    yield "local_parquet", str(text), {"path": rel, "row_group": rg_idx, "row": row_idx}
+                    if not isinstance(text, str) or not text.strip():
+                        raise ValueError(f"{path}: invalid Parquet text row")
+                    yield "local_parquet", text, {"path": rel, "row_group": rg_idx, "row": row_idx}
 
 
 def iter_smoke_texts(repeats: int = 12) -> Iterator[tuple[str, str, dict]]:
@@ -192,33 +196,32 @@ def prepare(
         write_jsonl(report_dir / "accepted.jsonl", {"text": text, "source": source, "meta": meta, "detection": asdict(det)})
 
     # An unsuccessful rebuild must not destroy the previous usable corpus.
-    # This guard does not make the later multi-file write crash-atomic.
+    # The generation publisher below retains the previous live version on failure.
     if len(accepted) < 2:
         raise ValueError("At least two accepted unique documents are required for nonempty train/val splits; previous parquet shards are unchanged")
 
-    rng = random.Random(seed)
-    rng.shuffle(accepted)
-    val_count = max(1, int(round(len(accepted) * val_ratio))) if accepted else 0
-    if len(accepted) > 1:
-        val_count = min(val_count, len(accepted) - 1)
-    val = [x[0] for x in accepted[:val_count]]
-    train = [x[0] for x in accepted[val_count:]]
-    # Remove old parquet shards after filtering succeeded.
-    for p in output_dir.glob("*.parquet"):
-        p.unlink()
-    train_files = write_parquet_shards(train, output_dir, prefix="train", shard_docs=train_shard_docs)
-    val_files = write_parquet_shards(val, output_dir, prefix="val", shard_docs=val_shard_docs)
+    # Versioned content-group split, independent of ingestion order and metadata.
+    val = [x[0] for x in accepted if group_split(content_hash(x[0]), val_ratio, str(seed)) == 'val']
+    train = [x[0] for x in accepted if group_split(content_hash(x[0]), val_ratio, str(seed)) == 'train']
+    if not train or not val:
+        raise ValueError("Stable split produced an empty partition; existing corpus retained")
+    train.sort(key=content_hash); val.sort(key=content_hash)
     manifest = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "output_dir": str(output_dir),
         "report_dir": str(report_dir),
         "stats": asdict(stats),
         "splits": {"train_docs": len(train), "val_docs": len(val), "val_ratio_requested": val_ratio},
-        "files": train_files + val_files,
+        "files": [],
+        "split_policy": "belka-content-v2",
         "filter": {"min_chars": min_chars, "allow_short": allow_short},
         "format": "parquet column text; train shards first, validation shards last",
     }
-    (output_dir / "_BUILD_MANIFEST.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    with corpus_generation(output_dir) as stage:
+        train_files = write_parquet_shards(train, stage, prefix="train", shard_docs=train_shard_docs)
+        val_files = write_parquet_shards(val, stage, prefix="val", shard_docs=val_shard_docs)
+        manifest['files'] = train_files + val_files
+        (stage / "_BUILD_MANIFEST.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (report_dir / "summary.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return manifest
 

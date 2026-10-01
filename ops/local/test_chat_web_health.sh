@@ -34,8 +34,8 @@ LOG_DIR="$NANOCHAT_BASE_DIR/health_logs"
 mkdir -p "$LOG_DIR"
 LOG="$LOG_DIR/chat_web_${MODEL_TAG}_$(date +%Y%m%d_%H%M%S).log"
 cd "$PACK_DIR"
-python3 "$PACK_DIR/ops/local/patch_nanochat_dtype_fp16.py" --nanochat-dir "$NANOCHAT_DIR"
-PORT="$PORT" HOST="0.0.0.0" bash "$PACK_DIR/ops/local/run_chat_web.sh" --nanochat-dir "$NANOCHAT_DIR" --model-tag "$MODEL_TAG" --phase "$PHASE" --port "$PORT" >"$LOG" 2>&1 &
+python3 "$PACK_DIR/ops/local/patch_nanochat_runtime.py" --nanochat-dir "$NANOCHAT_DIR"
+PORT="$PORT" HOST="$HOST" bash "$PACK_DIR/ops/local/run_chat_web.sh" --nanochat-dir "$NANOCHAT_DIR" --model-tag "$MODEL_TAG" --phase "$PHASE" --port "$PORT" >"$LOG" 2>&1 &
 PID=$!
 cleanup() {
   if kill -0 "$PID" >/dev/null 2>&1; then

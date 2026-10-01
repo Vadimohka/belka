@@ -7,7 +7,7 @@ bash "$PACK_DIR/ops/local/repo_guard.sh"
 MODEL_TAG="${MODEL_TAG:-be-d4-smoke}"
 PHASE="${PHASE:-sft}"
 NUM_GPUS="${NUM_GPUS:-1}"
-HOST="${HOST:-0.0.0.0}"
+HOST="${HOST:-127.0.0.1}"
 PORT="${PORT:-8000}"
 usage() {
   cat <<'EOF'
@@ -19,7 +19,7 @@ Options:
   --host HOST             server host, passed when supported
   --port PORT             server port, passed when supported
   --base-dir PATH         NANOCHAT_BASE_DIR
-  --no-patch              skip dtype patch before serving
+  --no-patch              skip overlay refresh; still verify runtime identity
 EOF
 }
 PATCH=1
@@ -40,8 +40,9 @@ done
 cd "$NANOCHAT_DIR"
 source .venv/bin/activate
 if [[ "$PATCH" == "1" ]]; then
-  python "$PACK_DIR/ops/local/patch_nanochat_dtype_fp16.py" --nanochat-dir "$NANOCHAT_DIR" || echo "WARN: dtype patch reported an issue; continuing so existing patched trees still work."
+  python "$PACK_DIR/ops/local/patch_nanochat_runtime.py" --nanochat-dir "$NANOCHAT_DIR"
 fi
+python "$PACK_DIR/ops/local/patch_nanochat_runtime.py" --nanochat-dir "$NANOCHAT_DIR" --verify-only
 CMD=(python -m scripts.chat_web -g "$MODEL_TAG" -i "$PHASE" --num-gpus "$NUM_GPUS")
 # Newer nanochat may expose --host/--port. Use them only if help text contains the flags.
 if python -m scripts.chat_web --help 2>&1 | grep -q -- "--host"; then

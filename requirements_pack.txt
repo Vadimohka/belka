@@ -10,3 +10,6 @@ huggingface_hub>=0.30.0
 # Belka fork of scripts/chat_web.py (upstream dropped these deps on 2026-07-03)
 fastapi>=0.115.0
 uvicorn>=0.30.0
+
+# FastAPI TestClient dependency for the offline web contract suite.
+httpx>=0.27,<1

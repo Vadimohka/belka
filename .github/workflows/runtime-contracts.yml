@@ -2,7 +2,7 @@ name: Runtime contracts
 
 on:
   push:
-    branches: [codex/belka-runtime-2026-10-01]
+    branches: [main, codex/belka-runtime-2026-10-01]
   pull_request:
 
 permissions:
@@ -11,24 +11,70 @@ permissions:
 jobs:
   contracts:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
+    env:
+      OMP_NUM_THREADS: '1'
+      WANDB_MODE: disabled
+      WANDB_DISABLED: 'true'
+      NANOCHAT_DTYPE: ''
+      BELKA_REQUIRE_RUNTIME_TESTS: '1'
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
-      - name: Download pinned binary audit dependencies
+          python-version: '3.12'
+      - uses: actions/checkout@v4
+        with:
+          repository: karpathy/nanochat
+          ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
+          path: .workspace/nanochat
+          persist-credentials: false
+      - name: Verify reviewed source transfer
         run: |
-          python -m pip download --only-binary=:all: --dest .workspace/audit-wheels pyarrow==21.0.0 tiktoken==0.11.0 rustbpe==0.1.0
           python - <<'PY'
           import hashlib, json
           from pathlib import Path
-          root=Path('.workspace/audit-wheels')
-          (root/'SHA256.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in root.glob('*.whl')},indent=2))
+          expected=json.loads(Path('reports/runtime_audit/SOURCE_HASHES.json').read_text())
+          failures=[name for name,sha in expected.items() if hashlib.sha256(Path(name).read_bytes()).hexdigest()!=sha]
+          if failures: raise SystemExit('source transfer drift: '+', '.join(failures))
+          print(f'{len(expected)} reviewed source hashes verified')
           PY
+      - name: Install real pinned CPU environment (no training)
+        run: |
+          export PACK_DIR="$PWD" NANOCHAT_DIR="$PWD/.workspace/nanochat" NANOCHAT_BASE_DIR="$PWD/.workspace/ci_assets"
+          export UV_CACHE_DIR="$PWD/.workspace/uv_cache" PIP_CACHE_DIR="$PWD/.workspace/pip_cache"
+          mkdir -p reports/runtime_audit/ci
+          python -m pip install uv
+          bash ops/local/install_nanochat_env.sh --cpu --skip-rust --skip-git-pull | tee reports/runtime_audit/ci/install.log
+          .workspace/nanochat/.venv/bin/python -m pip install httpx
+          .workspace/nanochat/.venv/bin/python -m pip freeze > reports/runtime_audit/ci/environment.txt
+          echo "NANOCHAT_DIR=$NANOCHAT_DIR" >> "$GITHUB_ENV"
+          echo "NANOCHAT_BASE_DIR=$NANOCHAT_BASE_DIR" >> "$GITHUB_ENV"
+          echo "PYTHONPATH=$PWD:$NANOCHAT_DIR" >> "$GITHUB_ENV"
+      - name: Repeat overlay and verify byte identity
+        run: |
+          cp .workspace/nanochat/BELKA_RUNTIME_MANIFEST.json .workspace/first-manifest.json
+          python ops/local/patch_nanochat_runtime.py --nanochat-dir .workspace/nanochat > reports/runtime_audit/ci/runtime.json
+          cmp .workspace/first-manifest.json .workspace/nanochat/BELKA_RUNTIME_MANIFEST.json
+          python ops/local/patch_nanochat_runtime.py --nanochat-dir .workspace/nanochat --verify-only > /dev/null
+      - name: Restore published bundle into fresh CI storage only
+        run: |
+          .workspace/nanochat/.venv/bin/python tools/restore_corpus_bundle.py --base-dir "$NANOCHAT_BASE_DIR" | tee reports/runtime_audit/ci/restore.json
+          .workspace/nanochat/.venv/bin/python ops/local/verify_nanochat_patch.py --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --require-dtype-patch | tee reports/runtime_audit/ci/verify.json
+      - name: Full tests including real CPU GPT and two Gloo processes
+        run: |
+          .workspace/nanochat/.venv/bin/python -m pytest -q tests -ra --basetemp=.workspace/pytest-runtime --junitxml=reports/runtime_audit/ci/tests.xml | tee reports/runtime_audit/ci/tests.log
+      - name: Active v9 strict holdout and source syntax
+        run: |
+          .workspace/nanochat/.venv/bin/python tools/check_train_eval_decontamination.py --train '.workspace/ci_assets/.sft_current/identity_conversations*.jsonl' --eval eval/strict_holdout_quality_control_v2.be.jsonl --dry-run --fail-on-overlap | tee reports/runtime_audit/ci/holdout.json
+          .workspace/nanochat/.venv/bin/python tools/check_source_syntax.py > reports/runtime_audit/ci/syntax.json
+          .workspace/nanochat/.venv/bin/python tools/validate_public_release.py | tee reports/runtime_audit/ci/release.json
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: audit-wheels
-          path: .workspace/audit-wheels
-          retention-days: 7
+          name: runtime-contract-evidence
+          path: reports/runtime_audit/ci
+          retention-days: 14
           if-no-files-found: error
