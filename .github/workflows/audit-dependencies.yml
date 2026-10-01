@@ -1,0 +1,28 @@
+name: Audit CPU dependency wheels
+on:
+  push:
+    branches: [codex/belka-complete-2026-10-01]
+    paths: [.github/workflows/audit-dependencies.yml]
+permissions:
+  contents: read
+jobs:
+  wheels:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Download wheels only (no package or project execution)
+        run: |
+          mkdir -p wheels
+          python -m pip download --only-binary=:all: --no-deps --dest wheels pyarrow==21.0.0 zstandard==0.25.0 tiktoken==0.11.0 rustbpe==0.1.0
+          sha256sum wheels/* > WHEELS_SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audit-cpu-wheels
+          path: |
+            wheels/*.whl
+            WHEELS_SHA256SUMS.txt
+          retention-days: 3
+          if-no-files-found: error
