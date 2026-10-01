@@ -16,42 +16,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      - name: Read pinned upstream
-        uses: actions/checkout@v4
-        with:
-          repository: karpathy/nanochat
-          ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
-          path: .workspace/nanochat
-          persist-credentials: false
-      - name: Package reproducible audit source
+          python-version: '3.13'
+      - name: Download pinned binary audit dependencies
         run: |
+          python -m pip download --only-binary=:all: --dest .workspace/audit-wheels pyarrow==21.0.0 tiktoken==0.11.0 rustbpe==0.1.0
           python - <<'PY'
-          import hashlib, json, subprocess, zipfile
+          import hashlib, json
           from pathlib import Path
-          root = Path.cwd()
-          output = root / '.workspace/audit_source.zip'
-          inventory = []
-          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
-              for label, repo in [('belka', root), ('nanochat', root / '.workspace/nanochat')]:
-                  paths = subprocess.check_output(['git', '-C', str(repo), 'ls-files', '-z']).decode().split('\0')
-                  for name in paths:
-                      path = repo / name
-                      if not name or path.is_symlink() or not path.is_file():
-                          continue
-                      if path.suffix not in {'.py', '.sh', '.md', '.json', '.jsonl', '.yaml', '.yml', '.toml', '.env', '.txt', '.ini', '.html'}:
-                          continue
-                      if path.stat().st_size > 2_000_000:
-                          continue
-                      data = path.read_bytes()
-                      archive.write(path, f'{label}/{name}')
-                      inventory.append({'path': f'{label}/{name}', 'sha256': hashlib.sha256(data).hexdigest()})
-              archive.writestr('inventory.json', json.dumps(inventory, indent=2))
-          print(json.dumps({'files': len(inventory), 'archive_bytes': output.stat().st_size}))
+          root=Path('.workspace/audit-wheels')
+          (root/'SHA256.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in root.glob('*.whl')},indent=2))
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: audit-source
-          path: .workspace/audit_source.zip
+          name: audit-wheels
+          path: .workspace/audit-wheels
           retention-days: 7
           if-no-files-found: error
