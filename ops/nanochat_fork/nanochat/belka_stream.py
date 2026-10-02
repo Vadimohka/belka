@@ -71,7 +71,16 @@ class ParquetSource:
             raise ValueError('invalid distributed topology')
         self.paths, self.rank, self.world = paths, rank, world
         self.files = [pq.ParquetFile(path) for path in paths]
-        self.rows = sum(p.metadata.num_rows for p in self.files)
+        # Global row prefixes include an end-of-file sentinel. Build from
+        # metadata only, so restore can verify rank ownership without decoding.
+        self._row_offsets = []
+        self.rows = 0
+        for file in self.files:
+            offsets = [self.rows]
+            for rg in range(file.num_row_groups):
+                offsets.append(offsets[-1] + file.metadata.row_group(rg).num_rows)
+            self._row_offsets.append(tuple(offsets))
+            self.rows = offsets[-1]
         if self.rows < world:
             raise ValueError('too few documents for requested number of ranks')
         self.cursor = dict(pq_idx=0, rg_idx=0, row_idx=0, ordinal=0, epoch=1)
@@ -80,15 +89,29 @@ class ParquetSource:
     def state_dict(self): return dict(self.cursor)
 
     def restore(self, state):
-        if set(state) != set(self.cursor) or any(type(v) is not int or v < 0 for v in state.values()):
+        """Reject inconsistent cursors before changing live position or cache."""
+        if (not isinstance(state, dict) or set(state) != set(self.cursor)
+                or any(type(v) is not int or v < 0 for v in state.values())):
             raise ValueError('invalid Parquet cursor')
-        if not 0 <= state['pq_idx'] <= len(self.files) or state['epoch'] < 1:
+        pq_idx, rg, row = state['pq_idx'], state['rg_idx'], state['row_idx']
+        if pq_idx > len(self.files) or state['epoch'] < 1:
             raise ValueError('cursor outside corpus')
-        if state['pq_idx'] < len(self.files):
-            file = self.files[state['pq_idx']]
-            rg = state['rg_idx']
-            if rg > file.num_row_groups or (rg < file.num_row_groups and state['row_idx'] > file.metadata.row_group(rg).num_rows):
+        if pq_idx == len(self.files):
+            if rg != 0 or row != 0:
+                raise ValueError('invalid end-of-corpus cursor')
+            expected_ordinal = self.rows
+        else:
+            offsets = self._row_offsets[pq_idx]
+            if rg >= len(offsets):
                 raise ValueError('cursor outside row group')
+            row_limit = offsets[rg + 1] - offsets[rg] if rg + 1 < len(offsets) else 0
+            if row > row_limit:
+                raise ValueError('cursor outside row group')
+            expected_ordinal = offsets[rg] + row
+        # __next__ uses ordinal % world to assign documents to ranks. Accepting
+        # a different ordinal silently changes that assignment after resume.
+        if state['ordinal'] != expected_ordinal:
+            raise ValueError('Parquet ordinal disagrees with row position')
         self.cursor = dict(state)
         self.cache_key, self.cache = None, None
 
