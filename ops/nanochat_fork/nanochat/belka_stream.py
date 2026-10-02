@@ -14,24 +14,61 @@ from pathlib import Path
 class SequencePacker:
     """Stateful token packer over a replayable document source (state/restore/next)."""
     def __init__(self, source, encode, batch_size, sequence_length, identity, state=None):
-        if batch_size < 1 or sequence_length < 1:
-            raise ValueError('batch and sequence sizes must be positive')
+        if (type(batch_size) is not int or type(sequence_length) is not int
+                or batch_size < 1 or sequence_length < 1):
+            raise ValueError('batch and sequence sizes must be positive integers')
         self.source, self.encode = source, encode
         self.B, self.T, self.identity = batch_size, sequence_length, identity
         self.doc_cursor, self.tokens, self.offset, self.carry = None, [], 0, None
         if state is not None:
-            if (state.get('schema') != 'belka-stream-v1' or state.get('identity') != identity
-                    or state.get('B') != self.B or state.get('T') != self.T):
-                raise ValueError('incompatible loader resume state (data/tokenizer/shape changed)')
-            cursor = state['source']
+            self._restore(state)
+
+    def _restore(self, state):
+        required = {'schema', 'identity', 'B', 'T', 'source', 'in_document', 'offset', 'carry'}
+        aliases = {'pq_idx', 'rg_idx', 'epoch'}
+        if (not isinstance(state, dict) or not required <= state.keys()
+                or not state.keys() <= required | aliases):
+            raise ValueError('invalid loader resume fields')
+        if (state['schema'] != 'belka-stream-v1' or state['identity'] != self.identity
+                or type(state['B']) is not int or type(state['T']) is not int
+                or state['B'] != self.B or state['T'] != self.T):
+            raise ValueError('incompatible loader resume state (data/tokenizer/shape changed)')
+        active, offset, carry = state['in_document'], state['offset'], state['carry']
+        if type(active) is not bool or type(offset) is not int or offset < 0:
+            raise ValueError('invalid loader resume position')
+        if active:
+            if offset == 0 or type(carry) is not int or not 0 <= carry < 2**63:
+                raise ValueError('active loader resume requires a consumed token and carry')
+        elif offset != 0 or carry is not None:
+            raise ValueError('idle loader resume cannot have an offset or carry')
+        cursor = copy.deepcopy(state['source'])
+        for key in state.keys() & aliases:
+            if (not isinstance(cursor, dict) or key not in cursor
+                    or type(state[key]) is not int or state[key] != cursor[key]):
+                raise ValueError('loader progress alias disagrees with source cursor')
+        # Replaying the current document is necessary to verify carry/offset.
+        # Keep the caller's logical source position on ordinary rejection.
+        previous = copy.deepcopy(self.source.state_dict())
+        try:
             self.source.restore(copy.deepcopy(cursor))
-            self.carry = state['carry']
-            if state['in_document']:
-                self.doc_cursor = copy.deepcopy(cursor)
-                self.tokens = self.encode(next(self.source))
-                self.offset = state['offset']
-                if not 0 <= self.offset <= len(self.tokens):
-                    raise ValueError('resume token offset outside document')
+            tokens = self._document_tokens() if active else []
+            if active and (offset > len(tokens) or tokens[offset - 1] != carry):
+                raise ValueError('resume carry or token offset disagrees with document')
+        except Exception:
+            try:
+                self.source.restore(previous)
+            except Exception as rollback_error:
+                raise RuntimeError('cannot restore source after rejected loader resume; discard source') from rollback_error
+            raise
+        self.doc_cursor = cursor if active else None
+        self.tokens, self.offset, self.carry = tokens, offset, carry
+
+    def _document_tokens(self):
+        tokens = self.encode(next(self.source))
+        if (not isinstance(tokens, (list, tuple)) or not tokens
+                or any(type(t) is not int or not 0 <= t < 2**63 for t in tokens)):
+            raise ValueError('tokenizer must return a nonempty list/tuple of nonnegative int64 token IDs')
+        return list(tokens)
 
     def state_dict(self):
         return {'schema':'belka-stream-v1','identity':self.identity,'B':self.B,'T':self.T,
@@ -41,10 +78,8 @@ class SequencePacker:
     def _token(self):
         while self.offset >= len(self.tokens):
             self.doc_cursor = copy.deepcopy(self.source.state_dict())
-            self.tokens = self.encode(next(self.source))
+            self.tokens = self._document_tokens()
             self.offset = 0
-            if not self.tokens:
-                raise ValueError('tokenizer produced an empty document')
         value = self.tokens[self.offset]
         self.offset += 1
         return value
