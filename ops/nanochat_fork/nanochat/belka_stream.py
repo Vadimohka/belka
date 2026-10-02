@@ -184,6 +184,14 @@ def tokenizing_distributed_data_loader_with_state_bos_bestfit(tokenizer,B,T,spli
     import torch
     from nanochat.common import get_dist_info, get_base_dir
     from nanochat.belka_runtime import split_parquet_files, tokenizer_fingerprint, corpus_data_dir
+    # The v1 fingerprint includes the named special-token map, not the
+    # wrapper's BOS setting. Enforce Belka's from-scratch boundary policy
+    # without invalidating existing canonical-BOS resume identities.
+    bos_id = tokenizer.get_bos_token_id()
+    if (type(bos_id) is not int or not 0 <= bos_id < tokenizer.get_vocab_size()
+            or '<|bos|>' not in tokenizer.enc.special_tokens_set
+            or bos_id != tokenizer.enc.encode_single_token('<|bos|>')):
+        raise ValueError('Belka pretraining BOS must be the registered <|bos|> token')
     _, rank, _, world = get_dist_info()
     paths = split_parquet_files(corpus_data_dir(get_base_dir()), split)
     digest = hashlib.sha256()
@@ -193,7 +201,7 @@ def tokenizing_distributed_data_loader_with_state_bos_bestfit(tokenizer,B,T,spli
             for chunk in iter(lambda:stream.read(1<<20),b''): digest.update(chunk)
     identity = f'{split}:{rank}/{world}:{digest.hexdigest()}:{tokenizer_fingerprint(tokenizer)}'
     source = ParquetSource(paths,rank,world)
-    packer = SequencePacker(source,lambda s:tokenizer.encode(s,prepend=tokenizer.get_bos_token_id()),B,T,identity,resume_state_dict)
+    packer = SequencePacker(source,lambda s:tokenizer.encode(s,prepend=bos_id),B,T,identity,resume_state_dict)
     for rows, state in packer:
         # Compatibility progress fields are descriptive; resume uses source/offset.
         state.update({key:state['source'][key] for key in ('pq_idx','rg_idx','epoch')})
