@@ -92,7 +92,19 @@ class SequencePacker:
         for _ in range(self.B):
             if self.carry is None:
                 self.carry = self._token()
-            row = [self.carry] + [self._token() for _ in range(self.T)]
+            row = [self.carry]
+            remaining = self.T
+            while remaining:
+                if self.offset >= len(self.tokens):
+                    # Refill through the same validated document path. Do not
+                    # read ahead at an exact boundary: v1 cursors are pre-batch.
+                    row.append(self._token())
+                    remaining -= 1
+                else:
+                    end = min(len(self.tokens), self.offset + remaining)
+                    row.extend(self.tokens[self.offset:end])
+                    remaining -= end - self.offset
+                    self.offset = end
             self.carry = row[-1]
             rows.append(row)
         return rows, before
