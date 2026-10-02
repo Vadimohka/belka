@@ -11,12 +11,23 @@ import hashlib
 from pathlib import Path
 
 
+def _validate_dimensions(batch_size, sequence_length):
+    if (type(batch_size) is not int or type(sequence_length) is not int
+            or batch_size < 1 or sequence_length < 1):
+        raise ValueError('batch and sequence sizes must be positive integers')
+
+
+def _validate_topology(rank, world):
+    # A fractional rank can never own an integer document ordinal and hangs.
+    if (type(rank) is not int or type(world) is not int
+            or world < 1 or not 0 <= rank < world):
+        raise ValueError('invalid distributed topology: require integer 0 <= rank < world')
+
+
 class SequencePacker:
     """Stateful token packer over a replayable document source (state/restore/next)."""
     def __init__(self, source, encode, batch_size, sequence_length, identity, state=None):
-        if (type(batch_size) is not int or type(sequence_length) is not int
-                or batch_size < 1 or sequence_length < 1):
-            raise ValueError('batch and sequence sizes must be positive integers')
+        _validate_dimensions(batch_size, sequence_length)
         self.source, self.encode = source, encode
         self.B, self.T, self.identity = batch_size, sequence_length, identity
         self.doc_cursor, self.tokens, self.offset, self.carry = None, [], 0, None
@@ -113,9 +124,8 @@ class SequencePacker:
 class ParquetSource:
     """Document-level rank partitioning, including shards with one row group."""
     def __init__(self, paths, rank, world):
+        _validate_topology(rank, world)
         import pyarrow.parquet as pq
-        if world < 1 or not 0 <= rank < world:
-            raise ValueError('invalid distributed topology')
         self.paths, self.rank, self.world = paths, rank, world
         self.files = [pq.ParquetFile(path) for path in paths]
         # Global row prefixes include an end-of-file sentinel. Build from
@@ -174,17 +184,22 @@ class ParquetSource:
                 c.update(pq_idx=c['pq_idx']+1,rg_idx=0,row_idx=0)
                 continue
             key = (c['pq_idx'],c['rg_idx'])
+            offsets = self._row_offsets[c['pq_idx']]
+            remaining = offsets[c['rg_idx'] + 1] - offsets[c['rg_idx']] - c['row_idx']
+            skip = (self.rank - c['ordinal']) % self.world
+            if skip >= remaining:
+                # No owned row remains: advance using metadata, without decoding.
+                c.update(rg_idx=c['rg_idx']+1,row_idx=0,ordinal=c['ordinal']+remaining)
+                continue
+            row = c['row_idx'] + skip
             if key != self.cache_key:
                 self.cache = f.read_row_group(c['rg_idx'],columns=['text']).column('text').to_pylist()
                 self.cache_key = key
-            if c['row_idx'] >= len(self.cache):
-                c.update(rg_idx=c['rg_idx']+1,row_idx=0)
-                continue
-            value = self.cache[c['row_idx']]
-            ordinal = c['ordinal']
-            c['row_idx'] += 1; c['ordinal'] += 1
-            if ordinal % self.world != self.rank:
-                continue
+            value = self.cache[row]
+            # Preserve v1's position immediately after the returned owned row.
+            # Do not eagerly skip the next rank's rows or read the next group.
+            c['row_idx'] = row + 1
+            c['ordinal'] += skip + 1
             if not isinstance(value,str) or not value.strip():
                 raise ValueError(f'invalid text in {self.paths[key[0]]}, row-group {key[1]}')
             return value
@@ -196,6 +211,7 @@ def tokenizing_distributed_data_loader_with_state_bos_bestfit(tokenizer,B,T,spli
     import torch
     from nanochat.common import get_dist_info, get_base_dir
     from nanochat.belka_runtime import split_parquet_files, tokenizer_fingerprint, corpus_data_dir
+    _validate_dimensions(B, T)
     # The v1 fingerprint includes the named special-token map, not the
     # wrapper's BOS setting. Enforce Belka's from-scratch boundary policy
     # without invalidating existing canonical-BOS resume identities.
@@ -205,6 +221,7 @@ def tokenizing_distributed_data_loader_with_state_bos_bestfit(tokenizer,B,T,spli
             or bos_id != tokenizer.enc.encode_single_token('<|bos|>')):
         raise ValueError('Belka pretraining BOS must be the registered <|bos|> token')
     _, rank, _, world = get_dist_info()
+    _validate_topology(rank, world)
     paths = split_parquet_files(corpus_data_dir(get_base_dir()), split)
     digest = hashlib.sha256()
     for path in paths:
