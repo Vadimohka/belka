@@ -17,8 +17,9 @@ nonnegative lengths stored as uint8, int8, int16, int32 or int64. Floating,
 boolean, complex, sparse and empty tables are rejected before iterator creation.
 Equivalent supported integer storage types retain the same semantics.
 
-Each batch supplies aligned, nonempty 2D strided int64 x/y tensors on the model
-device. All x IDs and all nonnegative y IDs must index the table. Only y=-1 is
+Each batch supplies aligned, nonempty 2D strided tensors on the model device:
+x must be int32 or int64; y must remain int64. Native SFT uses int32 inputs.
+The evaluator forwards input tensors unchanged; it does not cast them. All x IDs and all nonnegative y IDs must index the table. Only y=-1 is
 an ignore sentinel. Validation precedes forward, including for large int64 IDs;
 no int32 narrowing is used to determine the ignore mask.
 
@@ -73,3 +74,31 @@ model quality or claim faster evaluation. Existing BPB definition, Wilson
 intervals, tokenizer/checkpoint formats and training recipes are unchanged.
 Revert the paired commit and regenerate the overlay to roll back both tasks;
 do not edit installed sources or artifact hashes manually.
+
+## Native SFT compatibility regression (R25-M03, issue #27)
+
+The first R25-M01 implementation mistakenly rejected int32 inputs. Its tests
+used manually assembled int64 batches, including an incorrect negative test
+for int32 x. The real pinned SFT generator emits int32 x and int64 y, so this
+check broke SFT BPB evaluation despite passing the earlier unit suite. The
+input check now accepts both supported index types; the negative case uses
+int16 x instead. Int32 targets remain rejected. Other checks are unchanged.
+
+```bash
+PYTHONPATH="$PWD:$NANOCHAT_DIR" BELKA_REQUIRE_RUNTIME_TESTS=1 python -m pytest -q \
+  tests/test_bpb_validation.py tests/test_sft_bpb_integration.py
+```
+
+The new integration cases compile only the generator definition from the actual
+hash-verified installed `scripts/chat_sft_be.py`. They bind synthetic datasets
+and use learned RustBPE/tiktoken, the real GPT and the installed BPB entrypoint.
+Train and val outputs are compared to an independently assembled layout of
+system/user text, assistant targets, shifted masks and padding. Direct logits
+and byte sums give the reference score; native int32 and equivalent int64
+inputs must agree exactly. Missing runtime is an explicit optional skip and a
+required-mode failure. The extraction executes trusted code, not a sandbox.
+
+No trainer setup, backward pass, optimizer, owner data or checkpoint is used.
+This is CPU integration coverage, not the full training loop or GPU/NCCL proof.
+To roll back R25-M03 alone, revert its commit and regenerate the overlay; this
+reintroduces the documented SFT incompatibility. Do not edit installed files.

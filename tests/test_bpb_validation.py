@@ -94,7 +94,7 @@ def test_valid_lengths_and_byte_weighted_masking(dtype, training):
 
 @pytest.mark.parametrize('which,kind', [
     ('x', 'float'), ('y', 'float'), ('x', 'bool'), ('y', 'bool'),
-    ('x', 'int32'), ('y', 'int32'), ('x', 'shape'), ('y', 'shape'),
+    ('x', 'int16'), ('y', 'int32'), ('x', 'shape'), ('y', 'shape'),
     ('x', 'negative'), ('y', 'negative'), ('x', 'outside'), ('y', 'outside'),
     ('x', 'wide'), ('y', 'wide'), ('x', 'meta'), ('y', 'meta'),
     ('x', 'list'), ('y', 'list'), ('both', 'empty'), ('both', 'flat'),
@@ -107,8 +107,8 @@ def test_bad_batch_is_rejected_before_model_call(which, kind):
                   for key, value in values.items()}
     else:
         value = values[which]
-        if kind in ('float', 'bool', 'int32'):
-            value = value.to({'float': torch.float32, 'bool': torch.bool, 'int32': torch.int32}[kind])
+        if kind in ('float', 'bool', 'int16', 'int32'):
+            value = value.to({'float': torch.float32, 'bool': torch.bool, 'int16': torch.int16, 'int32': torch.int32}[kind])
         elif kind == 'shape': value = value[:, :2]
         elif kind in ('negative', 'outside', 'wide'):
             value[0, 0] = {'negative': -2, 'outside': 3, 'wide': 2**31}[kind]

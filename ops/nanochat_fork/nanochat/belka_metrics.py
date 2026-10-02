@@ -82,10 +82,10 @@ def evaluate_bpb(model, batches, steps, token_bytes):
                     x, y = next(iterator)
                     if (not isinstance(x, torch.Tensor) or not isinstance(y, torch.Tensor)
                             or x.layout != torch.strided or y.layout != torch.strided
-                            or x.dtype != torch.int64 or y.dtype != torch.int64
+                            or x.dtype not in (torch.int32, torch.int64) or y.dtype != torch.int64
                             or x.device != device or y.device != device
                             or x.ndim != 2 or x.shape != y.shape or not x.numel()):
-                        raise ValueError('BPB requires aligned nonempty int64 input/target matrices on the model device')
+                        raise ValueError('BPB requires aligned nonempty int32/int64 inputs and int64 targets on the model device')
                     if ((x < 0).any().item() or (x >= token_bytes.numel()).any().item()
                             or (y < -1).any().item() or (y >= token_bytes.numel()).any().item()):
                         raise ValueError('BPB token ID outside byte table; only target -1 is ignored')
