@@ -85,34 +85,102 @@ def split_parquet_files(data_dir, split):
     return [str(p.resolve()) for p in paths]
 
 
+def _supervised_scalar(value, label, *, integer=False):
+    """Read a genuine scalar before any lossy dtype conversion."""
+    import torch
+    if isinstance(value, torch.Tensor):
+        allowed = (torch.uint8, torch.int8, torch.int16, torch.int32, torch.int64)
+        if (value.ndim != 0 or value.layout != torch.strided
+                or (value.dtype not in allowed if integer else
+                    value.dtype not in allowed and not value.is_floating_point())):
+            raise ValueError(f'{label} must be a real scalar' + (' integer' if integer else ''))
+        value = value.detach().item()
+    if integer:
+        if type(value) is not int:
+            raise ValueError(f'{label} must be a scalar integer')
+        return value
+    if type(value) not in (int, float):
+        raise ValueError(f'{label} must be a finite real scalar')
+    try:
+        value = float(value)
+    except OverflowError as exc:
+        raise ValueError(f'{label} is too large') from exc
+    if not math.isfinite(value):
+        raise ValueError(f'{label} must be finite')
+    return value
+
+
 def normalize_supervised_gradients(model, local_tokens, local_nats, gradient_divisor=1):
     """Normalize summed microbatch grads to a global supervised-token mean.
 
-    All ranks must call, including a rank with zero local targets. Returns a
-    globally weighted scalar for logging. Invoke after GradScaler.unscale_.
+    All ranks must call in the same order, including zero-target ranks. MuonAdamW
+    owns the subsequent gradient average. Invoke after GradScaler.unscale_.
+    Ordinary scalar/plan failures precede gradient mutation; failed devices,
+    collectives or final in-place multiplies require job termination, not retry.
     """
     import torch
     import torch.distributed as dist
-    device = next(model.parameters()).device
-    count = torch.as_tensor(local_tokens, dtype=torch.int64, device=device).clone()
-    nats = torch.as_tensor(local_nats, dtype=torch.float32 if device.type == 'mps' else torch.float64, device=device).detach().clone()
     world = dist.get_world_size() if dist.is_initialized() else 1
+    backend = dist.get_backend() if world > 1 else None
+    if backend not in (None, 'gloo', 'nccl'):
+        raise ValueError('supervised normalization supports Gloo or NCCL')
+    failure, device, divisor = None, None, 0.0
+    try:
+        device = next(model.parameters()).device
+        if (device.type not in ('cpu', 'cuda', 'mps')
+                or (backend == 'gloo' and device.type != 'cpu')
+                or (backend == 'nccl' and device.type != 'cuda')):
+            raise ValueError('model device is incompatible with normalization backend')
+        count_value = _supervised_scalar(local_tokens, 'local_tokens', integer=True)
+        nats_value = _supervised_scalar(local_nats, 'local_nats')
+        divisor = _supervised_scalar(gradient_divisor, 'gradient_divisor')
+        # A per-rank budget conservatively prevents the subsequent int64 SUM
+        # from wrapping. Real batch token counts are far below this limit.
+        if not 0 <= count_value <= torch.iinfo(torch.int64).max // world:
+            raise ValueError('local_tokens outside the nonnegative int64 rank budget')
+        if nats_value < 0 or (count_value == 0 and nats_value != 0):
+            raise ValueError('local_nats must be nonnegative and zero for zero tokens')
+        if divisor <= 0:
+            raise ValueError('gradient divisor must be finite and positive')
+        count = torch.tensor(count_value, dtype=torch.int64, device=device)
+        dtype = torch.float32 if device.type == 'mps' else torch.float64
+        nats = torch.tensor(nats_value, dtype=dtype, device=device)
+        if not torch.isfinite(nats).item():
+            raise ValueError('local_nats overflows the accumulation dtype')
+    except Exception as exc:
+        failure = f'{type(exc).__name__}: {exc}'[:512]
+    if world > 1:
+        # Fixed-size tensor metadata: no pickle/object collective on every step.
+        control = torch.device('cuda', torch.cuda.current_device()) if backend == 'nccl' else torch.device('cpu')
+        plan = torch.tensor([int(failure is not None), 0.0 if failure else divisor],
+                            dtype=torch.float64, device=control)
+        plans = [torch.empty_like(plan) for _ in range(world)]
+        dist.all_gather(plans, plan)
+        summaries = [item.cpu().tolist() for item in plans]
+        failed_ranks = [rank for rank, item in enumerate(summaries) if item[0]]
+        if failed_ranks:
+            raise ValueError(f'supervised normalization preflight failed on ranks {failed_ranks}; local: {failure}')
+        if any(item[1] != summaries[0][1] for item in summaries):
+            raise ValueError('gradient divisor disagrees across ranks')
+    elif failure is not None:
+        raise ValueError('supervised normalization preflight failed: ' + failure)
     if world > 1:
         dist.all_reduce(count, op=dist.ReduceOp.SUM)
         dist.all_reduce(nats, op=dist.ReduceOp.SUM)
-    if count.item() <= 0:
+    total = count.item()
+    if total <= 0:
         raise ValueError('optimizer step has no supervised tokens globally')
-    if not math.isfinite(gradient_divisor) or gradient_divisor <= 0:
-        raise ValueError('gradient divisor must be finite and positive')
     if not torch.isfinite(nats).item():
         raise FloatingPointError('non-finite global supervised loss')
-    factor = world * gradient_divisor / count.item()
+    factor = world * divisor / total
+    mean = (nats / count).to(dtype=torch.float32)
+    if not math.isfinite(factor) or factor <= 0 or not torch.isfinite(mean).item():
+        raise FloatingPointError('supervised normalization factor or mean is not representable')
     with torch.no_grad():
         for parameter in model.parameters():
             if parameter.grad is not None:
                 parameter.grad.mul_(factor)
-    return (nats / count).to(dtype=torch.float32)
-
+    return mean
 
 def rendered_sft(tokenizer, conversation, capacity):
     """Refuse silent truncation/all-padding loops; user may raise max_seq_len."""
