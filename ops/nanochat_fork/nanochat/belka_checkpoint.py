@@ -69,16 +69,75 @@ def _rng():
     return result
 
 
+def _validated_torch_rng(value, device='cpu'):
+    """Validate on a private generator and return an independent byte snapshot."""
+    import torch
+    if (not isinstance(value, torch.Tensor) or value.dtype != torch.uint8
+            or value.layout != torch.strided or value.ndim != 1):
+        raise ValueError('RNG state must be a one-dimensional byte tensor')
+    generator = torch.Generator(device=device)
+    generator.set_state(value.detach().cpu().contiguous())
+    return generator.get_state()
+
+
+def _prepare_rng_state(state):
+    """Validate every saved component before modifying any global generator.
+
+    This is a local preflight, not a transaction against concurrent RNG users
+    or a guarantee of recovery from a device failure during final application.
+    """
+    import math
+    import torch
+    try:
+        if (not isinstance(state, dict) or not {'torch', 'python'} <= state.keys()
+                or not state.keys() <= {'torch', 'python', 'numpy', 'cuda'}):
+            raise ValueError('invalid RNG snapshot fields')
+        prepared = {'torch': _validated_torch_rng(state['torch'])}
+        s = state['python']
+        if (not isinstance(s, tuple) or len(s) != 3 or type(s[0]) is not int or s[0] != 3
+                or not isinstance(s[1], tuple) or len(s[1]) != 625
+                or any(type(v) is not int or not 0 <= v < 2**32 for v in s[1][:-1])
+                or type(s[1][-1]) is not int or not 0 <= s[1][-1] <= 624
+                or (s[2] is not None and (type(s[2]) not in (int, float) or not math.isfinite(s[2])))):
+            raise ValueError('invalid Python RNG state')
+        python_rng = random.Random(0)
+        python_rng.setstate(s)
+        prepared['python'] = python_rng.getstate()
+        if 'numpy' in state:
+            import numpy as np
+            s = state['numpy']
+            if (not isinstance(s, tuple) or len(s) != 5 or s[0] != 'MT19937'
+                    or not isinstance(s[1], list) or len(s[1]) != 624
+                    or any(type(v) is not int or not 0 <= v < 2**32 for v in s[1])
+                    or type(s[2]) is not int or not 0 <= s[2] <= 624
+                    or type(s[3]) is not int or s[3] not in (0, 1)
+                    or type(s[4]) not in (int, float) or not math.isfinite(s[4])):
+                raise ValueError('invalid NumPy RNG state')
+            numpy_rng = np.random.RandomState(0)
+            numpy_rng.set_state((s[0], np.array(s[1], dtype='uint32'), s[2], s[3], s[4]))
+            prepared['numpy'] = numpy_rng.get_state()
+        if 'cuda' in state:
+            states = state['cuda']
+            if (not isinstance(states, list) or not torch.cuda.is_available()
+                    or not states or len(states) != torch.cuda.device_count()):
+                raise ValueError('CUDA topology changed; exact RNG resume is not possible')
+            prepared['cuda'] = [_validated_torch_rng(value, f'cuda:{index}')
+                                for index, value in enumerate(states)]
+    except (ValueError, TypeError, RuntimeError, OverflowError, ImportError) as exc:
+        raise ValueError('invalid or incompatible checkpoint RNG state') from exc
+    return prepared
+
+
 def _restore_rng(state):
     import torch
-    torch.set_rng_state(state['torch'].cpu());random.setstate(state['python'])
-    if 'cuda' in state:
-        if not torch.cuda.is_available() or len(state['cuda']) != torch.cuda.device_count():
-            raise ValueError('CUDA topology changed; exact RNG resume is not possible')
-        torch.cuda.set_rng_state_all([v.cpu() for v in state['cuda']])
-    if 'numpy' in state:
+    prepared = _prepare_rng_state(state)
+    torch.set_rng_state(prepared['torch'])
+    random.setstate(prepared['python'])
+    if 'cuda' in prepared:
+        torch.cuda.set_rng_state_all(prepared['cuda'])
+    if 'numpy' in prepared:
         import numpy as np
-        s=state['numpy'];np.random.set_state((s[0],np.array(s[1],dtype='uint32'),s[2],s[3],s[4]))
+        np.random.set_state(prepared['numpy'])
 
 
 def save_checkpoint(checkpoint_dir,step,model_data,optimizer_data,meta_data,rank=0):
