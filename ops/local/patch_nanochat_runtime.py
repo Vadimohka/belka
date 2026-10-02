@@ -98,6 +98,8 @@ if __name__ == '__main__':
     tokenizer=originals['nanochat/tokenizer.py']
     tokenizer=tokenizer.replace('    base_dir = get_base_dir()',
         '    from nanochat.belka_runtime import artifact_base_dir\n    base_dir = artifact_base_dir(get_base_dir())')
+    tokenizer=replace_once(tokenizer, 'def get_token_bytes(device="cpu"):\n    import torch\n    from nanochat.common import get_base_dir\n    from nanochat.belka_runtime import artifact_base_dir\n    base_dir = artifact_base_dir(get_base_dir())\n    tokenizer_dir = os.path.join(base_dir, "tokenizer")\n    token_bytes_path = os.path.join(tokenizer_dir, "token_bytes.pt")\n    assert os.path.exists(token_bytes_path), f"Token bytes not found at {token_bytes_path}? It gets written by tok_train.py"\n    with open(token_bytes_path, "rb") as f:\n        token_bytes = torch.load(f, map_location=device)\n    return token_bytes',
+        'def get_token_bytes(device="cpu"):\n    # Derive from the selected tokenizer; historical UTF-8 caches may be wrong.\n    from nanochat.belka_token_bytes import token_byte_lengths\n    return token_byte_lengths(get_tokenizer(), device=device)')
     output['nanochat/tokenizer.py']=tokenizer
     loader=originals['nanochat/dataloader.py']
     loader=replace_once(loader,'    parquet_paths = parquet_paths[:-1] if split == "train" else parquet_paths[-1:]',
