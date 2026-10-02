@@ -2,11 +2,13 @@
 
 Every path is a pytest temporary fixture. The child processes exercise installed
 GPT/MuonAdamW/BPE/Parquet/checkpoint APIs without monkeypatching them. A five-update
-harness and its explicit fixture schedule do NOT certify the full base_train CLI,
-GradScaler, distributed/GPU execution, evaluation hooks or crash recovery.
+harness defaults to a fixture schedule; R27-T03 can select the actual schedule
+functions. Neither mode certifies the full base_train CLI, GradScaler, distributed/
+GPU execution, evaluation hooks or crash recovery.
 """
 from __future__ import annotations
 
+import ast
 import copy
 import hashlib
 import json
@@ -16,6 +18,7 @@ from pathlib import Path
 import random
 import subprocess
 import sys
+from types import SimpleNamespace
 
 import pytest
 
@@ -48,7 +51,48 @@ def require_runtime():
             pytest.importorskip(dependency)
 
 
-def run_child(base, mode, accumulation, cut):
+SCHEDULE_NAMES = ('get_lr_multiplier', 'get_muon_momentum', 'get_weight_decay')
+
+
+def compile_base_schedules(text, filename, horizon, warmup, ratio, final_lr, decay):
+    """Compile only trusted schedule definitions, never the training entrypoint."""
+    tree = ast.parse(text, filename=filename)
+    definitions = [node for node in tree.body
+                   if isinstance(node, ast.FunctionDef) and node.name in SCHEDULE_NAMES]
+    signature = ast.dump(ast.parse('def f(it): pass').body[0].args)
+    if (len(definitions) != 3 or {node.name for node in definitions} != set(SCHEDULE_NAMES)
+            or any(node.decorator_list or ast.dump(node.args) != signature
+                   or node.returns is not None or getattr(node, 'type_params', [])
+                   for node in definitions)):
+        raise ValueError('base schedule definitions changed; review the extraction contract')
+    namespace = dict(math=math, num_iterations=horizon, weight_decay_scaled=decay,
+                     args=SimpleNamespace(warmup_steps=warmup, warmdown_ratio=ratio,
+                                          final_lr_frac=final_lr))
+    # Only function definitions enter this module. Imports, argparse, setup and
+    # the top-level while loop in base_train are not executed or monkeypatched.
+    code = compile(ast.Module(body=definitions, type_ignores=[]), filename, 'exec')
+    exec(code, namespace)
+    return {name: namespace[name] for name in SCHEDULE_NAMES}
+
+
+def load_base_schedules(horizon, warmup=1, ratio=.6, final_lr=.1, decay=.04):
+    path = RUNTIME / 'scripts/base_train.py'
+    marker = RUNTIME / 'BELKA_RUNTIME_MANIFEST.json'
+    if not path.is_file() or not marker.is_file():
+        message = 'requires installed hash-verified base_train schedule source'
+        if os.environ.get('BELKA_REQUIRE_RUNTIME_TESTS') == '1' or __name__ == '__main__':
+            raise RuntimeError(message)
+        pytest.skip(message)
+    data = path.read_bytes()
+    sha = hashlib.sha256(data).hexdigest()
+    manifest = json.loads(marker.read_text(encoding='utf-8'))
+    if manifest.get('files', {}).get('scripts/base_train.py') != sha:
+        raise ValueError('base_train source does not match installed runtime manifest')
+    return (compile_base_schedules(data.decode('utf-8'), str(path), horizon,
+                                   warmup, ratio, final_lr, decay), sha)
+
+
+def run_child(base, mode, accumulation, cut, *, schedule_mode='fixture'):
     env = os.environ.copy()
     for name in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE', 'LOCAL_WORLD_SIZE',
                  'MASTER_ADDR', 'MASTER_PORT', 'GROUP_RANK'):
@@ -59,7 +103,7 @@ def run_child(base, mode, accumulation, cut):
                PYTHONHASHSEED='0', BELKA_REQUIRE_RUNTIME_TESTS='1')
     result = subprocess.run(
         [sys.executable, str(Path(__file__).resolve()), '--fixture-worker', mode,
-         str(base), str(accumulation), str(cut)],
+         str(base), str(accumulation), str(cut), schedule_mode],
         env=env, cwd=ROOT, text=True, capture_output=True, timeout=90)
     assert result.returncode == 0, f'{mode}:\n{result.stdout}\n{result.stderr}'
     if mode == 'prepare':
@@ -136,7 +180,7 @@ def test_oracle_detects_missing_resume_components(continuation, control, compone
     assert fixture_files(base) == frozen
 
 
-def fixture_worker(mode, base, accumulation, cut):
+def fixture_worker(mode, base, accumulation, cut, schedule_mode='fixture'):
     """No production CLI imports or owner-profile edits; five synthetic updates."""
     require_runtime()
     sys.path.insert(0, str(RUNTIME))
@@ -203,6 +247,10 @@ def fixture_worker(mode, base, accumulation, cut):
             model=model.state_dict(), optimizer=optimizer.state_dict(), step=step,
             smooth_loss=smooth_loss, pending={'x': x, 'y': y, 'cursor': pending}, rng=_rng()))
 
+    schedules, schedule_sha = None, None
+    schedule_horizon = HORIZON + 2 if mode == 'wrong_horizon' else HORIZON
+    if schedule_mode == 'base':
+        schedules, schedule_sha = load_base_schedules(schedule_horizon)
     initial = snapshot()
     trace = []
     end = cut if mode == 'prefix' else HORIZON
@@ -216,20 +264,29 @@ def fixture_worker(mode, base, accumulation, cut):
             (loss / accumulation).backward()
             # Same pending-batch convention as base_train: prefetch after backward.
             x, y, pending = next(current)
-        # Explicit test schedule, deliberately varying throughout the fixed horizon.
-        # This is not an independent test of base_train's schedule functions.
+        schedule_step = step - cut if mode == 'restart_schedule' else step
+        if schedules is None:
+            # Keep the original fixture recipe for R27-T01 and its callers.
+            lrm = (1., .8, .5, .3, .1)[step]
+            momentum, decay = .85 + .02 * step, .04 * (1 - step / HORIZON)
+        else:
+            lrm, momentum, decay = (schedules[name](schedule_step) for name in SCHEDULE_NAMES)
         for group in optimizer.param_groups:
-            group['lr'] = group['initial_lr'] * (1., .8, .5, .3, .1)[step]
+            group['lr'] = group['initial_lr'] * lrm
             if group['kind'] == 'muon':
-                group['momentum'] = .85 + .02 * step
-                group['weight_decay'] = .04 * (1 - step / HORIZON)
+                group['momentum'] = momentum
+                group['weight_decay'] = decay
         optimizer.step()
         model.zero_grad(set_to_none=True)
         smooth_loss = .9 * smooth_loss + .1 * losses[-1]
         step += 1
         # Observe all three streams; these draws are part of the fixture, not GPT dropout.
         probe = {'torch': torch.rand(4), 'python': random.random(), 'numpy': np.random.rand(4).tolist()}
-        trace.append({'losses': losses, 'batches': batches, 'probe': probe, 'state': snapshot()})
+        record = {'losses': losses, 'batches': batches, 'probe': probe, 'state': snapshot()}
+        if schedules is not None:
+            record['schedule'] = dict(step=schedule_step, horizon=schedule_horizon,
+                                      lr=lrm, momentum=momentum, decay=decay)
+        trace.append(record)
     with torch.no_grad():
         logits = model(x).clone()
     if mode == 'prefix':
@@ -237,13 +294,21 @@ def fixture_worker(mode, base, accumulation, cut):
                         dict(step=step, smooth_loss=smooth_loss, model_config=vars(config),
                              horizon=HORIZON, accumulation=accumulation,
                              dataloader_state_dict=pending, scaler_state=None))
-    torch.save({'initial': initial, 'trace': trace, 'logits': logits}, base / 'results' / f'{mode}.pt')
+    result = {'initial': initial, 'trace': trace, 'logits': logits}
+    if schedules is not None:
+        result['schedule_source_sha256'] = schedule_sha
+    torch.save(result, base / 'results' / f'{mode}.pt')
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 6 or sys.argv[1] != '--fixture-worker':
+    if len(sys.argv) not in (6, 7) or sys.argv[1] != '--fixture-worker':
         raise SystemExit('invoke through pytest; this is a bounded numerical fixture')
     mode = sys.argv[2]
-    if mode not in ('prepare', 'full', 'prefix', 'resume', 'no_optimizer', 'advance_batch', 'reset_rng'):
+    if mode not in ('prepare', 'full', 'prefix', 'resume', 'no_optimizer', 'advance_batch',
+                    'reset_rng', 'restart_schedule', 'wrong_horizon'):
         raise SystemExit('unknown fixture mode')
-    fixture_worker(mode, Path(sys.argv[3]).resolve(), int(sys.argv[4]), int(sys.argv[5]))
+    schedule_mode = sys.argv[6] if len(sys.argv) == 7 else 'fixture'
+    if (schedule_mode not in ('fixture', 'base')
+            or (mode in ('restart_schedule', 'wrong_horizon') and schedule_mode != 'base')):
+        raise SystemExit('invalid fixture schedule mode')
+    fixture_worker(mode, Path(sys.argv[3]).resolve(), int(sys.argv[4]), int(sys.argv[5]), schedule_mode)
