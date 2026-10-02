@@ -82,35 +82,54 @@ def _restore_rng(state):
 
 
 def save_checkpoint(checkpoint_dir,step,model_data,optimizer_data,meta_data,rank=0):
-    import torch
     import torch.distributed as dist
-    if type(step) is not int or step<0: raise ValueError('invalid checkpoint step')
     world=dist.get_world_size() if dist.is_initialized() else 1
-    if not 0<=rank<world: raise ValueError('invalid checkpoint rank')
-    directory=Path(checkpoint_dir)
-    names=[];error=None;identity=None
+    actual_rank=dist.get_rank() if dist.is_initialized() else 0
+    # All participating ranks must agree before the first filesystem write.
+    # Capture ordinary local errors instead of stranding peers in a collective.
+    request=dict(error=None, step=None, optimizer=optimizer_data is not None, identity=None)
+    directory=None;metadata_bytes=None
+    try:
+        if type(step) is not int or step<0:
+            raise ValueError('invalid checkpoint step')
+        if type(rank) is not int or rank != actual_rank:
+            raise ValueError('checkpoint rank must equal the process-group rank')
+        directory=Path(checkpoint_dir)
+        # Freeze each rank's metadata, but do not require identical data-loader
+        # cursors, optimizer contents or RNG across ranks.
+        metadata_bytes=json.dumps(meta_data,ensure_ascii=False,sort_keys=True,allow_nan=False).encode('utf-8')
+        request.update(step=step, identity=_tokenizer_artifacts())
+    except Exception as exc:
+        request['error']=f'{type(exc).__name__}: {exc}'
+    requests=[request]
+    if world>1:
+        requests=[None]*world;dist.all_gather_object(requests,request)
+    if any(item['error'] for item in requests):
+        raise ValueError(f'checkpoint save preflight failed: {[item["error"] for item in requests]}')
+    for field in ('step', 'optimizer', 'identity'):
+        if any(item[field] != request[field] for item in requests):
+            raise ValueError(f'checkpoint save preflight disagreement: {field}; no files written')
+    identity=request['identity']
+    names=[];error=None
     try:
         directory.mkdir(parents=True,exist_ok=True)
         if rank == 0:
             _json(directory/f'pending_{step:06d}.json',dict(step=step, world_size=world))
-        identity=_tokenizer_artifacts()
         if rank==0:
             name=f'model_{step:06d}.pt';_atomic(directory/name,lambda p:_save_torch(model_data,p));names.append(name)
-            name=f'meta_{step:06d}.json';_json(directory/name,meta_data);names.append(name)
-        name=f'meta_{step:06d}_rank{rank}.json';_json(directory/name,meta_data);names.append(name)
+            name=f'meta_{step:06d}.json';_atomic(directory/name,lambda p:p.write_bytes(metadata_bytes));names.append(name)
+        name=f'meta_{step:06d}_rank{rank}.json';_atomic(directory/name,lambda p:p.write_bytes(metadata_bytes));names.append(name)
         if optimizer_data is not None:
             name=f'optim_{step:06d}_rank{rank}.pt';_atomic(directory/name,lambda p:_save_torch(optimizer_data,p));names.append(name)
         name=f'rng_{step:06d}_rank{rank}.pt';_atomic(directory/name,lambda p:_save_torch(_rng(),p));names.append(name)
     except Exception as exc:
         error=f'{type(exc).__name__}: {exc}'
-    local=dict(error=error,names=names,identity=identity)
+    local=dict(error=error,names=names)
     results=[local]
     if world>1:
         results=[None]*world;dist.all_gather_object(results,local)
     if any(r['error'] for r in results):
         raise RuntimeError(f'checkpoint not committed: {[r["error"] for r in results]}')
-    if any(r['identity']!=identity for r in results):
-        raise ValueError('ranks disagree on tokenizer identity; checkpoint not committed')
     error=None
     if rank==0:
         try:
