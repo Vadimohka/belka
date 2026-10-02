@@ -23,7 +23,7 @@ jobs:
           ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
           path: .workspace/review-upstream
           persist-credentials: false
-      - name: Archive only tracked review sources; never run training
+      - name: Archive tracked sources and published corpus only; never run training
         shell: bash
         run: |
           mkdir -p .workspace/review-evidence
@@ -45,16 +45,22 @@ jobs:
                       name = raw_name.decode('utf-8')
                       if kind != 'blob' or mode not in ('100644', '100755'):
                           continue
-                      if Path(name).suffix.lower() not in {'.py', '.sh', '.md', '.json', '.jsonl', '.yaml', '.yml', '.toml', '.txt', '.env', '.html', '.svg', '.cff', '.lock', '.rs'} and name not in {'.gitignore', 'LICENSE', 'Makefile'}:
+                      published_bundle = label == 'belka' and name.startswith('data_release/open_corpus_bundle/')
+                      if not published_bundle and Path(name).suffix.lower() not in {'.py', '.sh', '.md', '.json', '.jsonl', '.yaml', '.yml', '.toml', '.txt', '.env', '.html', '.svg', '.cff', '.lock', '.rs'} and name not in {'.gitignore', 'LICENSE', 'Makefile'}:
                           continue
                       data = subprocess.check_output(['git', '-C', str(repo), 'cat-file', 'blob', blob])
-                      data.decode('utf-8')
+                      if not published_bundle:
+                          data.decode('utf-8')
                       archive.writestr(label + '/' + name, data)
                       files[name] = {'sha256': hashlib.sha256(data).hexdigest(), 'git_blob': blob, 'mode': mode}
                   records[label] = {'commit': commit, 'files': files}
               archive.writestr('SNAPSHOT.json', json.dumps(records, indent=2))
           path = root / '.workspace/review-evidence/sources.zip'
-          (path.parent / 'SHA256SUMS.txt').write_text(hashlib.sha256(path.read_bytes()).hexdigest() + '  sources.zip\n')
+          digest = hashlib.sha256()
+          with path.open('rb') as stream:
+              for block in iter(lambda: stream.read(1 << 20), b''):
+                  digest.update(block)
+          (path.parent / 'SHA256SUMS.txt').write_text(digest.hexdigest() + '  sources.zip\n')
           print({label: {'commit': record['commit'], 'files': len(record['files'])} for label, record in records.items()})
           PY
       - uses: actions/upload-artifact@v4
