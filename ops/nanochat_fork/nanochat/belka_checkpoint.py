@@ -204,6 +204,22 @@ def _read_commit_manifest(marker: Path, step: int) -> dict:
     return data
 
 
+def _partial_checkpoint_steps(entries):
+    """Recognize v1 evidence by directory entry, including dangling links.
+
+    Legacy nanochat also writes optim_*_rank*.pt, so optimizer files alone do
+    not distinguish a failed v1 save from a genuine legacy checkpoint.
+    """
+    steps = set()
+    for path in entries:
+        match = re.fullmatch(r'(?:pending|commit)_(\d+)\.json', path.name)
+        if not match:
+            match = re.fullmatch(r'(?:meta|rng)_(\d+)_rank\d+\.(?:json|pt)', path.name)
+        if match:
+            steps.add(int(match.group(1)))
+    return steps
+
+
 def validate_checkpoint(checkpoint_dir,step,rank=0,load_optimizer=False):
     if type(step) is not int or step < 0:
         raise ValueError('invalid checkpoint step')
@@ -215,12 +231,13 @@ def validate_checkpoint(checkpoint_dir,step,rank=0,load_optimizer=False):
         raise ValueError('checkpoint commit manifest must be a regular non-symlink file')
     if not marker.is_file():
         # A new-style partial save is never treated as a legacy checkpoint.
-        partial=(directory/f'pending_{step:06d}.json').exists() or (directory/f'meta_{step:06d}_rank0.json').exists() or (directory/f'rng_{step:06d}_rank0.pt').exists()
+        partial = step in _partial_checkpoint_steps(directory.iterdir())
         if partial or (load_optimizer and os.environ.get('BELKA_ALLOW_LEGACY_CHECKPOINT')!='YES'):
             raise ValueError('checkpoint has no commit manifest; exact resume refused')
         warnings.warn('legacy checkpoint: tokenizer identity and exact resume are not verified',RuntimeWarning)
         for name in (f'model_{step:06d}.pt',f'meta_{step:06d}.json'):
-            if not (directory/name).is_file(): raise ValueError('incomplete legacy checkpoint')
+            path = directory/name
+            if path.is_symlink() or not path.is_file(): raise ValueError('incomplete legacy checkpoint')
         return None
     data = _read_commit_manifest(marker, step)
     if rank >= data['world_size']:
@@ -258,17 +275,43 @@ def load_checkpoint(checkpoint_dir,step,device,load_optimizer=False,rank=0):
 
 
 def find_last_step(checkpoint_dir):
-    directory=Path(checkpoint_dir)
-    committed=[int(m.group(1)) for p in directory.glob('commit_*.json') if (m:=re.fullmatch(r'commit_(\d+)\.json',p.name))]
-    if committed: return max(committed)
-    legacy=[]
-    for p in directory.glob('model_*.pt'):
-        match=re.fullmatch(r'model_(\d+)\.pt',p.name)
-        if not match: continue
-        step=int(match.group(1))
-        if ((directory/f'meta_{step:06d}.json').is_file()
-                and not (directory/f'pending_{step:06d}.json').exists()
-                and not (directory/f'meta_{step:06d}_rank0.json').exists()
-                and not (directory/f'rng_{step:06d}_rank0.pt').exists()): legacy.append(step)
-    if not legacy: raise FileNotFoundError('no committed or complete legacy checkpoint')
+    """Select a structurally complete checkpoint without silently rolling back.
+
+    Inspect only the newest committed manifest, not historical tensor contents.
+    Full hashes, tokenizer identity and optimizer compatibility are verified by
+    validate/load_checkpoint. Directory scan errors must propagate to callers.
+    """
+    directory = Path(checkpoint_dir)
+    entries = list(directory.iterdir())
+    committed = []
+    for path in entries:
+        match = re.fullmatch(r'commit_(\d+)\.json', path.name)
+        if not match:
+            continue
+        step = int(match.group(1))
+        if path.name != f'commit_{step:06d}.json':
+            raise ValueError(f'noncanonical checkpoint commit name: {path.name}')
+        committed.append(step)
+    if committed:
+        step = max(committed)
+        data = _read_commit_manifest(directory/f'commit_{step:06d}.json', step)
+        for name in data['files']:
+            path = directory/name
+            if path.is_symlink() or not path.is_file():
+                raise ValueError(f'missing or nonregular checkpoint payload: {name}')
+        return step
+    partial = _partial_checkpoint_steps(entries)
+    legacy = []
+    for path in entries:
+        match = re.fullmatch(r'model_(\d+)\.pt', path.name)
+        if not match:
+            continue
+        step = int(match.group(1))
+        meta = directory/f'meta_{step:06d}.json'
+        if (path.name == f'model_{step:06d}.pt' and step not in partial
+                and not path.is_symlink() and path.is_file()
+                and not meta.is_symlink() and meta.is_file()):
+            legacy.append(step)
+    if not legacy:
+        raise FileNotFoundError('no committed or complete legacy checkpoint')
     return max(legacy)
