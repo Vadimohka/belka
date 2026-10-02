@@ -28,6 +28,23 @@ def replace_once(text, old, new):
     return text.replace(old,new,1)
 
 
+def preserve_sft_warm_start_decay(text):
+    """Keep fresh SFT decay values when importing pretrained optimizer state."""
+    text = replace_once(text,
+        '        base_lrs = [group["lr"] for group in optimizer.param_groups]',
+        '        base_lrs = [group["lr"] for group in optimizer.param_groups]\n'
+        '        sft_weight_decays = [group["weight_decay"] for group in optimizer.param_groups]')
+    text = replace_once(text,
+        '        for group, base_lr in zip(optimizer.param_groups, base_lrs):\n'
+        '            group["lr"] = base_lr',
+        '        for group, base_lr, sft_decay in zip(optimizer.param_groups, base_lrs, sft_weight_decays):\n'
+        '            group["lr"] = base_lr\n'
+        '            group["weight_decay"] = sft_decay')
+    return replace_once(text,
+        '(momentum buffers only, LRs reset)',
+        '(state loaded, SFT LRs and weight decay retained)')
+
+
 def load_tool(name):
     spec=importlib.util.spec_from_file_location(name,PACK/'ops/local'/f'{name}.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
@@ -160,6 +177,7 @@ from types import SimpleNamespace
     sft=sft.replace('ema_beta**(step + 1)', 'ema_beta**step')
     sft=replace_once(sft, '    CustomJSON(filepath=identity_conversations_filepath),\n    CustomJSON(filepath=identity_conversations_filepath),', '    CustomJSON(filepath=identity_conversations_filepath),')
     sft=sft.replace('CustomJSON x2','CustomJSON x1')
+    sft=preserve_sft_warm_start_decay(sft)
     output['scripts/chat_sft_be.py']=sft
     common=scratch/'common.py';common.write_text(originals['nanochat/common.py'],encoding='utf-8')
     if not load_tool('patch_nanochat_branding').patch_common(common)['ok']: raise ValueError('branding failed')
