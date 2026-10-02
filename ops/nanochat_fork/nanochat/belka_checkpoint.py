@@ -129,8 +129,12 @@ def _prepare_rng_state(state):
 
 
 def _restore_rng(state):
+    _apply_rng_state(_prepare_rng_state(state))
+
+
+def _apply_rng_state(prepared):
+    """Apply an already validated snapshot; callers must stop concurrent RNG use."""
     import torch
-    prepared = _prepare_rng_state(state)
     torch.set_rng_state(prepared['torch'])
     random.setstate(prepared['python'])
     if 'cuda' in prepared:
@@ -392,8 +396,85 @@ def _read_checkpoint_metadata(path: Path) -> dict:
     return _decode_checkpoint_metadata(raw)
 
 
-def load_checkpoint(checkpoint_dir,step,device,load_optimizer=False,rank=0):
+def _checkpoint_load_agreement(phase, error=None, identity=None):
+    """Exchange bounded status only, never tensors, metadata or exception text."""
+    import torch.distributed as dist
+    reports = [None] * dist.get_world_size()
+    dist.all_gather_object(reports, (error, identity))
+    failed = [index for index, (failure, _) in enumerate(reports) if failure]
+    if failed:
+        raise RuntimeError(f'checkpoint distributed load {phase} failed on ranks {failed}')
+    if any(item[1] != reports[0][1] for item in reports):
+        raise RuntimeError(f'checkpoint distributed load {phase} identity disagreement')
+
+
+def _load_checkpoint_distributed(checkpoint_dir, step, device, rank):
+    """All default-group ranks stage a resume before anyone restores RNG.
+
+    All ranks must enter with load_optimizer=True in the same collective order.
+    Ordinary preflight/staging failures preserve RNG; final application failures
+    are fatal and must abort the job, not resume training on the healthy ranks.
+    """
     import torch
+    import torch.distributed as dist
+    directory = marker = meta = identity = None
+    error = None
+    try:
+        if type(rank) is not int or rank != dist.get_rank():
+            raise ValueError('checkpoint rank must equal the process-group rank')
+        directory = Path(checkpoint_dir)
+        marker = validate_checkpoint(directory, step, rank, load_optimizer=True)
+        meta_name = f'meta_{step:06d}_rank{rank}.json' if marker else f'meta_{step:06d}.json'
+        meta = _read_checkpoint_metadata(directory/meta_name)
+        if marker is None:
+            # Explicitly opted-in legacy resume has no common commit manifest.
+            # Agree on its global model/metadata; this adds no exact-RNG promise.
+            optimizer_path = directory/f'optim_{step:06d}_rank{rank}.pt'
+            if optimizer_path.is_symlink() or not optimizer_path.is_file():
+                raise ValueError('missing or nonregular legacy optimizer')
+            common = dict(legacy=True, step=step, model=_hash(directory/f'model_{step:06d}.pt'),
+                          metadata=_hash(directory/meta_name))
+        else:
+            common = marker
+        identity = hashlib.sha256(json.dumps(common, sort_keys=True, allow_nan=False).encode('utf-8')).hexdigest()
+    except Exception:
+        error = True
+    _checkpoint_load_agreement('preflight', error, identity)
+
+    model = opt = prepared = None
+    error = None
+    try:
+        model = torch.load(directory/f'model_{step:06d}.pt', map_location=device, weights_only=True)
+        opt = torch.load(directory/f'optim_{step:06d}_rank{rank}.pt', map_location=device, weights_only=True)
+        if marker is not None:
+            rng = torch.load(directory/f'rng_{step:06d}_rank{rank}.pt', map_location='cpu', weights_only=True)
+            prepared = _prepare_rng_state(rng)
+    except Exception:
+        error = True
+    _checkpoint_load_agreement('staging', error)
+
+    error = None
+    try:
+        if prepared is not None:
+            _apply_rng_state(prepared)
+    except Exception:
+        error = True
+    # Do not let a healthy rank return and start gradient collectives while a
+    # peer failed during RNG application. No rollback from device failure.
+    _checkpoint_load_agreement('application (abort on failure)', error)
+    return model, opt, meta
+
+
+def load_checkpoint(checkpoint_dir,step,device,load_optimizer=False,rank=0):
+    """Load locally for inference; distributed optimizer resume is collective.
+
+    With an initialized multi-rank default group, every rank must call with
+    load_optimizer=True and its actual rank. Inference remains noncollective.
+    """
+    import torch
+    import torch.distributed as dist
+    if load_optimizer and dist.is_initialized() and dist.get_world_size() > 1:
+        return _load_checkpoint_distributed(checkpoint_dir, step, device, rank)
     directory=Path(checkpoint_dir)
     marker=validate_checkpoint(directory,step,rank,load_optimizer)
     meta_name=f'meta_{step:06d}_rank{rank}.json' if marker and load_optimizer else f'meta_{step:06d}.json'
