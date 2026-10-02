@@ -45,6 +45,21 @@ def preserve_sft_warm_start_decay(text):
         '(state loaded, SFT LRs and weight decay retained)')
 
 
+def refresh_sft_scaler_checks(text):
+    """GradScaler must inspect gradients AFTER supervised normalization."""
+    return replace_once(text,
+        '        if is_ddp_initialized():\n'
+        '            for v in scaler._found_inf_per_device(optimizer).values():\n'
+        '                dist.all_reduce(v, op=dist.ReduceOp.MAX)',
+        '        if scaler.is_enabled():\n'
+        '            # unscale_ cached flags before normalization could overflow.\n'
+        '            # Pinned Torch: inspect again with unit inverse scale.\n'
+        '            scaler._check_inf_per_device(optimizer)\n'
+        '            if is_ddp_initialized():\n'
+        '                for v in scaler._found_inf_per_device(optimizer).values():\n'
+        '                    dist.all_reduce(v, op=dist.ReduceOp.MAX)')
+
+
 def load_tool(name):
     spec=importlib.util.spec_from_file_location(name,PACK/'ops/local'/f'{name}.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
@@ -178,6 +193,7 @@ from types import SimpleNamespace
     sft=replace_once(sft, '    CustomJSON(filepath=identity_conversations_filepath),\n    CustomJSON(filepath=identity_conversations_filepath),', '    CustomJSON(filepath=identity_conversations_filepath),')
     sft=sft.replace('CustomJSON x2','CustomJSON x1')
     sft=preserve_sft_warm_start_decay(sft)
+    sft=refresh_sft_scaler_checks(sft)
     output['scripts/chat_sft_be.py']=sft
     common=scratch/'common.py';common.write_text(originals['nanochat/common.py'],encoding='utf-8')
     if not load_tool('patch_nanochat_branding').patch_common(common)['ok']: raise ValueError('branding failed')
