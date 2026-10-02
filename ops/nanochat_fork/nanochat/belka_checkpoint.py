@@ -157,6 +157,7 @@ def save_checkpoint(checkpoint_dir,step,model_data,optimizer_data,meta_data,rank
         # Freeze each rank's metadata, but do not require identical data-loader
         # cursors, optimizer contents or RNG across ranks.
         metadata_bytes=json.dumps(meta_data,ensure_ascii=False,sort_keys=True,allow_nan=False).encode('utf-8')
+        _decode_checkpoint_metadata(metadata_bytes)
         request.update(step=step, identity=_tokenizer_artifacts())
     except Exception as exc:
         request['error']=f'{type(exc).__name__}: {exc}'
@@ -338,14 +339,68 @@ def validate_checkpoint(checkpoint_dir,step,rank=0,load_optimizer=False):
     return data
 
 
+# Rank-local data-loader state can include buffered tokens and pending batches;
+# it is intentionally allowed to be larger than the small commit manifest.
+MAX_CHECKPOINT_METADATA_BYTES = 64 << 20
+MAX_CHECKPOINT_METADATA_DEPTH = 128
+
+
+def _decode_checkpoint_metadata(raw: bytes) -> dict:
+    """Apply one metadata contract to saved snapshots and load-time JSON."""
+    import math
+    if len(raw) > MAX_CHECKPOINT_METADATA_BYTES:
+        raise ValueError('checkpoint metadata exceeds byte limit')
+    try:
+        data = json.loads(raw.decode('utf-8'), object_pairs_hook=_unique_object,
+                          parse_constant=_reject_constant)
+        if not isinstance(data, dict):
+            raise ValueError('checkpoint metadata must be a JSON object')
+        # Bound container nesting independently of the interpreter recursion
+        # limit. Iterator frames avoid copying large pending-batch token lists.
+        frames = [iter((data,))]
+        while frames:
+            try:
+                value = next(frames[-1])
+            except StopIteration:
+                frames.pop()
+                continue
+            if isinstance(value, dict):
+                for key in value:
+                    key.encode('utf-8')
+                children = value.values()
+            elif isinstance(value, list):
+                children = value
+            else:
+                if isinstance(value, str):
+                    value.encode('utf-8')  # reject escaped lone surrogates
+                elif isinstance(value, float) and not math.isfinite(value):
+                    raise ValueError('non-finite checkpoint metadata number')
+                continue
+            if len(frames) > MAX_CHECKPOINT_METADATA_DEPTH:
+                raise ValueError('checkpoint metadata exceeds nesting limit')
+            frames.append(iter(children))
+    except (ValueError, RecursionError) as exc:
+        raise ValueError('invalid checkpoint metadata JSON') from exc
+    return data
+
+
+def _read_checkpoint_metadata(path: Path) -> dict:
+    if path.is_symlink() or not path.is_file():
+        raise ValueError('checkpoint metadata must be a regular non-symlink file')
+    with path.open('rb') as stream:
+        raw = stream.read(MAX_CHECKPOINT_METADATA_BYTES + 1)
+    return _decode_checkpoint_metadata(raw)
+
+
 def load_checkpoint(checkpoint_dir,step,device,load_optimizer=False,rank=0):
     import torch
     directory=Path(checkpoint_dir)
     marker=validate_checkpoint(directory,step,rank,load_optimizer)
+    meta_name=f'meta_{step:06d}_rank{rank}.json' if marker and load_optimizer else f'meta_{step:06d}.json'
+    # Reject malformed trainer metadata before allocating model/optimizer tensors.
+    meta=_read_checkpoint_metadata(directory/meta_name)
     model=torch.load(directory/f'model_{step:06d}.pt',map_location=device,weights_only=True)
     opt=torch.load(directory/f'optim_{step:06d}_rank{rank}.pt',map_location=device,weights_only=True) if load_optimizer else None
-    meta_name=f'meta_{step:06d}_rank{rank}.json' if marker and load_optimizer else f'meta_{step:06d}.json'
-    meta=json.loads((directory/meta_name).read_text(encoding='utf-8'))
     if load_optimizer and marker:
         rng=torch.load(directory/f'rng_{step:06d}_rank{rank}.pt',map_location='cpu',weights_only=True)
         _restore_rng(rng)
