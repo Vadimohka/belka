@@ -115,7 +115,7 @@ from types import SimpleNamespace
     output['nanochat/checkpoint_manager.py']=checkpoint+'\nfrom nanochat.belka_checkpoint import save_checkpoint, load_checkpoint, find_last_step\n'
     base=originals['scripts/base_train.py']
     base=replace_once(base,'    model.load_state_dict(model_data, strict=True, assign=True)',
-        '    if meta_data["model_config"] != model_config_kwargs:\n        raise ValueError("resume model config differs from checkpoint")\n    model.load_state_dict(model_data, strict=True, assign=True)')
+        '    from nanochat.belka_resume import validate_base_resume_config\n    validate_base_resume_config(meta_data, user_config, args.resume_from_step)\n    if meta_data["model_config"] != model_config_kwargs:\n        raise ValueError("resume model config differs from checkpoint")\n    model.load_state_dict(model_data, strict=True, assign=True)')
     base=replace_once(base,'scaler = torch.amp.GradScaler() if COMPUTE_DTYPE == torch.float16 else None',
         'scaler = torch.amp.GradScaler() if COMPUTE_DTYPE == torch.float16 else None\nif resuming and scaler is not None:\n    if meta_data.get("scaler_state") is None:\n        raise ValueError("fp16 resume checkpoint has no scaler state")\n    scaler.load_state_dict(meta_data["scaler_state"])')
     base=replace_once(base,'"dataloader_state_dict": dataloader_state_dict,',
