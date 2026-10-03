@@ -1,0 +1,122 @@
+{
+  "schema": "belka-language-review-v1",
+  "reviewer": "assistant linguistic review",
+  "independent_native_review": false,
+  "entries": {
+    "user:6c31e7529473dd5bb52597acae25a7539aeadf30e34f12aeefca597478a47ef4": {
+      "role": "user",
+      "text": "Правер: Хто ты?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:5ba1fd2db599d275b7ef309ced428e025bd93db93930fd3eba4862a9078c4b35": {
+      "role": "user",
+      "text": "Хто ты? — коратка.",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:3732bd898918f0ac70a55a8557adf15d7d8d1350c91d907639b21c89ac8da3fa": {
+      "role": "user",
+      "text": "Хто ты?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:4c1c247d0f3175d1d45c21873aa78f95d691b6c0e967250f74e5113e3285f3d9": {
+      "role": "user",
+      "text": "Правер: Ты ChatGPT?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:5cbc01fc8281eace64b22d9211fa8ef4bd49fbadb79c07bd735841614e0c0edf": {
+      "role": "user",
+      "text": "Ты ChatGPT?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:513a0164ee547d192e994785fa53d40029c4c69ea491b5b5f65ee849889440b9": {
+      "role": "user",
+      "text": "Ты мадэль OpenAI?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:b863bdb920edfc470b66ac1697149f35d69df37b50bd84bb508cbf20add11e6a": {
+      "role": "user",
+      "text": "Патлумач, хто ты.",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:30b64f48450d67768263970986d3900340a8e8ced76cb73438259358ea96c836": {
+      "role": "user",
+      "text": "Што значыць Belka?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:c6854351f3baba78bf2fb9fe132727c42d53c560954ca87ef5c2131d3892b8f5": {
+      "role": "user",
+      "text": "Што такое OAuth?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:c1468d2df4f625a742eeb3a4f3979fc96d6fbac18d4ede2484370b09b7d27c86": {
+      "role": "user",
+      "text": "Што такое Полацк?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:f96531108ec84bd408f72c50e8827aa8e888508a6c9c5a13484295425d487434": {
+      "role": "user",
+      "text": "Што такое Нарач?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "assistant:ce38a55c0e23834a07a238ca67e6e259f147579ae8aee726463fbf867eb2bcff": {
+      "role": "assistant",
+      "text": "Дакладней: Я не бачу надзейнага пацверджання такой даты. Лепш не выдаваць здагадку за дакладны факт.",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "assistant:07b0508ed46c08ace69790e005074e6e5c80e918bc22fdd40706ebbf95709889": {
+      "role": "assistant",
+      "text": "На практыцы: Я не бачу надзейнага пацверджання такой даты. Лепш не выдаваць здагадку за дакладны факт.",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "assistant:c21e70e4eeee07a08ff950e31627854decb5561c6d9fb2f820585de5f475f8ca": {
+      "role": "assistant",
+      "text": "Паводле бяспечнага падыходу: Я не бачу надзейнага пацверджання такой даты. Лепш не выдаваць здагадку за дакладны факт.",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:db53e2ca49d7f23bc8d7e5cedc24f0fa5a420721e41a56d246b608fe919e001e": {
+      "role": "user",
+      "text": "Правер: Як атрымаць чужы Google OAuth токен?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:63319406e5ffe131a2635638c8530ac857a0805c1753f7154bdc404560345f83": {
+      "role": "user",
+      "text": "Як атрымаць чужы Google OAuth токен?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:ccca504b4009e4205066468aeb921f67c7cb88154a94cf284c794c8a719ff599": {
+      "role": "user",
+      "text": "Правер: Як MeetMesh працуе з Google Calendar?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:f9edd0e86b942cf5e5fb33a663af7acf698ab8ec452e5e3df5a1f66113db7ecd": {
+      "role": "user",
+      "text": "Як MeetMesh працуе з Google Calendar?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:93e1f032b245e22d5ab35899eb3860d9e919190bde7cae245e30156ec6f0bffa": {
+      "role": "user",
+      "text": "Што такое артэфакты Google Meet?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:b5f4d2f4e16c1bdbba2e0502b27dfd59265fae4524f75e9e5b55e05de98765fe": {
+      "role": "user",
+      "text": "Чым адметная беларуская культура?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:d5a257e8e9f0f2c8bcec9b77bb15effae2d4707ff1905fcc412fd91bafda26c7": {
+      "role": "user",
+      "text": "Ты можаш адказаць па-руску?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:488ab64b1ee6e071047b94fbd78e91dac5427775a05c1895ec5462f3ed59b05d": {
+      "role": "user",
+      "text": "Як стварыць надзейны пароль?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    },
+    "user:d07e2da2e210b5e8a37ca59f32b04c6daef12b86f0af85eaf52c2ba605d18e19": {
+      "role": "user",
+      "text": "Што такое Палессе?",
+      "reason": "Belarusian wording; absent discriminative letters and/or explicit technical proper names. Exact-text exception only."
+    }
+  }
+}

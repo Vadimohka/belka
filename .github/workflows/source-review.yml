@@ -1,0 +1,71 @@
+name: Source review snapshot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/belka-runtime-2026-10-01]
+    paths: [.github/workflows/source-review.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: karpathy/nanochat
+          ref: 92d63d4e8bb4df75c3b71618f31ddde2378b2bcd
+          path: .workspace/review-upstream
+          persist-credentials: false
+      - name: Archive tracked sources and published corpus only; never run training
+        shell: bash
+        run: |
+          mkdir -p .workspace/review-evidence
+          python - <<'PY'
+          import hashlib, json, subprocess, zipfile
+          from pathlib import Path
+          root = Path.cwd()
+          records = {}
+          with zipfile.ZipFile(root / '.workspace/review-evidence/sources.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+              for label, repo in [('belka', root), ('nanochat', root / '.workspace/review-upstream')]:
+                  commit = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
+                  tree = subprocess.check_output(['git', '-C', str(repo), 'ls-tree', '-r', '-z', 'HEAD'])
+                  files = {}
+                  for entry in tree.split(b'\0'):
+                      if not entry:
+                          continue
+                      metadata, raw_name = entry.split(b'\t', 1)
+                      mode, kind, blob = metadata.decode().split()
+                      name = raw_name.decode('utf-8')
+                      if kind != 'blob' or mode not in ('100644', '100755'):
+                          continue
+                      published_bundle = label == 'belka' and name.startswith('data_release/open_corpus_bundle/')
+                      if not published_bundle and Path(name).suffix.lower() not in {'.py', '.sh', '.md', '.json', '.jsonl', '.yaml', '.yml', '.toml', '.txt', '.env', '.html', '.svg', '.cff', '.lock', '.rs'} and name not in {'.gitignore', 'LICENSE', 'Makefile'}:
+                          continue
+                      data = subprocess.check_output(['git', '-C', str(repo), 'cat-file', 'blob', blob])
+                      if not published_bundle:
+                          data.decode('utf-8')
+                      archive.writestr(label + '/' + name, data)
+                      files[name] = {'sha256': hashlib.sha256(data).hexdigest(), 'git_blob': blob, 'mode': mode}
+                  records[label] = {'commit': commit, 'files': files}
+              archive.writestr('SNAPSHOT.json', json.dumps(records, indent=2))
+          path = root / '.workspace/review-evidence/sources.zip'
+          digest = hashlib.sha256()
+          with path.open('rb') as stream:
+              for block in iter(lambda: stream.read(1 << 20), b''):
+                  digest.update(block)
+          (path.parent / 'SHA256SUMS.txt').write_text(digest.hexdigest() + '  sources.zip\n')
+          print({label: {'commit': record['commit'], 'files': len(record['files'])} for label, record in records.items()})
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reviewed-source-snapshot
+          path: .workspace/review-evidence
+          retention-days: 14
+          if-no-files-found: error

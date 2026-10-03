@@ -36,6 +36,7 @@ def normalize_text(text: str, *, keep_paragraphs: bool = True) -> str:
     spell-correct or rewrite content. It removes control garbage, normalizes
     apostrophes used in Belarusian orthography and collapses excessive spacing.
     """
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
     text = unicodedata.normalize("NFC", text)
     for src, dst in DASH_REPLACEMENTS.items():
         text = text.replace(src, dst)
@@ -58,7 +59,7 @@ def main() -> None:
     ap.add_argument("--flat", action="store_true", help="Collapse all whitespace to single spaces")
     args = ap.parse_args()
 
-    raw = args.input.read_text(encoding="utf-8", errors="ignore") if args.input else sys.stdin.read()
+    raw = args.input.read_text(encoding="utf-8", errors="strict") if args.input else sys.stdin.read()
     out = normalize_text(raw, keep_paragraphs=not args.flat)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -199,7 +199,7 @@ def test_installer_uv_cpu_selects_cpu_extra(tmp_path):
     result = run(["bash", str(repo / "ops/local/install_nanochat_env.sh"), "--cpu", "--skip-rust"],
                  cwd=tmp_path, env=env)
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "uv sync --extra cpu" in log.read_text().splitlines()
+    assert "uv sync --extra cpu --frozen" in log.read_text().splitlines()
     assert "uv sync" not in log.read_text().splitlines()
 
 
@@ -208,7 +208,7 @@ def test_installer_does_not_hide_gpu_install_failure(tmp_path):
     result = run(["bash", str(repo / "ops/local/install_nanochat_env.sh"), "--skip-rust"],
                  cwd=tmp_path, env=env)
     assert result.returncode == 17
-    assert [line for line in log.read_text().splitlines() if line.startswith("uv ")] == ["uv sync --extra gpu"]
+    assert [line for line in log.read_text().splitlines() if line.startswith("uv ")] == ["uv sync --extra gpu --frozen"]
 
 
 def split_command(source, train, val, ratio="0.3"):
