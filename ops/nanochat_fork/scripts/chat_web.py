@@ -76,6 +76,7 @@ class ChatRequest(BaseModel):
     top_k: int | None = Field(default=None,ge=0,le=200,strict=True)
     max_tokens: int | None = Field(default=None,ge=1,le=4096,strict=True)
     stream: bool = True  # compatibility: this endpoint always returns SSE
+    model: str | None = Field(default=None, min_length=1, max_length=200)
 
 
 def validate_chat_request(body):
@@ -167,6 +168,28 @@ def create_app(settings=None,workers=None):
     async def stats(request:Request):
         authorize(request)
         return dict(total_workers=len(app.state.workers),available_workers=app.state.available.qsize())
+    def prompt_budget(body, worker):
+        validate_chat_request(body)
+        if body.model and body.model not in {'be-local', settings.model_tag}:
+            raise HTTPException(400, 'requested model does not match the loaded checkpoint')
+        tok = worker.tokenizer
+        ids, _ = tok.render_conversation({'messages':[m.model_dump() for m in body.messages]}, max_tokens=None)
+        ids.append(tok.encode_special('<|assistant_start|>'))
+        context = worker.engine.model.config.sequence_len
+        remaining = context-len(ids)
+        if remaining < 1:
+            raise HTTPException(400, 'prompt fills the model context; start a new conversation or shorten it')
+        maximum = body.max_tokens if body.max_tokens is not None else min(settings.max_tokens, remaining)
+        if maximum > remaining:
+            raise HTTPException(400, 'prompt plus completion exceeds model context')
+        return ids, maximum, context
+    @app.post('/chat/budget')
+    async def budget(body:ChatRequest, request:Request):
+        authorize(request)
+        # All replicas are checked; use the smallest available context budget.
+        values = [prompt_budget(body, worker) for worker in app.state.workers]
+        return dict(prompt_tokens=max(len(v[0]) for v in values),
+                    max_tokens=min(v[1] for v in values), context_tokens=min(v[2] for v in values))
     @app.post('/chat/completions')
     async def chat(body:ChatRequest,request:Request):
         authorize(request);validate_chat_request(body)
@@ -174,11 +197,7 @@ def create_app(settings=None,workers=None):
         except asyncio.TimeoutError: raise HTTPException(503,'all workers are busy') from None
         try:
             tok=worker.tokenizer
-            ids,_=tok.render_conversation({'messages':[m.model_dump() for m in body.messages]},max_tokens=None)
-            ids.append(tok.encode_special('<|assistant_start|>'))
-            maximum=body.max_tokens if body.max_tokens is not None else settings.max_tokens
-            if len(ids)+maximum>worker.engine.model.config.sequence_len:
-                raise HTTPException(400,'prompt plus completion exceeds model context')
+            ids,maximum,_=prompt_budget(body,worker)
         except BaseException:
             app.state.available.put_nowait(worker);raise
         loop=asyncio.get_running_loop();cancel=threading.Event();chunks=queue.Queue(maxsize=16)

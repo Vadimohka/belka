@@ -249,6 +249,7 @@
             </button>
             <h1>Belka</h1>
         </div>
+        <label>API key <input id="apiKeyInput" type="password" autocomplete="off" placeholder="Only if required" aria-label="API key"></label>
     </div>
 
     <div class="chat-container" id="chatContainer">
@@ -286,6 +287,50 @@
         let isGenerating = false;
         let currentTemperature = 0.8;
         let currentTopK = 50;
+
+        function requestHeaders() {
+            const headers = {'Content-Type': 'application/json'};
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) headers.Authorization = `Bearer ${key}`;
+            return headers;
+        }
+
+        // A network read is neither a UTF-8 character boundary nor an SSE event boundary.
+        async function readSSE(reader, onToken) {
+            const decoder = new TextDecoder('utf-8', {fatal: true});
+            let buffer = '', complete = false, text = '';
+            function consume(flush = false) {
+                let boundary;
+                while ((boundary = buffer.search(/\r?\n\r?\n/)) >= 0) {
+                    const event = buffer.slice(0, boundary);
+                    const separator = buffer.slice(boundary).match(/^\r?\n\r?\n/)[0];
+                    buffer = buffer.slice(boundary + separator.length);
+                    const payload = event.split(/\r?\n/).filter(line => line.startsWith('data:'))
+                        .map(line => line.slice(5).replace(/^ /, '')).join('\n');
+                    if (!payload) continue;
+                    const data = JSON.parse(payload);
+                    if (data.error) throw new Error(String(data.error));
+                    if (typeof data.token === 'string') { text += data.token; onToken(text); }
+                    if (data.done === true) complete = true;
+                }
+                if (flush && buffer.trim()) throw new Error('Incomplete response event');
+            }
+            try {
+                while (true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, {stream: true});
+                    consume();
+                }
+                buffer += decoder.decode();
+                consume(true);
+                if (!complete || !text.trim()) throw new Error('The response ended without a complete answer');
+                return text;
+            } catch (error) {
+                await reader.cancel().catch(() => {});
+                throw error;
+            }
+        }
 
         chatInput.addEventListener('input', function() {
             this.style.height = 'auto';
@@ -391,16 +436,20 @@
             assistantContent.innerHTML = '<span class="typing-indicator"></span>';
 
             try {
+                const headers = requestHeaders();
+                const budgetResponse = await fetch(`${API_URL}/chat/budget`, {
+                    method: 'POST', headers, body: JSON.stringify({messages})
+                });
+                if (!budgetResponse.ok) throw new Error(`Request rejected (${budgetResponse.status}). Check the API key or shorten the conversation.`);
+                const budget = await budgetResponse.json();
                 const response = await fetch(`${API_URL}/chat/completions`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers,
                     body: JSON.stringify({
                         messages: messages,
                         temperature: currentTemperature,
                         top_k: currentTopK,
-                        max_tokens: 512
+                        max_tokens: budget.max_tokens
                     }),
                 });
 
@@ -409,31 +458,11 @@
                 }
 
                 const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let fullResponse = '';
                 assistantContent.textContent = '';
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            try {
-                                const data = JSON.parse(line.slice(6));
-                                if (data.token) {
-                                    fullResponse += data.token;
-                                    assistantContent.textContent = fullResponse;
-                                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                                }
-                            } catch (e) {
-                            }
-                        }
-                    }
-                }
+                const fullResponse = await readSSE(reader, text => {
+                    assistantContent.textContent = text;
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                });
 
                 const assistantMessageIndex = messages.length;
                 messages.push({ role: 'assistant', content: fullResponse });
@@ -448,8 +477,15 @@
                 });
 
             } catch (error) {
-                console.error('Error:', error);
-                assistantContent.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+                assistantContent.textContent = `Error: ${error.message}. Your message is ready to retry.`;
+                // Roll back the unanswered user turn; a second send must not create user/user roles.
+                const failed = messages.pop();
+                if (failed && failed.role === 'user') {
+                    chatInput.value = failed.content;
+                    const elements = chatWrapper.querySelectorAll('.message');
+                    if (elements.length >= 2) elements[elements.length - 2].remove();
+                }
+                assistantContent.parentElement.classList.remove('message');
             } finally {
                 isGenerating = false;
                 sendButton.disabled = !chatInput.value.trim();

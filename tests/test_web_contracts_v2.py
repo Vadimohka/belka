@@ -74,3 +74,16 @@ def test_failure_sanitizes_exception_and_releases_worker():
         response=client.post('/chat/completions',json=request())
         assert 'generation failed' in response.text and 'private' not in response.text
         assert client.get('/health').json()['available_workers']==1
+
+def test_small_context_budget_and_default_generation():
+    class Small(Engine):
+        model=SimpleNamespace(config=SimpleNamespace(sequence_len=32))
+    with TestClient(web.create_app(web.Settings(api_key='fixture'),[web.Worker(0,'cpu',Small(),Tokenizer())])) as c:
+        body=dict(messages=[dict(role='user',content='Прывітанне')])
+        assert c.post('/chat/budget',json=body).status_code==401
+        headers={'Authorization':'Bearer fixture'}
+        budget=c.post('/chat/budget',json=body,headers=headers)
+        assert budget.status_code==200
+        assert 0<budget.json()['max_tokens']<32
+        assert c.post('/chat/completions',json=body,headers=headers).status_code==200
+        assert c.post('/chat/completions',json={**body,'max_tokens':512},headers=headers).status_code==400
