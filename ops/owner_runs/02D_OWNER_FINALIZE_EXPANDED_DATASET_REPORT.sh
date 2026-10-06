@@ -29,7 +29,7 @@ VENV_PY="$NANOCHAT_DIR/.venv/bin/python"
 
 echo "========== Artifact inventory =========="
 for f in "$SOURCE_FILTER" "$LICENSE_MANIFEST" "$SIZE_AUDIT" "$TRAIN_PQ" "$VAL_PQ"; do
-  [[ -f "$f" ]] && echo "FOUND $f" || echo "MISSING $f"
+  [[ -s "$f" ]] && echo "FOUND $f" || { echo "ERROR: missing or empty $f" >&2; exit 2; }
 done
 
 # ---------- 2. Ensure pandas/pyarrow in venv ----------
@@ -127,6 +127,7 @@ md = f'''# Dataset Finalize Report
 '''
 pathlib.Path('$REPORT_DIR/data/EXPAND_FROM_RAW_WIKIMEDIA_FINAL.md').write_text(md)
 print(md)
+if status != 'OK_FOR_PROBE': raise SystemExit(2)
 "
 
 echo ""

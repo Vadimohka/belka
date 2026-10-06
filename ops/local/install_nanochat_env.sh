@@ -177,7 +177,8 @@ fi
 if [[ "$DRY_RUN" != "1" ]]; then
   "$PYTHON" -m ensurepip --upgrade || true
   "$PYTHON" -m pip install --upgrade pip setuptools wheel
-  "$PYTHON" -m pip install -r "$PACK_DIR/requirements_pack.txt"
+  "$PYTHON" -m pip install -r "$PACK_DIR/requirements_pack.txt" -c "$PACK_DIR/constraints_pack_py310.txt"
+  "$PYTHON" -m pip check
 fi
 
 if [[ "$SKIP_RUST" != "1" ]]; then

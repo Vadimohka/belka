@@ -209,7 +209,6 @@ echo "This runs filter_sources_to_nanochat_parquet.py over ALL sources including
 "$NANOCHAT_DIR/.venv/bin/python" tools/filter_sources_to_nanochat_parquet.py \
   --pack-dir "$PACK_DIR" \
   --write-accounting \
-  --write-license-manifest \
   --strict-source-thresholds \
   --split-orthography \
   --dedup exact,paragraph,simhash 2>&1

@@ -1,5 +1,6 @@
 """H200 max-quality policy: dtype auto-detect, fork files installed, runbook hygiene."""
 from pathlib import Path
+import os
 
 PACK = Path(__file__).resolve().parents[1]
 
@@ -12,13 +13,29 @@ def test_path_policy_dtype_is_auto_not_fp16():
     )
 
 
-def test_h200_runbook_uses_bf16_and_owner_gate():
-    text = (PACK / "ops/local" / "run_belka_h200_maxquality.sh").read_text(encoding="utf-8")
-    assert "float16" not in text, "H200 runbook must not reference fp16 anywhere (bf16 auto-detect)"
-    assert "BELKA_OWNER_APPROVED_TRAINING" in text, "H200 runbook must keep the owner training gate"
-    assert "BELKA_DISABLE_GENERIC_EVALS=YES" in text, "H200 runbook must disable English generic evals"
-    assert "chat_sft_be" in text, "H200 runbook must run the Belarusian SFT variant"
-    assert "count_corpus_tokens.py" in text, "H200 runbook must derive budgets from real token counts"
+def test_h200_help_is_read_only(tmp_path):
+    import subprocess
+    env = dict(os.environ, NANOCHAT_DIR=str(tmp_path/'absent'))
+    result = subprocess.run(['bash', str(PACK/'ops/local/run_belka_h200_maxquality.sh'), '--help'], env=env, capture_output=True, text=True)
+    assert result.returncode == 0 and 'probe' in result.stdout
+    assert not list(tmp_path.iterdir())
+
+
+def test_dispatcher_uses_plan_python_with_both_argument_forms(tmp_path):
+    import json
+    import subprocess
+    runtime_python = tmp_path/'plan-python'
+    runtime_python.write_text('#!/bin/sh\nprintf "PLAN_PYTHON\\n"\n')
+    runtime_python.chmod(0o755)
+    fallback_python = tmp_path/'fallback-python'
+    fallback_python.write_text('#!/bin/sh\nprintf "FALLBACK\\n"\n')
+    fallback_python.chmod(0o755)
+    plan = tmp_path/'plan.json'; plan.write_text(json.dumps({'python': str(runtime_python)}))
+    env = dict(os.environ, BELKA_PYTHON=str(fallback_python))
+    for args in (['--plan', str(plan)], ['--plan='+str(plan)]):
+        p = subprocess.run(['bash', str(PACK/'ops/local/run_belka_h200_maxquality.sh'), 'check', *args],
+                           env=env, capture_output=True, text=True)
+        assert p.returncode == 0 and p.stdout.strip() == 'PLAN_PYTHON'
 
 
 def test_legacy_3070_scripts_keep_explicit_fp16():
@@ -46,7 +63,7 @@ def test_installer_pins_upstream_and_copies_fork_files():
 
 
 def test_fork_files_match_workspace_when_present():
-    ws = PACK / ".workspace" / "nanochat"
+    ws = Path(os.environ.get("NANOCHAT_DIR", PACK / ".workspace" / "nanochat"))
     if not (ws / "tasks" / "customjson.py").exists():
         return  # clean clone, no workspace
     for fork in ["tasks/customjson.py", "scripts/chat_web.py", "nanochat/ui.html", "nanochat/logo.svg"]:
@@ -58,23 +75,17 @@ def test_fork_files_match_workspace_when_present():
         )
 
 
-def test_h200_profiles_yaml_no_fp16_dtype():
-    import yaml
-
-    cfg = yaml.safe_load((PACK / "configs" / "profiles_h200.yaml").read_text(encoding="utf-8"))
-    assert set(cfg["profiles"]) >= {"smoke", "quality_v4", "max_d24", "full_node"}
-    for name, prof in cfg["profiles"].items():
-        assert prof.get("dtype") != "float16", f"H200 profile {name} must not use fp16"
-    assert cfg["common_env"]["NANOCHAT_DTYPE"] == "", "H200 common env must leave dtype on auto"
-    assert cfg["profiles"]["full_node"]["ngpus"] == 8, "full_node targets an 8-GPU node"
-
-
-def test_h200_runbook_supports_multi_gpu_ddp():
-    text = (PACK / "ops/local" / "run_belka_h200_maxquality.sh").read_text(encoding="utf-8")
-    assert "run_distributed" in text, "runbook must wrap training in run_distributed()"
-    assert "torch.distributed.run" in text, "multi-GPU uses torchrun per upstream speedrun"
-    assert "--nproc_per_node" in text
-    assert 'NGPUS="${NGPUS:-1}"' in text
+def test_h200_profiles_are_explicitly_one_gpu_bf16():
+    from tools.training_plan import load_profile
+    for name in ('smoke', 'h200_quality', 'h200_max', 'h200_large'):
+        canonical, profile, config = load_profile(name)
+        assert canonical == name
+        assert config['target']['ngpus'] == 1
+        assert config['common_env']['NANOCHAT_DTYPE'] == 'bfloat16'
+    assert load_profile('max_d24')[0] == 'h200_max'
+    import pytest
+    with pytest.raises(ValueError, match='unknown'):
+        load_profile('full_node')
 
 
 def test_belka_branding_is_applied_by_patcher():

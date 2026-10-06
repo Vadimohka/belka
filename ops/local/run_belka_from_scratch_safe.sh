@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
-source "$PACK_DIR/ops/local/pack_paths.sh"
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
 # Legacy 8GB profile: keep fp16 even though the repo default is now auto-detect.
 export NANOCHAT_DTYPE="${NANOCHAT_DTYPE:-float16}"
 bash "$PACK_DIR/ops/local/repo_guard.sh"
@@ -41,14 +41,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
+
+[[ "$BASE_ITERS" =~ ^[1-9][0-9]*$ && "$SFT_ITERS" =~ ^[0-9]+$ ]] || { echo "ERROR: base iterations must be positive and SFT iterations nonnegative" >&2; exit 2; }
+[[ "$MODEL_TAG" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,127}$ ]] || { echo "ERROR: invalid model tag" >&2; exit 2; }
+
 # Profile selection
 case "$PROFILE" in
   belka_d8_40m_safe)
     DEPTH=8; N_EMBD=512; N_HEAD=8; SEQ_LEN=1024
-    DEV_BATCH=1; TOTAL_BATCH=512; GRAD_ACCUM=2 ;;
+    DEV_BATCH=1; TOTAL_BATCH=2048; GRAD_ACCUM=2 ;;
   belka_d12_80m_safe)
     DEPTH=12; N_EMBD=768; N_HEAD=12; SEQ_LEN=1024
-    DEV_BATCH=1; TOTAL_BATCH=512; GRAD_ACCUM=4 ;;
+    DEV_BATCH=1; TOTAL_BATCH=4096; GRAD_ACCUM=4 ;;
   belka_d4_smoke)
     DEPTH=4; N_EMBD=256; N_HEAD=4; SEQ_LEN=256
     DEV_BATCH=1; TOTAL_BATCH=256; GRAD_ACCUM=1 ;;
@@ -70,6 +75,10 @@ if [[ "$DRY_RUN" == "1" ]]; then
   exit 0
 fi
 
+if [[ -L "$NANOCHAT_BASE_DIR/tokenizer" || -e "$NANOCHAT_BASE_DIR/tokenizer/tokenizer.pkl" || -e "$NANOCHAT_BASE_DIR/.belka_bundle" ]]; then
+  echo "ERROR: refusing to replace an existing tokenizer; prepare a fresh base directory" >&2
+  exit 2
+fi
 bash "$PACK_DIR/ops/local/install_nanochat_env.sh" --nanochat-dir "$NANOCHAT_DIR"
 
 cd "$NANOCHAT_DIR"
@@ -79,7 +88,7 @@ python -m scripts.tok_train --max-chars 30000000 --vocab-size "$TOKENIZER_VOCAB"
 
 python -m scripts.base_train \
   --run dummy \
-  --depth="$DEPTH" \
+  --depth="$DEPTH" --head-dim=64 \
   --model-tag="$MODEL_TAG" \
   --max-seq-len="$SEQ_LEN" \
   --device-batch-size="$DEV_BATCH" \
@@ -90,6 +99,7 @@ python -m scripts.base_train \
   --save-every=500 \
   --num-iterations="$BASE_ITERS"
 
+if (( SFT_ITERS > 0 )); then
 python -m scripts.chat_sft_be \
   --run dummy \
   --model-tag="$MODEL_TAG" \
@@ -99,6 +109,11 @@ python -m scripts.chat_sft_be \
   --eval-tokens=4096 \
   --chatcore-every=-1 \
   --num-iterations="$SFT_ITERS"
+fi
 
 echo "Safe run finished: $MODEL_TAG"
-echo "Checkpoint: $NANOCHAT_BASE_DIR/chatsft_checkpoints/$MODEL_TAG"
+if (( SFT_ITERS > 0 )); then
+  echo "Checkpoint: $NANOCHAT_BASE_DIR/chatsft_checkpoints/$MODEL_TAG"
+else
+  echo "Checkpoint: $NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG (SFT skipped)"
+fi

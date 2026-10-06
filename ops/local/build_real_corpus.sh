@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
-source "$PACK_DIR/ops/local/pack_paths.sh"
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
 bash "$PACK_DIR/ops/local/repo_guard.sh"
 
 PYTHON_BIN="${PYTHON_BIN:-}"
@@ -47,6 +47,12 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
 done
+
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
+if [[ -e "$NANOCHAT_BASE_DIR/.belka_bundle" ]]; then
+  echo "ERROR: selected base uses a published bundle; prepare a fresh base for a new corpus" >&2
+  exit 2
+fi
 CMD=("$PYTHON_BIN" "$PACK_DIR/data_pipeline/prepare_belarusian_corpus.py" --mode real --local-text-dir "$LOCAL_TEXT_DIR" --output-dir "$NANOCHAT_BASE_DIR/base_data_climbmix" --report-dir "$NANOCHAT_BASE_DIR/be_filter_report_real" --manifest-out "$NANOCHAT_BASE_DIR/build_manifest_real.json" --min-chars "$MIN_CHARS" --val-ratio "$VAL_RATIO" --train-shard-docs "$TRAIN_SHARD_DOCS" --max-docs-total "$MAX_DOCS_TOTAL")
 echo "Input folder: $LOCAL_TEXT_DIR"
 echo "+ ${CMD[*]}"

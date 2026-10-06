@@ -6,7 +6,7 @@ mkdir -p reports/owner_run_analysis dist
 TS="$(date -u +%Y%m%dT%H%M%SZ)"
 OUT="reports/owner_run_analysis/analysis_${TS}.md"
 
-python3 tools/agent_training_guard.py --pack-dir "$PACK_DIR" --mode post-run-analysis --phase analyze-owner-run >/dev/null
+python3 tools/agent_training_guard.py --pack-dir "$PACK_DIR" --mode agent --phase analyze-owner-run >/dev/null
 
 {
   echo "# Owner Run Analysis $TS"

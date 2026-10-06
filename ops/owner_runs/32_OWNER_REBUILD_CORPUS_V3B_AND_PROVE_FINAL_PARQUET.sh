@@ -50,6 +50,7 @@ echo ""
 echo "=== PHASE 2: Raw proof ==="
 "$VENV_PY" -c "
 from pathlib import Path
+import sys
 for src in ['bewikisource', 'bewikibooks']:
     p = Path(f'data_input/be_texts/wikimedia_full/{src}_full.jsonl')
     if p.exists():
@@ -67,13 +68,11 @@ if rows == 0:
 # ========== PHASE 3: Full rebuild to v3b ==========
 echo ""
 echo "=== PHASE 3: Full rebuild to v3b ==="
-rm -f "$V3B_DIR"/*.parquet "$V3B_DIR"/_BUILD_MANIFEST.json
 "$VENV_PY" tools/filter_sources_to_nanochat_parquet.py \
   --pack-dir "$PACK_DIR" \
   --input-dir "$PACK_DIR/data_input/be_texts" \
   --output-dir "$V3B_DIR" \
   --write-accounting \
-  --write-license-manifest \
   --strict-source-thresholds \
   --split-orthography \
   --dedup exact,paragraph,simhash 2>&1
@@ -195,6 +194,7 @@ proof = {k: v for k, v in [(f'V3B_TRAIN_ROWS', len(df)), ('V3B_TRAIN_CHARS', int
     ('EST_TOKENS', est), ('V3B_ACCEPTANCE', 'PASS' if not fail else 'FAIL')]}
 json.dump(proof, open(reports/'corpus_v3b_final_parquet_proof.json', 'w'), ensure_ascii=False, indent=2)
 json.dump(dict(src_counts.most_common()), open(reports/'corpus_v3b_source_distribution.json', 'w'), ensure_ascii=False, indent=2)
+if fail: raise SystemExit(2)
 PYEOF
 
 echo ""

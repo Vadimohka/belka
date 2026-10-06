@@ -49,7 +49,7 @@ if ! command -v uv >/dev/null 2>&1; then
     echo "+ curl -LsSf https://astral.sh/uv/install.sh | sh"
   fi
 fi
-export PATH="$HOME/.ops/local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 for cmd in git curl python3; do
   if ! command -v "$cmd" >/dev/null 2>&1; then

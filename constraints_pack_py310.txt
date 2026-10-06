@@ -1,0 +1,17 @@
+# Reviewed pack additions, validated with Python 3.10 and nanochat's uv.lock.
+# This supplements the upstream lock; it is not a full cross-platform lockfile.
+pyarrow==21.0.0
+pandas==2.3.2
+PyYAML==6.0.2
+tqdm==4.67.1
+requests==2.32.5
+jinja2==3.1.6
+zstandard==0.25.0
+pytest==9.0.3
+huggingface_hub==0.34.4
+fastapi==0.117.1
+uvicorn==0.36.0
+httpx==0.28.1
+openpyxl==3.1.5
+numpy==1.26.4
+fsspec==2025.3.0

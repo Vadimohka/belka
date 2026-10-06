@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
-source "$PACK_DIR/ops/local/pack_paths.sh"
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
 # Legacy 8GB profile: keep fp16 even though the repo default is now auto-detect.
 export NANOCHAT_DTYPE="${NANOCHAT_DTYPE:-float16}"
 bash "$PACK_DIR/ops/local/repo_guard.sh"
@@ -30,6 +30,10 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
 done
+
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
+[[ "$BASE_ITERS" =~ ^[1-9][0-9]*$ && "$SFT_ITERS" =~ ^[1-9][0-9]*$ ]] || { echo "ERROR: iteration budgets must be positive" >&2; exit 2; }
+[[ "${MODEL_TAG:-be-d4-smoke}" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,127}$ ]] || { echo "ERROR: invalid model tag" >&2; exit 2; }
 bash "$PACK_DIR/ops/local/install_nanochat_env.sh" --nanochat-dir "$NANOCHAT_DIR"
 bash "$PACK_DIR/ops/local/build_real_corpus.sh" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --local-text-dir "$LOCAL_TEXT_DIR" --min-chars 120 --val-ratio 0.01
 bash "$PACK_DIR/ops/local/train_tokenizer_real.sh" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --vocab-size 32768 --max-chars 200000000

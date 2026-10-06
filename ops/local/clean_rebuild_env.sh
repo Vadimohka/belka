@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
-source "$PACK_DIR/ops/local/pack_paths.sh"
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
 bash "$PACK_DIR/ops/local/repo_guard.sh"
 
 KEEP_CHECKPOINTS=1
@@ -14,6 +14,8 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
 done
+
+BELKA_PATHS_CREATE=0 source "$PACK_DIR/ops/local/pack_paths.sh"
 if [[ -d "$NANOCHAT_DIR/.venv" ]]; then
   echo "Removing $NANOCHAT_DIR/.venv"
   rm -rf "$NANOCHAT_DIR/.venv"

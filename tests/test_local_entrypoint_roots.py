@@ -13,7 +13,7 @@ def test_local_shell_entrypoints_resolve_the_repository_root():
     for script in sorted((ROOT / "ops/local").glob("*.sh")):
         text = script.read_text(encoding="utf-8")
         if "PACK_DIR=" in text:
-            assert EXPECTED in text, f"{script.relative_to(ROOT)} must resolve two levels above ops/local"
+            assert EXPECTED in text or 'PACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"' in text, f"{script.relative_to(ROOT)} must resolve two levels above ops/local"
             assert '/.." && pwd)}"' not in text.replace('/../.." && pwd)}"', ''), (
                 f"{script.relative_to(ROOT)} retains the former ops/ root calculation"
             )

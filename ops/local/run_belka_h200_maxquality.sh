@@ -1,178 +1,64 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# BELKA H200 max-quality runbook (owner decision 2026-08-16: move off RTX 3070 Ti).
-# bf16 + FA3 (auto), MuonEq optimizer (upstream 92d63d4), epoch-driven token budget.
-# Profiles: configs/profiles_h200.yaml (smoke | quality_v4 | max_d24 | full_node).
-#
-# Usage:
-#   BELKA_OWNER_APPROVED_TRAINING=YES bash ops/local/run_belka_h200_maxquality.sh \
-#     --data-dir /path/to/base_data_climbmix_v4        # ready parquet corpus
-#   # or --local-text-dir /path/to/be_texts            # build corpus from raw texts
-# Options (env): PROFILE=full_node (defaults from configs/profiles_h200.yaml; explicit
-#                envs win): DEPTH SEQ_LEN DEV_BATCH TOTAL_BATCH TARGET_EPOCHS VOCAB
-#                NGPUS SFT_ITERS MODEL_TAG BELKA_FP8 TRAIN_TOKENIZER SKIP_BASE
-PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
-source "$PACK_DIR/ops/local/pack_paths.sh"
-bash "$PACK_DIR/ops/local/repo_guard.sh"
-
-PROFILE="${PROFILE:-quality_v4}"
-DATA_DIR="${DATA_DIR:-}"
-LOCAL_TEXT_DIR_ARG="${LOCAL_TEXT_DIR_ARG:-}"
-BASE_ITERS="${BASE_ITERS:-}"
-MODEL_TAG="${MODEL_TAG:-}"
-BELKA_FP8="${BELKA_FP8:-}"
-TRAIN_TOKENIZER="${TRAIN_TOKENIZER:-}"
-SKIP_BASE="${SKIP_BASE:-}"
-
-# ---- Profile defaults (configs/profiles_h200.yaml); explicit envs win ----
-read_profile_defaults() {
-  local py="$PACK_DIR/.workspace/nanochat/.venv/bin/python"
-  [[ -x "$py" && -f "$PACK_DIR/configs/profiles_h200.yaml" ]] || return 0
-  "$py" - "$PROFILE" <<'PY' 2>/dev/null || return 0
-import sys, os, yaml
-cfg = yaml.safe_load(open(os.path.join(os.environ["PACK_DIR"], "configs/profiles_h200.yaml"), encoding="utf-8"))
-p = cfg.get("profiles", {}).get(sys.argv[1]) or {}
-m = {"DEPTH": "depth", "SEQ_LEN": "max_seq_len", "DEV_BATCH": "device_batch_size",
-     "TOTAL_BATCH": "total_batch_size", "VOCAB": "tokenizer_vocab_size",
-     "WINDOW": "window_pattern", "NGPUS": "ngpus", "SFT_ITERS": "sft_iterations",
-     "TARGET_EPOCHS": "target_epochs"}
-for env, key in m.items():
-    if key in p and env not in os.environ:
-        print(f"{env}={p[key]}")
-PY
-}
-while IFS='=' read -r k v; do [[ -n "$k" ]] && export "$k=$v"; done < <(read_profile_defaults)
-
-# ---- Final fallbacks (used when the profile lacks a key and no env is set) ----
-DEPTH="${DEPTH:-16}"
-SEQ_LEN="${SEQ_LEN:-2048}"
-DEV_BATCH="${DEV_BATCH:-32}"
-TOTAL_BATCH="${TOTAL_BATCH:-262144}"
-TARGET_EPOCHS="${TARGET_EPOCHS:-3}"
-VOCAB="${VOCAB:-32768}"
-SFT_ITERS="${SFT_ITERS:--1}"           # -1 = one full epoch over the SFT mixture
-MODEL_TAG="${MODEL_TAG:-belka-h200-d${DEPTH}-v4}"
-WINDOW="${WINDOW:-SSSL}"
-BELKA_FP8="${BELKA_FP8:-NO}"
-TRAIN_TOKENIZER="${TRAIN_TOKENIZER:-YES}"
-SKIP_BASE="${SKIP_BASE:-NO}"
-NGPUS="${NGPUS:-1}"            # >1 -> torchrun DDP (upstream speedrun convention: 8xH100/H200 node)
-
+# Single-H200 dispatcher. No installation or training on --help/plan/check.
+PACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$PACK_DIR"
 usage() {
-  cat <<'EOF'
-Usage: BELKA_OWNER_APPROVED_TRAINING=YES bash ops/local/run_belka_h200_maxquality.sh --nanochat-dir PATH --data-dir PATH [options]
-       (or --local-text-dir PATH to build the corpus from raw texts first)
+  cat <<'HELP'
+Usage: bash ops/local/run_belka_h200_maxquality.sh COMMAND [options]
+  plan     Resolve an immutable plan from prepared data; --model-tag is required.
+  check    Verify a plan and optionally its measured hardware report.
+  probe    Measure real base/SFT memory and speed on one H200.
+  execute  Train the verified plan; requires its passing H200 report.
 
-H200 max-quality pipeline: env -> corpus -> tokenizer -> base -> SFT.
-Requires: H200-class GPU, BELKA_OWNER_APPROVED_TRAINING=YES (same gate as owner runs).
-EOF
+Examples (after ops/local/prepare_h200.sh):
+  ... plan --profile h200_max --model-tag belka-h200-v1 --output .workspace/h200-ready/plan.json
+  ... probe --plan .workspace/h200-ready/plan.json --output .workspace/h200-ready/hardware.json
+  ... execute --plan .workspace/h200-ready/plan.json --hardware-report .workspace/h200-ready/hardware.json
+  ... execute --plan .workspace/h200-ready/plan.json --hardware-report .workspace/h200-ready/hardware.json --resume
+
+Planning options: --nanochat-dir, --base-dir, --python, --epochs or --base-iterations,
+--sft-epochs or --sft-iterations, --budget-hours (default 168). See COMMAND --help.
+CPU pipeline acceptance: plan --profile smoke, then execute --allow-cpu-smoke.
+See docs/H200_TRAINING.md for preparation and transfer to the GPU server.
+HELP
 }
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --nanochat-dir) NANOCHAT_DIR="$2"; shift 2 ;;
-    --base-dir) export NANOCHAT_BASE_DIR="$2"; shift 2 ;;
-    --data-dir) DATA_DIR="$2"; shift 2 ;;
-    --local-text-dir) LOCAL_TEXT_DIR_ARG="$2"; shift 2 ;;
-    --model-tag) MODEL_TAG="$2"; shift 2 ;;
-    -h|--help) usage; exit 0 ;;
-    *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
+if [[ $# == 0 || "${1:-}" == -h || "${1:-}" == --help ]]; then usage; exit 0; fi
+command="$1"; shift
+case "$command" in plan|check|probe|execute) ;; *) usage >&2; exit 2 ;; esac
+runtime="${NANOCHAT_DIR:-$PACK_DIR/.workspace/nanochat}"
+py="${BELKA_PYTHON:-}"
+args=("$@"); plan=""
+for ((i=0; i<${#args[@]}; i++)); do
+  case "${args[i]}" in
+    --nanochat-dir=*) runtime="${args[i]#*=}" ;;
+    --python=*) py="${args[i]#*=}" ;;
+    --plan=*) plan="${args[i]#*=}" ;;
+    --nanochat-dir|--python|--plan)
+      if ((i+1>=${#args[@]})) || [[ "${args[i+1]}" == --* ]]; then
+        echo "ERROR: ${args[i]} requires a value" >&2; exit 2
+      fi
+      case "${args[i]}" in
+        --nanochat-dir) runtime="${args[i+1]}" ;;
+        --python) py="${args[i+1]}" ;;
+        --plan) plan="${args[i+1]}" ;;
+      esac ;;
   esac
 done
-
-if [[ "${BELKA_OWNER_APPROVED_TRAINING:-NO}" != "YES" ]]; then
-  echo "H200_RUN_BLOCKED=YES (set BELKA_OWNER_APPROVED_TRAINING=YES to start a real run)"
-  echo 'OWNER_COMMAND="BELKA_OWNER_APPROVED_TRAINING=YES bash ops/local/run_belka_h200_maxquality.sh --nanochat-dir .workspace/nanochat --data-dir ..."'
-  exit 0
+# Inspect hardware in the same venv used by the actual trainer subprocesses.
+if [[ -n "$plan" ]]; then
+  py="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["python"])' "$plan")"
 fi
-
-# H200 policy: auto dtype (bf16 on SM90); leave NANOCHAT_DTYPE unset.
-export BELKA_DISABLE_GENERIC_EVALS=YES PYTHONNOUSERSITE=1 OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
-export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
-
-echo "=========================================="
-echo " BELKA H200 MAX-QUALITY (profile: $PROFILE)"
-echo "=========================================="
-nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || { echo "ERROR: nvidia-smi not available"; exit 2; }
-echo "DEPTH=$DEPTH SEQ=$SEQ_LEN DEV_BATCH=$DEV_BATCH TOTAL_BATCH=$TOTAL_BATCH EPOCHS=$TARGET_EPOCHS VOCAB=$VOCAB FP8=$BELKA_FP8 NGPUS=$NGPUS"
-
-bash "$PACK_DIR/ops/local/install_nanochat_env.sh" --nanochat-dir "$NANOCHAT_DIR"
-
-# ---- Corpus: ready parquet (preferred) or build from raw texts ----
-LIVE_DATA_DIR="$NANOCHAT_BASE_DIR/base_data_climbmix"
-if [[ -n "$DATA_DIR" ]]; then
-  [[ -f "$DATA_DIR/train_00000.parquet" ]] || { echo "ERROR: $DATA_DIR has no train_00000.parquet"; exit 2; }
-  mkdir -p "$NANOCHAT_BASE_DIR"
-  rm -rf "$LIVE_DATA_DIR"; mkdir -p "$LIVE_DATA_DIR"
-  for f in "$DATA_DIR"/*.parquet; do ln -sf "$(readlink -f "$f")" "$LIVE_DATA_DIR/$(basename "$f")"; done
-  echo "CORPUS_LINKED=$DATA_DIR -> $LIVE_DATA_DIR"
-elif [[ -n "$LOCAL_TEXT_DIR_ARG" ]]; then
-  bash "$PACK_DIR/ops/local/build_real_corpus.sh" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" \
-    --local-text-dir "$LOCAL_TEXT_DIR_ARG" --min-chars 120 --val-ratio 0.01
-else
-  [[ -f "$LIVE_DATA_DIR/train_00000.parquet" ]] || { echo "ERROR: pass --data-dir or --local-text-dir (no corpus at $LIVE_DATA_DIR)"; exit 2; }
-  echo "CORPUS_REUSED=$LIVE_DATA_DIR"
+py="${py:-$runtime/.venv/bin/python}"
+if [[ ! -x "$py" ]]; then
+  echo "ERROR: Python environment missing: $py; run ops/local/prepare_h200.sh or set BELKA_PYTHON" >&2; exit 2
 fi
-
-# ---- Tokenizer ----
-if [[ "$TRAIN_TOKENIZER" == "YES" ]]; then
-  bash "$PACK_DIR/ops/local/train_tokenizer_real.sh" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" \
-    --vocab-size "$VOCAB" --max-chars 2000000000
-else
-  echo "TOKENIZER_REUSED=$NANOCHAT_BASE_DIR/tokenizer"
+if [[ "$command" == probe ]]; then
+  export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES-0}"
+  exec "$py" tools/h200_probe.py "$@"
 fi
-
-VENV_PY="$NANOCHAT_DIR/.venv/bin/python"
-# DDP per upstream runs/speedrun.sh: torchrun --standalone --nproc_per_node=N.
-# The trailing "--" separates torchrun flags from script args (single-process has none).
-run_distributed() { # run_distributed MODULE [ARGS...]
-  local module="$1"; shift
-  if (( NGPUS > 1 )); then
-    echo "DDP: torchrun --standalone --nproc_per_node=$NGPUS -m $module"
-    "$VENV_PY" -m torch.distributed.run --standalone --nproc_per_node="$NGPUS" -m "$module" -- "$@"
-  else
-    "$VENV_PY" -m "$module" "$@"
-  fi
-}
-cd "$NANOCHAT_DIR"
-
-# ---- Epoch-driven token budget ----
-if [[ -z "$BASE_ITERS" ]]; then
-  TOKENS_JSON="$("$VENV_PY" "$PACK_DIR/tools/count_corpus_tokens.py" --data-dir "$LIVE_DATA_DIR")"
-  CORPUS_TOKENS="$(printf '%s' "$TOKENS_JSON" | "$VENV_PY" -c 'import json,sys; print(json.load(sys.stdin)["tokens"])')"
-  BASE_ITERS=$(( (TARGET_EPOCHS * CORPUS_TOKENS + TOTAL_BATCH - 1) / TOTAL_BATCH ))
-  echo "CORPUS_TOKENS=$CORPUS_TOKENS TARGET_EPOCHS=$TARGET_EPOCHS -> ITERS=$BASE_ITERS"
+if [[ "$command" == execute ]]; then export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES-0}"; fi
+if [[ "$command" == plan ]]; then
+  exec "$py" tools/training_plan.py plan --nanochat-dir "$runtime" --python "$py" "$@"
 fi
-
-FP8_FLAG=""
-if [[ "$BELKA_FP8" == "YES" ]]; then
-  "$VENV_PY" -c "import torchao" 2>/dev/null || "$VENV_PY" -m pip install torchao
-  FP8_FLAG="--fp8"
-fi
-
-mkdir -p "$NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG"
-TS=$(date -u +%Y%m%dT%H%M%SZ)
-LOG="$REPORT_DIR/owner_runs/h200_${MODEL_TAG}_${TS}.log"
-mkdir -p "$REPORT_DIR/owner_runs"
-exec > >(tee -a "$LOG") 2>&1
-
-# ---- Base pretraining (MuonEq, bf16, FA3 auto) ----
-if [[ "$SKIP_BASE" != "YES" ]]; then
-  run_distributed scripts.base_train --run dummy --depth="$DEPTH" \
-    --model-tag="$MODEL_TAG" --max-seq-len="$SEQ_LEN" \
-    --device-batch-size="$DEV_BATCH" --total-batch-size="$TOTAL_BATCH" \
-    --window-pattern="$WINDOW" $FP8_FLAG \
-    --eval-tokens=65536 --core-metric-every=-1 \
-    --sample-every=2000 --save-every=5000 --num-iterations="$BASE_ITERS"
-fi
-
-# ---- Belarusian-only SFT ----
-run_distributed scripts.chat_sft_be --run dummy \
-  --model-tag="$MODEL_TAG" --max-seq-len="$SEQ_LEN" \
-  --device-batch-size="$DEV_BATCH" --total-batch-size="$TOTAL_BATCH" \
-  --eval-tokens=65536 --chatcore-every=-1 --num-iterations="$SFT_ITERS"
-
-LATEST=$(ls -t "$NANOCHAT_BASE_DIR/chatsft_checkpoints/$MODEL_TAG"/model_*.pt 2>/dev/null | head -1 || echo NONE)
-echo "H200_RUN_DONE=YES MODEL_TAG=$MODEL_TAG"
-echo "SFT_CHECKPOINT=$LATEST"
-echo "LOG=$LOG"
-echo "NEXT: bash ops/local/run_chat_web.sh  # or tools/run_belka_eval_suite.py"
+exec "$py" tools/training_plan.py "$command" "$@"
