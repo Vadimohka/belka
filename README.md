@@ -30,12 +30,17 @@ Release: **`v0.1.0-research-preview`**. Maintainer: Vadim Vladymtsev
 preserved; historical internal cleanup snapshots have been curated into the public
 summaries under [`reports/public/`](reports/public/).
 
-## Development-branch snapshot
+## Current development branch: main
 
-This checkout describes `codex/belka-runtime-2026-10-01` / PR #5, not a claim
-that the PR has already landed in `main`. Its reviewed runtime baseline is
-`d4fb25d3f605ff39a4d243f9c3bf32bfe362de7d`, on pinned nanochat
-`92d63d4e8bb4df75c3b71618f31ddde2378b2bcd`.
+PR #5 was merged into `main` on 2026-10-06, preserving its commit history.
+The five superseded `codex/belka-*` branches have been removed. Their complete
+historical trees remain reachable from `main`; competing earlier runtime
+implementations were retained as history, not installed over the PR #5 code.
+See [branch consolidation and recovery](docs/BRANCH_CONSOLIDATION_2026-10-06.md).
+
+The runtime remains based on pinned nanochat
+`92d63d4e8bb4df75c3b71618f31ddde2378b2bcd`. Merging is not training approval:
+preparation issue #30 and the launch/data/hardware gates remain open.
 
 [Detailed Belka vs nanochat technical patch notes (Russian)](docs/BELKA_VS_NANOCHAT_PATCH_NOTES_RU.md)
 separate inherited architecture, published changes, compatibility and unresolved
