@@ -60,6 +60,165 @@ def refresh_sft_scaler_checks(text):
         '                    dist.all_reduce(v, op=dist.ReduceOp.MAX)')
 
 
+def add_sft_resume(text):
+    """Install explicit optimizer-step checkpoint/replay over the pinned SFT loop."""
+    text = replace_once(text, 'import gc\n', 'import gc\nimport math\n')
+    text = replace_once(text, 'from nanochat.checkpoint_manager import save_checkpoint, load_model, load_optimizer_state',
+                        'from nanochat.checkpoint_manager import save_checkpoint, load_model, load_optimizer_state, load_checkpoint')
+    text = replace_once(text, 'args = parser.parse_args()', '''parser.add_argument("--resume-from-step", type=int, default=-1, help="resume an exact committed SFT step")
+parser.add_argument("--save-every", type=int, default=200, help="checkpoint interval in optimizer steps (-1=final only)")
+parser.add_argument("--stop-after-step", type=int, default=-1, help="checkpoint and stop this invocation; retain original training horizon")
+args = parser.parse_args()
+from nanochat.belka_launch import validate_model_tag, checkpoint_directory, validate_batch, validate_sft_schedule
+validate_model_tag(args.model_tag)
+resuming = args.resume_from_step >= 0
+if args.resume_from_step < -1 or (resuming and args.model_tag is None):
+    raise ValueError("SFT resume requires a model tag and a nonnegative step")
+if args.stop_after_step != -1 and not max(0, args.resume_from_step) < args.stop_after_step <= args.num_iterations:
+    raise ValueError("stop-after-step must be after the resume step and within the original horizon")
+if args.save_every != -1 and args.save_every < 1:
+    raise ValueError("save-every must be positive or -1")''')
+    text = replace_once(text, 'model, tokenizer, meta = load_model("base", device, phase="train", model_tag=args.model_tag, step=args.model_step)',
+'''model, tokenizer, meta = load_model("sft" if resuming else "base", device, phase="train",
+    model_tag=args.model_tag, step=args.resume_from_step if resuming else args.model_step)
+if resuming:
+    for key, value in meta.get("resolved_config", {}).items():
+        if hasattr(args, key) and getattr(args, key) is None:
+            setattr(args, key, value)''')
+    text = replace_once(text, 'orig_model = model\n', '''validate_sft_schedule(args)
+validate_batch(args.device_batch_size, args.max_seq_len, ddp_world_size, args.total_batch_size, args.eval_tokens)
+if args.max_seq_len > model.config.sequence_len:
+    raise ValueError("SFT context cannot exceed the base model context")
+resolved_config = vars(args).copy()
+orig_model = model
+''')
+    text = replace_once(text, 'base_dir = get_base_dir()\nif args.load_optimizer:', '''base_dir = get_base_dir()
+checkpoint_dir = checkpoint_directory(base_dir, "chatsft_checkpoints", args.model_tag or f"d{depth}")
+if resuming:
+    args.load_optimizer = 0  # exact SFT state is loaded after setup, below
+if args.load_optimizer:''')
+    start = text.index('# DataLoader is defined here')
+    end = text.index('# Learning rate schedule', start)
+    text = text[:start] + '''# Both training and validation use the same lossless, replayable packing.
+def sft_data_generator_bos_bestfit(split, buffer_size=100):
+    from nanochat.belka_sft_stream import SFTBatchStream
+    if split not in ("train", "val"):
+        raise ValueError("split must be train or val")
+    return SFTBatchStream(train_dataset if split == "train" else val_dataset,
+        tokenizer, args.device_batch_size, args.max_seq_len, device,
+        ddp_rank, ddp_world_size, buffer_size)
+
+train_loader = sft_data_generator_bos_bestfit("train")
+build_val_loader = lambda: sft_data_generator_bos_bestfit("val")
+resume_meta = None
+if resuming:
+    from nanochat.belka_resume import prepare_sft_resume
+    prepare_sft_resume(checkpoint_dir, args.resume_from_step, train_loader,
+        resolved_config, COMPUTE_DTYPE, ddp_rank)
+    model_state, optimizer_state, resume_meta = load_checkpoint(checkpoint_dir,
+        args.resume_from_step, device, load_optimizer=True, rank=ddp_rank)
+    orig_model.load_state_dict(model_state, strict=True)
+    optimizer.load_state_dict(optimizer_state)
+    del model_state, optimizer_state
+    if scaler is not None:
+        if resume_meta.get("scaler_state") is None:
+            raise ValueError("fp16 SFT checkpoint has no scaler state")
+        scaler.load_state_dict(resume_meta["scaler_state"])
+progress = 0
+
+''' + text[end:]
+    text = replace_once(text, 'x, y = next(train_loader) # prefetch the very first batch of data',
+'''dataloader_state_dict = train_loader.state_dict()
+x, y = next(train_loader) # checkpoint cursor precedes the pending prefetched batch''')
+    text = replace_once(text, 'step = 0\nwhile True:', '''step = 0
+val_bpb = None
+if resuming:
+    step = resume_meta["step"]
+    state = resume_meta["loop_state"]
+    min_val_bpb = float("inf") if state["min_val_bpb"] is None else state["min_val_bpb"]
+    smooth_train_loss = state["smooth_train_loss"]
+    total_training_time = state["total_training_time"]
+    val_bpb = resume_meta["val_bpb"]
+while True:''')
+    text = replace_once(text, '    last_step = step >= args.num_iterations',
+                        '    last_step = step >= args.num_iterations\n    stopping = args.stop_after_step != -1 and step >= args.stop_after_step')
+    text = replace_once(text, '''    if last_step:
+        output_dirname = args.model_tag if args.model_tag else f"d{depth}" # e.g. d12
+        checkpoint_dir = os.path.join(base_dir, "chatsft_checkpoints", output_dirname)''',
+'''    if step != args.resume_from_step and (last_step or stopping or (step > 0 and args.save_every > 0 and step % args.save_every == 0)):''')
+    text = replace_once(text, '                "user_config": user_config, # inputs to the training script',
+'''                "user_config": user_config, # inputs to the training script
+                "trainer": "belka-sft-v1", "resolved_config": resolved_config,
+                "compute_dtype": str(COMPUTE_DTYPE),
+                "max_seq_len": args.max_seq_len, "device_batch_size": args.device_batch_size,
+                "total_batch_size": args.total_batch_size,
+                "dataloader_state_dict": dataloader_state_dict,
+                "scaler_state": scaler.state_dict() if scaler is not None else None,
+                "loop_state": {"min_val_bpb": min_val_bpb if math.isfinite(min_val_bpb) else None,
+                    "smooth_train_loss": smooth_train_loss, "total_training_time": total_training_time},''')
+    text = replace_once(text, '    if last_step:\n        break', '    if last_step or stopping:\n        break')
+    text = replace_once(text, '        x, y = next(train_loader) # prefetch the next batch while the GPU is busy with forward/backward\n        progress = max(progress, approx_progress) # only increase progress monotonically',
+'''        dataloader_state_dict = train_loader.state_dict()
+        x, y = next(train_loader) # snapshot before the next prefetched batch''')
+    text = text.replace('epoch: {current_epoch}', 'epoch: {train_loader.epoch}').replace('"train/epoch": current_epoch', '"train/epoch": train_loader.epoch')
+    return text
+
+
+def add_early_stopping(text, kind):
+    text=replace_once(text, 'args = parser.parse_args()',
+        'parser.add_argument("--early-stopping-patience", type=int, default=0, help="stop after this many validation checks without improvement (0 disables)")\nargs = parser.parse_args()\nif args.early_stopping_patience < 0:\n    raise ValueError("early-stopping-patience must be nonnegative")')
+    meta = 'meta_data' if kind == 'base' else 'resume_meta'
+    anchor='while True:\n    last_step'
+    text=replace_once(text, anchor,
+        f'best_step = None if not resuming else {meta}["loop_state"].get("best_step")\n'
+        f'bad_eval_count = 0 if not resuming else {meta}["loop_state"].get("bad_eval_count", 0)\n'
+        'while True:\n    last_step')
+    text=replace_once(text, '    stopping = args.stop_after_step != -1 and step >= args.stop_after_step',
+        '    stopping = (args.stop_after_step != -1 and step >= args.stop_after_step) or (args.early_stopping_patience > 0 and bad_eval_count >= args.early_stopping_patience)')
+    text=replace_once(text, 'while True:\n    last_step',
+        f'val_step = None if not resuming else {meta}.get("val_step")\nwhile True:\n    last_step')
+    text=replace_once(text, '"val_bpb": val_bpb,', '"val_bpb": val_bpb, "val_step": val_step,')
+    text=replace_once(text, '        if val_bpb < min_val_bpb:\n            min_val_bpb = val_bpb',
+'''        val_step = step
+        if val_bpb < min_val_bpb or (step > 0 and best_step is None):
+            min_val_bpb = val_bpb
+            if step > 0:
+                best_step = step
+            bad_eval_count = 0
+        elif step > 0:
+            bad_eval_count += 1
+        stopping = stopping or (args.early_stopping_patience > 0 and bad_eval_count >= args.early_stopping_patience)''')
+    text=replace_once(text, '"smooth_train_loss": smooth_train_loss,',
+                     '"best_step": best_step, "bad_eval_count": bad_eval_count, "smooth_train_loss": smooth_train_loss,')
+    if kind=='base':
+        text=replace_once(text, 'if args.eval_every > 0 and (last_step or step % args.eval_every == 0):',
+                         'if args.eval_every > 0 and (not resuming or step != args.resume_from_step) and (last_step or step % args.eval_every == 0):')
+        text=replace_once(text, 'if args.core_metric_every > 0 and (last_step or (step > 0 and step % args.core_metric_every == 0)):',
+                         'if args.core_metric_every > 0 and (not resuming or step != args.resume_from_step) and (last_step or (step > 0 and step % args.core_metric_every == 0)):')
+        text=replace_once(text, 'if args.sample_every > 0 and master_process and (last_step or (step > 0 and step % args.sample_every == 0)):',
+                         'if args.sample_every > 0 and master_process and (not resuming or step != args.resume_from_step) and (last_step or (step > 0 and step % args.sample_every == 0)):')
+    else:
+        text=replace_once(text, 'if last_step or (args.eval_every > 0 and step % args.eval_every == 0):',
+                         'if (not resuming or step != args.resume_from_step) and (last_step or (args.eval_every > 0 and step % args.eval_every == 0)):')
+        text=replace_once(text, 'if not _skip_generic and args.chatcore_every > 0 and (last_step or (step > 0 and step % args.chatcore_every == 0)):',
+                         'if not _skip_generic and args.chatcore_every > 0 and (not resuming or step != args.resume_from_step) and (last_step or (step > 0 and step % args.chatcore_every == 0)):')
+    text=replace_once(text, 'step != args.resume_from_step and (last_step or stopping or',
+        'step != args.resume_from_step and (last_step or stopping or (args.early_stopping_patience > 0 and best_step == step) or')
+    # One summary per committed invocation end; checkpoints themselves stay append-only.
+    marker='# cleanup' if kind=='sft' else '# Final cleanup'
+    # Upstream base does not have a uniform cleanup header; place before common cleanup call.
+    summary='''from nanochat.belka_launch import training_result
+if master_process:
+    training_result(checkpoint_dir, step, best_step, min_val_bpb,
+        stopped_early=step < args.num_iterations,
+        completion_reason=("horizon" if step >= args.num_iterations else
+            "early_stopping" if args.early_stopping_patience > 0 and bad_eval_count >= args.early_stopping_patience else "invocation_stop"),
+        data_state=dataloader_state_dict)
+'''
+    text=replace_once(text, 'compute_cleanup()',summary+'compute_cleanup()')
+    return text
+
+
 def load_tool(name):
     spec=importlib.util.spec_from_file_location(name,PACK/'ops/local'/f'{name}.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
@@ -146,6 +305,11 @@ from types import SimpleNamespace
     checkpoint=originals['nanochat/checkpoint_manager.py']
     checkpoint=replace_once(checkpoint,'    log0(f"Loading optimizer state from {optimizer_path}")\n    optimizer_data = torch.load(optimizer_path, map_location=device)',
         '    log0(f"Loading optimizer state from {optimizer_path}")\n    from nanochat.belka_checkpoint import validate_checkpoint\n    validate_checkpoint(checkpoint_dir, step, rank, load_optimizer=True)\n    optimizer_data = torch.load(optimizer_path, map_location=device, weights_only=True)')
+    # Both model and optimizer readers share the same contained tag boundary.
+    anchor='    checkpoint_dir = os.path.join(checkpoints_dir, model_tag)'
+    if checkpoint.count(anchor) != 2:
+        raise ValueError('expected two checkpoint tag joins in pinned upstream')
+    checkpoint=checkpoint.replace(anchor, '    from nanochat.belka_launch import checkpoint_path_under\n    checkpoint_dir = checkpoint_path_under(checkpoints_dir, model_tag)')
     output['nanochat/checkpoint_manager.py']=checkpoint+'\nfrom nanochat.belka_checkpoint import save_checkpoint, load_checkpoint, find_last_step\n'
     base=originals['scripts/base_train.py']
     base=replace_once(base,'    model.load_state_dict(model_data, strict=True, assign=True)',
@@ -158,7 +322,13 @@ from types import SimpleNamespace
     base=replace_once(base, '    min_val_bpb = loop_state["min_val_bpb"]', '    min_val_bpb = loop_state["min_val_bpb"] if loop_state["min_val_bpb"] is not None else float("inf")')
     base=replace_once(base, 'total_tokens = total_batch_size * num_iterations',
         'if num_iterations < 1 or (resuming and args.resume_from_step > num_iterations):\n    raise ValueError("invalid training horizon or resume step exceeds horizon")\ntotal_tokens = total_batch_size * num_iterations')
-    output['scripts/base_train.py']=base
+    base=replace_once(base, 'args = parser.parse_args()', 'parser.add_argument("--stop-after-step", type=int, default=-1, help="checkpoint and stop invocation without changing horizon")\nargs = parser.parse_args()\nfrom nanochat.belka_launch import validate_model_tag, checkpoint_directory, validate_batch\nvalidate_model_tag(args.model_tag)\nif args.stop_after_step != -1 and not max(0, args.resume_from_step) < args.stop_after_step <= args.num_iterations:\n    raise ValueError("stop-after-step must be after resume step and within explicit horizon")')
+    base=replace_once(base, 'checkpoint_dir = os.path.join(base_dir, "base_checkpoints", output_dirname)', 'checkpoint_dir = checkpoint_directory(base_dir, "base_checkpoints", output_dirname)')
+    base=replace_once(base, '    last_step = step == num_iterations # loop runs num_iterations+1 times so that we can eval/save at the end', '    last_step = step == num_iterations\n    stopping = args.stop_after_step != -1 and step >= args.stop_after_step')
+    base=replace_once(base, '    if last_step or (step > 0 and step != args.resume_from_step and args.save_every > 0 and step % args.save_every == 0):', '    if step != args.resume_from_step and (last_step or stopping or (step > 0 and args.save_every > 0 and step % args.save_every == 0)):')
+    base=replace_once(base, '    if last_step:\n        break', '    if last_step or stopping:\n        break')
+    base=replace_once(base, 'assert total_batch_size % world_tokens_per_fwdbwd == 0, f"total_batch_size ({total_batch_size}) must be a multiple of {world_tokens_per_fwdbwd}."', 'validate_batch(args.device_batch_size, args.max_seq_len, ddp_world_size, total_batch_size, args.eval_tokens if args.eval_every > 0 else None)')
+    output['scripts/base_train.py']=add_early_stopping(base, 'base')
     output['nanochat/loss_eval.py']=originals['nanochat/loss_eval.py']+'\nfrom nanochat.belka_metrics import evaluate_bpb\n'
 
     # Generate the data-mixture variant from a pristine, pinned SFT source.
@@ -196,7 +366,7 @@ from types import SimpleNamespace
     sft=sft.replace('CustomJSON x2','CustomJSON x1')
     sft=preserve_sft_warm_start_decay(sft)
     sft=refresh_sft_scaler_checks(sft)
-    output['scripts/chat_sft_be.py']=sft
+    output['scripts/chat_sft_be.py']=add_early_stopping(add_sft_resume(sft), 'sft')
     common=scratch/'common.py';common.write_text(originals['nanochat/common.py'],encoding='utf-8')
     if not load_tool('patch_nanochat_branding').patch_common(common)['ok']: raise ValueError('branding failed')
     common_text=common.read_text(encoding='utf-8')
@@ -219,6 +389,7 @@ from types import SimpleNamespace
     raise ValueError("set NANOCHAT_BASE_DIR explicitly for an exported runtime")
 
 '''+common_text[end:]
+    common_text=replace_once(common_text, '    torch.manual_seed(42)', '    import random\n    import numpy as np\n    random.seed(42)\n    np.random.seed(42)\n    torch.manual_seed(42)')
     output['nanochat/common.py']=common_text
     optim=originals['nanochat/optim.py']
     optim=replace_once(optim, '        # Phase 1: launch all async reduce ops', '''        # Gloo's SUM is portable; use a replicated optimizer layout on CPU.

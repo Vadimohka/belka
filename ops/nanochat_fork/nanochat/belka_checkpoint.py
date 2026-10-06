@@ -343,6 +343,77 @@ def validate_checkpoint(checkpoint_dir,step,rank=0,load_optimizer=False):
     return data
 
 
+def recover_incomplete_checkpoints(checkpoint_dir, resume_step=None):
+    """Archive an interrupted save tail before an explicitly requested resume.
+
+    The caller must hold the exclusive run lock and stop all trainer processes.
+    Committed checkpoints are never moved or overwritten. Every moved byte is
+    retained under ``.incomplete`` with a hash inventory. An interrupted recovery
+    can be retried: remaining files move into a new archive, earlier archives stay.
+    ``None`` means restart a run that has never committed its first checkpoint.
+    """
+    import uuid
+    if resume_step is not None and (type(resume_step) is not int or resume_step < 0):
+        raise ValueError('invalid recovery resume step')
+    directory = Path(checkpoint_dir)
+    if directory.is_symlink() or (directory.exists() and not directory.is_dir()):
+        raise ValueError('checkpoint directory must be a regular directory')
+    if not directory.exists():
+        if resume_step is not None:
+            raise ValueError('cannot recover a missing resume checkpoint')
+        return {'archive': None, 'files': {}}
+    entries = list(directory.iterdir())
+    commits = set()
+    for entry in entries:
+        match = re.fullmatch(r'commit_(\d+)\.json', entry.name)
+        if match:
+            step = int(match.group(1))
+            if entry.name != f'commit_{step:06d}.json':
+                raise ValueError('noncanonical checkpoint commit name')
+            validate_checkpoint(directory, step, load_optimizer=True)
+            commits.add(step)
+    if (max(commits) if commits else None) != resume_step:
+        raise ValueError('recovery must resume the latest committed checkpoint')
+    floor = -1 if resume_step is None else resume_step
+    partial_steps = _partial_checkpoint_steps(entries) - commits
+    candidates = []
+    for entry in entries:
+        match = re.fullmatch(r'(?:pending|model|meta|optim|rng|result)_(\d+)(?:_rank\d+)?\.(?:json|pt)', entry.name)
+        if not match:
+            continue
+        step = int(match.group(1))
+        if step in commits:
+            continue
+        if step <= floor:
+            raise ValueError('uncommitted checkpoint at or before resume step; inspect it explicitly')
+        if step not in partial_steps:
+            raise ValueError('unmanaged checkpoint files cannot be archived automatically')
+        if entry.is_symlink() or not entry.is_file():
+            raise ValueError('incomplete checkpoint must contain regular non-symlink files')
+        candidates.append(entry)
+    if not candidates:
+        return {'archive': None, 'files': {}}
+    archive_root = directory / '.incomplete'
+    if archive_root.is_symlink() or (archive_root.exists() and not archive_root.is_dir()):
+        raise ValueError('checkpoint archive must be a regular directory')
+    inventory = {p.name: _hash(p) for p in sorted(candidates)}
+    archive_root.mkdir(exist_ok=True)
+    archive = archive_root / uuid.uuid4().hex
+    archive.mkdir(mode=0o700)
+    report = {'schema': 'belka-checkpoint-recovery-v1', 'resume_step': resume_step,
+              'archive': str(archive), 'files': inventory}
+    _json(archive / 'RECOVERY.json', report)
+    for source in candidates:
+        source.rename(archive / source.name)
+    for path in (archive, archive_root, directory):
+        fd = os.open(path, os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+    return report
+
+
 # Rank-local data-loader state can include buffered tokens and pending batches;
 # it is intentionally allowed to be larger than the small commit manifest.
 MAX_CHECKPOINT_METADATA_BYTES = 64 << 20

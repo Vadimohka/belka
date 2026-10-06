@@ -9,7 +9,7 @@ profiles:
     base_iterations: 50
     sft_iterations: 50
     tokenizer_vocab_size: 16384
-    expected_checkpoint: chatsft_checkpoints/be-d4-smoke/model_000049.pt
+    expected_checkpoint: chatsft_checkpoints/be-d4-smoke/model_000050.pt
   safe:
     description: "Conservative local route for real Belarusian corpus on 8GB VRAM."
     dtype: float16

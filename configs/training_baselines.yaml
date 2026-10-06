@@ -35,7 +35,7 @@ baselines:
   profile: belka_d8_40m_safe
   sequence_length: 1024
   precision: float16
-  optimizer: AdamW
+  optimizer: MuonAdamW
   approval_required: true
 - id: sft_run
   description: Belarusian-only SFT after base checkpoint

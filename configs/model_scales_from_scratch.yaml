@@ -24,7 +24,7 @@ profiles:
     vocab_size: 16384
     approx_params: "40M"
     device_batch_size: 1
-    total_batch_size: 512
+    total_batch_size: 2048
     gradient_accumulation_steps: 2
     purpose: "safe_serious_local_run"
     target_gpu: "RTX_3070_Ti_8GB"
@@ -38,7 +38,7 @@ profiles:
     vocab_size: 16384
     approx_params: "80M"
     device_batch_size: 1
-    total_batch_size: 512
+    total_batch_size: 4096
     gradient_accumulation_steps: 4
     purpose: "upper_local_8GB"
     target_gpu: "RTX_3070_Ti_8GB"
