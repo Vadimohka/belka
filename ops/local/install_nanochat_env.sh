@@ -20,7 +20,7 @@ Usage: bash ops/local/install_nanochat_env.sh --nanochat-dir PATH [options]
 
 Options:
   --nanochat-dir PATH       nanochat checkout directory (default: $PACK_DIR/.workspace/nanochat)
-  --git-ref REF             branch/tag/commit to checkout (default: pinned 92d63d4)
+  --git-ref REF             ref resolving to the hash-locked supported upstream (default: pinned 92d63d4)
   --base-dir PATH           NANOCHAT_BASE_DIR (default: $PACK_DIR/.workspace/nanochat_base)
   --skip-git-pull           do not fetch/pull an existing git checkout
   --init-submodules         run git submodule update only inside a real git checkout
@@ -128,9 +128,7 @@ fi
 cd "$NANOCHAT_DIR"
 if [[ -d .git && "$DRY_RUN" != "1" ]]; then
   git checkout "$NANOCHAT_GIT_REF"
-  if [[ "$SKIP_GIT_PULL" != "1" ]]; then
-    git pull --ff-only || echo "WARN: git pull failed or not applicable; continuing with checked-out tree."
-  fi
+  # No git pull on a pinned detached commit; updates require a reviewed lock.
   if [[ "$INIT_SUBMODULES" == "1" ]]; then
     git submodule update --init --recursive
   fi
@@ -149,13 +147,8 @@ if [[ "$DRY_RUN" != "1" ]]; then
     echo "WARN: .venv has no pip; trying ensurepip, then recreating if needed."
     .venv/bin/python -m ensurepip --upgrade || true
     if ! .venv/bin/python -m pip --version >/dev/null 2>&1; then
-      rm -rf .venv
-      if [[ "$USE_UV" == "1" ]]; then
-        uv venv --seed .venv
-      else
-        python3 -m venv .venv
-        .venv/bin/python -m ensurepip --upgrade || true
-      fi
+      echo "ERROR: existing venv has no working pip. It was retained; repair it or select a fresh checkout." >&2
+      exit 1
     fi
   fi
 fi
@@ -163,16 +156,19 @@ fi
 if [[ -f pyproject.toml ]]; then
   if [[ "$USE_UV" == "1" ]]; then
     if [[ "$CPU_ONLY" == "1" ]]; then
-      run uv sync --extra cpu
+      run uv sync --extra cpu --frozen
     else
       # Do not silently change the compute backend after a failed GPU install.
-      run uv sync --extra gpu
+      run uv sync --extra gpu --frozen
     fi
   else
     echo "Installing nanochat dependencies via pip (no uv)."
     if [[ "$CPU_ONLY" == "1" ]]; then
+      # pip does not read tool.uv.sources: select the CPU wheel explicitly.
+      run "$PYTHON" -m pip install 'torch==2.9.1' --index-url https://download.pytorch.org/whl/cpu
       run "$PYTHON" -m pip install -e ".[cpu]"
     else
+      run "$PYTHON" -m pip install 'torch==2.9.1' --index-url https://download.pytorch.org/whl/cu128
       run "$PYTHON" -m pip install -e ".[gpu]"
     fi
   fi
@@ -216,17 +212,11 @@ PY
 fi
 
 if [[ "$DRY_RUN" != "1" ]]; then
-  # Belka fork files on top of the pristine upstream checkout
-  # (see ops/nanochat_fork/README.md).
-  mkdir -p "$NANOCHAT_DIR/tasks" "$NANOCHAT_DIR/scripts" "$NANOCHAT_DIR/nanochat"
-  cp "$PACK_DIR/ops/nanochat_fork/tasks/customjson.py" "$NANOCHAT_DIR/tasks/customjson.py"
-  cp "$PACK_DIR/ops/nanochat_fork/scripts/chat_web.py" "$NANOCHAT_DIR/scripts/chat_web.py"
-  cp "$PACK_DIR/ops/nanochat_fork/nanochat/ui.html" "$NANOCHAT_DIR/nanochat/ui.html"
-  cp "$PACK_DIR/ops/nanochat_fork/nanochat/logo.svg" "$NANOCHAT_DIR/nanochat/logo.svg"
+  # The hash-locked overlay owns tasks/customjson.py, scripts/chat_web.py,
+  # nanochat/ui.html, nanochat/logo.svg and the tested execution contracts.
+  # Unknown local changes are never overwritten by ad-hoc cp/text replacement.
+  "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_runtime.py" --nanochat-dir "$NANOCHAT_DIR"
   "$PYTHON" "$PACK_DIR/tools/build_sft_mix.py" --pack-dir "$PACK_DIR" --base-dir "$NANOCHAT_BASE_DIR"
-  "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_for_belarusian.py" --nanochat-dir "$NANOCHAT_DIR"
-  "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_dtype_fp16.py" --nanochat-dir "$NANOCHAT_DIR"
-  "$PYTHON" "$PACK_DIR/ops/local/patch_nanochat_branding.py" --nanochat-dir "$NANOCHAT_DIR"
   "$PYTHON" "$PACK_DIR/ops/local/verify_nanochat_patch.py" --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --pack-dir "$PACK_DIR" --require-dtype-patch
 fi
 

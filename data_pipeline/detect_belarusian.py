@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable, Iterator
 
-BEL_SPECIFIC = set("ўЎіІёЁ")
+BEL_SPECIFIC = set("ўЎіІ")  # ё also occurs in Russian; it is not discriminative
 CYR_RE = re.compile(r"[А-Яа-яЁёІіЎўЄєЇїҐґ]+")
 LAT_RE = re.compile(r"[A-Za-z]+")
 WORD_RE = re.compile(r"[А-Яа-яЁёІіЎўЄєЇїҐґ’']+|[A-Za-z]+")
@@ -44,6 +44,16 @@ ENGLISH_HINTS = {
     "the", "and", "that", "this", "with", "for", "from", "please", "answer", "model", "data",
     "meeting", "workspace", "calendar", "google", "sync", "privacy", "export", "search",
 }
+
+# Non-discriminative words are not added as positive Belarusian evidence.
+BEL_WORDS |= {'што','цябе','чаго','называць','мове','створана','адказваеш',
+              'раскажы','пра','вядома','коратка','правер','адкажы','патлумач',
+              'сфармулюй','надзейны','назаві','кім'}
+RUSSIAN_HINTS |= {'что','представься','расскажи','одним','предложением','напиши',
+                  'коротко','столицей','какие','реки','знаешь','назови'}
+# Exact product/protocol identifiers are not natural-language evidence. This
+# narrow list must not become a general exception for Latin-script sentences.
+TECH_NAMES = re.compile(r"\b(?:Google Calendar|Google Meet|Google OAuth|ChatGPT|OpenAI|MeetMesh|Belka|OAuth|API|2FA)\b")
 
 @dataclass(slots=True)
 class DetectionResult:
@@ -77,6 +87,8 @@ def detect_belarusian(
     allow_short: bool = False,
 ) -> DetectionResult:
     text = text or ""
+    original_text = text
+    text = TECH_NAMES.sub('', text)
     tokens = _tokens(text)
     cyr = sum(len(x) for x in CYR_RE.findall(text))
     lat = sum(len(x) for x in LAT_RE.findall(text))
@@ -159,14 +171,14 @@ def detect_belarusian(
         russian_hint_hits=russian_hint_hits,
         ukrainian_hint_hits=ukrainian_hint_hits,
         english_hint_hits=english_hint_hits,
-        length=len(text),
+        length=len(original_text),
     )
 
 
 def _open_text(path: Path):
     if str(path).endswith(".gz"):
-        return gzip.open(path, "rt", encoding="utf-8", errors="ignore")
-    return path.open("rt", encoding="utf-8", errors="ignore")
+        return gzip.open(path, "rt", encoding="utf-8", errors="strict")
+    return path.open("rt", encoding="utf-8", errors="strict")
 
 
 def iter_jsonl_text(path: Path) -> Iterator[tuple[int, str, object]]:
@@ -238,7 +250,7 @@ def main() -> None:
         stats = write_detection_report(iter_jsonl_text(args.input), args.out_dir, **kwargs)
         print(json.dumps(stats, ensure_ascii=False, indent=2))
         raise SystemExit(0 if stats["accepted"] else 1)
-    text = args.input.read_text(encoding="utf-8", errors="ignore") if args.input else sys.stdin.read()
+    text = args.input.read_text(encoding="utf-8", errors="strict") if args.input else sys.stdin.read()
     print(json.dumps(asdict(detect_belarusian(text, **kwargs)), ensure_ascii=False, indent=2))
 
 

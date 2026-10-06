@@ -18,7 +18,7 @@ training/eval pipeline for a Cyrillic, morphologically rich, lower-resource lang
 Belarusian is under-served by mainstream LLMs: limited high-quality open corpora, two
 orthographies (narkamauka and tarask/classical), and strong Russian cross-lingual
 interference. Belka treats these as first-class engineering problems (language-lock
-filtering, orthography tracking, decontaminated evaluation) rather than afterthoughts.
+filtering, orthography tracking, train/eval overlap checks) rather than afterthoughts.
 **Pretrained multilingual models are used only as external eval baselines, never as a
 training base.**
 
@@ -30,39 +30,49 @@ Release: **`v0.1.0-research-preview`**. Maintainer: Vadim Vladymtsev
 preserved; historical internal cleanup snapshots have been curated into the public
 summaries under [`reports/public/`](reports/public/).
 
-## Current status
+## Development-branch snapshot
+
+This checkout describes `codex/belka-runtime-2026-10-01` / PR #5, not a claim
+that the PR has already landed in `main`. Its reviewed runtime baseline is
+`d4fb25d3f605ff39a4d243f9c3bf32bfe362de7d`, on pinned nanochat
+`92d63d4e8bb4df75c3b71618f31ddde2378b2bcd`.
+
+[Detailed Belka vs nanochat technical patch notes (Russian)](docs/BELKA_VS_NANOCHAT_PATCH_NOTES_RU.md)
+separate inherited architecture, published changes, compatibility and unresolved
+work. The locally described preparation package in #30 is not part of that
+published runtime.
+
+## Artifact history and current implementation
 
 | Item | Value |
 |---|---|
-| Corpus | `v3b` — ACCEPTED (302,991 rows, ~595M chars / ~180.6M tokens measured with the 16k tokenizer, max source share 67.5%) |
+| Corpus | Published `v3b`: manifest lists 302,991 train / 6,183 validation rows. Historical ACCEPTED status is not approval for a new training run. |
 | Tokenizer | custom BPE, SHA256 `d9272e81…71ac` |
-| Base model | `belka-d8-base-v3-pilot` (research preview baseline) |
-| SFT | `sft_v8` |
-| Next target | H200 server, max-quality run: [`reports/strategy/H200_MAX_QUALITY_PLAN.md`](reports/strategy/H200_MAX_QUALITY_PLAN.md) |
-| Strict holdout | 209 prompts, 0 SFT overlap (leakage-clean) |
+| Base model | Historical `belka-d8-base-v3-pilot`; not retrained after all PR #5 changes. |
+| SFT | Current code derives a validated v9 generation from retained v8 seeds; independent language review remains outstanding. |
+| Hardware plan | Historical H200 plan; not measured hardware acceptance or permission to launch. See #30 and `TASKS.md`. |
+| Strict holdout | 209 prompts; historical zero exact overlap applies only to the checker's selected fields, not every dataset or contamination mode. |
 
-Details: [`reports/public/PROJECT_STATUS.md`](reports/public/PROJECT_STATUS.md).
+Historical report: [`reports/public/PROJECT_STATUS.md`](reports/public/PROJECT_STATUS.md).
+The runtime now derives BPB lengths from raw tokenizer bytes. Historical BPB
+using the incorrect cache requires recomputation before comparison; see
+[raw-byte derivation](docs/TOKEN_BYTE_DERIVATION.md). The historical ~180.6M-token
+figure is not a new count of training targets including BOS.
 
-## Quickstart (clean clone, GPU or CPU, corpus included)
+## Read-only review and historical quickstart
 
-```bash
-git clone https://github.com/Vadimohka/belka && cd belka
-bash ops/local/quickstart.sh
-```
+Reading the source, patch notes and `TASKS.md` does not require installation,
+tests, corpus extraction or training.
 
-One command: installs the nanochat env (GPU if present, CPU otherwise), restores
-the bundled corpus + tokenizer from `data_release/`, and runs a tiny end-to-end
-training (base → Belarusian SFT) as a pipeline proof. Real training:
-`ops/local/run_belka_h200_maxquality.sh` (GPU) or the printed CPU commands.
+`ops/local/quickstart.sh` is a historical executable path: it installs an
+environment, restores data and starts a small training run. It is **not** a
+read-only check. The old `run_belka_h200_maxquality.sh` also has known budget/data
+preparation issues tracked in #30. The locally described `plan/check/execute`
+package must not be presented as already published or approved for execution.
 
-Checks only (no install):
-
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements_pack.txt
-PYTHONPATH="$PWD" pytest -q tests
-python tools/validate_public_release.py
-```
+Installation and runtime acceptance must be separately matched to the current
+branch and `TASKS.md`. Prior commands or reports do not certify new artifacts,
+hardware, or model quality.
 
 ## Repository layout
 
@@ -71,7 +81,7 @@ configs/        training profiles, data-source registry, expansion candidates, p
 data_pipeline/  Belarusian normalization / language filter / dedup / split
 tools/          corpus, leakage, source-board, and validation tools
 eval/           language-lock / holdout / regression / refusal eval suites + runner
-seed_sft/       Belarusian SFT seed conversations (v8 current)
+seed_sft/       retained v8 seeds; v9 is built by data_pipeline/sft_v9.py
 data_ready/     small bundled bootstrap/seed/eval jsonl
 docs/           methodology: data inventory, pipeline, tokenizer, training, eval, ethics
 data_cards/     dataset cards (corpus_v3b)
@@ -109,14 +119,15 @@ literary prose. Source mix and processing:
 
 ## Model summary
 
-`belka-d8-base-v3-pilot` + `sft_v8`: a small nanochat/GPT-style decoder trained from
-scratch. Intended use and limitations:
+`belka-d8-base-v3-pilot` + `sft_v8` are historical baseline identifiers, not the
+result of retraining with the current v9/runtime code. Intended use and limitations:
 [`model_cards/belka-research-preview.md`](model_cards/belka-research-preview.md).
 
 ## Evaluation summary
 
-Leakage-clean strict holdout (209 prompts) plus small language-lock / refusal /
-fertility suites. Quantitative quality claims are **preliminary**. Holdout vs regression
+A 209-prompt strict holdout plus small language-lock / refusal / fertility suites.
+Recorded exact-overlap checks cover selected prompt/text fields, not all
+pretraining text, assistant answers or semantic duplicates. Quantitative quality claims are **preliminary**. Holdout vs regression
 distinction and limitations: [`reports/public/EVALUATION_SUMMARY.md`](reports/public/EVALUATION_SUMMARY.md)
 and [`reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md`](reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md).
 

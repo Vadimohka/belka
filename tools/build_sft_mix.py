@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Build the current Belarusian SFT mixture, validating before publication.
 
-Outputs stay inside the pack. Each file is published via atomic replacement, but
-publication of the train/val pair is not a cross-file transaction. Do not run this
-concurrently with a training reader. --check-only validates staged copies only.
+Default v9 publishes immutable train/val generations with one atomic pointer.
+Readers resolve the pointer once. Legacy --dataset-version v8 retains per-file
+replacement and must not run concurrently with training. --check-only validates
+staged copies without publishing either version.
 """
 from __future__ import annotations
 
@@ -66,6 +67,43 @@ def validate_targets(outputs: list[Path], inputs: list[Path]) -> None:
         checked.append(target)
 
 
+def build_v9(args, pack, base):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from data_pipeline.sft_v9 import prepare
+    from data_pipeline.contracts import corpus_generation, sha256_file
+    from tools.validate_sft_jsonl import validate_file, load_language_review
+    if args.train_out is not None or args.val_out is not None:
+        raise ValueError('v9 is a train/val generation; use --base-dir, not separate output overrides')
+    train, val, metadata = prepare(pack)
+    review_path = pack/'configs/sft_v9_language_review.json'
+    review = load_language_review(review_path)
+    metadata['language_review_sha256'] = sha256_file(review_path)
+    metadata['validation'] = {}
+    live = base / '.sft_current'
+    base.mkdir(parents=True,exist_ok=True)
+    from contextlib import contextmanager
+    @contextmanager
+    def check_stage():
+        with tempfile.TemporaryDirectory(prefix='.sft-check-',dir=base) as folder:
+            yield Path(folder)
+    with (check_stage() if args.check_only else corpus_generation(live)) as stage:
+        for name,rows in [('identity_conversations.jsonl',train),('identity_conversations_val.jsonl',val)]:
+            target = stage/name
+            target.touch(exist_ok=False)
+            write_rows(target,rows)
+            stats = validate_file(target, strict_all=True, reviewed_texts=review)
+            metadata['validation'][name] = {key:value for key,value in stats.items() if key != 'path'}
+            if stats['errors']:
+                raise ValueError('all-role Belarusian SFT validation failed; generation not published')
+        metadata['files'] = {p.name:sha256_file(p) for p in stage.glob('*.jsonl')}
+        metadata['language_policy'] = 'all_roles_heuristic_with_explicit_phrase_corrections'
+        (stage/'SFT_BUILD_MANIFEST.json').write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n')
+    return dict(train_out=str(live/'identity_conversations.jsonl'),val_out=str(live/'identity_conversations_val.jsonl'),
+                train_rows=len(train),val_rows=len(val),published=not args.check_only,dataset_version='v9',
+                groups=len(metadata['groups']),corrections=len(metadata['corrections']),
+                quarantine=len(metadata['quarantine']),independent_native_review=False)
+
+
 def build(args: argparse.Namespace) -> dict:
     pack = args.pack_dir.expanduser().resolve(strict=True)
     if not pack.is_dir():
@@ -75,6 +113,8 @@ def build(args: argparse.Namespace) -> dict:
     if not base.is_absolute():
         base = pack / base
     base = inside_pack(base, pack)
+    if getattr(args, 'dataset_version', 'v9') == 'v9':
+        return build_v9(args, pack, base)
     seed_dir = pack / "seed_sft"
     # v8 only; older seed files are research history, not mixture inputs.
     inputs = [inside_pack(seed_dir / name, pack) for name in
@@ -123,6 +163,7 @@ def main() -> None:
     ap.add_argument("--base-dir", type=Path, help="default: NANOCHAT_BASE_DIR or PACK_DIR/.workspace/nanochat_base")
     ap.add_argument("--train-out", type=Path)
     ap.add_argument("--val-out", type=Path)
+    ap.add_argument("--dataset-version",choices=["v8","v9"],default="v9",help="v9 is the active all-role corrected/grouped mixture; v8 is retained for research comparisons only")
     ap.add_argument("--seed", type=int, default=20260511)
     ap.add_argument("--check-only", action="store_true", help="validate staged copies without replacing final datasets")
     args = ap.parse_args()

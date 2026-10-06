@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 GGUF="${GGUF:-./model.gguf}"
-HOST="${HOST:-0.0.0.0}"
+HOST="${HOST:-127.0.0.1}"
 PORT="${PORT:-8080}"
 CTX="${CTX:-2048}"
 usage() { echo "Usage: GGUF=/path/model.gguf bash deploy/serve_llamacpp.sh [--port N] [--ctx N]"; }

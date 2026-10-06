@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 MODEL_DIR="${MODEL_DIR:-./hf_export_be}"
-HOST="${HOST:-0.0.0.0}"
+HOST="${HOST:-127.0.0.1}"
 PORT="${PORT:-8000}"
 DTYPE="${DTYPE:-float16}"
 usage() { echo "Usage: MODEL_DIR=/path/to/hf/model bash deploy/serve_vllm.sh [--port N] [--dtype float16]"; }

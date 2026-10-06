@@ -2,8 +2,8 @@
 set -euo pipefail
 PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 # shellcheck disable=SC1090
-source "$PACK_DIR/local/pack_paths.sh"
-bash "$PACK_DIR/local/repo_guard.sh"
+source "$PACK_DIR/ops/local/pack_paths.sh"
+bash "$PACK_DIR/ops/local/repo_guard.sh"
 MODEL_TAG="${MODEL_TAG:-be-d4-smoke}"
 PHASE="${PHASE:-sft}"
 OUT_DIR="${OUT_DIR:-$DIST_DIR/hf_export_$MODEL_TAG}"
@@ -25,7 +25,7 @@ case "$(realpath -m "$OUT_DIR")" in
 esac
 mkdir -p "$OUT_DIR"
 if [[ ! -x "$NANOCHAT_DIR/.venv/bin/python" ]]; then
-  echo "ERROR: nanochat venv missing at $NANOCHAT_DIR/.venv. Run local/install_nanochat_env.sh first." >&2
+  echo "ERROR: nanochat venv missing at $NANOCHAT_DIR/.venv. Run ops/local/install_nanochat_env.sh first." >&2
   exit 1
 fi
 cd "$NANOCHAT_DIR"

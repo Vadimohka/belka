@@ -82,7 +82,9 @@ def test_belka_branding_is_applied_by_patcher():
     assert "BELKA_BRANDING_BANNER" in src
     assert "BELKA" in src.replace("BELKA_BRANDING_BANNER", "").replace("patch_nanochat_branding", "")
     installer = (PACK / "ops/local" / "install_nanochat_env.sh").read_text(encoding="utf-8")
-    assert "patch_nanochat_branding.py" in installer, "installer must run the branding patcher"
+    assert "patch_nanochat_runtime.py" in installer, "installer must apply the verified runtime overlay"
+    runtime = (PACK / "ops/local/patch_nanochat_runtime.py").read_text(encoding="utf-8")
+    assert "load_tool('patch_nanochat_branding').patch_common" in runtime
     verifier = (PACK / "ops/local" / "verify_nanochat_patch.py").read_text(encoding="utf-8")
     assert "BELKA_BRANDING_BANNER" in verifier, "verifier must check the BELKA banner"
     assert "<title>Belka</title>" in verifier, "verifier must check the web UI title"

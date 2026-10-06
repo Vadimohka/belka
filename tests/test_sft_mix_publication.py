@@ -32,7 +32,7 @@ def run(pack, *args, env=None):
     clean.pop("NANOCHAT_BASE_DIR", None)
     if env:
         clean.update(env)
-    return subprocess.run([sys.executable, str(pack / "tools/build_sft_mix.py"), "--pack-dir", str(pack), *args],
+    return subprocess.run([sys.executable, str(pack / "tools/build_sft_mix.py"), "--pack-dir", str(pack), "--dataset-version", "v8", *args],
                           env=clean, cwd=pack, capture_output=True, text=True, timeout=15)
 
 
