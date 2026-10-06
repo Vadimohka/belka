@@ -1,48 +1,28 @@
-# Belka — Project Status
+# Belka — current evidence status
 
-*Public summary. Source of truth: `reports/state/BELKA_CANONICAL_STATE.md`. Last canonical verification: 2026-05-18.*
+Updated 2026-10-06. Historical acceptance tables under `reports/state/` and older
+release reports describe earlier artifacts. They do not certify a new corpus,
+tokenizer, checkpoint, runtime, or an H200 training run.
 
-## Current state
-
-| Item | Value |
+| Item | Current evidence and limits |
 |---|---|
-| Project | Belka — Belarusian LLM trained from scratch |
-| Corpus | `v3b` — **ACCEPTED** (302,991 train rows, ~595M chars / ~180.6M tokens measured with the 16k tokenizer, max single-source share 67.5%) |
-| Tokenizer | custom BPE, SHA256 `d9272e81…71ac` |
-| Base model | `belka-d8-base-v3-pilot` — accepted baseline (research preview) |
-| SFT | `sft_v8` (current); validated by `tools/validate_sft_v8.py` |
-| Strict holdout | `strict_holdout_quality_control_v2` — 209 prompts, 0 SFT overlap, **PASS** |
-| Training gates | `TRAINING_ALLOWED=NO`, `SFT_ALLOWED=NO` (gated; not auto-run) |
+| Training design | Native nanochat, trained from scratch; see the canonical H200 plan and preparation tools |
+| Data | A candidate is usable only after `reports/data/H200_DATA_PREPARATION.json` verifies its actual generation and hashes |
+| Tokenizer | Must match the selected corpus preparation and checkpoint identity; no historical hash is implicitly accepted |
+| Checkpoint provenance | `tools/audit_training_provenance.py` verifies full file hashes and run manifests; preparation alone is not training |
+| Model quality | NOT_EVALUATED without an actual checkpoint-linked evaluation; no new quality or H200 throughput result is claimed |
+| SFT | The active mixture is selected and validated by `tools/build_sft_mix.py`; old v8 acceptance is historical |
+| Strict holdout | 209 prompts; a never-train policy is not evidence of absence from a selected training corpus |
+| HF export | Native custom architecture, tokenizer/config/safetensors; CPU logits/tokenization/generation roundtrip tested |
+| GGUF / vLLM | UNSUPPORTED by this repository; wrappers fail explicitly |
 
-## Accepted
+The QC workbook displays measured evidence or UNKNOWN/NOT_EVALUATED. Its
+`TRAINING_ALLOWED=NO` and `SFT_ALLOWED=NO` fields describe checkpoint QC, not the
+separate canonical training preflight. Passing format checks or CPU integration
+does not establish native-speaker quality, benchmark performance, or model release
+readiness. Independent Belarusian review and real post-training evaluation remain
+required to make those claims.
 
-- Corpus `v3b` (provenance recorded; data-rights overlay documented).
-- `belka-d8-base-v3-pilot` as a baseline checkpoint.
-- Clean strict holdout v2 (leakage-verified).
-
-## Rejected / revoked (kept for honesty)
-
-- `belka-d8-base-v3-long` — **REJECTED**: multi-epoch overtraining / degradation at ~1.5B tokens.
-- `belka-d12-sft-v8-rc1` — **REVOKED**: tokenizer mismatch (`reports/tokenizer_v2/TOKENIZER_OVERWRITE_INCIDENT.md`).
-- `belka-d8-base-v3b-pilot` — **PARTIAL / not a clear win**: provenance incomplete.
-
-## Research preview
-
-`belka-d8-base-v3-pilot` + `sft_v8` constitute a **research preview**: they demonstrate a
-working from-scratch Belarusian pipeline, not a production-quality model.
-
-## What is NOT claimed
-
-- Not state-of-the-art; not production-ready.
-- No quantitative quality claim beyond the small eval suites in `reports/public/EVALUATION_SUMMARY.md`.
-- The corpus is **not** public domain and **not** fully redistributable (see
-  `DATA_RIGHTS_AND_PERMISSIONS.md`).
-- Pretrained multilingual models are used **only** as eval baselines, never as a training base.
-
-## Project owner
-
-Belka is maintained by Vadim Vladymtsev.
-
-- Website: https://vadimohka.com
-- Contact: vadimohkav@gmail.com
-- GitHub: https://github.com/Vadimohka
+Historical incidents remain documented: the long v3 run was rejected, the d12 v8
+candidate was revoked after a tokenizer mismatch, and the v3b pilot had incomplete
+provenance. None is silently promoted to a newly accepted baseline.

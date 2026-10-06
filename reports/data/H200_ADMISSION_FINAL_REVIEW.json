@@ -1,0 +1,1325 @@
+{
+  "schema": "belka-h200-final-admission-review-v1",
+  "status": "GO_FOR_VERIFIED_STRICT_SUBSET",
+  "strict_subset_publication_go": true,
+  "bpe_requires_actual_subset_validation": true,
+  "independent_native_review": false,
+  "parent_corpus_fingerprint": "7f33e3e2f263b1d59a6c6614209ce875c8f964ba04753de6f1efa1b473f1c22f",
+  "pipeline_hashes": {
+    "data_pipeline/h200_admission.py": "7dc29796f3ef0c089a32411c115783160137b8c8f76939c02a9e646569fc0704",
+    "configs/h200_admission_policy.json": "0d8ce3f525b8de4f1e27ecaf1ad71d8167a197ef2401fe49de56972dcc992c2b"
+  },
+  "expected_final_counts": {
+    "scanned": 4104965,
+    "retained": 3323216,
+    "removed": 781749
+  },
+  "expected_final_splits": {
+    "train": {
+      "rows": 3274476,
+      "chars": 6917344183
+    },
+    "val": {
+      "rows": 48740,
+      "chars": 76715279
+    }
+  },
+  "expected_final_characters": 6994059462,
+  "expected_accounting_path": ".workspace/h200-ready/admission-dryrun-final-derived.json",
+  "expected_accounting_sha256": "ca893bb329c44fc004847b0d632522f11c0745fc2368f22a8b19b72eb299f50d",
+  "sample_path": ".workspace/h200-ready/admission-final-reviewed-44.json",
+  "sample_sha256": "f896c292fae7dd5a161da629de414d77d42c00dcfaae835f22e062eb85c3eb66",
+  "documents_reviewed": 44,
+  "reviewed_characters": 87551,
+  "sample_characters": 96947,
+  "source_quotas": {
+    "fineweb2": 16,
+    "hplt_v2": 14,
+    "bewiki": 3,
+    "be_x_oldwiki": 2,
+    "books_clean_v2": 2,
+    "bewikisource_full": 4,
+    "leipzig": 2,
+    "bewikibooks_full": 1
+  },
+  "summary": {
+    "MINOR_RESIDUAL_NOISE": 21,
+    "RESIDUAL_LANGUAGE_ERRORS": 3,
+    "ACCEPTABLE_IN_REVIEWED_WINDOWS": 12,
+    "SUBSTANTIAL_RESIDUAL_NOISE": 8
+  },
+  "sampling_design": {
+    "method": "Explicit staged confirmation, not 44 newly independent draws:34 retained non-CC100/non-quarantined documents from independent round3,9 retained documents from a10-document fresh topup,then1new wikisource document after whole-source wikiquote quarantine. Whole-source/exact reviewed-row deletions did not modify any retained text.",
+    "batches": {
+      "prior_independent_round3_retained": 34,
+      "fresh_topup_retained": 9,
+      "final_fresh_wikisource": 1
+    },
+    "prior_round3_report": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+    "prior_round3_report_sha256": "5da9d1499c0b0590785bb8d91d8014d164df32d4f05b0dde1e65733d47b8c774",
+    "fresh_topup_report": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+    "fresh_topup_report_sha256": "c536e3b0fe57a804bd643102180ab824e5f978254e6bdd8f06f6951e32c70a54",
+    "fresh_topup_excluded_reviewed_hashes": 199,
+    "final_fresh_selection_path": ".workspace/h200-ready/admission-final-wikisource-topup.json",
+    "final_fresh_selection_sha256": "c6e6cc7dd46a3e9192d96280c32198da81628ebcde1fadc21b15a3900ca1d602",
+    "final_fresh_excluded_reviewed_hashes": 209,
+    "uniform_overall_corpus_quality_estimator": false
+  },
+  "all_known_material_documents_quarantined": {
+    "status": "PASS",
+    "documents": 28,
+    "records": [
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 7,
+        "source": "fineweb2",
+        "content_sha256": "ef10664de1c6d20b5e01c0f6fbcd1cecd3fc184603ecd0abdbd3566a8f2ca858",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 9,
+        "source": "fineweb2",
+        "content_sha256": "0c83dbee3a3ecfb70a3019ae986b6c8e00f300e55ddd8f26439c8fb2d0d1dba5",
+        "final_admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 10,
+        "source": "fineweb2",
+        "content_sha256": "590c19109e80b584cfe4c7d5c6d60ce8b5d98b9b535651c586127e47a71e4858",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 11,
+        "source": "fineweb2",
+        "content_sha256": "2153677b4f2e0b50e3bcc3332369b5c760d439614e8390b423892abc0e424fc5",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 13,
+        "source": "hplt_v2",
+        "content_sha256": "27c57585030a0729f3bdff7c0462273b2c1bf76c94ae2e20cf5b51543c5dadcd",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 15,
+        "source": "hplt_v2",
+        "content_sha256": "3669e65dc2ba777d41ac34b2afcde7ca556b9453a05a3f8dbc7f5686124c0f06",
+        "final_admission_reason": "paginated_article_archive"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 18,
+        "source": "hplt_v2",
+        "content_sha256": "c5db401843940400051d48e0b98fd9c3bac1ab53f2fa9e381fa2b17408c5b70c",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 19,
+        "source": "hplt_v2",
+        "content_sha256": "cf3fe08dae58ea67f0b67af114c7fffddcf8b0fc26b58003e95d31a870195d11",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 22,
+        "source": "hplt_v2",
+        "content_sha256": "a5c32cbf42226eb74416fe581ec4a4eaa91db2def57f5ee740ae80e2d85d4221",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 30,
+        "source": "cc100-be",
+        "content_sha256": "e3fd9c6f2e6d4ee545a882edde14f07b1cae90e23fb60fd618af1472a8081834",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 36,
+        "source": "be_x_oldwiki",
+        "content_sha256": "b73a981ef1e4cb3b74439ebf2d91efd06f476b81a2c6503bcfb75f15dc9e9d67",
+        "final_admission_reason": "dominant_unexpanded_wiki_template"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 20,
+        "source": "hplt_v2",
+        "content_sha256": "adeb72d2f797493ce0f86c58a9521c80f3d60d516f1afc80e012792e2191b87b",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 22,
+        "source": "hplt_v2",
+        "content_sha256": "dce571c7fe692d13ea8851356dd5d9757655bc8b8208fce20cb56b109f04c627",
+        "final_admission_reason": "paginated_article_archive"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 26,
+        "source": "cc100-be",
+        "content_sha256": "1746c88b9f379efaf324aeb3421cbed66deef8f34e830a340b89ad8c34ed1356",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 32,
+        "source": "cc100-be",
+        "content_sha256": "0af5f07a19beced21f84d5c650cf84402981f37224e53032800ee83d3d608924",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 44,
+        "source": "bewikiquote",
+        "content_sha256": "38eb41735a6d2bfeaab68a216018f903eedb6e99950d5d3216fc83b6ecaf0d47",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 25,
+        "source": "cc100-be",
+        "content_sha256": "abb7f80175b584f1a7144743a775e0a5bfcacdfda80fd7fcd7efd7da6e05cd3a",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 32,
+        "source": "cc100-be",
+        "content_sha256": "f8f704ba04f0a856273b0029229eb2fcce10c7ce245a8f16449398eab255f526",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 34,
+        "source": "bewiki",
+        "content_sha256": "333fbef423dd2c19622e4690a52eeb179013cf5852d04d936755671eb4369791",
+        "final_admission_reason": "dominant_unexpanded_wiki_template"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 40,
+        "source": "bewikisource_full",
+        "content_sha256": "c0e95fc5bd6ecd7cd7cbad507e568b8d18a2dea3d5340a2545c218f9435f00a3",
+        "final_admission_reason": "dominant_unexpanded_wiki_template"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 44,
+        "source": "bewikiquote",
+        "content_sha256": "3ace204b5d0fb8b2d56e65b93a1580156e67f3f9ef95d64e6e57dff7a96a9357",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 26,
+        "source": "cc100-be",
+        "content_sha256": "0b7e89a0a7ab0d752c32c61bc9b10f64fab188d2d39a7f95bf81b9f58c5496a6",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 28,
+        "source": "cc100-be",
+        "content_sha256": "03c02afc1762b65deed6a08d7a93585ec7eb23292422d4744ab53293d4544206",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 30,
+        "source": "cc100-be",
+        "content_sha256": "fb98bf42136a555be6e96e66b2bdc63c55cf8c8e7cda6b3b8e83438f1d1a58a0",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 31,
+        "source": "cc100-be",
+        "content_sha256": "d8db3c805b910e9bd144fc61bc8e745ff37e016b725cabfbd9247a926ea521d5",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 35,
+        "source": "be_x_oldwiki",
+        "content_sha256": "eef5acb25bffa3e5a16935c675f37e766c9ddfc89928f4886e42d1eea26dbb09",
+        "final_admission_reason": "reviewed_material_content_defect"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 44,
+        "source": "bewikiquote",
+        "content_sha256": "dd91d651618b9346898d75bd467ca4e22ce3bc94f04909398beb4d5084b4bb7b",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+        "sample_id": 10,
+        "source": "bewikiquote",
+        "content_sha256": "caed5258949381b3dbeb1ba0a0d7d53b5fdc62b47fcff1b615f6df04f0936009",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      }
+    ]
+  },
+  "records": [
+    {
+      "sample_id": 1,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00164.parquet",
+      "parent_row_index": 6078,
+      "content_sha256": "c9e59b7c51634938cd75c723b9a470ef50ebf7d70339550ded1efa1f330c07fc",
+      "source_url": "https://d3rebrwga7u6ai.cloudfront.net/313230",
+      "chars": 3103,
+      "sampling_rank": "0x3bd95949ea03ebcb9d603545094fefb9c0d99eb81898e8f3107fc9972da",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent Belarusian lifestyle prose with a short related-link marker. Medical claims were not fact-checked.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 3103
+        }
+      ],
+      "reviewed_characters": 3103,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 1
+    },
+    {
+      "sample_id": 2,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00020.parquet",
+      "parent_row_index": 16824,
+      "content_sha256": "165afac3adec0fc0e26b8c21a56d7a91279b058064769d575a47ec9dd742a45a",
+      "source_url": "https://www.tvr.by/bel/news/kultura/v_gomele_prokhodit_traditsionnyy_mezhdunarodnyy_festival_muzyka_nadezhdy/",
+      "chars": 818,
+      "sampling_rank": "0xcdf2ab6dffd4bddf2bcd3bf7ef65f181e91d07e79d4087575db6673db33",
+      "verdict": "RESIDUAL_LANGUAGE_ERRORS",
+      "observation": "Coherent cultural news with a wrong instrument adjective and an isolated grammatical issue; not pervasive malformed prose.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 818
+        }
+      ],
+      "reviewed_characters": 818,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 2
+    },
+    {
+      "sample_id": 3,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00128.parquet",
+      "parent_row_index": 15208,
+      "content_sha256": "99c33321ea27395ad787071aadba69214fd190cd55654f8c7bfea68ff06ffa59",
+      "source_url": "https://www.svaboda.org/a/28688977.html",
+      "chars": 655,
+      "sampling_rank": "0x139ad486e511515e04c92b40afb2393bdca93bd20a24a1f6e433b6a6491c",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news fragment with missing preceding context and an isolated spelling error.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 655
+        }
+      ],
+      "reviewed_characters": 655,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 3
+    },
+    {
+      "sample_id": 4,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00105.parquet",
+      "parent_row_index": 4314,
+      "content_sha256": "7b20827db754435919f0f6389e3b93608f11d69e45285827746f72d52bb5f8fa",
+      "source_url": "https://www.kimpress.by/index.phtml?page=2&DomainName=cult&id=18986",
+      "chars": 4962,
+      "sampling_rank": "0x14fd89b8c5b139f49bb3955f4f4dc64f9e8bd26e9ed9b84afc3af01b2ad4",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent historical/art criticism essay; historical and political claims were not fact-checked.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 4962
+        }
+      ],
+      "reviewed_characters": 4962,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 4
+    },
+    {
+      "sample_id": 5,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00202.parquet",
+      "parent_row_index": 3762,
+      "content_sha256": "fff45aa231d224f3da53a2ce4bc3cc122dc7325b980abdb717e2187394b00daf",
+      "source_url": "https://euroradio.fm/genprakuror-belarusy-pavinny-vedac-za-shto-zhyvuc-chynouniki",
+      "chars": 999,
+      "sampling_rank": "0x1893429c1a0bc5c30f090616ee088e3fd2553ff7931f37bfe27291725a61",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news with a short breadcrumb and photo-source line.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 999
+        }
+      ],
+      "reviewed_characters": 999,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 5
+    },
+    {
+      "sample_id": 6,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00109.parquet",
+      "parent_row_index": 6443,
+      "content_sha256": "806526a92e406a3be127b1a68d4f3a066577b9e9bf0c853cfcc0663f97f5d43f",
+      "source_url": "http://mogilev-region.gov.by/news/mfinberg_festyval_-_geta_maystar-klas",
+      "chars": 3785,
+      "sampling_rank": "0x1ed16341f0c95fe396915d96c56d5e161db70c001f4386924f4d85a6adf1",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Coherent long interview with a Russian category menu at the beginning and isolated agreement/spelling errors. Main body remains Belarusian and substantive.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 3785
+        }
+      ],
+      "reviewed_characters": 3785,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 6
+    },
+    {
+      "sample_id": 7,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00071.parquet",
+      "parent_row_index": 19472,
+      "content_sha256": "51abf3aef6a9e9334bdaf19c0881822e9e482aac89cc95c41f6cec091e02b116",
+      "source_url": "http://www.svaboda.org/a/26706382.html",
+      "chars": 1266,
+      "sampling_rank": "0x2ab9885ad09c211bba724c19d09eb85edb611bb9e8861b39b085edbe94c1",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent news article with attributed quotations.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1266
+        }
+      ],
+      "reviewed_characters": 1266,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 7
+    },
+    {
+      "sample_id": 8,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00169.parquet",
+      "parent_row_index": 18257,
+      "content_sha256": "d1b5d50b2bb305b9261c6df8b46e32f4d57ac292ef26d0c30cdf1aee67bcaeca",
+      "source_url": "http://www.svaboda.org/a/758084.html",
+      "chars": 1088,
+      "sampling_rank": "0x2ced49a0846165a2f4f043a0cb779dfc7c9e57e77e9b5e87d497ea847a31",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news article with a short related-article footer and an isolated grammatical error.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1088
+        }
+      ],
+      "reviewed_characters": 1088,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 8
+    },
+    {
+      "sample_id": 9,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00123.parquet",
+      "parent_row_index": 2705,
+      "content_sha256": "925a3ee32f8db42d9938cbc06845fbe755b5611cd23936e5514337393498e445",
+      "source_url": "http://mfa.gov.by/be/sgp_bel/state_symbols/",
+      "chars": 6751,
+      "sampling_rank": "0x4645094c64fe503f6039cbcb5bb2485761dc206180f6d47b992ef389cc62",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent official descriptions in three windows, with some Latin i glyphs, headings and an audio-download control. Claims not independently validated.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1600
+        },
+        {
+          "start": 2575,
+          "end": 4175
+        },
+        {
+          "start": 5151,
+          "end": 6751
+        }
+      ],
+      "reviewed_characters": 4800,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 9
+    },
+    {
+      "sample_id": 10,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00097.parquet",
+      "parent_row_index": 4572,
+      "content_sha256": "70f4b694fde2aace8e554d9186daaf7702b9af38c10aa8906915beb518e6551d",
+      "source_url": "https://rh.by/2020/04/25/mola-parushenne-samaizalijacii/",
+      "chars": 827,
+      "sampling_rank": "0x795ce1e0161fb578ee3341f99fbb0ea184a10abb8909a51837ef10ae8ae9",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent local news with a short Russian language-switch footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 827
+        }
+      ],
+      "reviewed_characters": 827,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 10
+    },
+    {
+      "sample_id": 11,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00008.parquet",
+      "parent_row_index": 7830,
+      "content_sha256": "08db0e88700307216c54f56adf3afef8aac46609f9163099c9b021a74c6230d3",
+      "source_url": "https://m.nashaniva.com/308608/",
+      "chars": 1937,
+      "sampling_rank": "0x838ae87f689f489ba66f336d26b2a3dd74eb5b97132377ec131705c9464f",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "A substantive short news article followed by a larger recommendation/comment section and JavaScript controls. Two brief Russian user comments remain; this is not a clean standalone article.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1937
+        }
+      ],
+      "reviewed_characters": 1937,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 11
+    },
+    {
+      "sample_id": 12,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00063.parquet",
+      "parent_row_index": 566,
+      "content_sha256": "46de81606fb20890e151a20b5f949a22d2dce46a5604867e6729db525c34d46a",
+      "source_url": "https://www.narodnaja-partyja.org/1140481800/",
+      "chars": 1888,
+      "sampling_rank": "0x97d9171c596042b9356550b8aae7008506fdc913bd428f353d8a2f6cf38b",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news/opinion with a missing announced quotation and spelling errors.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1888
+        }
+      ],
+      "reviewed_characters": 1888,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 12
+    },
+    {
+      "sample_id": 13,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00088.parquet",
+      "parent_row_index": 7598,
+      "content_sha256": "65da9820a0f7a8aa394004fe5d192eec9ff3e0d5a8096248862a7683a0ed455d",
+      "source_url": "https://catholic.by/3/liturgy/lectionary/zvychajny/4856-serada-dvatstsats-sjomy-zvychajny-tydzen",
+      "chars": 2946,
+      "sampling_rank": "0x14e6986e3d75b8859f810f739e81644784dda612fefe89c7e8f5c28dc5ea",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Readable liturgical prose and verse with missing lines/one empty reading, isolated damaged heading glyphs and flattened structure.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2946
+        }
+      ],
+      "reviewed_characters": 2946,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 13
+    },
+    {
+      "sample_id": 14,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00060.parquet",
+      "parent_row_index": 3285,
+      "content_sha256": "4374bc8fce29718a95dd1c167e62861581dddcbdbc922cbe139402dfca7a342c",
+      "source_url": "https://nashaniva.com/?c=amp&i=143579",
+      "chars": 787,
+      "sampling_rank": "0x1c34450f3428b508f2f8e2aa67c3cadb4d9a879ba0b4a6f199a7b711b1fa",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent news and quoted political commentary.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 787
+        }
+      ],
+      "reviewed_characters": 787,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 14
+    },
+    {
+      "sample_id": 15,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00154.parquet",
+      "parent_row_index": 12357,
+      "content_sha256": "bc8a951fb40825a09fd544c2a678469cfee31b338636e97affdb7cb38469985d",
+      "source_url": "http://pda.beltur.by/?Jemchujina_Polesya",
+      "chars": 1381,
+      "sampling_rank": "0x32060a839dd0f62b9a42cbdb8e91c51f8589017d1ca69d5ff88090813759",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent lodging description and facilities information.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1381
+        }
+      ],
+      "reviewed_characters": 1381,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 15
+    },
+    {
+      "sample_id": 16,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00077.parquet",
+      "parent_row_index": 13756,
+      "content_sha256": "589ce3c60e941ee6ec5e583f24e1c1d9a4cae490f77361b73de7683a33e8a908",
+      "source_url": "https://nashaniva.com/?c=ar&i=121981",
+      "chars": 505,
+      "sampling_rank": "0x49092660010749435e007637bb41abd21a7fbb62a4fe6ee3f2a48568c030",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent short news/opinion passage; viewpoints are not a data-quality exclusion criterion.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 505
+        }
+      ],
+      "reviewed_characters": 505,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 16
+    },
+    {
+      "sample_id": 17,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00117.parquet",
+      "parent_row_index": 14845,
+      "content_sha256": "8b4f163d4ba329973f7e2d6c4a80c7e83ee5aef2e6c8500e3f809f241e68d962",
+      "source_url": "http://www.kolastheatre.by/be/news/92-i-sezon-kolasauskaga-teatra-raspachnecca-gastrolyami-gorkauskaga-teatra-i-tradycyynym",
+      "chars": 1987,
+      "sampling_rank": "0x4bcc168687c8095f27a3e9f958f387a2eb3d865d1779c820f98897c89dd1",
+      "verdict": "RESIDUAL_LANGUAGE_ERRORS",
+      "observation": "Readable theatre announcement with several spelling/joined-word defects and local agreement errors, not wholesale malformed translation.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1987
+        }
+      ],
+      "reviewed_characters": 1987,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 17
+    },
+    {
+      "sample_id": 18,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00156.parquet",
+      "parent_row_index": 19318,
+      "content_sha256": "bfc450e78ac1fbc15cb23545b525b34adc414f9fe9ce78952d5d735c3010c33e",
+      "source_url": "http://be.wikipedia.org/wiki/%D0%9F%D0%B5%D1%80%D1%81%D0%B5%D0%B9",
+      "chars": 1353,
+      "sampling_rank": "0x54014c99c04fbb0f58c448db1d994ce91e25b0662e06d2124bcbc82c85d5",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Readable mythological encyclopedia fragments interleaved with numerous empty section headings and edit controls.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1353
+        }
+      ],
+      "reviewed_characters": 1353,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 18
+    },
+    {
+      "sample_id": 19,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00073.parquet",
+      "parent_row_index": 7107,
+      "content_sha256": "535943c9fad1c370b825de6e8eceee35e20a0fc2267a6522d00f9a8dda71a521",
+      "source_url": "http://www.zhabinka.by/?p=21947",
+      "chars": 2541,
+      "sampling_rank": "0x54cb5861f64cf50b9dfa36858fca538d0a7eafa2ac0ca6fbe6a42be61168",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent local festival report.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2541
+        }
+      ],
+      "reviewed_characters": 2541,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 19
+    },
+    {
+      "sample_id": 20,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00057.parquet",
+      "parent_row_index": 17240,
+      "content_sha256": "40bb8c52374ff14f543ced52de29de4167c118bea6feb99742cf2bdd564c2551",
+      "source_url": "http://news.21.by/2006/04/18.html?page=4&sort=1",
+      "chars": 691,
+      "sampling_rank": "0x5aded3aaf520234bf7aa7e66ce7f26248182d82ebae4bcdd1733bae58383",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Query-paginated news index consisting of incomplete but meaningful Belarusian sentence/title fragments, with Latin i glyphs.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 691
+        }
+      ],
+      "reviewed_characters": 691,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 20
+    },
+    {
+      "sample_id": 21,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00187.parquet",
+      "parent_row_index": 7095,
+      "content_sha256": "ea76b8e431d58f6aaa5c20a48647a7a3ded178388d13d08901abe2feedec3411",
+      "source_url": "https://volnajamova.online/about/",
+      "chars": 1114,
+      "sampling_rank": "0x5cfbf2c816261c042ef7bffc64a0252a33e6eb09bf0d777d3a6de1022f74",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent project description with contact/join headings and a minor punctuation issue.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1114
+        }
+      ],
+      "reviewed_characters": 1114,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 21
+    },
+    {
+      "sample_id": 22,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00140.parquet",
+      "parent_row_index": 11733,
+      "content_sha256": "a982a6a06d784921e9b04b7ce456695c48a68afbaba7958d51f50e31296ae7c7",
+      "source_url": "http://be.wikipedia.org/wiki/%D0%91%D0%B5%D0%BB%D0%B0%D1%80%D1%83%D1%81%D0%BA%D0%B0%D1%8F_%D0%B1%D0%BE%D1%80%D1%86%D1%8C_(1934)",
+      "chars": 1319,
+      "sampling_rank": "0x75c097f7910b510ae0f91b4475f647cdc984d21b5aa001efc6410e590b91",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent encyclopedia entry with isolated typos and bibliographic/edit-control footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1319
+        }
+      ],
+      "reviewed_characters": 1319,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 22
+    },
+    {
+      "sample_id": 23,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00101.parquet",
+      "parent_row_index": 6189,
+      "content_sha256": "761effee28faf5b03c602d7b02c2efa796558bf82147aa044ed5af4b6de482e6",
+      "source_url": "https://realty.tut.by/news/new-settler/367332.html",
+      "chars": 663,
+      "sampling_rank": "0x9cce98aacdf7fa89951a0a3f040e4f6ba03a404c3dc5a04703857e39b280",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent local housing report.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 663
+        }
+      ],
+      "reviewed_characters": 663,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 23
+    },
+    {
+      "sample_id": 24,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00049.parquet",
+      "parent_row_index": 5932,
+      "content_sha256": "36a7e47bfa4d102283e932617ce6a5d2713e5bb991e936cd73273db03455e2d4",
+      "source_url": "http://www.svaboda.org/a/25123763.html",
+      "chars": 1697,
+      "sampling_rank": "0xa8466fbff3181d07a0ddddd85d75a8e5ad07acfcaf9977b692c7d4005dd5",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent cultural report and meaningful event schedule; separated photo captions and a truncated last schedule item remain.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1697
+        }
+      ],
+      "reviewed_characters": 1697,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 24
+    },
+    {
+      "sample_id": 25,
+      "source": "bewiki",
+      "split": "train",
+      "parent_shard": "train_00071.parquet",
+      "parent_row_index": 8498,
+      "content_sha256": "5101ea804dd4160cebecdb8f021143eb84768957470a03ce4f8fe6676f3216ae",
+      "source_url": null,
+      "chars": 2783,
+      "sampling_rank": "0x445ffee39349a95829a3efb9c495d435c8a315dea7fb55baad996b46506c",
+      "verdict": "RESIDUAL_LANGUAGE_ERRORS",
+      "observation": "Understandable film encyclopedia article with several literal rendering/agreement defects, raw image-caption markup and a category footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2783
+        }
+      ],
+      "reviewed_characters": 2783,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 33
+    },
+    {
+      "sample_id": 26,
+      "source": "bewiki",
+      "split": "train",
+      "parent_shard": "train_00192.parquet",
+      "parent_row_index": 12447,
+      "content_sha256": "f20cc06df730d6b9197342b7fc7159e0224249a977806fdbea2cb63212603860",
+      "source_url": null,
+      "chars": 2996,
+      "sampling_rank": "0x4627295e26e2deed08d109410c1e81e14b10bd3eea37551c22d177662779",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent biographical encyclopedia article with image-caption markup and missing dates/references.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2996
+        }
+      ],
+      "reviewed_characters": 2996,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 34
+    },
+    {
+      "sample_id": 27,
+      "source": "be_x_oldwiki",
+      "split": "train",
+      "parent_shard": "train_00059.parquet",
+      "parent_row_index": 7964,
+      "content_sha256": "428d5775992d111b7ab0ce647ceea616f9683120fdce324317bb00878741bb97",
+      "source_url": null,
+      "chars": 803,
+      "sampling_rank": "0x1f199fe39dedf0b536fe37334821690084f8b632ad086b42e9e55afea57f2",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Meaningful historical event list with a preceding year-navigation block and isolated errors.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 803
+        }
+      ],
+      "reviewed_characters": 803,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 36
+    },
+    {
+      "sample_id": 28,
+      "source": "books_clean_v2",
+      "split": "train",
+      "parent_shard": "train_00027.parquet",
+      "parent_row_index": 4881,
+      "content_sha256": "1d7a2413eb21007afcd036334573fe6b864df6f1d8b5a405c98688d89f5dc09b",
+      "source_url": null,
+      "chars": 10973,
+      "sampling_rank": "0xcde1e840e93b05a144dfde3215aca8fe74327a9712d43b58f12cf16cd61",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Readable literary memoir in three windows; joined words and damaged Polish diacritics in embedded quotations remain. Most body prose is coherent.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1600
+        },
+        {
+          "start": 4686,
+          "end": 6286
+        },
+        {
+          "start": 9373,
+          "end": 10973
+        }
+      ],
+      "reviewed_characters": 4800,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 37
+    },
+    {
+      "sample_id": 29,
+      "source": "books_clean_v2",
+      "split": "train",
+      "parent_shard": "train_00074.parquet",
+      "parent_row_index": 14416,
+      "content_sha256": "550194275a036398209017fd75ebddfe852cb48cc72f8057078038554ce4ecb9",
+      "source_url": null,
+      "chars": 5386,
+      "sampling_rank": "0x3e717cec67a1f523176e832037aa3aeee88331aa96684419b1650dea7cfcc",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Readable literary dialogue in three windows with repeated punctuation-to-letter corruption and flattened stage directions. Archaic/authorial vocabulary is not itself classified as mistranslation.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1600
+        },
+        {
+          "start": 1893,
+          "end": 3493
+        },
+        {
+          "start": 3786,
+          "end": 5386
+        }
+      ],
+      "reviewed_characters": 4800,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 38
+    },
+    {
+      "sample_id": 30,
+      "source": "bewikisource_full",
+      "split": "train",
+      "parent_shard": "train_00194.parquet",
+      "parent_row_index": 19474,
+      "content_sha256": "f5798f2b05aea74472bd172aa7afcd63439a6f0d35c28cb44886b2ba1981e67e",
+      "source_url": null,
+      "chars": 3588,
+      "sampling_rank": "0x2174a29470860784d9bacea72ee9982bae494a1149abc501b6254f863f0535",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent historical prose in period orthography with isolated OCR errors and a category footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 3588
+        }
+      ],
+      "reviewed_characters": 3588,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 39
+    },
+    {
+      "sample_id": 31,
+      "source": "bewikisource_full",
+      "split": "train",
+      "parent_shard": "train_00190.parquet",
+      "parent_row_index": 927,
+      "content_sha256": "ee538d4c1e650566cec0524094edfa5389fcb7159b9956ba17f5171231aba5b8",
+      "source_url": null,
+      "chars": 1243,
+      "sampling_rank": "0x58edb16a1786e80a0fddaa1cd135cc9b082f1a589cb289fc2c179293fe38a5",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent verse/fable with raw indentation markers, flattened line breaks and several OCR typos.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1243
+        }
+      ],
+      "reviewed_characters": 1243,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 40
+    },
+    {
+      "sample_id": 32,
+      "source": "leipzig",
+      "split": "train",
+      "parent_shard": "train_00007.parquet",
+      "parent_row_index": 10155,
+      "content_sha256": "07ebcd24a56e1bb6567a3d699477e6a85efa16b5a026c4b7b8196176d34a0f80",
+      "source_url": null,
+      "chars": 64,
+      "sampling_rank": "0x112361917bf27e8d329eb478cc2452a6f5c5b39cf8b2e1d96b7a6b865b81",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent short Belarusian sentence.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 64
+        }
+      ],
+      "reviewed_characters": 64,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 41
+    },
+    {
+      "sample_id": 33,
+      "source": "leipzig",
+      "split": "train",
+      "parent_shard": "train_00151.parquet",
+      "parent_row_index": 13230,
+      "content_sha256": "b87feeacc10ee3c4019a83a150cfb64bb66afbf3a6580bb8b96d1c5f675b9861",
+      "source_url": null,
+      "chars": 58,
+      "sampling_rank": "0x310c3154e08bb6dc2d55fd1d83ec22a2c699a8db39d63fe718a6b59800f6",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent short Belarusian sentence.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 58
+        }
+      ],
+      "reviewed_characters": 58,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 42
+    },
+    {
+      "sample_id": 34,
+      "source": "bewikibooks_full",
+      "split": "train",
+      "parent_shard": "train_00200.parquet",
+      "parent_row_index": 15455,
+      "content_sha256": "fddfd282f128916edd32b225665d2e17b79f9c6b4c5e039121c78406a97b515c",
+      "source_url": null,
+      "chars": 1309,
+      "sampling_rank": "0x3f4f361b2a206d792e0add1e411e423dfe2a1feb58507cd989d94b51bd6366",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent recipe with bibliographic/category footer and isolated spelling errors; factual instructions not validated.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1309
+        }
+      ],
+      "reviewed_characters": 1309,
+      "review_batch": "prior_independent_round3_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "original_sample_id": 43
+    },
+    {
+      "sample_id": 35,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00052.parquet",
+      "parent_row_index": 16598,
+      "content_sha256": "3acc8548b61dc57651a16c453e50dbc548d057fe31e7a02e3972c4a1a1ed1f55",
+      "source_url": "http://house.gov.by/by/news-by/view/20-chervenja-2019-goda-u-svetlagorskim-raene-gomelskaj-voblastsi-adbylosja-vyjaznoe-pasjadzhenne-pastajannaj-61266-2019/",
+      "chars": 2045,
+      "sampling_rank": "0x57396c79640616cb048211c7e3e3350b4390156fecc51f05fc05375d523",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Coherent parliamentary news preceded by a substantial institutional contact/news-link header; isolated spelling and mixed-script errors remain.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2045
+        }
+      ],
+      "reviewed_characters": 2045,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 1
+    },
+    {
+      "sample_id": 36,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00016.parquet",
+      "parent_row_index": 16033,
+      "content_sha256": "11eddd01a40178a3f2458c3631345a4ce728fbab2fd253ff3b34dc69172b37d4",
+      "source_url": "https://chyrvony.by/parafija/naviny/1441-tam-dze-zhyve-dusha-u-chyrvonym-kastsjole-adkrylasya-vysta-ka-kartsin-uladzimira-isachanki.html",
+      "chars": 838,
+      "sampling_rank": "0x1587c0418d1b4447c90afa7c615a2e5a4886ad592833a4131184d6371582",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent cultural report with photo credit and an isolated spelling error.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 838
+        }
+      ],
+      "reviewed_characters": 838,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 2
+    },
+    {
+      "sample_id": 37,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00027.parquet",
+      "parent_row_index": 6607,
+      "content_sha256": "1d92bf37077abe7ad25e7fcc0f7ff2d00bfb9900d3e750fef71ed94395da9c19",
+      "source_url": "http://ihwc2015.euroradio.fm/irzhavyya-lyuki-na-revalyucyynay-chasovyya-sapraudnyya-irzhavyya-lyuki-buduc-pazney",
+      "chars": 1519,
+      "sampling_rank": "0x272c3614450d051d23ebb366fe408520f708dd6431026444fe6a8c1c7aef",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent local reporting with a short breadcrumb/photo caption and a quoted agreement error.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1519
+        }
+      ],
+      "reviewed_characters": 1519,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 3
+    },
+    {
+      "sample_id": 38,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00033.parquet",
+      "parent_row_index": 6518,
+      "content_sha256": "245378e932a627cb1d88240cbc09787663171c84b2c22a79c56813146aaa2635",
+      "source_url": "https://nn.by/?c=ar&i=98307",
+      "chars": 4531,
+      "sampling_rank": "0x32e1d9a3c63f0c54fed753e047ebea6cd29504577ff26ce9bb53c06fe656",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent historical commentary; factual assertions were not independently checked.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 4531
+        }
+      ],
+      "reviewed_characters": 4531,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 4
+    },
+    {
+      "sample_id": 39,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00186.parquet",
+      "parent_row_index": 12927,
+      "content_sha256": "e9727725cce766a083233c43fe50c20ffbde85974080e90470cc0cd59112f3f3",
+      "source_url": "https://belsat.eu/news/10-02-2022-z-palitznyavolenaj-volgi-mayoravaj-znyali-abvinavachanne-u-teraryzme/",
+      "chars": 1197,
+      "sampling_rank": "0x2e1b63cc3b310c8af621ac5a0a66806bd8436a032b3c15c75fd3e9d4de98",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent news with legal references and an attributed quotation.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1197
+        }
+      ],
+      "reviewed_characters": 1197,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 5
+    },
+    {
+      "sample_id": 40,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00084.parquet",
+      "parent_row_index": 12162,
+      "content_sha256": "612624134618cdd117006ea3115dd478aa55b92f3168a7e2c018e01256ca2179",
+      "source_url": "http://www.kimpress.by/index.phtml?idnum=310",
+      "chars": 5486,
+      "sampling_rank": "0x378479834509f81a9aa4178b681a5d8120a9807b6367cfc7db79a595a7c7",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Fluent cultural-news issue index with meaningful excerpts interleaved with titles and repeated read-more controls; not a standalone article.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1600
+        },
+        {
+          "start": 1943,
+          "end": 3543
+        },
+        {
+          "start": 3886,
+          "end": 5486
+        }
+      ],
+      "reviewed_characters": 4800,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 6
+    },
+    {
+      "sample_id": 41,
+      "source": "bewiki",
+      "split": "train",
+      "parent_shard": "train_00046.parquet",
+      "parent_row_index": 3290,
+      "content_sha256": "3300ea715398b3f872170a89b869095690f9a47e48dbdbd0d96a7f829d1927be",
+      "source_url": null,
+      "chars": 1768,
+      "sampling_rank": "0x2b052a4360ae83c6dd3dab712b4a2d4df8ae8c86ecfdd30caef051bb9d3d",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Readable agricultural encyclopedia entry with unexpanded HTML entities, isolated Russian forms and Ukrainian/Russian bibliography.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1768
+        }
+      ],
+      "reviewed_characters": 1768,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 7
+    },
+    {
+      "sample_id": 42,
+      "source": "be_x_oldwiki",
+      "split": "train",
+      "parent_shard": "train_00130.parquet",
+      "parent_row_index": 3819,
+      "content_sha256": "9ba97ecb17640e527371902d6e36aa44519578fbd12a5a18bc4bc241a1ba1361",
+      "source_url": null,
+      "chars": 212,
+      "sampling_rank": "0x283e16a70603420d8fe4e9db6e8bdfbdc6112256d52e4778a572d9ae1899e",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Meaningful short geographical disambiguation list in classical Belarusian.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 212
+        }
+      ],
+      "reviewed_characters": 212,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 8
+    },
+    {
+      "sample_id": 43,
+      "source": "bewikisource_full",
+      "split": "train",
+      "parent_shard": "train_00115.parquet",
+      "parent_row_index": 5636,
+      "content_sha256": "881b6d2b6c66d8758c42520a3fddd23c3e3117cdeb9117cc9b2553e01a57bf04",
+      "source_url": null,
+      "chars": 4181,
+      "sampling_rank": "0x23705bc1d50e120af3fc734a3470d3a424d3f13d49b25525ffa2dd0c499226",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent translated verse with flattened line breaks, indentation/elision marks and occasional OCR/spacing defects.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 4181
+        }
+      ],
+      "reviewed_characters": 4181,
+      "review_batch": "fresh_topup_retained",
+      "original_review_path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "original_sample_id": 9
+    },
+    {
+      "source": "bewikisource_full",
+      "split": "train",
+      "parent_shard": "train_00017.parquet",
+      "parent_row_index": 17533,
+      "content_sha256": "1318b8432a4c1ddf044c3b75901803dd772c0f6063c309f26059c7823869d0f0",
+      "source_url": null,
+      "chars": 904,
+      "sampling_rank": "0006c2b0ace71e389bc6851f739ea3ea0aef75e3205cb58952d115a6c003d462",
+      "sample_id": 44,
+      "review_batch": "final_fresh_wikisource",
+      "original_sample_id": 1,
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent historical Belarusian verse with flattened line breaks and category footer; period orthography is preserved.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 904
+        }
+      ],
+      "reviewed_characters": 904
+    }
+  ],
+  "limitations": [
+    "Agent review, not independent native-speaker approval or an exhaustive corpus quality assessment.",
+    "The retained44 are a documented staged review set; adaptive exclusions mean their aggregate verdict proportions must not be used as an unbiased corpus error-rate estimate.",
+    "Long texts were inspected only in recorded windows.",
+    "Residual coherent teaser archives, recommendation/comment tails, fragments, raw small markup, isolated grammar errors, historical OCR/punctuation damage and mixed-script or bibliographic fragments remain.",
+    "No new severe pervasive malformed translation, dominant UI-only text or extreme syllable fragmentation was observed in the recorded final retained windows; this does not establish absence corpus-wide.",
+    "All text/split/metadata must remain unchanged in the strict-subset generation. Actual producer and independent lineage validation are still required before tokenizer training.",
+    "Books remain a minor train-only source after contamination quarantine; no book-specific held-out quality estimate is asserted.",
+    "No model behavior, factual accuracy, medical/legal advice quality or independent copyright clearance is certified by this language/extraction spot-check."
+  ]
+}

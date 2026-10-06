@@ -1,0 +1,3793 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-06",
+  "repository_head": "2473f31b134bb9c6911e3979d7b5d75eab225a3c",
+  "repository": "https://github.com/Vadimohka/belka.git",
+  "git_update": {
+    "from": "2cc0530",
+    "to": "2473f31b134bb9c6911e3979d7b5d75eab225a3c",
+    "method": "fast-forward main"
+  },
+  "project_summary_ru": "Belka — исследовательский pipeline обучения небольшой белорусскоязычной GPT-подобной модели с нуля: corpus → custom BPE → pinned nanochat + Belka overlay → base pretraining → SFT v9 → evaluation/chat/export.",
+  "assessment_ru": "Подтверждены 43 проблемы реализации/интеграции и 4 ограничения данных/оценки. 18 пунктов P1 требуют исправления до использования затронутых путей для дорогого обучения/пересборки; исторические пути можно вывести из эксплуатации. Современный runtime имеет значительное CPU-покрытие; старые launcher/audit/QC/export пути с ним расходятся.",
+  "counts": {
+    "all_findings": 47,
+    "implementation_issues": 43,
+    "data_quality_and_evaluation_gaps": 4,
+    "by_priority": {
+      "P1": 18,
+      "P2": 29
+    },
+    "by_area": {
+      "training": 18,
+      "data": 17,
+      "infra": 9,
+      "runtime": 3
+    }
+  },
+  "priority_definition": {
+    "P1": "Высокий для затронутого пути: потеря данных, неверный corpus/config, ложное прохождение обязательной проверки или гарантированный срыв запуска. Устаревший путь можно явно вывести из эксплуатации.",
+    "P2": "Средний: нарушенная функция/интеграция или значимое ограничение качества/оценки."
+  },
+  "method": {
+    "agents": [
+      "training_audit",
+      "data_audit",
+      "infra_audit"
+    ],
+    "parent": "runtime/web review, independent evidence checks and consolidation",
+    "baseline_tests_reused": true,
+    "destructive_reproductions": "Only disposable audit-owned fixtures; installations/trainers stubbed where appropriate.",
+    "production_training": false,
+    "tracked_code_changed": false,
+    "new_deliverables": [
+      "reports/audits/REPOSITORY_AUDIT_2026-10-06.md",
+      "reports/audits/repository_audit_2026-10-06.json"
+    ],
+    "all_possible_bugs_excluded": false
+  },
+  "validation": {
+    "tests": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "1",
+      "skipped": "0",
+      "tests": "1325",
+      "time": "188.471",
+      "timestamp": "2026-10-06T13:21:21.578514+03:00",
+      "hostname": "vadimohka-B550M-K"
+    },
+    "environment": {
+      "python": "3.10.20",
+      "torch": "2.9.1+cu128",
+      "compute_for_tests": "CPU; CUDA_VISIBLE_DEVICES empty; Gloo bound to lo",
+      "dependencies": "existing nanochat venv plus isolated httpx dependencies; not a fresh CI Python 3.12 installation"
+    },
+    "test_failure": {
+      "test": "tests/test_h200_policy.py::test_fork_files_match_workspace_when_present",
+      "reason": "hard-coded old .workspace/nanochat differs from updated canonical fork; ignores NANOCHAT_DIR"
+    },
+    "source_transfer_hashes_matched": 63,
+    "syntax": {
+      "python_files": 128,
+      "shell_files": 53,
+      "failures": 0
+    },
+    "public_release": {
+      "ready": true,
+      "tracked_files": 458,
+      "problems": []
+    },
+    "data_coverage": {
+      "audited_head": "2473f31",
+      "scope": "Data collection, normalization/detection/dedup/split, current and legacy SFT publication, corpus bundle publication/restoration, contamination checks, evaluation clients and shipped datasets. Audit only; tracked files and active data unchanged.",
+      "static_reviewed": [
+        "data_pipeline/contracts.py",
+        "data_pipeline/detect_belarusian.py",
+        "data_pipeline/deduplicate.py",
+        "data_pipeline/split_train_val.py",
+        "data_pipeline/normalize_text.py",
+        "data_pipeline/prepare_belarusian_corpus.py",
+        "data_pipeline/sft_v9.py",
+        "tools/filter_sources_to_nanochat_parquet.py",
+        "tools/build_sft_mix.py",
+        "tools/validate_sft_jsonl.py",
+        "tools/check_train_eval_decontamination.py",
+        "tools/check_eval_leakage.py",
+        "tools/audit_sft_leakage.py",
+        "tools/build_belka_mixture.py",
+        "tools/build_books_clean_v2.py",
+        "tools/build_open_corpus_bundle.py",
+        "tools/restore_corpus_bundle.py",
+        "tools/download_belarusian_sources.py",
+        "tools/download_wikimedia_be.py",
+        "tools/download_public_be_sources.py",
+        "tools/hf_stream_belarusian_sources.py",
+        "tools/glue_leakage_guard.py",
+        "tools/run_belka_eval_suite.py",
+        "tools/score_belka_generations.py",
+        "tools/run_belarusianglue_eval.py",
+        "eval/run_local_eval.py",
+        "eval/run_openai_compatible_eval.py",
+        "tools/validate_data_readiness_v2.py"
+      ],
+      "new_executed_checks": [
+        "Isolated/scripted reproductions saved in reproductions*.json (no live HTTP)",
+        "Full302991train+6183val lowercase word-normalized exact crosssplit comparison",
+        "Full302991train vs val exact long-paragraph checks >=100normalized characters and>=15words",
+        "Full302991train vs strict holdout complete normalized prompts>=5words and all12word spans",
+        "Active486train/84val SFT normalized families and closest text-pair comparison",
+        "Deterministic train language-diagnostic sample incl all rare books/bootstrap/morphodict rows"
+      ],
+      "results": {
+        "normalized_full_doc_cross_split_matches": 0,
+        "long_paragraph_cross_split_val_doc_matches": 0,
+        "holdout_prompt_or_12gram_hits": 0,
+        "holdout_indexed_patterns": 196,
+        "language_sample_rows": 15684,
+        "language_sample_caution": "Heuristic nonaccepts are diagnostic disagreement, not proof of foreign-language content.",
+        "holdout_full_prompt_patterns": 192,
+        "holdout_long_12gram_patterns": 4,
+        "holdout_short_prompts_excluded": 17,
+        "holdout_unicode_normalization": "NFC before lowercasing and Unicode word tokenization"
+      },
+      "reused_without_repeating": [
+        "Prior hash-verified bundle restore",
+        "Prior full raw/canonical exact duplicate census",
+        "Prior all-role exact SFT/holdout check and supervised-token census"
+      ],
+      "not_established": [
+        "Corpus-wide semantic/MinHash/SimHash near-duplicate absence",
+        "Independent native-speaker corpus/SFT quality acceptance",
+        "Absence of all semantic or benchmark contamination",
+        "Current upstream HuggingFace/Wikimedia accessibility or metadata: no downloads were made",
+        "Model-level performance: no inference/training was run",
+        "Tokenizer training-data provenance or GPU/NCCL restoration: covered by other agents or still open"
+      ],
+      "additional_static_limitations": [
+        "Collection downloads/extractors write final paths directly and can leave/trust partial files after interruptions; not reproduced against network.",
+        "Bundle exporter materializes tables and tar+compressed archive in RAM: scalability risk, not an observed OOM.",
+        "audit_sft_leakage silently skips malformed rows and its exit code ignores val_size_adequate despite report FAIL; current v9 path uses other validators.",
+        "validate_data_readiness_v2 marks any discovered JSONL as PASS while ignoring parse failures/UTF8 damage; treated as inventory, not a trustworthy readiness gate.",
+        "Current corrected corpus publisher and restore have immutable-generation/strict parsing protections; no new restore corruption repro was found."
+      ],
+      "artifacts": [
+        "holdout-spans.json",
+        "reproductions-extra.json",
+        "corpus-diagnostics.json",
+        "sft-diagnostics.json",
+        "reproductions.json",
+        "coverage.json",
+        "findings.json"
+      ]
+    },
+    "corpus": {
+      "scope": "Full published corpus: raw and canonical exact duplicates; no near-duplicate or semantic audit",
+      "splits": {
+        "train": {
+          "rows": 302991,
+          "chars": 594660215,
+          "replacement_character_rows": 8,
+          "raw_duplicate_rows_within_split": 0,
+          "canonical_duplicate_rows_within_split": 0,
+          "raw_unique": 302991,
+          "canonical_unique": 302991,
+          "sources": {
+            "bewiki": 204600,
+            "ud_belarusian_hse": 13957,
+            "bewiktionary": 1266,
+            "bewikisource_full": 3493,
+            "tatoeba_sentences": 3633,
+            "bewikiquote": 561,
+            "bewikibooks_full": 177,
+            "books_clean_v2": 485,
+            "morphodict-bel": 3,
+            "be_x_oldwiki": 74742,
+            "bootstrap": 74
+          },
+          "files": [
+            {
+              "path": "train_00000.parquet",
+              "sha256": "572a4e6b24aa09fa11ea8c476b4a3f22e3dc2356d0504167dcb7d95310a46ca5"
+            }
+          ],
+          "cross_split_samples": []
+        },
+        "val": {
+          "rows": 6183,
+          "chars": 6530771,
+          "replacement_character_rows": 0,
+          "raw_duplicate_rows_within_split": 0,
+          "canonical_duplicate_rows_within_split": 0,
+          "raw_val_rows_also_in_train": 0,
+          "canonical_val_rows_also_in_train": 0,
+          "raw_unique": 6183,
+          "canonical_unique": 6183,
+          "sources": {
+            "bewiki": 5029,
+            "ud_belarusian_hse": 810,
+            "tatoeba_sentences": 193,
+            "bewikisource_full": 87,
+            "bewiktionary": 54,
+            "bewikibooks_full": 3,
+            "bewikiquote": 6,
+            "morphodict-bel": 1
+          },
+          "files": [
+            {
+              "path": "val_00000.parquet",
+              "sha256": "38af34715df7910356c58525d4fdc65dbc8dba9f24ed6051fc21449ef5a3138e"
+            }
+          ],
+          "cross_split_samples": []
+        }
+      }
+    },
+    "sft": {
+      "groups": 119,
+      "independent_native_review": false,
+      "splits": {
+        "train": {
+          "rows": 486,
+          "max_rendered_tokens": 93,
+          "rendered_tokens": 24609,
+          "supervised_tokens": 17442,
+          "all_role_exact_holdout_matches": []
+        },
+        "val": {
+          "rows": 84,
+          "max_rendered_tokens": 81,
+          "rendered_tokens": 4182,
+          "supervised_tokens": 2979,
+          "all_role_exact_holdout_matches": []
+        }
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "TR01",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "H200 удаляет выбранный корпус",
+      "impact_ru": "Если --data-dir совпадает с рабочим каталогом, rm удаляет вход до создания ссылок.",
+      "recommended_fix_ru": "Проверять реальные пути до изменений; публиковать новое поколение атомарно.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 101,
+          "end_line": 106
+        }
+      ],
+      "details": {
+        "id": "TR01",
+        "severity": "P1",
+        "title": "H200 удаляет входной корпус, если --data-dir совпадает с активным каталогом",
+        "status": "confirmed",
+        "previously_known": true,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 101,
+            "end_line": 106
+          }
+        ],
+        "trigger": "DATA_DIR resolves to NANOCHAT_BASE_DIR/base_data_climbmix or a descendant; approved H200 invocation reaches corpus linking.",
+        "consequence": "rm -rf removes original corpus before expanding DATA_DIR/*.parquet; a literal *.parquet broken symlink is created afterward. Fixture train sentinel disappeared.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "h200_same_dir"
+          }
+        ],
+        "recommended_fix": "Resolve and validate all source/destination paths before side effects; prohibit same/ancestor paths; publish a validated generation atomically without deleting source.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR02",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Owner32 удаляет Parquet и затем падает",
+      "impact_ru": "После удаления старых shards передаётся уже удалённый --write-license-manifest; argparse возвращает 2.",
+      "recommended_fix_ru": "Обновить CLI и убрать предварительное удаление рабочего поколения.",
+      "locations": [
+        {
+          "file": "ops/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh",
+          "start_line": 70,
+          "end_line": 79
+        },
+        {
+          "file": "ops/owner_runs/02B_OWNER_EXPAND_DATASET_FROM_EXISTING_RAW.sh",
+          "start_line": 209,
+          "end_line": 215
+        },
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 174,
+          "end_line": 182
+        }
+      ],
+      "details": {
+        "id": "TR02",
+        "severity": "P1",
+        "title": "Owner32 удаляет corpus перед вызовом уже неподдерживаемого CLI",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh",
+            "start_line": 70,
+            "end_line": 79
+          },
+          {
+            "file": "ops/owner_runs/02B_OWNER_EXPAND_DATASET_FROM_EXISTING_RAW.sh",
+            "start_line": 209,
+            "end_line": 215
+          },
+          {
+            "file": "tools/filter_sources_to_nanochat_parquet.py",
+            "start_line": 174,
+            "end_line": 182
+          }
+        ],
+        "trigger": "Owner32 reaches phase3 after source checks; old parquet shards exist.",
+        "consequence": "It unconditionally removes *.parquet, then filter_sources_to_nanochat_parquet fails with unrecognized --write-license-manifest (exit2). No replacement corpus remains. Owner02B also cannot rebuild with that obsolete flag.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "destructive_rebuild"
+          },
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "filter_unsupported_flag"
+          }
+        ],
+        "recommended_fix": "Remove obsolete argument and preflight actual parser contracts; remove pre-build rm entirely and rely on existing atomic corpus_generation publication.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR03",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Проверка путей выполняется до CLI-переопределений",
+      "impact_ru": "clean_rebuild_env удаляет внешнюю .venv до отказа installer; MODEL_TAG с ../ позволяет вывести checkpoint за корень.",
+      "recommended_fix_ru": "Проверять конечные canonical paths перед записью/удалением; ограничить MODEL_TAG именем каталога.",
+      "locations": [
+        {
+          "file": "ops/local/clean_rebuild_env.sh",
+          "start_line": 4,
+          "end_line": 25
+        },
+        {
+          "file": "ops/local/build_real_corpus.sh",
+          "start_line": 4,
+          "end_line": 5
+        },
+        {
+          "file": "ops/local/build_real_corpus.sh",
+          "start_line": 36,
+          "end_line": 53
+        },
+        {
+          "file": "ops/local/train_tokenizer_real.sh",
+          "start_line": 4,
+          "end_line": 22
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 76,
+          "end_line": 76
+        },
+        {
+          "file": "ops/nanochat_fork/nanochat/belka_checkpoint.py",
+          "start_line": 160,
+          "end_line": 179
+        }
+      ],
+      "details": {
+        "id": "TR03",
+        "severity": "P1",
+        "title": "Финальные CLI-пути и MODEL_TAG обходят repository containment",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/clean_rebuild_env.sh",
+            "start_line": 4,
+            "end_line": 25
+          },
+          {
+            "file": "ops/local/build_real_corpus.sh",
+            "start_line": 4,
+            "end_line": 5
+          },
+          {
+            "file": "ops/local/build_real_corpus.sh",
+            "start_line": 36,
+            "end_line": 53
+          },
+          {
+            "file": "ops/local/train_tokenizer_real.sh",
+            "start_line": 4,
+            "end_line": 22
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 76,
+            "end_line": 76
+          },
+          {
+            "file": "ops/nanochat_fork/nanochat/belka_checkpoint.py",
+            "start_line": 160,
+            "end_line": 179
+          }
+        ],
+        "trigger": "User supplies --nanochat-dir outside PACK_DIR to clean_rebuild_env; other wrappers similarly accept --base-dir after sourcing pack_paths.",
+        "consequence": "Guard validates the default path, then override replaces it. clean_rebuild_env deletes external .venv and only afterward installer rejects the path. Probe deleted a sentinel directory outside its fixture pack (still inside audit scratch). Other build/tokenizer wrappers can bypass containment for output paths. Additionally base_train joins unchecked model_tag (absolute or ../) to base_checkpoints and save_checkpoint accepts the result. Exact runtime writer committed a1-tensor fixture outside the fixture pack via ../../../tag_outside_pack; this is a local CLI containment defect, not a remotely exploitable web input.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "clean_external_cli"
+          },
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/tag_path_reproduction.json"
+          }
+        ],
+        "recommended_fix": "Parse CLI overrides first; validate final canonical paths immediately before all mkdir/rm/write operations as installer already does. Do not use a previous process guard as validation of later values. Validate model_tag as a single safe directory name, then assert resolved checkpoint/log targets remain inside approved roots.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR04",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "H200 выбирает новый корпус, runtime читает старый",
+      "impact_ru": "После bundle restore runtime предпочитает .belka_bundle; подсчёт бюджета идёт по другому каталогу.",
+      "recommended_fix_ru": "Передавать одно явно выбранное поколение во все стадии и manifest.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 101,
+          "end_line": 112
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 139,
+          "end_line": 142
+        },
+        {
+          "file": "ops/nanochat_fork/nanochat/belka_runtime.py",
+          "start_line": 231,
+          "end_line": 252
+        }
+      ],
+      "details": {
+        "id": "TR04",
+        "severity": "P1",
+        "title": "Новый corpus H200 игнорируется после restore managed bundle",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 101,
+            "end_line": 112
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 139,
+            "end_line": 142
+          },
+          {
+            "file": "ops/nanochat_fork/nanochat/belka_runtime.py",
+            "start_line": 231,
+            "end_line": 252
+          }
+        ],
+        "trigger": "NANOCHAT_BASE_DIR already contains .belka_bundle from quickstart/restore; H200 --data-dir selects another corpus.",
+        "consequence": "Launcher links/counts base_data_climbmix, but tokenizer/base runtime selects the older .belka_bundle/base_data_climbmix_open. Training data and iteration budget describe different corpora. Fixture runtime read old bundled corpus while launcher directory contained selected new data.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "bundle_shadow"
+          }
+        ],
+        "recommended_fix": "Resolve the selected corpus/tokenizer generation once in launch plan and use it consistently for counting, tokenizer training, training, and manifests. Require fresh output base or explicitly migrate generation pointers.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR05",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Перезаписывается опубликованный токенизатор",
+      "impact_ru": "Повторное обучение пишет через tokenizer symlink внутрь immutable generation.",
+      "recommended_fix_ru": "Создавать и проверять новое поколение токенизатора, затем переключать указатель.",
+      "locations": [
+        {
+          "file": "ops/local/train_tokenizer_real.sh",
+          "start_line": 19,
+          "end_line": 22
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 117,
+          "end_line": 119
+        },
+        {
+          "file": "tools/restore_corpus_bundle.py",
+          "start_line": 128,
+          "end_line": 146
+        }
+      ],
+      "details": {
+        "id": "TR05",
+        "severity": "P1",
+        "title": "Tokenizer retrain перезаписывает immutable bundle через bridge symlink",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/train_tokenizer_real.sh",
+            "start_line": 19,
+            "end_line": 22
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 117,
+            "end_line": 119
+          },
+          {
+            "file": "tools/restore_corpus_bundle.py",
+            "start_line": 128,
+            "end_line": 146
+          }
+        ],
+        "trigger": "train_tokenizer_real / H200 default TRAIN_TOKENIZER=YES or from_scratch wrapper runs in a base restored by restore_corpus_bundle.",
+        "consequence": "base/tokenizer is a symlink to an immutable generation. Upstream scripts/tok_train.py lines55-58 calls tokenizer.save(base/tokenizer), whose write mode wb follows the link, altering published tokenizer.pkl/token_bytes.pt without a new generation or manifest. Existing checkpoint/tokenizer consistency is damaged. Actual runtime RustBPETokenizer.save changed a sentinel in a disposable generation.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "bundle_tokenizer_mutation"
+          }
+        ],
+        "recommended_fix": "Generate a tokenizer in a fresh staging directory, validate it with selected corpus, publish a new generation; refuse direct writes through managed bridge symlinks.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR06",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Бюджеты SFT -1 и 0 отвергаются runtime",
+      "impact_ru": "H200 и сгенерированные base-only команды доходят до SFT и падают вместо ожидаемой эпохи/пропуска.",
+      "recommended_fix_ru": "Требовать положительный budget заранее; пропуск SFT сделать отдельной фазой.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 53,
+          "end_line": 53
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 169,
+          "end_line": 172
+        },
+        {
+          "file": "ops/local/agent_prepare_next.sh",
+          "start_line": 82,
+          "end_line": 84
+        },
+        {
+          "file": "ops/local/agent_prepare_next.sh",
+          "start_line": 111,
+          "end_line": 111
+        },
+        {
+          "file": "ops/local/run_belka_from_scratch_safe.sh",
+          "start_line": 93,
+          "end_line": 101
+        },
+        {
+          "file": "ops/local/patch_nanochat_runtime.py",
+          "start_line": 175,
+          "end_line": 176
+        }
+      ],
+      "details": {
+        "id": "TR06",
+        "severity": "P1",
+        "title": "SFT бюджеты launchers противоречат explicit-positive контракту runtime",
+        "status": "confirmed",
+        "previously_known": true,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 53,
+            "end_line": 53
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 169,
+            "end_line": 172
+          },
+          {
+            "file": "ops/local/agent_prepare_next.sh",
+            "start_line": 82,
+            "end_line": 84
+          },
+          {
+            "file": "ops/local/agent_prepare_next.sh",
+            "start_line": 111,
+            "end_line": 111
+          },
+          {
+            "file": "ops/local/run_belka_from_scratch_safe.sh",
+            "start_line": 93,
+            "end_line": 101
+          },
+          {
+            "file": "ops/local/patch_nanochat_runtime.py",
+            "start_line": 175,
+            "end_line": 176
+          }
+        ],
+        "trigger": "All H200 profiles default SFT_ITERS=-1; generated base-only owner scripts pass --sft-iters0.",
+        "consequence": "After base training completes, chat_sft_be rejects both -1 and0 before loading model. Setting0 does not skip SFT. H200 may spend the whole pretraining budget and fail only at the final phase.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "sft_steps_-1"
+          },
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "sft_steps_0"
+          }
+        ],
+        "recommended_fix": "Require positive optimizer-step SFT budgets at plan time and use a distinct skip-SFT flag/phase for base-only runs. Update YAML and generated scripts together.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR07",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "H200 full_node получает 0 eval-батчей",
+      "impact_ru": "65536 // (16 × 2048 × 8) = 0; BPB preflight останавливает запуск.",
+      "recommended_fix_ru": "Вычислять бюджет проверки из глобального микробатча до запуска.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 164,
+          "end_line": 164
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 172,
+          "end_line": 172
+        },
+        {
+          "file": "configs/profiles_h200.yaml",
+          "start_line": 65,
+          "end_line": 71
+        },
+        {
+          "file": "ops/nanochat_fork/nanochat/belka_metrics.py",
+          "start_line": 29,
+          "end_line": 30
+        }
+      ],
+      "details": {
+        "id": "TR07",
+        "severity": "P1",
+        "title": "H200 full_node задаёт ноль eval-батчей",
+        "status": "confirmed",
+        "previously_known": true,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 164,
+            "end_line": 164
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 172,
+            "end_line": 172
+          },
+          {
+            "file": "configs/profiles_h200.yaml",
+            "start_line": 65,
+            "end_line": 71
+          },
+          {
+            "file": "ops/nanochat_fork/nanochat/belka_metrics.py",
+            "start_line": 29,
+            "end_line": 30
+          }
+        ],
+        "trigger": "PROFILE=full_node successfully loads; NGPUS8, batch16, seq2048, eval_tokens65536.",
+        "consequence": "65536//(16*2048*8)=0; current BPB preflight rejects0 before the first base optimizer step. SFT would reject the same budget. This is a crash rather than an empty-but-valid metric.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/budget_reproductions.json",
+            "key": "full_node_eval"
+          }
+        ],
+        "recommended_fix": "Compute positive eval_steps from global microbatch size and validate eval budget before allocation/installation/training.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR08",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Профиль H200 молча заменяется запасными значениями",
+      "impact_ru": "Без default venv full_node превращается в d16/1 GPU; ошибки YAML скрываются.",
+      "recommended_fix_ru": "Разбирать профиль выбранным окружением; неизвестные/нечитаемые профили отклонять.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 28,
+          "end_line": 44
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 46,
+          "end_line": 59
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 98,
+          "end_line": 98
+        }
+      ],
+      "details": {
+        "id": "TR08",
+        "severity": "P1",
+        "title": "H200 silently substitutes another profile on first run or custom runtime",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 28,
+            "end_line": 44
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 46,
+            "end_line": 59
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 98,
+            "end_line": 98
+          }
+        ],
+        "trigger": "Default .workspace/nanochat/.venv is absent, PyYAML import fails, or user chooses --nanochat-dir elsewhere. PROFILE can also be unknown.",
+        "consequence": "Profile loader runs before installer/CLI, suppresses all errors and uses fallback quality values. Full_node first run becomes d16/ngpus1, and requested smoke becomes d16/seq2048 instead of d6/seq512. Stub execution reproduced PROFILEfull_node printing DEPTH16 NGPUS1.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "h200_same_dir"
+          },
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "h200_profile_invalid-profile"
+          }
+        ],
+        "recommended_fix": "Validate profile name; load config deterministically using selected prepared interpreter; fail on unavailable parser/YAML rather than changing training scale silently.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR09",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "H200 smoke игнорирует fixed iterations",
+      "impact_ru": "base_iterations=100 не читается, YAML null становится None в shell arithmetic.",
+      "recommended_fix_ru": "Поддержать fixed budget и явно обрабатывать null до установки и подготовки данных.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 35,
+          "end_line": 41
+        },
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 139,
+          "end_line": 142
+        },
+        {
+          "file": "configs/profiles_h200.yaml",
+          "start_line": 16,
+          "end_line": 27
+        }
+      ],
+      "details": {
+        "id": "TR09",
+        "severity": "P2",
+        "title": "H200 smoke не использует fixed base_iterations и падает на YAML null",
+        "status": "confirmed",
+        "previously_known": true,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 35,
+            "end_line": 41
+          },
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 139,
+            "end_line": 142
+          },
+          {
+            "file": "configs/profiles_h200.yaml",
+            "start_line": 16,
+            "end_line": 27
+          }
+        ],
+        "trigger": "PROFILE=smoke with installed default interpreter and no BASE_ITERS override.",
+        "consequence": "base_iterations100 is not mapped; target_epochs:null is exported as literal None. Shell arithmetic raises None: unbound variable after installation/corpus/tokenizer phases.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "h200_profile_smoke"
+          }
+        ],
+        "recommended_fix": "Map fixed base_iterations, omit null keys, validate mutually exclusive fixed/epoch budgets before any costly action.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR10",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Оба safe-профиля имеют невозможный batch",
+      "impact_ru": "512 global tokens меньше микробатча 1024; GRAD_ACCUM выводится, но не используется.",
+      "recommended_fix_ru": "Вычислять batch из sequence × device batch × world size × accumulation.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_from_scratch_safe.sh",
+          "start_line": 46,
+          "end_line": 51
+        },
+        {
+          "file": "ops/local/run_belka_from_scratch_safe.sh",
+          "start_line": 80,
+          "end_line": 91
+        },
+        {
+          "file": "configs/model_scales_from_scratch.yaml",
+          "start_line": 19,
+          "end_line": 44
+        }
+      ],
+      "details": {
+        "id": "TR10",
+        "severity": "P1",
+        "title": "Оба safe from-scratch профиля используют невозможный global token batch",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_from_scratch_safe.sh",
+            "start_line": 46,
+            "end_line": 51
+          },
+          {
+            "file": "ops/local/run_belka_from_scratch_safe.sh",
+            "start_line": 80,
+            "end_line": 91
+          },
+          {
+            "file": "configs/model_scales_from_scratch.yaml",
+            "start_line": 19,
+            "end_line": 44
+          }
+        ],
+        "trigger": "Default belka_d8_40m_safe or belka_d12_80m_safe.",
+        "consequence": "SEQ_LEN1024*DEV_BATCH1 means1024 tokens/microbatch, but TOTAL_BATCH512. Current base_train asserts512 must be a multiple of1024. GRAD_ACCUM2/4 is only printed and never applied. Dry-run reports success, actual run fails after environment/tokenizer work.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "safe_default_dry_run"
+          },
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "safe_runtime_contract"
+          }
+        ],
+        "recommended_fix": "Make global total_batch=sequence_length*device_batch*world_size*accumulation; validate dry-run against generated runtime constraints; derive YAML and shell from one profile source.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR11",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "H200 создаёт ссылки, которые runtime отвергает",
+      "impact_ru": "Разрешённый launcher путь корпуса вне base превращается в запрещённый external symlink.",
+      "recommended_fix_ru": "Проверять вход тем же reader до изменений; импортировать в управляемое поколение.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_h200_maxquality.sh",
+          "start_line": 103,
+          "end_line": 106
+        },
+        {
+          "file": "ops/nanochat_fork/nanochat/belka_runtime.py",
+          "start_line": 76,
+          "end_line": 92
+        }
+      ],
+      "details": {
+        "id": "TR11",
+        "severity": "P2",
+        "title": "H200 --data-dir symlinks несовместимы с reader containment",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_h200_maxquality.sh",
+            "start_line": 103,
+            "end_line": 106
+          },
+          {
+            "file": "ops/nanochat_fork/nanochat/belka_runtime.py",
+            "start_line": 76,
+            "end_line": 92
+          }
+        ],
+        "trigger": "Ready corpus is outside NANOCHAT_BASE_DIR, including another repo-local corpus directory, and no managed bundle shadows it.",
+        "consequence": "Launcher accepts and links arbitrary source, then split_parquet_files rejects shards resolving outside live root.parent with invalid corpus shard or external symlink. Advertised --data-dir path fails in tokenizer/base after side effects.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "external_corpus_symlink"
+          }
+        ],
+        "recommended_fix": "Validate with runtime reader before replacing anything; publish/copy to an approved managed generation or explicitly pass validated source roots.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR12",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Epoch counter расходится с обучаемым потоком",
+      "impact_ru": "Не считает BOS на документ, использует default runtime и держит целый shard в RAM; OOM не воспроизводился.",
+      "recommended_fix_ru": "Считать реальные stream tokens ограниченными порциями с выбранным tokenizer/runtime.",
+      "locations": [
+        {
+          "file": "tools/count_corpus_tokens.py",
+          "start_line": 49,
+          "end_line": 54
+        },
+        {
+          "file": "ops/nanochat_fork/nanochat/belka_stream.py",
+          "start_line": 233,
+          "end_line": 233
+        }
+      ],
+      "details": {
+        "id": "TR12",
+        "severity": "P2",
+        "title": "Epoch counter считает не тот поток и загружает целый shard в RAM",
+        "status": "confirmed",
+        "previously_known": true,
+        "locations": [
+          {
+            "file": "tools/count_corpus_tokens.py",
+            "start_line": 49,
+            "end_line": 54
+          },
+          {
+            "file": "ops/nanochat_fork/nanochat/belka_stream.py",
+            "start_line": 233,
+            "end_line": 233
+          }
+        ],
+        "trigger": "H200 derives iterations using count_corpus_tokens.",
+        "consequence": "Counter omits one BOS per document while stream prepends it; two3-byte docs return6 versus8 stream tokens. It also materializes full Arrow text table, Python strings and all encoded token lists per shard, so largest shard controls peak RAM. Import path is hardcoded to default .workspace/nanochat rather than launcher-selected runtime.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/budget_reproductions.json",
+            "key": "token_count"
+          }
+        ],
+        "recommended_fix": "Use the same selected runtime/tokenizer/split contract as training, count BOS explicitly, iterate bounded batches and report separate content/stream token totals. RAM exhaustion is a scaling risk, not observed OOM.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR13",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "OWNER_RUN_NEXT указывает отсутствующий профиль",
+      "impact_ru": "d8_40m_fast_base_v2 отсутствует в dispatcher; даже dry-run завершается ошибкой.",
+      "recommended_fix_ru": "Обновить/удалить устаревший маршрут; проверять генерируемые команды.",
+      "locations": [
+        {
+          "file": "ops/owner_runs/OWNER_RUN_NEXT.sh",
+          "start_line": 24,
+          "end_line": 27
+        },
+        {
+          "file": "ops/local/run_belka_from_scratch_safe.sh",
+          "start_line": 45,
+          "end_line": 58
+        }
+      ],
+      "details": {
+        "id": "TR13",
+        "severity": "P2",
+        "title": "OWNER_RUN_NEXT передаёт несуществующий профиль",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/owner_runs/OWNER_RUN_NEXT.sh",
+            "start_line": 24,
+            "end_line": 27
+          },
+          {
+            "file": "ops/local/run_belka_from_scratch_safe.sh",
+            "start_line": 45,
+            "end_line": 58
+          }
+        ],
+        "trigger": "Owner runs checked-in OWNER_RUN_NEXT after tests pass.",
+        "consequence": "Dispatcher passes d8_40m_fast_base_v2, absent from supported cases, so training route exits1. Same mismatch exists even in dry-run.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+            "key": "obsolete_profile"
+          }
+        ],
+        "recommended_fix": "Regenerate or retire obsolete owner dispatcher and validate every generated command against supported profile schema.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR14",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Post-run analysis использует неверный mode",
+      "impact_ru": "--mode post-run-analysis не входит в agent/owner; анализ не запускается.",
+      "recommended_fix_ru": "Передавать поддерживаемые mode/phase и проверить dispatcher.",
+      "locations": [
+        {
+          "file": "ops/local/agent_analyze_owner_run.sh",
+          "start_line": 9,
+          "end_line": 9
+        },
+        {
+          "file": "tools/agent_training_guard.py",
+          "start_line": 37,
+          "end_line": 38
+        },
+        {
+          "file": "ops/local/run_belka_one_button.sh",
+          "start_line": 16,
+          "end_line": 17
+        }
+      ],
+      "details": {
+        "id": "TR14",
+        "severity": "P2",
+        "title": "one-button post-run analysis всегда прекращается на argparse",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/agent_analyze_owner_run.sh",
+            "start_line": 9,
+            "end_line": 9
+          },
+          {
+            "file": "tools/agent_training_guard.py",
+            "start_line": 37,
+            "end_line": 38
+          },
+          {
+            "file": "ops/local/run_belka_one_button.sh",
+            "start_line": 16,
+            "end_line": 17
+          }
+        ],
+        "trigger": "run_belka_one_button --phase analyze or direct agent_analyze_owner_run.",
+        "consequence": "Calls --mode post-run-analysis, but only agent/owner modes exist; exits2 before analysis report/context is generated.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "invalid_analysis_mode"
+          }
+        ],
+        "recommended_fix": "Use --mode agent --phase analyze-owner-run and cover dispatch with a no-side-effect CLI contract test.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR15",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Owner wrappers скрывают ошибки аудита",
+      "impact_ru": "Проверяющий процесс возвращает 7, wrappers 43/44 возвращают 0; верхний QC может объявить PASS.",
+      "recommended_fix_ru": "После сохранения отчёта возвращать исходный код ошибки.",
+      "locations": [
+        {
+          "file": "ops/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh",
+          "start_line": 25,
+          "end_line": 44
+        },
+        {
+          "file": "ops/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh",
+          "start_line": 20,
+          "end_line": 31
+        },
+        {
+          "file": "owner.sh",
+          "start_line": 96,
+          "end_line": 116
+        }
+      ],
+      "details": {
+        "id": "TR15",
+        "severity": "P2",
+        "title": "Owner QC/integrity wrappers теряют ошибку проверяющего процесса",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh",
+            "start_line": 25,
+            "end_line": 44
+          },
+          {
+            "file": "ops/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh",
+            "start_line": 20,
+            "end_line": 31
+          },
+          {
+            "file": "owner.sh",
+            "start_line": 96,
+            "end_line": 116
+          }
+        ],
+        "trigger": "Underlying audit exits nonzero while report files exist or can be formatted.",
+        "consequence": "Wrappers capture AUDIT_RC but finish with successful echo/report generation, returning0. owner.sh qc can print QC_PIPELINE=PASS despite XLSX_AUDIT_STATUS=FAIL. Fixture audit tool exited7; both wrappers exited0.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "audit_wrapper_43"
+          },
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+            "key": "audit_wrapper_44"
+          }
+        ],
+        "recommended_fix": "Preserve report generation but explicitly exit with original AUDIT_RC; parent CLI must aggregate semantic check failures as well as process errors.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR16",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Finalizer объявляет корпус готовым без Parquet",
+      "impact_ru": "На отсутствующих train/val печатает PARQUET_EXISTS=YES и OK_FOR_PROBE, exit 0.",
+      "recommended_fix_ru": "Вычислять итог из реально проверенных файлов и строк.",
+      "locations": [
+        {
+          "file": "ops/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh",
+          "start_line": 50,
+          "end_line": 59
+        },
+        {
+          "file": "ops/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh",
+          "start_line": 113,
+          "end_line": 142
+        }
+      ],
+      "details": {
+        "id": "TR16",
+        "severity": "P2",
+        "title": "Historical dataset finalizer объявляет готовность даже без Parquet",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh",
+            "start_line": 50,
+            "end_line": 59
+          },
+          {
+            "file": "ops/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh",
+            "start_line": 113,
+            "end_line": 142
+          }
+        ],
+        "trigger": "Source filter report exists but train/val parquet are missing or too small.",
+        "consequence": "Missing inputs only print missing/continue; Markdown hardcodes PARQUET_EXISTSYES; final summary unconditionally prints OK_FOR_PROBE. Full fixture with neither parquet exited0 and announced both present and ready.",
+        "evidence": [
+          {
+            "artifact": ".workspace/audit-main-20261006/deep/training/finalize_reproduction.json",
+            "key": null
+          }
+        ],
+        "recommended_fix": "Derive every readiness field from validated actual files/rows and propagate failure. Do not print unconditional success/footer flags.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR17",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Owner34 проверяет v3b, но не выбирает его",
+      "impact_ru": "Runtime читает default/managed corpus; каталог v3b остаётся только в проверках и подписи.",
+      "recommended_fix_ru": "Связать выбранное поколение и fingerprint с реальной командой обучения.",
+      "locations": [
+        {
+          "file": "ops/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh",
+          "start_line": 5,
+          "end_line": 17
+        },
+        {
+          "file": "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+          "start_line": 12,
+          "end_line": 13
+        },
+        {
+          "file": "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+          "start_line": 34,
+          "end_line": 44
+        },
+        {
+          "file": "ops/nanochat_fork/nanochat/belka_runtime.py",
+          "start_line": 249,
+          "end_line": 252
+        }
+      ],
+      "details": {
+        "id": "TR17",
+        "severity": "P2",
+        "title": "Owner34 checks/labels v3b but never selects it for runtime",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh",
+            "start_line": 5,
+            "end_line": 17
+          },
+          {
+            "file": "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+            "start_line": 12,
+            "end_line": 13
+          },
+          {
+            "file": "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+            "start_line": 34,
+            "end_line": 44
+          },
+          {
+            "file": "ops/nanochat_fork/nanochat/belka_runtime.py",
+            "start_line": 249,
+            "end_line": 252
+          }
+        ],
+        "trigger": "Owner32 publishes base_data_climbmix_v3b and owner33 passes; user invokes owner34 without an independently maintained base_data_climbmix alias.",
+        "consequence": "base_train reads base_data_climbmix (or managed bundle), not the base_data_climbmix_v3b path printed by owner34. It fails when default is absent or trains older corpus if default exists. No step in32/33/34 establishes the alias.",
+        "evidence": [
+          {
+            "method": "Static cross-path proof: owner32 writes V3B_DIR, owner33 only validates it, owner34 sets BASE only, generated nanochat.dataset resolves corpus_data_dir(BASE)."
+          }
+        ],
+        "recommended_fix": "Pass an explicit validated selected corpus generation through runtime and manifest; verify selected dataset fingerprint before training, not just an unrelated path.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "TR18",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "training",
+      "title_ru": "Заявленная архитектура safe-профилей не применяется",
+      "impact_ru": "N_HEAD не передаётся; default head_dim=128 даёт 2/4/6 heads вместо 4/8/12.",
+      "recommended_fix_ru": "Передавать согласованные параметры и выводить разрешённый GPTConfig.",
+      "locations": [
+        {
+          "file": "ops/local/run_belka_from_scratch_safe.sh",
+          "start_line": 46,
+          "end_line": 54
+        },
+        {
+          "file": "ops/local/run_belka_from_scratch_safe.sh",
+          "start_line": 63,
+          "end_line": 63
+        },
+        {
+          "file": "ops/local/run_belka_from_scratch_safe.sh",
+          "start_line": 80,
+          "end_line": 91
+        },
+        {
+          "file": "configs/model_scales_from_scratch.yaml",
+          "start_line": 5,
+          "end_line": 35
+        }
+      ],
+      "details": {
+        "id": "TR18",
+        "severity": "P2",
+        "title": "Safe profile architecture parameters are printed but ignored",
+        "status": "confirmed",
+        "previously_known": false,
+        "locations": [
+          {
+            "file": "ops/local/run_belka_from_scratch_safe.sh",
+            "start_line": 46,
+            "end_line": 54
+          },
+          {
+            "file": "ops/local/run_belka_from_scratch_safe.sh",
+            "start_line": 63,
+            "end_line": 63
+          },
+          {
+            "file": "ops/local/run_belka_from_scratch_safe.sh",
+            "start_line": 80,
+            "end_line": 91
+          },
+          {
+            "file": "configs/model_scales_from_scratch.yaml",
+            "start_line": 5,
+            "end_line": 35
+          }
+        ],
+        "trigger": "Any from_scratch_safe profile after batch issue is repaired, or existing d4 profile now.",
+        "consequence": "N_HEAD4/8/12 declared by profile is never passed; runtime default head_dim128 gives heads2/4/6 at widths256/512/768. The logged/declarative architecture differs from checkpoint architecture. N_EMBD is also not directly consumed (happens to match depth*64).",
+        "evidence": [
+          {
+            "method": "Generated base_train --head-dim default128 and build_model_meta at lines133-145; wrapper passes only depth, no head-dim/aspect-ratio."
+          }
+        ],
+        "recommended_fix": "Map architecture into actual runtime arguments (e.g. head-dim64 for these profiles) and print resolved GPTConfig rather than dead shell variables.",
+        "scope": "historical launch/owner scripts retained on main"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/training/findings.json"
+    },
+    {
+      "id": "DATA-01",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Holdout gate проверяет 0 из 486 SFT-строк",
+      "impact_ru": "Активный формат массивов пропускается; точное совпадение train/holdout получает PASS даже с --strict.",
+      "recommended_fix_ru": "Строго читать активный формат и отклонять отсутствующие/непроверенные данные.",
+      "locations": [
+        {
+          "file": "tools/check_eval_leakage.py",
+          "start_line": 21
+        },
+        {
+          "file": "tools/check_eval_leakage.py",
+          "start_line": 25
+        },
+        {
+          "file": "tools/check_eval_leakage.py",
+          "start_line": 84
+        },
+        {
+          "file": "ops/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh",
+          "start_line": 28
+        }
+      ],
+      "details": {
+        "id": "DATA-01",
+        "severity": "P1",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Owner holdout gate returns PASS after silently dropping all active SFT rows",
+        "path": "tools/check_eval_leakage.py",
+        "line": 21,
+        "trigger": "Run owner step40 or checker with active v9 JSONL, whose records are message arrays. Without --sft-file the checker searches eval/*sft* rather than the active train/val.",
+        "consequence": "The advertised strict contamination gate can pass with a known exact holdout training example; missing/malformed files and --strict do not make it fail closed.",
+        "evidence": "reproductions.json: actual active train has486 rows; load_prompts returns0. One-row synthetic holdout equals SFT user prompt; --strict returns exit0/LEAKAGE_STATUS=PASS/SFT prompts loaded0.",
+        "recommended_fix": "Use shared strict JSONL/schema loader, require resolved active SFT paths and nonzero checked rows, compare each relevant role/turn, implement strict mode and reject incomplete checks.",
+        "related_locations": [
+          "tools/check_eval_leakage.py:25",
+          "tools/check_eval_leakage.py:84",
+          "ops/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh:28"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-02",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Generic corpus builder принимает eval-only данные",
+      "impact_ru": "50 фикстурных GLUE-строк с eval_only=true становятся 44 train + 6 val; metadata теряется.",
+      "recommended_fix_ru": "Применять общую source policy во всех входах; хранить eval отдельно.",
+      "locations": [
+        {
+          "file": "data_pipeline/prepare_belarusian_corpus.py",
+          "start_line": 97
+        },
+        {
+          "file": "ops/local/build_real_corpus.sh",
+          "start_line": 50
+        },
+        {
+          "file": "tools/hf_stream_belarusian_sources.py",
+          "start_line": 21
+        },
+        {
+          "file": "tools/hf_stream_belarusian_sources.py",
+          "start_line": 32
+        },
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 267
+        }
+      ],
+      "details": {
+        "id": "DATA-02",
+        "severity": "P1",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Generic real-corpus build ingests an explicitly eval-only source",
+        "path": "data_pipeline/prepare_belarusian_corpus.py",
+        "line": 97,
+        "trigger": "Download BelarusianGLUE with hf_stream_belarusian_sources, then invoke build_real_corpus against its default data_input/be_texts tree.",
+        "consequence": "The generic ingest discards source/eval_only metadata and sends GLUE to base train despite the source-filter path excluding it; this is a reproducible route, not evidence that shipped corpus contains GLUE.",
+        "evidence": "reproductions-extra.json:50 synthetic rows all tagged source=belarusianglue,eval_only=true become44train+6val with0rejections.",
+        "recommended_fix": "Share source-policy enforcement across both corpus builders; keep eval-only data outside training discovery and preserve source provenance.",
+        "related_locations": [
+          "ops/local/build_real_corpus.sh:50",
+          "tools/hf_stream_belarusian_sources.py:21",
+          "tools/hf_stream_belarusian_sources.py:32",
+          "tools/filter_sources_to_nanochat_parquet.py:267"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-03",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Bundle builder удаляет предыдущий выпуск до проверки",
+      "impact_ru": "Отсутствующий train вызывает ошибку уже после удаления старых частей архива.",
+      "recommended_fix_ru": "Собирать и проверять staging generation перед атомарной публикацией.",
+      "locations": [
+        {
+          "file": "tools/build_open_corpus_bundle.py",
+          "start_line": 75
+        }
+      ],
+      "details": {
+        "id": "DATA-03",
+        "severity": "P1",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Corpus bundle rebuild deletes the previous release before validating inputs",
+        "path": "tools/build_open_corpus_bundle.py",
+        "line": 75,
+        "trigger": "Rebuild into a directory containing the last usable bundle; a missing corpus/tokenizer/dependency or later failure occurs.",
+        "consequence": "All previous .tar.zst parts are deleted while the old manifest remains; the previous distributable corpus cannot be restored from this directory.",
+        "evidence": "reproductions.json: scratch prior belka_corpus_v3b.tar.zst.aa existed; missing train_00000 causes rc1 and previous_part_survived=false.",
+        "recommended_fix": "Preflight inputs, build into a sibling staged generation, verify parts and manifest, then atomically publish; retain prior generation until success.",
+        "related_locations": []
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-04",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Bundle exporter теряет дополнительные shards",
+      "impact_ru": "Из двух shards на split экспортируется только 00000; manifest подтверждает усечённый набор.",
+      "recommended_fix_ru": "Обрабатывать все shards и сверять полный набор/суммарные строки.",
+      "locations": [
+        {
+          "file": "tools/build_open_corpus_bundle.py",
+          "start_line": 83
+        }
+      ],
+      "details": {
+        "id": "DATA-04",
+        "severity": "P1",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Bundle exporter silently omits every shard after00000",
+        "path": "tools/build_open_corpus_bundle.py",
+        "line": 83,
+        "trigger": "Pass a valid corpus with multiple train_* or val_* Parquet shards, as produced by prepare_belarusian_corpus with --train-shard-docs.",
+        "consequence": "The advertised complete bundle silently truncates data; manifest counts only the first shard so integrity checks pass on an incomplete export.",
+        "evidence": "reproductions.json: fixture has2shards/2rows per split; bundle succeeds, reports rows_total=rows_kept=1 in each split.",
+        "recommended_fix": "Discover and validate all split shards, preserve all of them in archive and aggregate manifest counts/hashes; reject unsupported layouts rather than silently omit.",
+        "related_locations": []
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-05",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Cleaner перезаписывает книги с кириллическими именами",
+      "impact_ru": "кніга.txt и аповесць.txt дают один _.jsonl, хотя manifest содержит обе книги.",
+      "recommended_fix_ru": "Делать уникальные имена из относительного пути/hash и выявлять коллизии.",
+      "locations": [
+        {
+          "file": "tools/build_books_clean_v2.py",
+          "start_line": 85
+        }
+      ],
+      "details": {
+        "id": "DATA-05",
+        "severity": "P1",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Book cleaner overwrites distinct books with Cyrillic or colliding basenames",
+        "path": "tools/build_books_clean_v2.py",
+        "line": 85,
+        "trigger": "Clean books with names such as кніга.txt and аповесць.txt, equal basenames in separate folders, or common truncated prefixes.",
+        "consequence": "Both resolve to the same output filename and the later book silently overwrites the former while the manifest claims both processed.",
+        "evidence": "reproductions.json:2input books yield2manifest rows both referring to books_clean_v2/_.jsonl, but only1JSONL output.",
+        "recommended_fix": "Derive output identities from unique relative paths/content hashes, detect collisions before writes and stage a complete generation.",
+        "related_locations": []
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-06",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "manual_review не исключает книгу из обучения",
+      "impact_ru": "Неодобренные chunks записываются в accepted tree, а downstream не читает status.",
+      "recommended_fix_ru": "Отдельный карантин и обязательная проверка статуса при ingest.",
+      "locations": [
+        {
+          "file": "tools/build_books_clean_v2.py",
+          "start_line": 87
+        },
+        {
+          "file": "tools/build_books_clean_v2.py",
+          "start_line": 90
+        },
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 279
+        },
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 317
+        }
+      ],
+      "details": {
+        "id": "DATA-06",
+        "severity": "P2",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Books requiring manual review are still published to the accepted-source ingest tree",
+        "path": "tools/build_books_clean_v2.py",
+        "line": 87,
+        "trigger": "A decoded book exceeds replacement-character threshold or fails language-quality threshold.",
+        "consequence": "status=manual_review changes only the report: JSONL is emitted to books_clean_v2 and the downstream source filter never reads status. Failed cleaner quality gates do not actually quarantine records.",
+        "evidence": "reproductions.json:BOOKS_ACCEPTED=0,BOOKS_MANUAL_REVIEW=2, yet emitted chunk source score=.95 exceeds books_clean_v2 threshold. Fixture contains100replacement characters.",
+        "recommended_fix": "Write unapproved books to a separate quarantine location and make downstream ingest enforce a validated quality status; prevent stale approved outputs from surviving rejection.",
+        "related_locations": [
+          "tools/build_books_clean_v2.py:90",
+          "tools/filter_sources_to_nanochat_parquet.py:279",
+          "tools/filter_sources_to_nanochat_parquet.py:317"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-07",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Belacorpus placeholder обнуляет существующий JSONL",
+      "impact_ru": "Повторный сбор заменяет реальные данные пустым файлом без нового скачивания.",
+      "recommended_fix_ru": "Не записывать source path до успешного получения и проверки новых данных.",
+      "locations": [
+        {
+          "file": "tools/download_belarusian_sources.py",
+          "start_line": 50
+        }
+      ],
+      "details": {
+        "id": "DATA-07",
+        "severity": "P1",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Belacorpus download placeholder truncates a previously populated source",
+        "path": "tools/download_belarusian_sources.py",
+        "line": 50,
+        "trigger": "Rerun default --source all or --source belacorpus after populating the configured belacorpus_public.jsonl.",
+        "consequence": "An informational access-status operation replaces actual local data with an empty file.",
+        "evidence": "reproductions-extra.json:existing38-byte JSONL becomes0bytes after extract_belacorpus; no network or active data involved.",
+        "recommended_fix": "Do not create a placeholder if a source already exists; preferably keep status only in the manifest and never write the source path without successful new data.",
+        "related_locations": []
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-08",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "GLUE guard пропускает явный GLUE source",
+      "impact_ru": "Ищет имена конфигураций в тексте, а не происхождение/содержание benchmark; использует старые пути/отчёты.",
+      "recommended_fix_ru": "Проверять актуальные provenance и benchmark hashes; неполная проверка должна падать.",
+      "locations": [
+        {
+          "file": "tools/glue_leakage_guard.py",
+          "start_line": 29
+        },
+        {
+          "file": "tools/glue_leakage_guard.py",
+          "start_line": 59
+        },
+        {
+          "file": "tools/glue_leakage_guard.py",
+          "start_line": 78
+        },
+        {
+          "file": "tools/glue_leakage_guard.py",
+          "start_line": 98
+        }
+      ],
+      "details": {
+        "id": "DATA-08",
+        "severity": "P2",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "GLUE leakage guard ignores actual source metadata and can pass without the intended checks",
+        "path": "tools/glue_leakage_guard.py",
+        "line": 29,
+        "trigger": "Actual Parquet contains source=belarusianglue but the text does not spell a dataset config name, or only active .sft_current exists and the historical /sft folder is absent.",
+        "consequence": "The guard scans config-name substrings, not benchmark contents/source identity; final failure depends only on an optional/stale reports/source_filter_report.json. It can print PASS despite known GLUE data.",
+        "evidence": "reproductions-extra.json:one-row Parquet with explicit source=belarusianglue yields GLUE_LEAKAGE_FOUND=false/PASS/exit0.",
+        "recommended_fix": "Read resolved active artifacts and provenance, require complete checks, compare benchmark record hashes/content rather than name substrings, and use current artifact evidence for the exit status.",
+        "related_locations": [
+          "tools/glue_leakage_guard.py:59",
+          "tools/glue_leakage_guard.py:78",
+          "tools/glue_leakage_guard.py:98"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-09",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Документированная holdout-команда падает на схеме",
+      "impact_ru": "209-row prompt/eval_id/criteria несовместимы с messages/id/checks; KeyError до HTTP.",
+      "recommended_fix_ru": "Адаптировать всю схему, включая критерии, и проверить команду из документации.",
+      "locations": [
+        {
+          "file": "eval/run_openai_compatible_eval.py",
+          "start_line": 75
+        },
+        {
+          "file": "reports/public/REPRODUCIBILITY_SUMMARY.md",
+          "start_line": 22
+        },
+        {
+          "file": "eval/strict_holdout_quality_control_v2.be.jsonl",
+          "start_line": 1
+        }
+      ],
+      "details": {
+        "id": "DATA-09",
+        "severity": "P2",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Documented strict-holdout evaluation command cannot read the strict-holdout schema",
+        "path": "eval/run_openai_compatible_eval.py",
+        "line": 75,
+        "trigger": "Run the reproducibility guide command with --eval-file eval/strict_holdout_quality_control_v2.be.jsonl.",
+        "consequence": "The209-row holdout uses prompt/eval_id/top-level criteria; runner expects messages/id/checks and crashes before sending the first request. Even adding messages alone would leave criteria unmapped.",
+        "evidence": "reproductions.json:actual committed strict holdout causes KeyError messages at line75 before HTTP.",
+        "recommended_fix": "Validate and explicitly adapt both supported schemas, including IDs, forbidden/required strings and behavioral grading; test the documented command using a mock endpoint.",
+        "related_locations": [
+          "reports/public/REPRODUCIBILITY_SUMMARY.md:22",
+          "eval/strict_holdout_quality_control_v2.be.jsonl:1"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-10",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Mixture builder не применяет policy",
+      "impact_ru": "Несуществующий --policy принимается; выводится только manifest, распределение данных не меняется.",
+      "recommended_fix_ru": "Реализовать детерминированное смешивание либо обозначить команду только как отчёт.",
+      "locations": [
+        {
+          "file": "tools/build_belka_mixture.py",
+          "start_line": 27
+        },
+        {
+          "file": "tools/build_belka_mixture.py",
+          "start_line": 10
+        },
+        {
+          "file": "tools/build_belka_mixture.py",
+          "start_line": 46
+        },
+        {
+          "file": "configs/source_mixing_policy.yaml",
+          "start_line": 125
+        }
+      ],
+      "details": {
+        "id": "DATA-10",
+        "severity": "P2",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Source mixing command does not implement the requested sampling policy",
+        "path": "tools/build_belka_mixture.py",
+        "line": 27,
+        "trigger": "Run build_belka_mixture --policy ... expecting weighted source sampling, synthetic cap or orthography limits.",
+        "consequence": "The policy argument is never opened, weights are hardcoded, and the command only writes a manifest; the actual Parquet distribution is unchanged.",
+        "evidence": "reproductions.json:nonexistent --policy path succeeds; sole output is mixture_manifest.json. configs/source_mixing_policy.yaml declares weighted_sampling_by_source_weight and caps.",
+        "recommended_fix": "Either implement a validated deterministic weighted corpus/sampler with measured output proportions or rename this command as a report and prevent it from implying that weights/caps were applied.",
+        "related_locations": [
+          "tools/build_belka_mixture.py:10",
+          "tools/build_belka_mixture.py:46",
+          "configs/source_mixing_policy.yaml:125"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-11",
+      "priority": "P2",
+      "category": "quality_limitation",
+      "area": "data",
+      "title_ru": "Языковые эвристики пропускают сильную русскую примесь",
+      "impact_ru": "На синтетическом примере 47 белорусских символов достаточно для принятия 3400 русских; доля примеси в реальном корпусе не измерена.",
+      "recommended_fix_ru": "Калибровать по размеченным смешанным текстам и долям сегментов.",
+      "locations": [
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 109
+        },
+        {
+          "file": "data_pipeline/detect_belarusian.py",
+          "start_line": 99
+        },
+        {
+          "file": "data_pipeline/detect_belarusian.py",
+          "start_line": 128
+        },
+        {
+          "file": "data_pipeline/detect_belarusian.py",
+          "start_line": 140
+        }
+      ],
+      "details": {
+        "id": "DATA-11",
+        "severity": "P2",
+        "status": "new_confirmed",
+        "kind": "quality_limitation",
+        "title": "Language filters accept a Belarusian prefix followed by overwhelmingly Russian prose",
+        "path": "tools/filter_sources_to_nanochat_parquet.py",
+        "line": 109,
+        "trigger": "A long mixed-language document contains a handful of Belarusian markers but mostly Russian paragraphs.",
+        "consequence": "Both filters saturate positive evidence and cap negative evidence without considering its share. These heuristics cannot enforce the Belarusian-only corpus/SFT promise.",
+        "evidence": "reproductions-extra.json:47-character Belarusian prefix +3400Russian characters gives source score0.7 (threshold.45) and core detector score6.2/accept. This is a constructed failure case, not an estimate of Russian contamination in the released corpus.",
+        "recommended_fix": "Calibrate on independently labelled long and mixed-language examples; use per-segment language ratios, consistent shared policy and explicit quarantine thresholds.",
+        "related_locations": [
+          "data_pipeline/detect_belarusian.py:99",
+          "data_pipeline/detect_belarusian.py:128",
+          "data_pipeline/detect_belarusian.py:140"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-12",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Legacy eval теряет стандартные JSON completions",
+      "impact_ru": "SSE-only parser получает 9 пустых ответов из корректных HTTP 200; транспортные ошибки сохраняются как текст.",
+      "recommended_fix_ru": "Унифицировать клиент; отличать сбой запроса от ответа модели; ненулевой exit на неполном eval.",
+      "locations": [
+        {
+          "file": "tools/run_belka_eval_suite.py",
+          "start_line": 55
+        },
+        {
+          "file": "tools/run_belka_eval_suite.py",
+          "start_line": 65
+        },
+        {
+          "file": "docs/06_evaluation_plan.md",
+          "start_line": 121
+        }
+      ],
+      "details": {
+        "id": "DATA-12",
+        "severity": "P2",
+        "status": "new_confirmed",
+        "kind": "bug",
+        "title": "Legacy evaluation suite discards standard JSON completions and treats failures as responses",
+        "path": "tools/run_belka_eval_suite.py",
+        "line": 55,
+        "trigger": "Point the documented suite at a standard nonstream OpenAI-compatible endpoint, or receive an HTTP/transport error.",
+        "consequence": "Only data: SSE lines with a top-level token are parsed. Standard successful responses become empty strings; failures become HTTP_/ERROR_ prose and the script still saves a success-exit report without scoring.",
+        "evidence": "reproductions-extra.json:mock HTTP200 containing a valid Belarusian choices[0].message.content leads to9empty responses and an empty summary.",
+        "recommended_fix": "Reuse the supported completion client, validate response schema/nonempty output, represent operational failures separately and return nonzero for incomplete evaluation.",
+        "related_locations": [
+          "tools/run_belka_eval_suite.py:65",
+          "docs/06_evaluation_plan.md:121"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-13",
+      "priority": "P2",
+      "category": "data_quality_gap",
+      "area": "data",
+      "title_ru": "SFT train/val разделяют одну парафразную семью",
+      "impact_ru": "Вопросы о реках с одним списком и близким ответом находятся с обеих сторон; exact family IDs при этом различны.",
+      "recommended_fix_ru": "Наследовать seed family ID и группировать проверенные парафразы до split.",
+      "locations": [
+        {
+          "file": "data_pipeline/sft_v9.py",
+          "start_line": 91
+        },
+        {
+          "file": "seed_sft/sft_v8_val.be.jsonl",
+          "start_line": 23
+        },
+        {
+          "file": "seed_sft/sft_v8_val.be.jsonl",
+          "start_line": 25
+        }
+      ],
+      "details": {
+        "id": "DATA-13",
+        "severity": "P2",
+        "status": "new_confirmed",
+        "kind": "data_quality_gap",
+        "title": "Active v9 validation still shares an underlying paraphrase family with train",
+        "path": "data_pipeline/sft_v9.py",
+        "line": 91,
+        "trigger": "Two seed variants ask the same question using different words and have lightly paraphrased answers; neither normalized user nor assistant string is identical.",
+        "consequence": "Exact family IDs are disjoint but the split is not independent at the level of original examples; validation loss can reward memorizing near-identical seed content.",
+        "evidence": "sft-diagnostics.json:active train row122 asks Назаві некалькі беларускіх рэк and val row27 Назаві некалькі рэк Беларусі; both answers contain the same ordered six-river list and same final boilerplate; normalized answer similarity.8755. These came from seed_sft/sft_v8_val.be.jsonl lines23/25. No exact normalized family intersections were found.",
+        "recommended_fix": "Carry explicit seed/source family IDs through variant generation; group reviewed semantic/paraphrase families before train/val split. Do not call all topical overlap contamination.",
+        "related_locations": [
+          "seed_sft/sft_v8_val.be.jsonl:23",
+          "seed_sft/sft_v8_val.be.jsonl:25"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-14",
+      "priority": "P2",
+      "category": "data_quality_gap",
+      "area": "data",
+      "title_ru": "Опубликованный corpus не согласован с новой policy",
+      "impact_ru": "13957 UD + 1266 Wiktionary + 3 morphodict train rows теперь исключаются; 74742 be_x_oldwiki train и 0 val; 8 строк с U+FFFD.",
+      "recommended_fix_ru": "Пересобрать отдельного кандидата и проверить source/split/качество, сохранив исторический bundle.",
+      "locations": [
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 28
+        },
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 31
+        },
+        {
+          "file": "tools/filter_sources_to_nanochat_parquet.py",
+          "start_line": 34
+        },
+        {
+          "file": "data_release/open_corpus_bundle/BUNDLE_MANIFEST.json",
+          "start_line": 1
+        }
+      ],
+      "details": {
+        "id": "DATA-14",
+        "severity": "P2",
+        "status": "known_asset_gap",
+        "kind": "data_quality_gap",
+        "title": "Published legacy corpus has not been reconciled with current source policy and validation coverage",
+        "path": "tools/filter_sources_to_nanochat_parquet.py",
+        "line": 28,
+        "trigger": "Restore and train the bundled v3b corpus rather than rebuilding it with the corrected current filter.",
+        "consequence": "Restoration preserves historical data: sources now marked not_for_base remain, and the classical-orthography source has no validation representation. The current filter does not retroactively validate the bundle.",
+        "evidence": "Reused corpus-audit.json:13,957UD+1,266Wiktionary+3morphodict train rows despite current exclusions;74,742be_x_oldwiki train rows versus0val;8replacement-character train rows. Reused sft-audit.json:486train/84val,17,442supervised train tokens,independent_native_review=false.",
+        "recommended_fix": "Version and review an explicit corpus policy, rebuild a candidate without mutating the published generation, compare source/token/split distributions and quarantine actual malformed text for review.",
+        "related_locations": [
+          "tools/filter_sources_to_nanochat_parquet.py:31",
+          "tools/filter_sources_to_nanochat_parquet.py:34",
+          "data_release/open_corpus_bundle/BUNDLE_MANIFEST.json:1"
+        ]
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-15",
+      "priority": "P2",
+      "category": "coverage_gap",
+      "area": "data",
+      "title_ru": "BelarusianGLUE evaluator остаётся dry-run заглушкой",
+      "impact_ru": "Всегда записывает список семи configs; реальных предсказаний и метрик нет.",
+      "recommended_fix_ru": "Реализовать и принять benchmark scoring; до этого явно считать этап незавершённым.",
+      "locations": [
+        {
+          "file": "tools/run_belarusianglue_eval.py",
+          "start_line": 26
+        }
+      ],
+      "details": {
+        "id": "DATA-15",
+        "severity": "P2",
+        "status": "confirmed_unimplemented",
+        "kind": "coverage_gap",
+        "title": "BelarusianGLUE evaluator remains a metadata-only dry-run stub",
+        "path": "tools/run_belarusianglue_eval.py",
+        "line": 26,
+        "trigger": "Invoke the available BelarusianGLUE evaluator expecting actual benchmark metrics.",
+        "consequence": "dry_run defaults true with no disabling flag; no dataset/model is loaded and no task metric is calculated. Existing claims of readiness only cover a list of configs.",
+        "evidence": "Static code inspection:--dry-run action store_true defaultTrue; function writes a report with status=eval_only_dry_run and seven config names, then returns.",
+        "recommended_fix": "Implement benchmark-specific prediction and scoring with verified split/provenance or clearly label this as an unimplemented evaluation milestone.",
+        "related_locations": []
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/findings.json"
+    },
+    {
+      "id": "DATA-16",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Старый SFT leakage CLI пропускает отсутствующий train",
+      "impact_ru": "Битый/отсутствующий train с 50 val даёт PASS и train_examples=0; при одном val отчёт FAIL расходится с exit 0. Активный shell/CI caller не найден.",
+      "recommended_fix_ru": "Строго читать все входы и возвращать ненулевой exit при любом проваленном критерии.",
+      "locations": [
+        {
+          "file": "tools/audit_sft_leakage.py",
+          "start_line": 19
+        },
+        {
+          "file": "tools/audit_sft_leakage.py",
+          "start_line": 11
+        },
+        {
+          "file": "tools/audit_sft_leakage.py",
+          "start_line": 72
+        },
+        {
+          "file": "tools/audit_sft_leakage.py",
+          "start_line": 95
+        }
+      ],
+      "details": {
+        "id": "DATA-16",
+        "severity": "P2",
+        "kind": "bug",
+        "status": "new_confirmed",
+        "title": "Legacy SFT leakage CLI silently ignores missing/malformed train and returns success for an inadequate validation split",
+        "path": "tools/audit_sft_leakage.py",
+        "line": 19,
+        "related_locations": [
+          "tools/audit_sft_leakage.py:11",
+          "tools/audit_sft_leakage.py:72",
+          "tools/audit_sft_leakage.py:95"
+        ],
+        "trigger": "Запустить отдельный audit_sft_leakage.py с битым JSONL или train-glob без совпадений; либо с validation меньше50диалогов и без пересечений.",
+        "consequence": "Битый/отсутствующий train с50val даёт train_examples=0,SFT_LEAKAGE_AUDIT=PASS,rc0. При одном val отчёт FAIL расходится с rc0. Проверка через exit status не гарантирует, что данные прочитаны и критерии выполнены.",
+        "evidence": "extra-gate-evidence.json cases malformed_train,missing_train_glob,inadequate_validation; все3rc0. Полные argv,cwd,stdout и JSONreport сохранены.",
+        "recommended_fix": "Требовать непустое разрешение каждого входного glob, строгий JSONL/schema и ненулевые train/val; вычислять единый verdict и возвращать nonzero для любого нарушенного gate.",
+        "scope_limit": "Отдельный исторический инструмент. Активный shell/CI caller в репозитории не найден; публичный summary его называет detector, исторические отчёты существуют. Не приписывать этот дефект текущему v9 publisher."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/extra-gate-evidence.json"
+    },
+    {
+      "id": "DATA-17",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "data",
+      "title_ru": "Data readiness объявляет пустой/битый JSONL готовым",
+      "impact_ru": "Пустой файл и невалидный JSON/UTF-8 дают PASS, exit 0. Foundry/owner используют этот validator; downstream parser может всё же остановить повреждённые данные.",
+      "recommended_fix_ru": "Отделить inventory от readiness; проверять UTF-8, схемы и usable records до PASS.",
+      "locations": [
+        {
+          "file": "tools/validate_data_readiness_v2.py",
+          "start_line": 32
+        },
+        {
+          "file": "tools/validate_data_readiness_v2.py",
+          "start_line": 10
+        },
+        {
+          "file": "tools/validate_data_readiness_v2.py",
+          "start_line": 14
+        },
+        {
+          "file": "ops/local/run_data_foundry_v2.sh",
+          "start_line": 29
+        },
+        {
+          "file": "ops/local/agent_prepare_next.sh",
+          "start_line": 59
+        }
+      ],
+      "details": {
+        "id": "DATA-17",
+        "severity": "P2",
+        "kind": "bug",
+        "status": "new_confirmed",
+        "title": "Data readiness validator reports PASS when only empty or malformed JSONL files exist",
+        "path": "tools/validate_data_readiness_v2.py",
+        "line": 32,
+        "related_locations": [
+          "tools/validate_data_readiness_v2.py:10",
+          "tools/validate_data_readiness_v2.py:14",
+          "ops/local/run_data_foundry_v2.sh:29",
+          "ops/local/agent_prepare_next.sh:59"
+        ],
+        "trigger": "В одном из сканируемых каталогов есть хотя бы один JSONL, но файл пустой, JSONневалиден либо повреждёнUTF8.",
+        "consequence": "Файловая инвентаризация считается готовностью данных: обе фикстуры дают DATA_READINESS_STATUS=PASS,rc0; битый файл считается2rows при0chars, пустой—0rows. Foundry продолжает до DATA_FOUNDRY_V2_DONE=YES, generated owner script—до corpus build.",
+        "evidence": "extra-gate-evidence.json cases malformed_jsonl_readiness,empty_jsonl_readiness; сохранены команды и полные reports.",
+        "recommended_fix": "Разделить inventory от readiness. Readiness должен строго читатьUTF8/JSONL, валидировать ожидаемые схемы, требовать достаточные usable records/splits и возвращать nonzero при неполной проверке; inventory не должен выдавать статусPASS.",
+        "scope_limit": "Подтверждён ложный readiness/DONE signal. Строгий downstream corpus parser может позже отклонить повреждённые записи; попадание таких записей в модель не доказано."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/data/extra-gate-evidence.json"
+    },
+    {
+      "id": "INFRA-01",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "Provenance audit выдаёт PASS без доказательств",
+      "impact_ru": "Пустой каталог получает положительный статус; посторонний {} RUN_MANIFEST повышает его до PASS/LOW.",
+      "recommended_fix_ru": "Проверять схему и связь checkpoint/data/tokenizer/run; отсутствие обязательного evidence должно давать ошибку.",
+      "locations": [
+        {
+          "file": "tools/audit_training_provenance.py",
+          "start_line": 55
+        },
+        {
+          "file": "tools/audit_training_provenance.py",
+          "start_line": 69
+        },
+        {
+          "file": "tools/audit_training_provenance.py",
+          "start_line": 86
+        },
+        {
+          "file": "tools/audit_training_provenance.py",
+          "start_line": 142
+        }
+      ],
+      "details": {
+        "id": "INFRA-01",
+        "priority": "P1",
+        "title": "Legacy provenance audit certifies absent or unrelated evidence",
+        "locations": [
+          "tools/audit_training_provenance.py:55",
+          "tools/audit_training_provenance.py:69",
+          "tools/audit_training_provenance.py:86",
+          "tools/audit_training_provenance.py:142"
+        ],
+        "trigger": "Run provenance audit on an empty PACK_DIR, or put an unrelated '{}' in .workspace/nanochat_base_d8_v3/run_manifests/unrelated_RUN_MANIFEST.json.",
+        "actual": "Empty input gives exit 0 and PASS_WITH_SCRIPT_CONFIG_EVIDENCE; a single empty JSON object upgrades NATIVE_TRAINING_LOG_PROVENANCE and PROVENANCE_STATUS to PASS with LOW risk, despite zero checkpoints and missing tokenizer. Per-checkpoint status is inferred from directory substrings, not attached manifests or evaluation evidence.",
+        "impact": "A scientific provenance report can be green without verifying any run, dataset or checkpoint association. The checked-in canonical state and public summaries cite this report. This does not bypass the newer runtime checkpoint/hash contracts or itself launch training; it corrupts legacy acceptance evidence.",
+        "evidence_key": [
+          "provenance_empty",
+          "provenance_bogus"
+        ],
+        "confidence": "reproduced",
+        "fix": "Require explicit input artifacts, validate each manifest schema, associate run/checkpoint/corpus/tokenizer/config hashes, distinguish missing/incomplete/verified evidence and return nonzero for missing required evidence. Keep historical acceptance annotations separate from measured provenance.",
+        "verification": "Negative fixtures for no checkpoint, no tokenizer, empty JSON, unrelated run tag, changed data hash, malformed manifest; positive fixture with verified associations."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-02",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "Manifest CLI успешно ничего не делает",
+      "impact_ru": "main определён, но не вызывается; exit 0 без выходных файлов.",
+      "recommended_fix_ru": "Добавить entrypoint и проверять создание обязательного manifest перед run.",
+      "locations": [
+        {
+          "file": "tools/write_training_run_manifest.py",
+          "start_line": 5
+        },
+        {
+          "file": "tools/write_training_run_manifest.py",
+          "start_line": 39
+        }
+      ],
+      "details": {
+        "id": "INFRA-02",
+        "priority": "P2",
+        "title": "Training run manifest CLI is a successful no-op",
+        "locations": [
+          "tools/write_training_run_manifest.py:5",
+          "tools/write_training_run_manifest.py:39"
+        ],
+        "trigger": "Invoke python tools/write_training_run_manifest.py as a command.",
+        "actual": "The file defines main() but never calls it. It exits 0 with no stdout and no manifest files.",
+        "impact": "Anyone using the purported pre-training manifest CLI silently loses the promised run record. This is the first blocker; INFRA-03 becomes active only after invoking main directly or fixing the entrypoint.",
+        "evidence_key": [
+          "manifest_cli"
+        ],
+        "confidence": "reproduced",
+        "fix": "Add a guarded executable entrypoint and wire the validated manifest writer into the accepted training entrypoint before training starts.",
+        "verification": "Subprocess CLI test with scratch base dir must produce a schema-valid manifest and fail when required artifacts are absent."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-03",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "В manifest записан hash строки пути вместо данных",
+      "impact_ru": "При прямом вызове main train_parquet_sha256 — первые 16 hex SHA256(path), даже если файла нет.",
+      "recommended_fix_ru": "Хэшировать содержимое всех shards полным SHA256 и фиксировать фактическую конфигурацию.",
+      "locations": [
+        {
+          "file": "tools/write_training_run_manifest.py",
+          "start_line": 24
+        },
+        {
+          "file": "tools/write_training_run_manifest.py",
+          "start_line": 34
+        },
+        {
+          "file": "tools/write_training_run_manifest.py",
+          "start_line": 36
+        }
+      ],
+      "details": {
+        "id": "INFRA-03",
+        "priority": "P2",
+        "title": "Run manifest records a path-string digest as train_parquet_sha256",
+        "locations": [
+          "tools/write_training_run_manifest.py:24",
+          "tools/write_training_run_manifest.py:34",
+          "tools/write_training_run_manifest.py:36"
+        ],
+        "trigger": "Invoke the defined main() directly, or repair the missing CLI entrypoint in INFRA-02.",
+        "actual": "train_parquet_sha256 is the first 16 hex characters of SHA256(path.encode()), not a checksum of the data. main() reports PASS_WITH_SCRIPT_CONFIG_EVIDENCE even when that data file does not exist. Dataset path and several run properties are also unconditional constants.",
+        "impact": "Replacing corpus bytes at the same path leaves recorded identity unchanged; moving identical data changes the hash. Manifests cannot establish training-data provenance.",
+        "evidence_key": [
+          "manifest_function"
+        ],
+        "confidence": "reproduced by direct main call; latent through current CLI",
+        "fix": "Hash actual files incrementally with complete SHA256, capture every selected shard and actual trainer configuration, require their existence, bind the manifest to the immutable data generation and tokenizer.",
+        "verification": "Byte change must change digest, identical bytes at another path must retain digest, missing files must fail and not emit a passing manifest."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-04",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "QC workbook записывает непроверенные PASS и YES",
+      "impact_ru": "Без leakage/provenance evidence появляются нулевые overlaps, успешные gates и свежая дата; hashes — placeholders.",
+      "recommended_fix_ru": "Без подтверждённых отчётов ставить UNKNOWN/NOT_RUN; значения связывать с поколением данных.",
+      "locations": [
+        {
+          "file": "tools/create_quality_control_workbook.py",
+          "start_line": 186
+        },
+        {
+          "file": "tools/create_quality_control_workbook.py",
+          "start_line": 246
+        },
+        {
+          "file": "tools/create_quality_control_workbook.py",
+          "start_line": 302
+        }
+      ],
+      "details": {
+        "id": "INFRA-04",
+        "priority": "P1",
+        "title": "QC workbook invents fresh successful audit results",
+        "locations": [
+          "tools/create_quality_control_workbook.py:186",
+          "tools/create_quality_control_workbook.py:246",
+          "tools/create_quality_control_workbook.py:302"
+        ],
+        "trigger": "Generate workbook with valid holdout JSONL but no provenance, corpus proof or leakage report.",
+        "actual": "Generation exits 0 and unconditionally writes SFT overlap=0/PASS, regression overlap=0/PASS, fivegram=0/PASS and YES gates for corpus acceptance, leakage and provenance, stamped with current time. Per-run hashes are HEX_PLACEHOLDER and other fields TBD; corpus token totals remain the superseded 59M estimate.",
+        "impact": "A template looks like a newly verified QC artifact even when its evidence is absent or stale. The owner wrapper checks some file existence but cannot make hardcoded leakage/provenance claims truthful. Training/SFT remain NO, so this finding concerns evidence integrity, not automatic permission to train.",
+        "evidence_key": [
+          "qc_generate_missing_evidence",
+          "qc_generated_claims"
+        ],
+        "confidence": "reproduced",
+        "fix": "Populate values only from schema-valid hash-bound reports for the selected generation; otherwise show UNKNOWN/NOT_RUN. Preserve source verification timestamps separately from workbook generation timestamp and never fabricate measured values.",
+        "verification": "Missing, failed and stale reports must generate unknown/failure states; current valid reports must map exactly; no placeholder hashes may satisfy a provenance gate."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-05",
+      "priority": "P1",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "QC auditor даёт PASS при трёх проваленных checks",
+      "impact_ru": "never_train, SFT gate и model rows равны false, но не добавляются в failures.",
+      "recommended_fix_ru": "Включать каждый обязательный check в общий verdict и код возврата.",
+      "locations": [
+        {
+          "file": "tools/audit_quality_control_workbook.py",
+          "start_line": 73
+        },
+        {
+          "file": "tools/audit_quality_control_workbook.py",
+          "start_line": 93
+        },
+        {
+          "file": "tools/audit_quality_control_workbook.py",
+          "start_line": 109
+        },
+        {
+          "file": "tools/audit_quality_control_workbook.py",
+          "start_line": 124
+        }
+      ],
+      "details": {
+        "id": "INFRA-05",
+        "priority": "P1",
+        "title": "QC auditor returns PASS while required checks are false",
+        "locations": [
+          "tools/audit_quality_control_workbook.py:73",
+          "tools/audit_quality_control_workbook.py:93",
+          "tools/audit_quality_control_workbook.py:109",
+          "tools/audit_quality_control_workbook.py:124"
+        ],
+        "trigger": "Workbook has never_train=False on a strict holdout row, SFT_ALLOWED=YES, and no model-run records.",
+        "actual": "Audit returns 0/PASS while never_train_flag, sft_gate_value and model_runs_rows each have pass:false. The final verdict only checks failures[], and these failures are never appended. It also checks presence of SHA headers rather than actual hash values or prompt identity.",
+        "impact": "The validation step cannot reject a workbook violating its own documented controls; downstream scripts/readers receive false successful QC status. The shell wrapper exit propagation is separately owned by the training-audit agent.",
+        "evidence_key": [
+          "qc_audit_failed_checks"
+        ],
+        "confidence": "reproduced",
+        "fix": "Aggregate every required check into the final verdict, verify exact holdout IDs/text/hash set and meaningful provenance contents, and clearly distinguish optional warnings from hard requirements.",
+        "verification": "Each required false check independently yields nonzero/FAIL; test simultaneous failures and propagate return status through owner wrapper."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-06",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "Рабочего HF/GGUF export нет",
+      "impact_ru": "Отсутствуют default templates/publisher и конвертер весов; patcher падает на FileNotFoundError.",
+      "recommended_fix_ru": "Реализовать поддерживаемую архитектуру экспорта и проверить logits/tokenization parity.",
+      "locations": [
+        {
+          "file": "export/export_to_hf.sh",
+          "start_line": 35
+        },
+        {
+          "file": "export/export_to_hf.sh",
+          "start_line": 39
+        },
+        {
+          "file": "export/patch_hf_chat_template.py",
+          "start_line": 12
+        },
+        {
+          "file": "deploy/export_to_gguf.sh",
+          "start_line": 27
+        }
+      ],
+      "details": {
+        "id": "INFRA-06",
+        "priority": "P2",
+        "title": "HF export path is broken even as a metadata skeleton",
+        "locations": [
+          "export/export_to_hf.sh:35",
+          "export/export_to_hf.sh:39",
+          "export/patch_hf_chat_template.py:12",
+          "deploy/export_to_gguf.sh:27"
+        ],
+        "trigger": "Attempt to use the default HF template patcher, or run export_to_hf with an otherwise valid selected checkpoint.",
+        "actual": "templates/model_card.md, templates/chat_template.jinja and hf/publish_model.sh do not exist. Default patcher raises FileNotFoundError. Export script only attempts checkpoint metadata/card/template; no weight/config converter is implemented. GGUF delegates to an external converter and there is no demonstrated nanochat architecture compatibility/logits parity.",
+        "impact": "No supported path from native checkpoints to runnable HF/vLLM/GGUF artifacts; valid native model cannot currently be deployed by these helper scripts. TASKS R31 and patch notes already acknowledge the missing complete converter.",
+        "evidence_key": [
+          "export_template_default"
+        ],
+        "confidence": "template failure reproduced; conversion absence confirmed by source inventory",
+        "fix": "Choose and document actual supported artifact architecture; implement conversion and tokenizer template assets, fail early if unsupported, then validate logits/generation parity before publishing deployment instructions.",
+        "verification": "CPU tiny-checkpoint roundtrip and native-versus-exported logits with exact tokenization; default export command smoke test."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-07",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "Integrity audit пропускает отсутствующий каталог книг",
+      "impact_ru": "dir_file_count=-1, условие if not v не включает books в missing_data.",
+      "recommended_fix_ru": "Различать отсутствующий/пустой/непустой каталог явным условием.",
+      "locations": [
+        {
+          "file": "tools/audit_repo_integrity.py",
+          "start_line": 27
+        },
+        {
+          "file": "tools/audit_repo_integrity.py",
+          "start_line": 85
+        }
+      ],
+      "details": {
+        "id": "INFRA-07",
+        "priority": "P2",
+        "title": "Repo integrity audit omits a missing books directory",
+        "locations": [
+          "tools/audit_repo_integrity.py:27",
+          "tools/audit_repo_integrity.py:85"
+        ],
+        "trigger": "data_input/be_texts/books_clean_v2 is absent.",
+        "actual": "dir_file_count returns -1, then missing_data filters with 'if not v', so books_clean_v2 is omitted from MISSING_REQUIRED_DATA. The detailed artifact simultaneously records exists:false.",
+        "impact": "A required missing dataset can escape the summary/overall verdict if other inputs exist. Historical integrity checks also hardcode old workspace locations and require local-only XLSX; not a clean-clone acceptance check.",
+        "evidence_key": [
+          "integrity_empty"
+        ],
+        "confidence": "reproduced omission; isolated overall false-pass condition inferred from boolean expression",
+        "fix": "Use explicit booleans or require integer counts >0; define artifact requirements for a selected layout and separate local-only historical artifacts from clone requirements.",
+        "verification": "Absent directory, empty directory and nonempty directory must produce distinct, correct findings and final exit status."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-08",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "Канонические инструкции и статусы расходятся",
+      "impact_ru": "Удалённые команды/ссылки, текущий v8 вместо v9, обещание немедленного обучения при открытых gates.",
+      "recommended_fix_ru": "Отделить исторические отчёты от действующих инструкций и проверять команды/ссылки.",
+      "locations": [
+        {
+          "file": "reports/public/REPRODUCIBILITY_SUMMARY.md",
+          "start_line": 11
+        },
+        {
+          "file": "reports/public/REPRODUCIBILITY_SUMMARY.md",
+          "start_line": 22
+        },
+        {
+          "file": "reports/public/REPRODUCIBILITY_SUMMARY.md",
+          "start_line": 36
+        },
+        {
+          "file": "reports/public/PROJECT_STATUS.md",
+          "start_line": 14
+        },
+        {
+          "file": "reports/public/REPORTS_INDEX.md",
+          "start_line": 35
+        },
+        {
+          "file": "release/RELEASE_CHECKLIST.md",
+          "start_line": 46
+        }
+      ],
+      "details": {
+        "id": "INFRA-08",
+        "priority": "P2",
+        "title": "Linked canonical instructions and release status are stale",
+        "locations": [
+          "reports/public/REPRODUCIBILITY_SUMMARY.md:11",
+          "reports/public/REPRODUCIBILITY_SUMMARY.md:22",
+          "reports/public/REPRODUCIBILITY_SUMMARY.md:36",
+          "reports/public/PROJECT_STATUS.md:14",
+          "reports/public/REPORTS_INDEX.md:35",
+          "release/RELEASE_CHECKLIST.md:46"
+        ],
+        "trigger": "Follow the reproducibility/release links advertised from the updated README.",
+        "actual": "Canonical commands invoke removed tools/audit_data_rights.py; advertised strict-holdout eval uses the incompatible messages-based runner (confirmed separately by data agent). The guide says training can start immediately after restore, while current TASKS says launch preparation remains blocked. Public PROJECT_STATUS/Tools README call SFT v8 current, while active generation is v9. Release docs still claim removed rights docs exist and decisions already superseded on Aug16 remain pending. REPORTS_INDEX has three broken links to removed rights artifacts.",
+        "impact": "Users following the advertised supported path hit absent/incompatible tools and conflicting readiness statements. This is a documentation consistency defect; owner rights authorization is not being re-litigated.",
+        "evidence_key": [
+          "broken_public_links",
+          "public_release_check"
+        ],
+        "confidence": "source/path inventory; eval exception reproduced by data agent",
+        "fix": "Separate immutable historical snapshots from current canonical guides, update executable examples to supported CLI/data schema, derive current statuses from a single manifest and run docs-command/link checks in CI.",
+        "verification": "All current local links resolve and all advertised clean-clone commands succeed in an isolated clone; instructions clearly retain unresolved data/hardware gates."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "INFRA-09",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "infra",
+      "title_ru": "Зависимость openpyxl не объявлена",
+      "impact_ru": "QC-инструменты требуют её, но pack requirements и upstream lock её не содержат; локальная установка скрывает пробел.",
+      "recommended_fix_ru": "Добавить фиксированную зависимость/extra и smoke-test чистой установки.",
+      "locations": [
+        {
+          "file": "requirements_pack.txt",
+          "start_line": 1
+        },
+        {
+          "file": "tools/create_quality_control_workbook.py",
+          "start_line": 11
+        },
+        {
+          "file": "tools/audit_quality_control_workbook.py",
+          "start_line": 11
+        },
+        {
+          "file": "ops/local/install_nanochat_env.sh",
+          "start_line": 180
+        }
+      ],
+      "details": {
+        "id": "INFRA-09",
+        "priority": "P2",
+        "title": "QC dependencies are absent from the installed dependency sets",
+        "locations": [
+          "requirements_pack.txt:1",
+          "tools/create_quality_control_workbook.py:11",
+          "tools/audit_quality_control_workbook.py:11",
+          "ops/local/install_nanochat_env.sh:180"
+        ],
+        "trigger": "Install the documented pack/runtime environment on a clean system and use owner QC create/audit commands.",
+        "actual": "Both tools require openpyxl, but requirements_pack.txt and the pinned upstream pyproject/uv.lock contain no openpyxl. Existing local workspace has it, which conceals the missing declaration. No QC tests in the current suite exercise these tools.",
+        "impact": "The promised QC workflow is not reproducible from the documented dependency installation alone.",
+        "confidence": "confirmed dependency/source inventory; fresh network installation deliberately not performed",
+        "fix": "Declare a pinned QC dependency extra or include it in the supported pack environment, and smoke-test the chosen clean-clone installation route.",
+        "verification": "Fresh isolated install imports openpyxl and runs scratch QC create/audit negative/positive cases without manual package additions."
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/infra/findings.json"
+    },
+    {
+      "id": "WEB-01",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "runtime",
+      "title_ru": "UI не работает с quickstart-контекстом",
+      "impact_ru": "Запрашивает 512 новых токенов у модели с контекстом 256 → HTTP 400.",
+      "recommended_fix_ru": "Согласовать UI/API budget с доступным контекстом модели.",
+      "locations": [
+        {
+          "file": "ops/nanochat_fork/nanochat/ui.html",
+          "start_line": 403
+        },
+        {
+          "file": "ops/local/quickstart.sh",
+          "start_line": 40
+        },
+        {
+          "file": "ops/nanochat_fork/scripts/chat_web.py",
+          "start_line": 179
+        }
+      ],
+      "details": {
+        "id": "WEB-01",
+        "severity": "P2",
+        "kind": "bug",
+        "title": "Штатный web UI несовместим с размером контекста quickstart-модели",
+        "locations": [
+          {
+            "file": "ops/nanochat_fork/nanochat/ui.html",
+            "start_line": 403
+          },
+          {
+            "file": "ops/local/quickstart.sh",
+            "start_line": 40
+          },
+          {
+            "file": "ops/nanochat_fork/scripts/chat_web.py",
+            "start_line": 179
+          }
+        ],
+        "trigger": "Открыть штатный чат для модели quickstart с sequence_len=256.",
+        "consequence": "UI всегда передаёт max_tokens=512; API возвращает HTTP 400 до генерации. Серверный default не исправляет явное значение в запросе.",
+        "evidence": "Реальный handler и опубликованный BPE с детерминированным engine: запрос 512 → 400; запрос 32 → 200 и корректный SSE. Веса и обучение не использовались.",
+        "evidence_artifacts": [
+          ".workspace/audit-main-20261006/deep/runtime/web-evidence.json",
+          ".workspace/audit-main-20261006/deep/infra/web-crosscheck-evidence.json"
+        ],
+        "recommended_fix": "Согласовать default UI и API с оставшимся контекстом модели; получать возможности модели и показывать доступный бюджет. Проверить полный quickstart → UI путь.",
+        "verification_method": "reproduced; independently cross-checked"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/runtime/findings.json"
+    },
+    {
+      "id": "WEB-02",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "runtime",
+      "title_ru": "SSE parser теряет текст и игнорирует error",
+      "impact_ru": "37 из 60 разбиений искажают ответ; пустая assistant-реплика ломает следующий запрос.",
+      "recommended_fix_ru": "Потоковый UTF-8 + буфер событий; явные error/done и корректная история.",
+      "locations": [
+        {
+          "file": "ops/nanochat_fork/nanochat/ui.html",
+          "start_line": 420,
+          "end_line": 439
+        },
+        {
+          "file": "ops/nanochat_fork/scripts/chat_web.py",
+          "start_line": 69
+        }
+      ],
+      "details": {
+        "id": "WEB-02",
+        "severity": "P2",
+        "kind": "bug",
+        "title": "UI теряет фрагментированный SSE и сохраняет ошибки как успешные ответы",
+        "locations": [
+          {
+            "file": "ops/nanochat_fork/nanochat/ui.html",
+            "start_line": 420,
+            "end_line": 439
+          },
+          {
+            "file": "ops/nanochat_fork/scripts/chat_web.py",
+            "start_line": 69
+          }
+        ],
+        "trigger": "Сетевая порция заканчивается внутри JSON/UTF-8 либо сервер присылает SSE error.",
+        "consequence": "Нет накопительного буфера и stream-декодирования, ошибки JSON проглатываются, data.error игнорируется. Пустая/частичная assistant-реплика попадает в историю; пустая затем вызывает HTTP 422 следующего запроса.",
+        "evidence": "Реальный блок UI потерял/исказил ответ на 37 из 60 вариантов двухчастного разбиения. Независимое выполнение полной generateAssistantResponse подтвердило потерю JSON и сохранение пустой/частичной реплики после error. API действительно посылает такой error при исключении engine.",
+        "evidence_artifacts": [
+          ".workspace/audit-main-20261006/deep/runtime/sse-evidence.json",
+          ".workspace/audit-main-20261006/deep/runtime/web-evidence.json",
+          ".workspace/audit-main-20261006/deep/infra/web-crosscheck-evidence.json"
+        ],
+        "recommended_fix": "Парсить SSE через потоковый UTF-8 decoder и буфер до границы события, обрабатывать error/done, не добавлять незавершённый ошибочный ответ как успешный. Проверить разбиения внутри JSON и многобайтных символов.",
+        "verification_method": "reproduced; independently cross-checked"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/runtime/findings.json"
+    },
+    {
+      "id": "WEB-03",
+      "priority": "P2",
+      "category": "implementation_issue",
+      "area": "runtime",
+      "title_ru": "UI не передаёт авторизацию",
+      "impact_ru": "При BELKA_API_KEY обычный UI получает 401, корректный Bearer получает 200.",
+      "recommended_fix_ru": "Добавить поддерживаемый UI auth/session без ослабления серверной защиты.",
+      "locations": [
+        {
+          "file": "ops/nanochat_fork/nanochat/ui.html",
+          "start_line": 394,
+          "end_line": 398
+        },
+        {
+          "file": "ops/nanochat_fork/scripts/chat_web.py",
+          "start_line": 151,
+          "end_line": 155
+        }
+      ],
+      "details": {
+        "id": "WEB-03",
+        "severity": "P2",
+        "kind": "bug",
+        "title": "Штатный UI не умеет авторизоваться на сервере с BELKA_API_KEY",
+        "locations": [
+          {
+            "file": "ops/nanochat_fork/nanochat/ui.html",
+            "start_line": 394,
+            "end_line": 398
+          },
+          {
+            "file": "ops/nanochat_fork/scripts/chat_web.py",
+            "start_line": 151,
+            "end_line": 155
+          }
+        ],
+        "trigger": "Включить BELKA_API_KEY и пользоваться поставляемым UI без специального proxy, добавляющего Bearer.",
+        "consequence": "UI отправляет только Content-Type и получает HTTP 401; предусмотренного ввода ключа/сессии нет. API с корректным Bearer работает.",
+        "evidence": "Реальный handler: UI headers → 401, тот же запрос с тестовым Bearer → 200. Независимая проверка полной UI-функции подтвердила отсутствие Authorization.",
+        "evidence_artifacts": [
+          ".workspace/audit-main-20261006/deep/runtime/web-evidence.json",
+          ".workspace/audit-main-20261006/deep/infra/web-crosscheck-evidence.json"
+        ],
+        "recommended_fix": "Добавить поддерживаемую авторизацию UI или явно реализовать и документировать серверную сессию через доверенный proxy. Не отключать обязательную защиту публичного сервера.",
+        "verification_method": "reproduced; independently cross-checked"
+      },
+      "original_agent_report": ".workspace/audit-main-20261006/deep/runtime/findings.json"
+    }
+  ],
+  "additional_limits_and_observations": [
+    {
+      "id": "LIMIT-01",
+      "title_ru": "Восстановление полного trainer не принято",
+      "detail_ru": "CPU/Gloo component harness и warm start base→SFT не доказывают эквивалентность полного base run или восстановление прерванного SFT. Сохранение SFT не содержит полного loader/scaler/loop state.",
+      "references": [
+        "TASKS.md:98",
+        "TASKS.md:99",
+        "ops/local/patch_nanochat_runtime.py"
+      ]
+    },
+    {
+      "id": "LIMIT-02",
+      "title_ru": "GPU/аппаратная приёмка отсутствует",
+      "detail_ru": "H200, реальная VRAM/скорость, NCCL sharded optimizer, FA3, MPS, FP16/FP8 и device faults не проверялись в этом аудите.",
+      "references": [
+        "TASKS.md:95",
+        "TASKS.md:96",
+        "TASKS.md:97",
+        "TASKS.md:111"
+      ]
+    },
+    {
+      "id": "LIMIT-03",
+      "title_ru": "Покрытие тестов не равно готовности всех CLI",
+      "detail_ru": "1324 теста прошли, 1 упал из-за старого .workspace/nanochat: тест игнорирует NANOCHAT_DIR. Четыре fork-файла изолированного runtime совпадают с source. Нынешние runtime tests не охватывают все legacy audit/QC/export пути. Непоследовательный importorskip отдельных модулей не оказался обходом общего CI.",
+      "references": [
+        "tests/test_h200_policy.py:48",
+        ".github/workflows/runtime-contracts.yml"
+      ]
+    },
+    {
+      "id": "LIMIT-04",
+      "title_ru": "Среда Belka полностью не зафиксирована",
+      "detail_ru": "Upstream uv.lock закреплён, но последующий pip с lower-bound requirements и обновлениями допускает другую среду. Использовался существующий Python 3.10.20 + isolated HTTPX, а не новая CI-установка Python 3.12.",
+      "references": [
+        "requirements_pack.txt:1",
+        "ops/local/install_nanochat_env.sh:159",
+        "ops/local/install_nanochat_env.sh:180"
+      ]
+    },
+    {
+      "id": "LIMIT-05",
+      "title_ru": "ready=true проверяет упаковку",
+      "detail_ru": "validate_public_release проверяет ограниченную упаковку/README links. Этот результат не подтверждает корректность обучения, всех публичных инструкций, provenance или экспорта.",
+      "references": [
+        "tools/validate_public_release.py:82"
+      ]
+    },
+    {
+      "id": "LIMIT-06",
+      "title_ru": "Непроверенные аспекты данных и качества",
+      "detail_ru": "Нет независимой носительской оценки, полной семантической/near-duplicate проверки, всех benchmark contamination checks или доказанной tokenizer-training lineage. 17 коротких holdout prompts исключены из corpus span scan. Текущая независимая проверка шире старого CI exact gate, но не заменяет его расширение.",
+      "references": [
+        "TASKS.md:89",
+        "TASKS.md:91",
+        "tools/check_train_eval_decontamination.py:14"
+      ]
+    }
+  ],
+  "repair_plan": [
+    {
+      "order": 1,
+      "title_ru": "Остановить потери данных и несогласованный выбор поколений",
+      "ids": [
+        "TR01",
+        "TR02",
+        "TR03",
+        "TR04",
+        "TR05",
+        "TR11",
+        "TR17",
+        "DATA-03",
+        "DATA-04",
+        "DATA-05",
+        "DATA-06",
+        "DATA-07"
+      ],
+      "acceptance_ru": "Ошибки preflight не меняют предыдущие corpus/tokenizer/env; все shards сохранены; выбранные пути/hash совпадают в count/train/manifest."
+    },
+    {
+      "order": 2,
+      "title_ru": "Сделать проверки достоверными",
+      "ids": [
+        "DATA-01",
+        "DATA-02",
+        "DATA-08",
+        "DATA-16",
+        "DATA-17",
+        "INFRA-01",
+        "INFRA-02",
+        "INFRA-03",
+        "INFRA-04",
+        "INFRA-05",
+        "INFRA-07",
+        "TR15",
+        "TR16"
+      ],
+      "acceptance_ru": "Пустые, чужие, повреждённые и проваленные evidence не дают PASS; ошибки доходят до owner CLI; eval-only данные не могут пройти ни один builder."
+    },
+    {
+      "order": 3,
+      "title_ru": "Завершить единый проверяемый запуск из задачи #30",
+      "ids": [
+        "TR06",
+        "TR07",
+        "TR08",
+        "TR09",
+        "TR10",
+        "TR12",
+        "TR13",
+        "TR14",
+        "TR18",
+        "INFRA-08",
+        "INFRA-09"
+      ],
+      "acceptance_ru": "Один разрешённый plan задаёт реальные config/model/data/tokenizer/budgets. Dry-run проверяет контракты без побочных действий; документированные CLI проходят smoke."
+    },
+    {
+      "order": 4,
+      "title_ru": "Довести пользовательский чат, eval и export",
+      "ids": [
+        "WEB-01",
+        "WEB-02",
+        "WEB-03",
+        "DATA-09",
+        "DATA-12",
+        "DATA-15",
+        "INFRA-06"
+      ],
+      "acceptance_ru": "Контекст 256, auth и фрагментированный SSE работают; eval читает действующий holdout и считает метрики; export подтверждён сравнением logits/tokenization."
+    },
+    {
+      "order": 5,
+      "title_ru": "Принять новые данные и аппаратное выполнение",
+      "ids": [
+        "DATA-10",
+        "DATA-11",
+        "DATA-13",
+        "DATA-14"
+      ],
+      "acceptance_ru": "Проверенное смешивание и семантический split, независимая языковая оценка, доказательства resume и отдельная GPU/NCCL/VRAM приёмка до длинного обучения."
+    }
+  ],
+  "scope_cautions_ru": [
+    "P1 не означает, что рабочие данные уже потеряны: destructive сценарии воспроизводились только на фикстурах.",
+    "Обход eval_only показан на фикстуре и не доказывает присутствие BelarusianGLUE в опубликованном corpus.",
+    "Ложные legacy QC/provenance PASS не обходят новые runtime checkpoint/hash contracts и сами по себе не разрешают обучение.",
+    "Большинство launcher/owner дефектов относятся к историческим, но всё ещё вызываемым скриптам; README уже отмечает их статус.",
+    "Не все 47 находок новые: часть launch/export/data/resume ограничений ранее задокументирована. Статическая проверка явно отделена от запусков в details.",
+    "Исходные машинные evidence/repro находятся в ignored .workspace и не будут перенесены обычным git clone. Этот JSON содержит выводы, условия, доказательства и repair criteria; индекс hash фиксирует локальные первичные результаты.",
+    "Запрос выполнен как диагностика; исправления исходного кода и производственное обучение в этот этап не входили."
+  ],
+  "coverage_by_area": {
+    "training": {
+      "head": "2473f31b134bb9c6911e3979d7b5d75eab225a3c",
+      "read_in_detail": [
+        "ops/local/run_belka_h200_maxquality.sh",
+        "ops/local/run_belka_from_scratch_safe.sh",
+        "ops/local/run_belka_from_scratch_smoke.sh",
+        "ops/local/run_all_3070ti_safe.sh",
+        "ops/local/run_all_3070ti_aggressive.sh",
+        "ops/local/run_all_3070ti_smoke.sh",
+        "ops/local/quickstart.sh",
+        "ops/local/install_nanochat_env.sh",
+        "ops/local/clean_rebuild_env.sh",
+        "ops/local/pack_paths.sh",
+        "ops/local/repo_guard.sh",
+        "ops/local/train_tokenizer_real.sh",
+        "ops/local/train_tokenizer_smoke.sh",
+        "ops/local/build_real_corpus.sh",
+        "ops/local/build_smoke_corpus.sh",
+        "ops/local/restore_bundled_corpus.sh",
+        "ops/local/agent_prepare_next.sh",
+        "ops/local/agent_analyze_owner_run.sh",
+        "ops/local/agent_preflight_governor.sh",
+        "ops/local/run_belka_one_button.sh",
+        "ops/local/preflight_ubuntu_wsl.sh",
+        "ops/local/patch_nanochat_runtime.py",
+        "ops/local/patch_nanochat_for_belarusian.py",
+        "ops/local/patch_nanochat_dtype_fp16.py",
+        "ops/local/patch_nanochat_branding.py",
+        "ops/local/verify_nanochat_patch.py",
+        "owner.sh",
+        "ops/owner_runs/OWNER_RUN_NEXT.sh",
+        "ops/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh",
+        "ops/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh",
+        "ops/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh",
+        "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+        "ops/owner_runs/35_OWNER_EVAL_D8_BASE_V3B_PILOT.sh",
+        "ops/owner_runs/39_OWNER_AUDIT_TRAINING_PROVENANCE.sh",
+        "ops/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh",
+        "ops/owner_runs/41_OWNER_CREATE_QUALITY_CONTROL_XLSX.sh",
+        "ops/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh",
+        "ops/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh",
+        "ops/owner_runs/46_OWNER_REPO_CLEANUP_APPLY.sh",
+        "configs/profiles_h200.yaml",
+        "configs/profiles_3070ti.yaml",
+        "configs/model_scales_from_scratch.yaml",
+        "configs/training_baselines.yaml",
+        "configs/path_policy.env",
+        "tools/count_corpus_tokens.py"
+      ],
+      "targeted_reads": [
+        "ops/owner_runs/02B_OWNER_EXPAND_DATASET_FROM_EXISTING_RAW.sh",
+        "ops/owner_runs/45_OWNER_REPO_CLEANUP_DRY_RUN.sh",
+        "ops/owner_runs/47_OWNER_BUILD_CORPUS_EXPANSION_SOURCE_BOARD.sh",
+        "ops/owner_runs/48_OWNER_BUILD_CORPUS_EXPANSION_SOURCE_BOARD_V2.sh",
+        "generated scripts/base_train.py and scripts/chat_sft_be.py parser/batching/metrics/model architecture",
+        "generated scripts/tok_train.py and nanochat/tokenizer.py save behavior",
+        "ops/nanochat_fork/nanochat/belka_runtime.py corpus/tokenizer selection",
+        "tools/restore_corpus_bundle.py bridge publication",
+        "data_pipeline/prepare_belarusian_corpus.py inputs and publication",
+        "tools/agent_training_guard.py CLI"
+      ],
+      "verified_non_findings": [
+        "torch.distributed.run parse_args correctly removes the trailing -- separator; not a launcher bug",
+        "Current bundled-tokenizer v9 SFT rendered lengths fit256 context (root audit reports max93 train/max81 val)",
+        "Current install_nanochat_env parses path overrides before containment check; cleanup wrapper, not installer, has ordering bug",
+        "Overlay and standalone patcher compilation/identity safeguards reviewed; no new default-path failure beyond already known local runtime drift"
+      ],
+      "limitations": [
+        "No GPU/H200/NCCL or production training run performed",
+        "Shell fixtures stubbed installation/training only; destructive operations exercised solely against audit-owned sentinel data",
+        "Whole test suite not rerun (prior1324pass/1local runtime drift available)",
+        "Legacy direct patchers remain callable; --overwrite can remove full-overlay contracts but is explicit and not used by current installer, so recorded as maintenance risk rather than independent confirmed default-path bug",
+        "Legacy report/source-board helper bodies audited by other agents; this coverage does not claim line-by-line review of all repository files"
+      ],
+      "coordination": [
+        "data agent owns bundle builder input omission/deletion and eval-only data ingestion",
+        "infra agent owns underlying provenance/QC false-PASS reports; TR15 is separate process-exit wrapper bug",
+        "root owns web context-budget mismatch and overall report"
+      ],
+      "working_tree": "No tracked source changes; pre-existing belka_handoff_2026-09-22 remains untracked; all reproductions stored in audit scratch."
+    },
+    "data": {
+      "audited_head": "2473f31",
+      "scope": "Data collection, normalization/detection/dedup/split, current and legacy SFT publication, corpus bundle publication/restoration, contamination checks, evaluation clients and shipped datasets. Audit only; tracked files and active data unchanged.",
+      "static_reviewed": [
+        "data_pipeline/contracts.py",
+        "data_pipeline/detect_belarusian.py",
+        "data_pipeline/deduplicate.py",
+        "data_pipeline/split_train_val.py",
+        "data_pipeline/normalize_text.py",
+        "data_pipeline/prepare_belarusian_corpus.py",
+        "data_pipeline/sft_v9.py",
+        "tools/filter_sources_to_nanochat_parquet.py",
+        "tools/build_sft_mix.py",
+        "tools/validate_sft_jsonl.py",
+        "tools/check_train_eval_decontamination.py",
+        "tools/check_eval_leakage.py",
+        "tools/audit_sft_leakage.py",
+        "tools/build_belka_mixture.py",
+        "tools/build_books_clean_v2.py",
+        "tools/build_open_corpus_bundle.py",
+        "tools/restore_corpus_bundle.py",
+        "tools/download_belarusian_sources.py",
+        "tools/download_wikimedia_be.py",
+        "tools/download_public_be_sources.py",
+        "tools/hf_stream_belarusian_sources.py",
+        "tools/glue_leakage_guard.py",
+        "tools/run_belka_eval_suite.py",
+        "tools/score_belka_generations.py",
+        "tools/run_belarusianglue_eval.py",
+        "eval/run_local_eval.py",
+        "eval/run_openai_compatible_eval.py",
+        "tools/validate_data_readiness_v2.py"
+      ],
+      "new_executed_checks": [
+        "Isolated/scripted reproductions saved in reproductions*.json (no live HTTP)",
+        "Full302991train+6183val lowercase word-normalized exact crosssplit comparison",
+        "Full302991train vs val exact long-paragraph checks >=100normalized characters and>=15words",
+        "Full302991train vs strict holdout complete normalized prompts>=5words and all12word spans",
+        "Active486train/84val SFT normalized families and closest text-pair comparison",
+        "Deterministic train language-diagnostic sample incl all rare books/bootstrap/morphodict rows"
+      ],
+      "results": {
+        "normalized_full_doc_cross_split_matches": 0,
+        "long_paragraph_cross_split_val_doc_matches": 0,
+        "holdout_prompt_or_12gram_hits": 0,
+        "holdout_indexed_patterns": 196,
+        "language_sample_rows": 15684,
+        "language_sample_caution": "Heuristic nonaccepts are diagnostic disagreement, not proof of foreign-language content.",
+        "holdout_full_prompt_patterns": 192,
+        "holdout_long_12gram_patterns": 4,
+        "holdout_short_prompts_excluded": 17,
+        "holdout_unicode_normalization": "NFC before lowercasing and Unicode word tokenization"
+      },
+      "reused_without_repeating": [
+        "Prior hash-verified bundle restore",
+        "Prior full raw/canonical exact duplicate census",
+        "Prior all-role exact SFT/holdout check and supervised-token census"
+      ],
+      "not_established": [
+        "Corpus-wide semantic/MinHash/SimHash near-duplicate absence",
+        "Independent native-speaker corpus/SFT quality acceptance",
+        "Absence of all semantic or benchmark contamination",
+        "Current upstream HuggingFace/Wikimedia accessibility or metadata: no downloads were made",
+        "Model-level performance: no inference/training was run",
+        "Tokenizer training-data provenance or GPU/NCCL restoration: covered by other agents or still open"
+      ],
+      "additional_static_limitations": [
+        "Collection downloads/extractors write final paths directly and can leave/trust partial files after interruptions; not reproduced against network.",
+        "Bundle exporter materializes tables and tar+compressed archive in RAM: scalability risk, not an observed OOM.",
+        "audit_sft_leakage silently skips malformed rows and its exit code ignores val_size_adequate despite report FAIL; current v9 path uses other validators.",
+        "validate_data_readiness_v2 marks any discovered JSONL as PASS while ignoring parse failures/UTF8 damage; treated as inventory, not a trustworthy readiness gate.",
+        "Current corrected corpus publisher and restore have immutable-generation/strict parsing protections; no new restore corruption repro was found."
+      ],
+      "artifacts": [
+        "holdout-spans.json",
+        "reproductions-extra.json",
+        "corpus-diagnostics.json",
+        "sft-diagnostics.json",
+        "reproductions.json",
+        "coverage.json",
+        "findings.json"
+      ]
+    },
+    "infra": {
+      "inspected": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/runtime-contracts.yml",
+        ".github/workflows/source-review.yml",
+        "requirements_pack.txt",
+        "ops/local/install_nanochat_env.sh",
+        "export/*",
+        "deploy/*",
+        "tools/validate_public_release.py",
+        "tools/check_source_syntax.py",
+        "tools/audit_repo_integrity.py",
+        "tools/audit_training_provenance.py",
+        "tools/write_training_run_manifest.py",
+        "tools/create_quality_control_workbook.py",
+        "tools/audit_quality_control_workbook.py",
+        "README.md",
+        "README_RU.md",
+        "TASKS.md",
+        "reports/state/*",
+        "reports/public/*",
+        "model_cards/*",
+        "data_cards/*",
+        "release/*",
+        "tests relevant coverage inventory"
+      ],
+      "executed": [
+        "Isolated legacy provenance audit with empty artifacts and bogus manifest",
+        "Manifest CLI no-op and direct main fake digest",
+        "Scratch QC generation without evidence and negative audit with three required failures",
+        "Empty-pack integrity report",
+        "Current public release validator",
+        "Inventory of all current public Markdown local links",
+        "HF chat-template default patcher failure"
+      ],
+      "not_executed": [
+        "External publication/deployment",
+        "Production training or GPU/NCCL tests",
+        "Network dependency installation",
+        "Actual full native-to-HF/GGUF conversion, unavailable implementation",
+        "Mutation of tracked source, active runtime, original corpus or checkpoints"
+      ],
+      "delegated_overlap": {
+        "eval_runner_schema": "data_audit owns reproduced strict holdout KeyError",
+        "owner_wrappers_exit_status": "training_audit owns QC/integrity shell exit propagation",
+        "runtime_checkpoint_contracts": "parent owns newer runtime checks"
+      }
+    },
+    "runtime": {
+      "reviewed": [
+        "belka_checkpoint.py",
+        "belka_runtime.py",
+        "belka_stream.py",
+        "belka_resume.py",
+        "belka_metrics.py",
+        "belka_attention.py",
+        "generated base_train.py",
+        "generated chat_sft_be.py",
+        "generated checkpoint_manager.py",
+        "chat_web.py",
+        "ui.html",
+        "quickstart.sh",
+        "run_chat_web.sh"
+      ],
+      "executed": [
+        "Actual web handlers with bundled tokenizer and stub engine",
+        "Actual UI parsing block across every two-chunk byte split",
+        "Independent full UI-function execution by infra_audit"
+      ],
+      "limits": [
+        "No production training or real-model browser session",
+        "No GPU/NCCL/FA3/MPS acceptance",
+        "No claim of exhaustive correctness of trainer/checkpoint code",
+        "Full interrupted SFT resume remains a known open milestone; base warm start is not SFT resume"
+      ]
+    }
+  },
+  "late_reproductions": {
+    "scope": "Isolated local fixtures only. No production data, training, network, tracked source edits, or findings.json edits.",
+    "reproductions": [
+      {
+        "case": "inadequate_validation",
+        "cwd": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/inadequate_validation",
+        "argv": [
+          ".workspace/nanochat/.venv/bin/python",
+          "tools/audit_sft_leakage.py",
+          "--train",
+          "train.jsonl",
+          "--eval-data",
+          "val.jsonl",
+          "--output-json",
+          "report.json",
+          "--output-md",
+          "report.md"
+        ],
+        "command": ".workspace/nanochat/.venv/bin/python tools/audit_sft_leakage.py --train train.jsonl --eval-data val.jsonl --output-json report.json --output-md report.md",
+        "environment_overrides": {
+          "PACK_DIR": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/inadequate_validation"
+        },
+        "exit_code": 0,
+        "stdout": "SFT_LEAKAGE_AUDIT=FAIL\nExact overlap: 0/2 (0.0%)\n5-gram ratio: 0.0%\nVal size: 1 (need ≥50)\n",
+        "stderr": "",
+        "report": {
+          "train_examples": 1,
+          "val_examples": 1,
+          "train_unique_texts": 2,
+          "val_unique_texts": 2,
+          "exact_text_overlap": 0,
+          "exact_overlap_ratio": 0.0,
+          "ngram_5_overlap": 0,
+          "ngram_5_ratio": 0.0,
+          "leakage_detected": false,
+          "val_size_adequate": false,
+          "SFT_LEAKAGE_AUDIT": "FAIL"
+        }
+      },
+      {
+        "case": "malformed_train",
+        "cwd": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_train",
+        "argv": [
+          ".workspace/nanochat/.venv/bin/python",
+          "tools/audit_sft_leakage.py",
+          "--train",
+          "train.jsonl",
+          "--eval-data",
+          "val.jsonl",
+          "--output-json",
+          "report.json",
+          "--output-md",
+          "report.md"
+        ],
+        "command": ".workspace/nanochat/.venv/bin/python tools/audit_sft_leakage.py --train train.jsonl --eval-data val.jsonl --output-json report.json --output-md report.md",
+        "environment_overrides": {
+          "PACK_DIR": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_train"
+        },
+        "exit_code": 0,
+        "stdout": "SFT_LEAKAGE_AUDIT=PASS\nExact overlap: 0/100 (0.0%)\n5-gram ratio: 0.0%\nVal size: 50 (need ≥50)\n",
+        "stderr": "",
+        "report": {
+          "train_examples": 0,
+          "val_examples": 50,
+          "train_unique_texts": 0,
+          "val_unique_texts": 100,
+          "exact_text_overlap": 0,
+          "exact_overlap_ratio": 0.0,
+          "ngram_5_overlap": 0,
+          "ngram_5_ratio": 0.0,
+          "leakage_detected": false,
+          "val_size_adequate": true,
+          "SFT_LEAKAGE_AUDIT": "PASS"
+        }
+      },
+      {
+        "case": "missing_train_glob",
+        "cwd": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/missing_train_glob",
+        "argv": [
+          ".workspace/nanochat/.venv/bin/python",
+          "tools/audit_sft_leakage.py",
+          "--train",
+          "does-not-exist-*.jsonl",
+          "--eval-data",
+          "val.jsonl",
+          "--output-json",
+          "report.json",
+          "--output-md",
+          "report.md"
+        ],
+        "command": ".workspace/nanochat/.venv/bin/python tools/audit_sft_leakage.py --train 'does-not-exist-*.jsonl' --eval-data val.jsonl --output-json report.json --output-md report.md",
+        "environment_overrides": {
+          "PACK_DIR": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/missing_train_glob"
+        },
+        "exit_code": 0,
+        "stdout": "SFT_LEAKAGE_AUDIT=PASS\nExact overlap: 0/100 (0.0%)\n5-gram ratio: 0.0%\nVal size: 50 (need ≥50)\n",
+        "stderr": "",
+        "report": {
+          "train_examples": 0,
+          "val_examples": 50,
+          "train_unique_texts": 0,
+          "val_unique_texts": 100,
+          "exact_text_overlap": 0,
+          "exact_overlap_ratio": 0.0,
+          "ngram_5_overlap": 0,
+          "ngram_5_ratio": 0.0,
+          "leakage_detected": false,
+          "val_size_adequate": true,
+          "SFT_LEAKAGE_AUDIT": "PASS"
+        }
+      },
+      {
+        "case": "malformed_jsonl_readiness",
+        "cwd": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_jsonl_readiness",
+        "argv": [
+          ".workspace/nanochat/.venv/bin/python",
+          "tools/validate_data_readiness_v2.py",
+          "--pack-dir",
+          ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_jsonl_readiness",
+          "--output",
+          ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_jsonl_readiness/report.json"
+        ],
+        "command": ".workspace/nanochat/.venv/bin/python tools/validate_data_readiness_v2.py --pack-dir .workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_jsonl_readiness --output .workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_jsonl_readiness/report.json",
+        "environment_overrides": {
+          "PACK_DIR": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/malformed_jsonl_readiness"
+        },
+        "exit_code": 0,
+        "stdout": "{\"jsonl_files\": 1, \"jsonl_rows\": 2, \"jsonl_chars\": 0, \"download_files\": 0, \"download_bytes\": 0}\nDATA_READINESS_STATUS=PASS\n",
+        "stderr": "",
+        "report": {
+          "timestamp": "2026-10-06T10:57:21.058653+00:00",
+          "jsonl_files": [
+            {
+              "path": "data_input/be_texts/source.jsonl",
+              "rows": 2,
+              "chars": 0
+            }
+          ],
+          "downloads": [],
+          "summary": {
+            "jsonl_files": 1,
+            "jsonl_rows": 2,
+            "jsonl_chars": 0,
+            "download_files": 0,
+            "download_bytes": 0
+          },
+          "status": "PASS"
+        }
+      },
+      {
+        "case": "empty_jsonl_readiness",
+        "cwd": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/empty_jsonl_readiness",
+        "argv": [
+          ".workspace/nanochat/.venv/bin/python",
+          "tools/validate_data_readiness_v2.py",
+          "--pack-dir",
+          ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/empty_jsonl_readiness",
+          "--output",
+          ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/empty_jsonl_readiness/report.json"
+        ],
+        "command": ".workspace/nanochat/.venv/bin/python tools/validate_data_readiness_v2.py --pack-dir .workspace/audit-main-20261006/deep/data/fixtures/extra_gates/empty_jsonl_readiness --output .workspace/audit-main-20261006/deep/data/fixtures/extra_gates/empty_jsonl_readiness/report.json",
+        "environment_overrides": {
+          "PACK_DIR": ".workspace/audit-main-20261006/deep/data/fixtures/extra_gates/empty_jsonl_readiness"
+        },
+        "exit_code": 0,
+        "stdout": "{\"jsonl_files\": 1, \"jsonl_rows\": 0, \"jsonl_chars\": 0, \"download_files\": 0, \"download_bytes\": 0}\nDATA_READINESS_STATUS=PASS\n",
+        "stderr": "",
+        "report": {
+          "timestamp": "2026-10-06T10:57:21.082601+00:00",
+          "jsonl_files": [
+            {
+              "path": "data_input/be_texts/source.jsonl",
+              "rows": 0,
+              "chars": 0
+            }
+          ],
+          "downloads": [],
+          "summary": {
+            "jsonl_files": 1,
+            "jsonl_rows": 0,
+            "jsonl_chars": 0,
+            "download_files": 0,
+            "download_bytes": 0
+          },
+          "status": "PASS"
+        }
+      }
+    ],
+    "confirmed_consequences": [
+      {
+        "script": "tools/audit_sft_leakage.py",
+        "location": "tools/audit_sft_leakage.py:95",
+        "consequence": "One validation conversation emits SFT_LEAKAGE_AUDIT=FAIL and val_size_adequate=false but exits0; shell callers checking status cannot enforce this criterion."
+      },
+      {
+        "script": "tools/audit_sft_leakage.py",
+        "location": "tools/audit_sft_leakage.py:19",
+        "consequence": "Entire malformed or unmatched train input is silently treated as empty. With50valid eval rows it emits SFT_LEAKAGE_AUDIT=PASS and exits0 despite checking0training examples."
+      },
+      {
+        "script": "tools/validate_data_readiness_v2.py",
+        "location": "tools/validate_data_readiness_v2.py:32",
+        "consequence": "Malformed JSONL containing invalid UTF8 receives PASS/exit0; an entirely empty discovered JSONL also receives PASS/exit0. Status depends only on file discovery, not parseability or usable row counts."
+      }
+    ],
+    "consumers": {
+      "tools/audit_sft_leakage.py": {
+        "active_script_or_CI_caller_found": false,
+        "search_scope": "Repository-wide rg references, excluding corpus bundles/seed data/preexisting handoff; audit inventories ignored as references only.",
+        "references": [
+          "reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md:3"
+        ],
+        "historical_outputs": [
+          "reports/audits/sft_v2_leakage_report.json",
+          "reports/audits/sft_v2_leakage_report_v2.json",
+          "reports/sft_v5_leakage_report.json",
+          "reports/sft_v6_leakage_report.json"
+        ],
+        "impact_limit": "Confirmed unreliable standalone/historical helper; no evidence current v9 training automatically consumes this exit status."
+      },
+      "tools/validate_data_readiness_v2.py": {
+        "active_script_or_CI_caller_found": true,
+        "callers": [
+          {
+            "path": "ops/local/run_data_foundry_v2.sh",
+            "line": 29,
+            "effect": "Executes under set -e; following line33 prints DATA_FOUNDRY_V2_DONE=YES when validator returns0."
+          },
+          {
+            "path": "ops/local/agent_prepare_next.sh",
+            "line": 59,
+            "effect": "Generated owner build script runs readiness immediately before build_real_corpus at line60."
+          },
+          {
+            "path": "ops/local/agent_prepare_next.sh",
+            "line": 135,
+            "effect": "Prepare phase runs helper but explicitly downgrades nonzero status to WARN."
+          }
+        ],
+        "impact_limit": "False readiness/DONE status is proven. Current strict corpus parser may still reject malformed JSON later; do not claim malformed data necessarily reaches model training."
+      }
+    },
+    "findings_json_unchanged": true,
+    "suggested_findings": [
+      {
+        "id": "DATA-16",
+        "severity": "P2",
+        "kind": "bug",
+        "status": "new_confirmed",
+        "title": "Legacy SFT leakage CLI silently ignores missing/malformed train and returns success for an inadequate validation split",
+        "path": "tools/audit_sft_leakage.py",
+        "line": 19,
+        "related_locations": [
+          "tools/audit_sft_leakage.py:11",
+          "tools/audit_sft_leakage.py:72",
+          "tools/audit_sft_leakage.py:95"
+        ],
+        "trigger": "Запустить отдельный audit_sft_leakage.py с битым JSONL или train-glob без совпадений; либо с validation меньше50диалогов и без пересечений.",
+        "consequence": "Битый/отсутствующий train с50val даёт train_examples=0,SFT_LEAKAGE_AUDIT=PASS,rc0. При одном val отчёт FAIL расходится с rc0. Проверка через exit status не гарантирует, что данные прочитаны и критерии выполнены.",
+        "evidence": "extra-gate-evidence.json cases malformed_train,missing_train_glob,inadequate_validation; все3rc0. Полные argv,cwd,stdout и JSONreport сохранены.",
+        "recommended_fix": "Требовать непустое разрешение каждого входного glob, строгий JSONL/schema и ненулевые train/val; вычислять единый verdict и возвращать nonzero для любого нарушенного gate.",
+        "scope_limit": "Отдельный исторический инструмент. Активный shell/CI caller в репозитории не найден; публичный summary его называет detector, исторические отчёты существуют. Не приписывать этот дефект текущему v9 publisher."
+      },
+      {
+        "id": "DATA-17",
+        "severity": "P2",
+        "kind": "bug",
+        "status": "new_confirmed",
+        "title": "Data readiness validator reports PASS when only empty or malformed JSONL files exist",
+        "path": "tools/validate_data_readiness_v2.py",
+        "line": 32,
+        "related_locations": [
+          "tools/validate_data_readiness_v2.py:10",
+          "tools/validate_data_readiness_v2.py:14",
+          "ops/local/run_data_foundry_v2.sh:29",
+          "ops/local/agent_prepare_next.sh:59"
+        ],
+        "trigger": "В одном из сканируемых каталогов есть хотя бы один JSONL, но файл пустой, JSONневалиден либо повреждёнUTF8.",
+        "consequence": "Файловая инвентаризация считается готовностью данных: обе фикстуры дают DATA_READINESS_STATUS=PASS,rc0; битый файл считается2rows при0chars, пустой—0rows. Foundry продолжает до DATA_FOUNDRY_V2_DONE=YES, generated owner script—до corpus build.",
+        "evidence": "extra-gate-evidence.json cases malformed_jsonl_readiness,empty_jsonl_readiness; сохранены команды и полные reports.",
+        "recommended_fix": "Разделить inventory от readiness. Readiness должен строго читатьUTF8/JSONL, валидировать ожидаемые схемы, требовать достаточные usable records/splits и возвращать nonzero при неполной проверке; inventory не должен выдавать статусPASS.",
+        "scope_limit": "Подтверждён ложный readiness/DONE signal. Строгий downstream corpus parser может позже отклонить повреждённые записи; попадание таких записей в модель не доказано."
+      }
+    ]
+  },
+  "additional_agent_observations": {
+    "infra": [
+      {
+        "id": "INFRA-R1",
+        "priority": "P2",
+        "title": "Only upstream dependencies are frozen, not the complete Belka environment",
+        "locations": [
+          "ops/local/install_nanochat_env.sh:159",
+          "ops/local/install_nanochat_env.sh:179",
+          "ops/local/install_nanochat_env.sh:180",
+          "requirements_pack.txt:1"
+        ],
+        "assessment": "uv sync uses the pinned upstream lock, but subsequent pip installs use mostly lower-bounded Belka dependencies and pip/setuptools/wheel upgrades; pip fallback resolves upstream dependencies without uv.lock. A later identical source checkout can produce different environments. This is a reproducibility risk, not evidence that a currently tested package version is broken.",
+        "fix": "Maintain one reviewed lock/constraints set for supported CPU and GPU environments, record its hash and installed versions, and run pip check plus import/integration smoke tests."
+      },
+      {
+        "id": "INFRA-R2",
+        "priority": "P2",
+        "title": "Green runtime CI does not exercise legacy provenance/QC/export paths",
+        "assessment": "The required Runtime contracts workflow is a meaningful CPU/Gloo suite, verifies 63 source transfer hashes, re-applies overlay and verifies identity, restores the real published bundle, runs tests and strict holdout/syntax/release checks. It does not execute the legacy manifest writer/provenance/QC/export helpers identified above. A source syntax pass cannot detect missing main(), semantic fake hashes or false PASS aggregates. GPU/NCCL acceptance and full trainer resume remain separately documented gaps.",
+        "fix": "Add a small negative-fixture suite for audit verdicts and CLI smoke contracts; keep CPU evidence and GPU/hardware acceptance explicitly separate."
+      },
+      {
+        "id": "INFRA-R3",
+        "priority": "P3",
+        "title": "public_release ready=true is a narrow packaging result",
+        "locations": [
+          "tools/validate_public_release.py:82",
+          "tools/validate_public_release.py:89"
+        ],
+        "assessment": "Read-only validator returns ready:true for HEAD while three linked public-index targets are missing because relative links are only checked in README.md. It does not validate executable documentation, lineage, model export, quantitative quality or all public-document links. Current top-level README/TASKS and recent patch notes largely acknowledge these boundaries; old reports do not consistently do so.",
+        "fix": "Name and expose the packaging scope explicitly and optionally include all current public Markdown local links; do not infer training/model readiness from this result."
+      }
+    ],
+    "data": [
+      "Collection downloads/extractors write final paths directly and can leave/trust partial files after interruptions; not reproduced against network.",
+      "Bundle exporter materializes tables and tar+compressed archive in RAM: scalability risk, not an observed OOM.",
+      "audit_sft_leakage silently skips malformed rows and its exit code ignores val_size_adequate despite report FAIL; current v9 path uses other validators.",
+      "validate_data_readiness_v2 marks any discovered JSONL as PASS while ignoring parse failures/UTF8 damage; treated as inventory, not a trustworthy readiness gate.",
+      "Current corrected corpus publisher and restore have immutable-generation/strict parsing protections; no new restore corruption repro was found."
+    ]
+  },
+  "evidence_index": [
+    {
+      "path": ".workspace/audit-main-20261006/audit-summary.json",
+      "sha256": "227fc3872217e0e2e7acc3dfa90aab88ae910ec14e807e080ff1ff9dd14b492a",
+      "size_bytes": 5985
+    },
+    {
+      "path": ".workspace/audit-main-20261006/tests-unrestricted.xml",
+      "sha256": "76e667f581630604ca8aee5147958f9887e148bcd4acd86be7af898108ef29f0",
+      "size_bytes": 211479
+    },
+    {
+      "path": ".workspace/audit-main-20261006/syntax.json",
+      "sha256": "31965948107a4a6560458e7b0c60b8dda34a370e7e313cd6622fb34d506d0d8c",
+      "size_bytes": 35699
+    },
+    {
+      "path": ".workspace/audit-main-20261006/public-release.json",
+      "sha256": "cc123bc8c84cdcef76bcb9b4fe13759d1f7f301ed891ce730e623d8ccd26e016",
+      "size_bytes": 62
+    },
+    {
+      "path": ".workspace/audit-main-20261006/corpus-audit.json",
+      "sha256": "107d953f1b1487eb27b3dca55939249a1204f8d30523a0e954ad4d7836e9d9f6",
+      "size_bytes": 1776
+    },
+    {
+      "path": ".workspace/audit-main-20261006/sft-audit.json",
+      "sha256": "6d01173aad4ea741d927e422f772a198c9ee4c9ef48d4ed2d4f556b8f0b7157d",
+      "size_bytes": 437
+    },
+    {
+      "path": ".workspace/audit-main-20261006/strict-holdout.json",
+      "sha256": "b4586d36ae98180724a9c97e465b8ba4b3b55064c1ea57de913eb4b71649780c",
+      "size_bytes": 674
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/training/reproductions.json",
+      "sha256": "8272eb185d4885b1ae88dafb4f962596d306cdf64a288f86aaffb13249319a64",
+      "size_bytes": 13350
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/training/legacy_reproductions.json",
+      "sha256": "952f2e2fb2c39d7d2a0eccd18ea988497791b1e3d62c5279bb9db96fa786f3dd",
+      "size_bytes": 8395
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/training/budget_reproductions.json",
+      "sha256": "fdd357214544fd9106bddacc032308aea20974be4d9a89c011328d3a39796f8b",
+      "size_bytes": 606
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/training/finalize_reproduction.json",
+      "sha256": "5ea2b134d1fdaf4ab64543e8b337f649f4e7a0c0facc3a8f873afb1c51a19e7d",
+      "size_bytes": 4688
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/training/tag_path_reproduction.json",
+      "sha256": "84c7e798eb8379b1897cc0e6c05556d8fcbabdba46ef949661d42101aace5da7",
+      "size_bytes": 468
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/training/findings.json",
+      "sha256": "94bbe6fe8192f9891c2e01b34c2e328c65ca9f00acec1641e14bea0ee8e9c32f",
+      "size_bytes": 35256
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/reproductions.json",
+      "sha256": "6f43a242f986e8fdc2c9104f90a574cae8098126ec8fad30b2f3a0c66ac87607",
+      "size_bytes": 5136
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/reproductions-extra.json",
+      "sha256": "a1cf4abf9578fa9b5f9ef6d2376327a3c62a5188ec9ea42221edced5e6f6ab21",
+      "size_bytes": 8212
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/corpus-diagnostics.json",
+      "sha256": "3dcfb9272d3e036b2dd16e4970ed118c6e1b183995c2388efef4a10971649c43",
+      "size_bytes": 17816
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/sft-diagnostics.json",
+      "sha256": "51c9e2eb6b124d4899adbf4441528692e4910f4ba56da6d01e0ad9768c3d23f0",
+      "size_bytes": 6188
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/holdout-spans.json",
+      "sha256": "39efaf713342f07f9f86fa77c599dcadc4ad759383ad33c15a26cf7a05371306",
+      "size_bytes": 461
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/coverage.json",
+      "sha256": "2d8ece2236da9d67f7ace9568e20153eff68880d8b4c0bb04cdc261d68caf793",
+      "size_bytes": 4245
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/findings.json",
+      "sha256": "28a62a330c387314b7668c0330733446e86964976922b8dc29c58b7cc9487bdc",
+      "size_bytes": 17125
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/data/extra-gate-evidence.json",
+      "sha256": "f490ed586881adfd35e7333ea7a9b9baa4f7badacc37bbe96dc96a803f22d64b",
+      "size_bytes": 15108
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/infra/reproduction-evidence.json",
+      "sha256": "fd465daf18e049f2b53d4536e5980f16bf68206e0acc7848730eb3042e34a647",
+      "size_bytes": 16065
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/infra/findings.json",
+      "sha256": "336dc02902d6941770477fa1f740b0b8640646147c0c9303d6a5ff589425adf5",
+      "size_bytes": 17953
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/infra/web-crosscheck-evidence.json",
+      "sha256": "fb696fc7dce6b4372d3a483e1230c05e9bdd873de718acdd08501992f84919ee",
+      "size_bytes": 2653
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/infra/required-runtime-evidence.json",
+      "sha256": "a80b133c8308182069f5623efdb49bf7920875dc976d1e92e39d33c5fa30439c",
+      "size_bytes": 459
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/runtime/web-evidence.json",
+      "sha256": "5ff8b3362037397673d055470670604be42bf003cf0cc41d9522faf3ab12093e",
+      "size_bytes": 1118
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/runtime/sse-evidence.json",
+      "sha256": "2e747a52b8a85d4aabd5a59c8ca64ed59a50d2cd394c7e3809f0c1c31de9be0a",
+      "size_bytes": 480
+    },
+    {
+      "path": ".workspace/audit-main-20261006/deep/runtime/findings.json",
+      "sha256": "913cd31b95dbfebf182123ade77d88a6a6de686b65ea24e1cd4d1f08dfae0b2b",
+      "size_bytes": 6719
+    }
+  ],
+  "source_inventory": [
+    {
+      "path": "configs/model_scales_from_scratch.yaml",
+      "sha256": "075cdc7488919faa9eec586083820af6690ea57d36e8e3cc45ed47c3332ed4ef"
+    },
+    {
+      "path": "configs/profiles_h200.yaml",
+      "sha256": "651477530bec7854c26e6ff8874499361e5bf1a11a69d5f505bc7883a7567f81"
+    },
+    {
+      "path": "configs/source_mixing_policy.yaml",
+      "sha256": "ef5987c0a5c7f6b8e4d2ab4b75c3f450d254015b3a1c661e9c65aa838339b904"
+    },
+    {
+      "path": "data_pipeline/detect_belarusian.py",
+      "sha256": "239c0cf8cac0e2303ec4d5394bc47115b999b3c954a100d6517d1039961dd7cd"
+    },
+    {
+      "path": "data_pipeline/prepare_belarusian_corpus.py",
+      "sha256": "64d97bd12414971d57a5adc603019421e0f127224e83c864fc51fc20edf9bfd7"
+    },
+    {
+      "path": "data_pipeline/sft_v9.py",
+      "sha256": "67202622f248def6e4a723ade4ce97715d4aefa34ddfe62d6707896edc721e9c"
+    },
+    {
+      "path": "data_release/open_corpus_bundle/BUNDLE_MANIFEST.json",
+      "sha256": "a18272a1c6d9e2e4023c54ea3e6ecebaa484de70eee3b3641b3cf6d13c0f6812"
+    },
+    {
+      "path": "deploy/export_to_gguf.sh",
+      "sha256": "5c5e388f2c31f27567cf92ba2ca275de21c02bfc5085a5a7c120c5cf982243ce"
+    },
+    {
+      "path": "docs/06_evaluation_plan.md",
+      "sha256": "e5c4280219d37180632057205f501714ea18ab5779d0e66fd23a1c76d48c4b5b"
+    },
+    {
+      "path": "eval/run_openai_compatible_eval.py",
+      "sha256": "f2c898ce647ba45fc6e597613c936b12cd6d9ebe991fb245439ada3b6c96cf0c"
+    },
+    {
+      "path": "eval/strict_holdout_quality_control_v2.be.jsonl",
+      "sha256": "b2ebadd343206e36772d8d7b2000b04153742058d2dac7fa4e4e3b8fa896e753"
+    },
+    {
+      "path": "export/export_to_hf.sh",
+      "sha256": "07f9f43d01fadd6428d0237e2bbcb593db7121238fc9588978f0a349e230ed8f"
+    },
+    {
+      "path": "export/patch_hf_chat_template.py",
+      "sha256": "8721e32c848e7ebdd6c85a2cab058694aa1a5fb76c54f7fc41b1377285432755"
+    },
+    {
+      "path": "ops/local/agent_analyze_owner_run.sh",
+      "sha256": "11b25a957e425100a16c469e3338a894028814d0220f0cb03ffaa469f99073fe"
+    },
+    {
+      "path": "ops/local/agent_prepare_next.sh",
+      "sha256": "a106f91c5dd87dd73a2e3cfd0cab71df787653587d3c4f67399d657bc6d76f93"
+    },
+    {
+      "path": "ops/local/build_real_corpus.sh",
+      "sha256": "4488284a9e50e608049406cc20831baac492e8128270f64e3afe8c9c8970bbfa"
+    },
+    {
+      "path": "ops/local/clean_rebuild_env.sh",
+      "sha256": "c10b807a340cb807f0ee5782c273a8a065ae9fd28b3e552dda169d1515f9abe3"
+    },
+    {
+      "path": "ops/local/install_nanochat_env.sh",
+      "sha256": "42d6d5369e92fa10ee184aa1626529f521912ed0ce7697b1ba635bdbe72336ec"
+    },
+    {
+      "path": "ops/local/patch_nanochat_runtime.py",
+      "sha256": "8be78d3431af7a97c83094ef189fdbe116d6d9031b7c90832760223eb3d8249b"
+    },
+    {
+      "path": "ops/local/quickstart.sh",
+      "sha256": "b6d79edb2a2611fc56dfdd6817b780f1e4953839ec03482ab0ad1f0e226d7d1d"
+    },
+    {
+      "path": "ops/local/run_belka_from_scratch_safe.sh",
+      "sha256": "ae9665bce06233b36d7032140e3f66902dd2f0634d0eab792d316c6d98a7eb79"
+    },
+    {
+      "path": "ops/local/run_belka_h200_maxquality.sh",
+      "sha256": "d030b5769ba04307c0e547baac206da748d4e72b6481e0e51449fa8b44c3d8dd"
+    },
+    {
+      "path": "ops/local/run_belka_one_button.sh",
+      "sha256": "142eb346097074648f57a81f371c022baf643446b125f4fad35a48ecfcdd29b2"
+    },
+    {
+      "path": "ops/local/run_data_foundry_v2.sh",
+      "sha256": "890cb289f80677f3f86b2849e468ca8c13c3d2148712a7c85a908a339b4a10c4"
+    },
+    {
+      "path": "ops/local/train_tokenizer_real.sh",
+      "sha256": "2d856c9b30a333e8f158efea30ab2a64084598062827a81ea2e9d0c039e74471"
+    },
+    {
+      "path": "ops/nanochat_fork/nanochat/belka_checkpoint.py",
+      "sha256": "7cc5863065e093fb498fd979f0decaad79d8c107959fa290dc9f0605bf84d8bd"
+    },
+    {
+      "path": "ops/nanochat_fork/nanochat/belka_metrics.py",
+      "sha256": "7916e55c47c1d330b439ea7adc888718b3d749a22400366b32e5cea1e1a288e0"
+    },
+    {
+      "path": "ops/nanochat_fork/nanochat/belka_runtime.py",
+      "sha256": "ee67e02381eed1fcac2f3945682b047d6e6ece0bc8aa96e55faa119b2f450049"
+    },
+    {
+      "path": "ops/nanochat_fork/nanochat/belka_stream.py",
+      "sha256": "a5533d416530a839bba26a5a2a9444cab8a71389d935ad38016c642ca7c9c5fd"
+    },
+    {
+      "path": "ops/nanochat_fork/nanochat/ui.html",
+      "sha256": "4efb79d45f4bbc045e4d308a231b40e9f48424999f9ddcbff94e7b530190a5fa"
+    },
+    {
+      "path": "ops/nanochat_fork/scripts/chat_web.py",
+      "sha256": "34410456d877e28fad9d7112c73802adcfd03fbc6f321cd99cd9dfbecaca4650"
+    },
+    {
+      "path": "ops/owner_runs/02B_OWNER_EXPAND_DATASET_FROM_EXISTING_RAW.sh",
+      "sha256": "30038c4d2f2a1e405ee16f0e69e13a6320aabf22ad1c859432f9e1ef1ba79531"
+    },
+    {
+      "path": "ops/owner_runs/02D_OWNER_FINALIZE_EXPANDED_DATASET_REPORT.sh",
+      "sha256": "7404704a801f1d5630910258b05ce193603ad0a7f9f4540a65ffc57a0cbef822"
+    },
+    {
+      "path": "ops/owner_runs/32_OWNER_REBUILD_CORPUS_V3B_AND_PROVE_FINAL_PARQUET.sh",
+      "sha256": "a324610e17b72733f3b3c659013bef669845fd1db0ba73238a085297ad98383f"
+    },
+    {
+      "path": "ops/owner_runs/33_OWNER_PREPARE_D8_V3B_PILOT.sh",
+      "sha256": "c946138e561bf9494333534d64a35fdb4d205a997d9a5f2604626669fe75d733"
+    },
+    {
+      "path": "ops/owner_runs/34_OWNER_TRAIN_D8_BASE_V3B_PILOT.sh",
+      "sha256": "54c82f756b216f0cffd5629ecad5c4ac54a267b31f219d4efc5471f6c87ee338"
+    },
+    {
+      "path": "ops/owner_runs/40_OWNER_CHECK_HOLDOUT_LEAKAGE.sh",
+      "sha256": "53c7998549e4922e57a698d6b87844c4fbc19b23c49f8c5d22709172800de89f"
+    },
+    {
+      "path": "ops/owner_runs/43_OWNER_AUDIT_QUALITY_CONTROL_XLSX.sh",
+      "sha256": "35262b0f7f4fd67a1abc45a680b1d9c0164e47ee79fc03e14b2cdc923bd20e46"
+    },
+    {
+      "path": "ops/owner_runs/44_OWNER_REPO_INTEGRITY_AUDIT.sh",
+      "sha256": "cf623aabd61d31fdd066bc94701cf318fe658d683fdfca5046168e8b5c3deee1"
+    },
+    {
+      "path": "ops/owner_runs/OWNER_RUN_NEXT.sh",
+      "sha256": "359b53dd84b3f673d3bcb9e6f0a88bd9733579b7ed9b377260e4781c05dd2f1b"
+    },
+    {
+      "path": "owner.sh",
+      "sha256": "e76db722e462321813effb0c758326f09f822468a44d61747be9f0b6ee84c0ca"
+    },
+    {
+      "path": "release/RELEASE_CHECKLIST.md",
+      "sha256": "c7b84f878c1949714dc5c00aa1b40de7623751ae01a0c2e106392557ea7d58a9"
+    },
+    {
+      "path": "reports/public/PROJECT_STATUS.md",
+      "sha256": "9ca394253028542ce60bf934302aaacfb181d53914d705061c74ef7a24ce704e"
+    },
+    {
+      "path": "reports/public/REPORTS_INDEX.md",
+      "sha256": "68ebf9b3a1727c30515edfcf9a82d75d45a063403439345ef07ef6a22d6af6d2"
+    },
+    {
+      "path": "reports/public/REPRODUCIBILITY_SUMMARY.md",
+      "sha256": "e79a230a6de7cb129b2c9b06b99e18ca0cc8ca762bbd91930977b8f4ef55bf8f"
+    },
+    {
+      "path": "requirements_pack.txt",
+      "sha256": "475a3c831acc8a1d186267e66e19ad15d4f75973f73d99f90865c2b0f52c2b14"
+    },
+    {
+      "path": "seed_sft/sft_v8_val.be.jsonl",
+      "sha256": "bd7b003b49208e09bc0c21390a8fc8768cf503445b1d51e44d1ca3ad635194a2"
+    },
+    {
+      "path": "tools/agent_training_guard.py",
+      "sha256": "f8b3eeededb814ceedf9b1af7ba32da8e9df16849bb5e5800f00492fa7a8a8ca"
+    },
+    {
+      "path": "tools/audit_quality_control_workbook.py",
+      "sha256": "889d44079a5defaef309c316c56f15f04b84209d72b56651a26d5d389081a3a9"
+    },
+    {
+      "path": "tools/audit_repo_integrity.py",
+      "sha256": "55df4bf0449c00212a5394f98db5bfad245a36ee28465bd7bcfdffeed7b34bb9"
+    },
+    {
+      "path": "tools/audit_sft_leakage.py",
+      "sha256": "4172f9cc63418c69e9aaf37ae455de9d2efb5397305c1477f04a14b7ef6bad57"
+    },
+    {
+      "path": "tools/audit_training_provenance.py",
+      "sha256": "8dbdb98bea18563dfc5699f499ff286647e7648fe6079fca4b85962db244eb20"
+    },
+    {
+      "path": "tools/build_belka_mixture.py",
+      "sha256": "02976a71dfb95e6b5b708a8da67f1887c12e037999a9f5abbc0aeabb5c8c45c2"
+    },
+    {
+      "path": "tools/build_books_clean_v2.py",
+      "sha256": "90961908f81ee43985ce0c790b2516be609b011738f5596cb68d44ee5392d71a"
+    },
+    {
+      "path": "tools/build_open_corpus_bundle.py",
+      "sha256": "6c185dc3b4aab88996c53b1544614d5658f92c8cbf9b53e9f0a7d10c24a385af"
+    },
+    {
+      "path": "tools/check_eval_leakage.py",
+      "sha256": "bb4c2ec24a4cbb91c4b52edd30c682351b7553286d0c12e92a216df3a106a0fd"
+    },
+    {
+      "path": "tools/count_corpus_tokens.py",
+      "sha256": "311fa1ca23a1759560ac9acd22ad78beda493a625fd832d301ef707f7ae86757"
+    },
+    {
+      "path": "tools/create_quality_control_workbook.py",
+      "sha256": "f0414eb9c3aa22acaa63a68496d2354d098dad56082d2effda6dd305ad7fb806"
+    },
+    {
+      "path": "tools/download_belarusian_sources.py",
+      "sha256": "b0df94b0e24b8a686edadec3e9b8223cd176ce4bfde8564472a8f61d45a5ecac"
+    },
+    {
+      "path": "tools/filter_sources_to_nanochat_parquet.py",
+      "sha256": "b9a9f4fc5980bc22b67a5a651c60d0d2232ddf37a25477de513f1da00939a2a5"
+    },
+    {
+      "path": "tools/glue_leakage_guard.py",
+      "sha256": "affb605e732350e7e69a1c382974b6d9897a18caace7db5c36a1f0e6fc56ee40"
+    },
+    {
+      "path": "tools/hf_stream_belarusian_sources.py",
+      "sha256": "49d7c425cd483ff78f9f46f5626e608e3eda8192294316c14819da087833fe43"
+    },
+    {
+      "path": "tools/restore_corpus_bundle.py",
+      "sha256": "8752986082acb85c6d682c432b8513a53c752116e291f47775623cf366032104"
+    },
+    {
+      "path": "tools/run_belarusianglue_eval.py",
+      "sha256": "357f8bce141333b099e7316160c9f16129dab3b78e440c1a8bb46ea19adb58ef"
+    },
+    {
+      "path": "tools/run_belka_eval_suite.py",
+      "sha256": "d742081360b8be3fc476929e8429a9a5b9e329cb1b850619df031065df192e1b"
+    },
+    {
+      "path": "tools/validate_data_readiness_v2.py",
+      "sha256": "4aa4f8672d7a815417ac65930b8d4158357502187780fabdc5a9f350b08234cc"
+    },
+    {
+      "path": "tools/write_training_run_manifest.py",
+      "sha256": "13089bb1687cb069ea2b3da8f0441d5177e610ab0fa268b70c5c05d1c8137f60"
+    }
+  ]
+}

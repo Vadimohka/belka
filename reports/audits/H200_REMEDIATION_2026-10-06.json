@@ -1,0 +1,891 @@
+{
+  "schema": "belka-h200-remediation-v1",
+  "repository_base": "2473f31b134bb9c6911e3979d7b5d75eab225a3c",
+  "target": {
+    "gpus": 1,
+    "accelerator": "H200",
+    "maximum_hours": 168,
+    "priority": "quality",
+    "hardware_available": false,
+    "hardware_acceptance": "Deferred until the owner connects H200; preparation and CPU integration are authorized now."
+  },
+  "status": "READY_FOR_H200_PROBE",
+  "audit_items": [
+    {
+      "id": "TR01",
+      "priority": "P1",
+      "original_title": "H200 удаляет выбранный корпус",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Immutable corpus generations; canonical launcher never deletes input.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR02",
+      "priority": "P1",
+      "original_title": "Owner32 удаляет Parquet и затем падает",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Owner32 requires explicit replacement instead of deleting current Parquet.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR03",
+      "priority": "P1",
+      "original_title": "Проверка путей выполняется до CLI-переопределений",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "CLI overrides precede path validation and mutations.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR04",
+      "priority": "P1",
+      "original_title": "H200 выбирает новый корпус, runtime читает старый",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Plan binds resolved corpus/tokenizer generations; run snapshot is the only trainer base.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR05",
+      "priority": "P1",
+      "original_title": "Перезаписывается опубликованный токенизатор",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Fresh train-only tokenizer generation; historical bundle tokenizer retained.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR06",
+      "priority": "P1",
+      "original_title": "Бюджеты SFT -1 и 0 отвергаются runtime",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Positive explicit SFT budgets; --skip-sft is separate.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR07",
+      "priority": "P1",
+      "original_title": "H200 full_node получает 0 eval-батчей",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Eight-GPU profile retired for this task; one-GPU eval budgets validated.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR08",
+      "priority": "P1",
+      "original_title": "Профиль H200 молча заменяется запасными значениями",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Unknown profiles rejected; aliases and every resolved setting recorded.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR09",
+      "priority": "P2",
+      "original_title": "H200 smoke игнорирует fixed iterations",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Explicit smoke optimizer-step budgets take precedence over epoch defaults.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR10",
+      "priority": "P1",
+      "original_title": "Оба safe-профиля имеют невозможный batch",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Safe global/local batches are divisible and validated.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR11",
+      "priority": "P2",
+      "original_title": "H200 создаёт ссылки, которые runtime отвергает",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Stable run bridges resolve to exact prepared generations accepted by runtime.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR12",
+      "priority": "P2",
+      "original_title": "Epoch counter расходится с обучаемым потоком",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Full streaming count includes BOS and binds actual corpus/tokenizer bytes.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR13",
+      "priority": "P2",
+      "original_title": "OWNER_RUN_NEXT указывает отсутствующий профиль",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Owner default resolves the canonical single-H200 planner.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR14",
+      "priority": "P2",
+      "original_title": "Post-run analysis использует неверный mode",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Post-run analyzer uses a supported mode.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR15",
+      "priority": "P2",
+      "original_title": "Owner wrappers скрывают ошибки аудита",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Audit subprocess status propagates instead of unconditional PASS.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR16",
+      "priority": "P2",
+      "original_title": "Finalizer объявляет корпус готовым без Parquet",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Finalization verifies actual shard payload, not only source summaries.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR17",
+      "priority": "P2",
+      "original_title": "Owner34 проверяет v3b, но не выбирает его",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Owner34 routes through exact canonical planned dataset.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "TR18",
+      "priority": "P2",
+      "original_title": "Заявленная архитектура safe-профилей не применяется",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Depth/aspect/head parameters passed explicitly and checked against model config.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-01",
+      "priority": "P1",
+      "original_title": "Holdout gate проверяет 0 из 486 SFT-строк",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Shared conversation parser checks every user/assistant/system message.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-02",
+      "priority": "P1",
+      "original_title": "Generic corpus builder принимает eval-only данные",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Shared source policy carries source metadata and excludes eval-only sources.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-03",
+      "priority": "P1",
+      "original_title": "Bundle builder удаляет предыдущий выпуск до проверки",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Archive bundles publish atomically into retained generations.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-04",
+      "priority": "P1",
+      "original_title": "Bundle exporter теряет дополнительные shards",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Archive enumerates and verifies every train/validation shard.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-05",
+      "priority": "P1",
+      "original_title": "Cleaner перезаписывает книги с кириллическими именами",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Stable collision-resistant source keys preserve distinct Cyrillic book names.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-06",
+      "priority": "P2",
+      "original_title": "manual_review не исключает книгу из обучения",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Book review status quarantines rather than admits payload.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-07",
+      "priority": "P1",
+      "original_title": "Belacorpus placeholder обнуляет существующий JSONL",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Placeholder/download/extraction failures preserve previous complete files.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-08",
+      "priority": "P2",
+      "original_title": "GLUE guard пропускает явный GLUE source",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Shared source contract rejects explicit GLUE/eval-only records.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-09",
+      "priority": "P2",
+      "original_title": "Документированная holdout-команда падает на схеме",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Actual strict209 schema normalization, JSON/native/OpenAI SSE client, transport failures never answers, heuristic/manual criteria explicitly separated, GLUE real labeled-file endpoint predictions/accuracy/MCC and NOT_RUN dry run",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-10",
+      "priority": "P2",
+      "original_title": "Mixture builder не применяет policy",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Deterministic measured character caps affect actual retained documents.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-11",
+      "priority": "P2",
+      "original_title": "Языковые эвристики пропускают сильную русскую примесь",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Discriminative language/segment gates, reviewed domain policy, quarantine; independent native review remains separate.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-12",
+      "priority": "P2",
+      "original_title": "Legacy eval теряет стандартные JSON completions",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Actual strict209 schema normalization, JSON/native/OpenAI SSE client, transport failures never answers, heuristic/manual criteria explicitly separated, GLUE real labeled-file endpoint predictions/accuracy/MCC and NOT_RUN dry run",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-13",
+      "priority": "P2",
+      "original_title": "SFT train/val разделяют одну парафразную семью",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Explicit semantic seed-family registry keeps known paraphrases in one SFT split.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-14",
+      "priority": "P2",
+      "original_title": "Опубликованный corpus не согласован с новой policy",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Fresh policy-compliant generations replace selection of the historical bundle without modifying it.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-15",
+      "priority": "P2",
+      "original_title": "BelarusianGLUE evaluator остаётся dry-run заглушкой",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Actual strict209 schema normalization, JSON/native/OpenAI SSE client, transport failures never answers, heuristic/manual criteria explicitly separated, GLUE real labeled-file endpoint predictions/accuracy/MCC and NOT_RUN dry run",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-16",
+      "priority": "P2",
+      "original_title": "Старый SFT leakage CLI пропускает отсутствующий train",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Empty/missing/malformed train or inadequate evaluation inputs fail.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "DATA-17",
+      "priority": "P2",
+      "original_title": "Data readiness объявляет пустой/битый JSONL готовым",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Readiness parses actual records and rejects corrupt/empty payloads.",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-01",
+      "priority": "P1",
+      "original_title": "Provenance audit выдаёт PASS без доказательств",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Content-bound provenance, explicit checkpoints and dataset coverage; PREPARED distinct from RECORDED; no dirname-based acceptance",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-02",
+      "priority": "P2",
+      "original_title": "Manifest CLI успешно ничего не делает",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Real write_training_run_manifest CLI entrypoint",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-03",
+      "priority": "P2",
+      "original_title": "В manifest записан hash строки пути вместо данных",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Full byte SHA256, all active shards/SFT files, actual config and runtime/tokenizer/checkpoint identities",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-04",
+      "priority": "P1",
+      "original_title": "QC workbook записывает непроверенные PASS и YES",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "QC reads real evidence or UNKNOWN, hashes corpus/SFT/holdout/final quality pipeline and decision ledger; no fabricated scores",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-05",
+      "priority": "P1",
+      "original_title": "QC auditor даёт PASS при трёх проваленных checks",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "All mandatory false checks fail; exact prompt/gates/dashboard/model/data/result checks; cross-bound dataset evidence",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-06",
+      "priority": "P2",
+      "original_title": "Рабочего HF/GGUF export нет",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Standalone native HF custom model/config/tiktoken-tokenizer/safetensors export; actual native/HF CPU logits/generation/tokenizer roundtrip; GGUF/vLLM explicitly unsupported",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-07",
+      "priority": "P2",
+      "original_title": "Integrity audit пропускает отсутствующий каталог книг",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Absent/empty books and empty files fail integrity",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-08",
+      "priority": "P2",
+      "original_title": "Канонические инструкции и статусы расходятся",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Current public status/eval/repro/readiness docs updated; historical release/card snapshots labeled; dead report-index links fixed; current public entrypoint link check",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "INFRA-09",
+      "priority": "P2",
+      "original_title": "Зависимость openpyxl не объявлена",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Pinned openpyxl declared; reviewed pack constraints and pip check in installer",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "WEB-01",
+      "priority": "P2",
+      "original_title": "UI не работает с quickstart-контекстом",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Authenticated budget endpoint + UI actual BPE context budget, native default completion budget clamped",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "WEB-02",
+      "priority": "P2",
+      "original_title": "SSE parser теряет текст и игнорирует error",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "Buffered UTF-8/SSE parsing, terminal error handling, no empty assistant or invalid retry history",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    },
+    {
+      "id": "WEB-03",
+      "priority": "P2",
+      "original_title": "UI не передаёт авторизацию",
+      "status": "REMEDIATED_LOCAL_VALIDATION_PASS",
+      "resolution": "In-memory password input and Bearer header without embedded/persisted secret",
+      "verification_scope": "Final 1545-test CPU suite and relevant actual preparation/smoke evidence; hardware and production model quality remain separate."
+    }
+  ],
+  "new_acceptance_capabilities": [
+    "Exact SFT model/optimizer/RNG/loader/scaler/loop resume with unchanged schedule contract",
+    "Periodic committed checkpoints and explicit stop-after-step without schedule extension",
+    "Early stopping and committed best checkpoint metadata with matching validation step",
+    "Summary completion_reason distinguishes completed training from invocation stop",
+    "Explicit locked recovery archives uncommitted checkpoint tail, preserves every byte and commit",
+    "Model-tag/checkpoint symlink containment and positive batch validation",
+    "Immutable plan binds corpus, new tokenizer, semantic-family SFT, source/quality policy, runtime, precision, architecture and implementation hashes",
+    "Actual H200 optimizer-step probe checks base and SFT, memory headroom, disk and wall-time estimate; execution requires the matching device report",
+    "Attention backend payload revision/build/native hashes frozen into a private offline cache and reloaded before training",
+    "Persistent 168-hour wall deadline covers resume downtime; uncommitted checkpoint tails are archived, never silently reused",
+    "Portable training-data archive verifies every selected generation member and restores only into a fresh destination",
+    "All pinned BelarusianGLUE validation/test payloads acquired separately; semantic inputs excluded from final corpus and SFT",
+    "Expanded immutable corpus includes per-source quarantine and final quality decisions; tokenizer census records actual source token shares"
+  ],
+  "tests": {
+    "first_full_run": {
+      "passed": 1400,
+      "failed": 5,
+      "skipped": 1,
+      "note": "Superseded: fixture failures and optional HF dependency path corrected. See final full_suite evidence."
+    },
+    "followup_affected_suite": {
+      "passed": 112,
+      "failed": 0
+    },
+    "full_suite": {
+      "passed": 1545,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 237.375,
+      "status": "PASS",
+      "junit": "reports/audits/h200_full_tests.xml",
+      "junit_sha256": "73d1d4cf994ccc7ba3310ae6b7ea978ea3d17afef4995757fc6dd76e61eef217",
+      "required_cpu_integration_gate": "PASS"
+    },
+    "release_guard_followup": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "note": "Historical targeted follow-up; included in final full suite. Do not add counts.",
+      "included_in_final_full_suite": true
+    },
+    "pre_admission_full_suite": {
+      "passed": 1479,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 230.39,
+      "junit": ".workspace/h200-ready/full-tests-before-admission.xml",
+      "junit_sha256": "a0b9f2a570ba249e126c65e3d44ec2fe03d0ed3962cc7c6a6790e0bd98166a2b",
+      "required_cpu_integration_gate": "PASS",
+      "scope_note": "Final frozen version includes validation-coverage, alias minimum-length corrections, and release-guard regressions."
+    },
+    "tokenizer_environment_regression": {
+      "passed": 38,
+      "failed": 0,
+      "seconds": 6.19,
+      "log": ".workspace/h200-ready/tokenizer-environment-regression.log"
+    },
+    "admission_environment_failure": {
+      "passed": 1523,
+      "failed": 1,
+      "skipped": 0,
+      "seconds": 236.96,
+      "status": "SUPERSEDED_FAILURE_FIXED_VERIFIED_FULL_SUITE",
+      "junit": ".workspace/h200-ready/full-tests-admission-env-failure.xml",
+      "failure": "Tokenizer preparation leaked NANOCHAT_BASE_DIR across API calls; removing unnecessary environment mutation fixes ordered regression."
+    },
+    "actual_prepared_data_smoke": {
+      "path": "reports/audits/h200_actual_cpu_smoke.json",
+      "sha256": "492a2b023f5ef04a09c3b6c6b01129549b8a1435b2bdf6fd05ccfe21e31577af"
+    },
+    "actual_cpu_provenance": {
+      "path": "reports/audits/h200_actual_cpu_provenance.json",
+      "sha256": "ac728f25d44db9429540b56bcc5ba133a76e007e127eb53056a5f0d61e7374ec"
+    },
+    "actual_data_archive_restore": {
+      "path": "reports/audits/h200_data_transfer.json",
+      "sha256": "fa163d60701d16bb02f38b3dd2fa196ba2349260b7f5038321e22f00b23e61a1"
+    }
+  },
+  "data": {
+    "status": "FINAL_CORPUS_AND_TOKENIZER_VERIFIED",
+    "interruption": {
+      "cause": "execution host reboot around 2026-10-06T13:58:33Z",
+      "baseline_preserved": true,
+      "incomplete_quality_sqlite_integrity": "FAIL",
+      "incomplete_generation_published": false,
+      "recovery": "rerun frozen quality pass from verified baseline; no raw ingestion repeated",
+      "evidence": ".workspace/h200-ready/final-quality-interruption.json"
+    },
+    "book_catalog_check": "reports/audits/h200_book_catalog_check.json",
+    "final_gate_failure": {
+      "evidence": ".workspace/h200-ready/source-coverage-failure.json",
+      "failed_generation_published": false,
+      "baseline_preserved": true,
+      "fix": "Permit explicit minor-source validation gaps; fail missing required or major sources; recompute coverage in the planner.",
+      "regression_validation": "PASS: 1479-test full suite including real span removal, mandatory coverage, incomplete accounting, alias minima, failure diagnostics and planner binding."
+    },
+    "report": "reports/data/H200_DATA_PREPARATION.json",
+    "report_sha256": "1be2beb9bb42a63de5f88ecf6fa078b5a69fb27c3a2cd4f2eedecd11b77c080d",
+    "corpus_fingerprint": "c3985dc944943b32c0865be1ad70db6abe95c5eb0ba9739d61d79e1e6ec630f9",
+    "train_rows": 3274476,
+    "val_rows": 48740,
+    "total_chars": 6994059462,
+    "validation_coverage": {
+      "schema": "belka-source-validation-coverage-v1",
+      "status": "PASS_WITH_MINOR_GAPS",
+      "policy": {
+        "required_sources_when_present": [
+          "bewiki",
+          "be_x_oldwiki",
+          "fineweb2",
+          "hplt_v2",
+          "cc100-be",
+          "leipzig"
+        ],
+        "major_source_min_train_rows": 10000,
+        "major_source_min_char_fraction": 0.001,
+        "missing_minor_validation": "report_train_only_without_quality_estimate"
+      },
+      "source_counts_complete": true,
+      "source_count_errors": [],
+      "final_splits_nonempty": true,
+      "per_source": {
+        "be_x_oldwiki": {
+          "train_rows": 24793,
+          "val_rows": 360,
+          "total_chars": 51723548,
+          "char_fraction": 0.007395354340497599,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "bewiki": {
+          "train_rows": 168582,
+          "val_rows": 2531,
+          "total_chars": 348556241,
+          "char_fraction": 0.04983604198588382,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "bewikibooks_full": {
+          "train_rows": 169,
+          "val_rows": 2,
+          "total_chars": 311142,
+          "char_fraction": 4.4486610628704434e-05,
+          "validation_required": false,
+          "status": "COVERED"
+        },
+        "bewikisource_full": {
+          "train_rows": 2103,
+          "val_rows": 28,
+          "total_chars": 11782030,
+          "char_fraction": 0.0016845767560333047,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "books_clean_v2": {
+          "train_rows": 459,
+          "val_rows": 0,
+          "total_chars": 3826674,
+          "char_fraction": 0.0005471320369509321,
+          "validation_required": false,
+          "status": "TRAIN_ONLY_MINOR"
+        },
+        "bootstrap": {
+          "train_rows": 17,
+          "val_rows": 1,
+          "total_chars": 7090,
+          "char_fraction": 1.0137174324183634e-06,
+          "validation_required": false,
+          "status": "COVERED"
+        },
+        "fineweb2": {
+          "train_rows": 1552618,
+          "val_rows": 22784,
+          "total_chars": 3978383242,
+          "char_fraction": 0.5688231939712954,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "hplt_v2": {
+          "train_rows": 886481,
+          "val_rows": 9997,
+          "total_chars": 2524141108,
+          "char_fraction": 0.36089786220922465,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "leipzig": {
+          "train_rows": 638705,
+          "val_rows": 13026,
+          "total_chars": 75291032,
+          "char_fraction": 0.01076499741088418,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "tatoeba_sentences": {
+          "train_rows": 549,
+          "val_rows": 11,
+          "total_chars": 37355,
+          "char_fraction": 5.340961168968683e-06,
+          "validation_required": false,
+          "status": "COVERED"
+        }
+      },
+      "train_only_minor_sources": [
+        "books_clean_v2"
+      ],
+      "missing_required_sources": [],
+      "val_only_sources": [],
+      "scope": "Measured final source coverage. Train-only minor categories have no source-specific held-out quality estimate; contaminated validation is never restored."
+    },
+    "quality_counts": {
+      "input_rows": 4441919,
+      "benchmark_checked_input_rows": 4288620,
+      "retained_before_caps": 4120928,
+      "repeated_long_paragraphs_removed": 4386506,
+      "paragraph_trimmed_rows": 885787,
+      "paragraph_chars_removed": 2191260155,
+      "language_quarantine_rows": 153299,
+      "near_candidates_verified": 6429525,
+      "benchmark_quarantine_rows": 3614,
+      "candidate_bucket_truncations": 498775,
+      "post_trim_quarantine_rows": 59866,
+      "verified_near_duplicate_rows": 98732,
+      "exact_duplicate_rows": 5480,
+      "candidate_cap_reached_rows": 7,
+      "cross_split_span_quarantine_rows": 15963
+    },
+    "agent_spot_check": "reports/data/H200_AGENT_SPOT_CHECK.json",
+    "tokenizer_started": true,
+    "full_scan_report": {
+      "path": "reports/data/H200_FULL_SCAN_PREPARATION.json",
+      "sha256": "a347b134e78a0346548109a3484f66585ca7c00f17a8ffa3d24f65a3d4e2f632",
+      "scope": "Original full scan before additive admission; preserved for initial spot-check evidence."
+    },
+    "admission_final_review": "reports/data/H200_ADMISSION_FINAL_REVIEW.json",
+    "admission_removed_rows": 781749,
+    "admission_actual_counts_match_review": true,
+    "tokenizer_completed": true,
+    "tokenizer": {
+      "path": "reports/data/H200_TOKENIZER_PREPARATION.json",
+      "sha256": "b9ec5a1f06c5f333cf359b8d434cf73acba463b800145fc7a6cfa97df70787df"
+    },
+    "vocab_size": 32768,
+    "tokenizer_fingerprint": "1fb1459a179e5ad101f563f6a63fb526979019d5c67f90386cc680dbec702e95",
+    "train_tokens_with_bos": 1635285758,
+    "validation_tokens_with_bos": 17977093,
+    "sft_counts": {
+      "train": {
+        "max_rendered_tokens": 80,
+        "rendered_tokens": 18957,
+        "rows": 430,
+        "supervised_tokens": 13227
+      },
+      "val": {
+        "max_rendered_tokens": 63,
+        "rendered_tokens": 5788,
+        "rows": 140,
+        "supervised_tokens": 3925
+      }
+    },
+    "publication_confirmation": {
+      "path": "reports/audits/h200_admission_publication.json",
+      "sha256": "ebcf6426d83f8f6bf39523d8e86981be038d24d8345a0912e5417eb59c422795"
+    }
+  },
+  "remaining_acceptance": [
+    "Measured H200 probe after GPU is connected: memory, BF16/backend, throughput, disk and 168-hour budget.",
+    "Production trained-model evaluation and independent native language review."
+  ],
+  "limitations": [
+    "Hardware and model quality are not inferred from CPU tests.",
+    "A bounded lexical near-duplicate search cannot certify absence of every semantic duplicate.",
+    "SFT is a small seed set, not evidence of broad instruction capabilities.",
+    "GGUF/vLLM remain unsupported for the native architecture; verified reference HF export is provided.",
+    "Final admission is a conservative whole-row subset; 44 reviewed retained documents are a sample, not proof that every corpus row is defect-free.",
+    "books_clean_v2 is a minor train-only source without source-specific held-out quality evidence.",
+    "The H200 profiles are candidates; neither optimal size nor achievable throughput is established before the hardware probe and validation."
+  ],
+  "source_validation": {
+    "status": "PASS",
+    "source_files": 269,
+    "syntax_files": 230,
+    "report": "reports/audits/h200_source_validation.json"
+  },
+  "local_preparation": {
+    "base_dir": ".workspace/h200-ready/data",
+    "runtime_dir": ".workspace/audit-main-20261006/nanochat-92d63d4e8bb4df75c3b71618f31ddde2378b2bcd",
+    "python": ".workspace/nanochat/.venv/bin/python",
+    "baseline_report": ".workspace/h200-ready/baseline-data-report.json",
+    "quality_log": ".workspace/h200-ready/final-quality.log",
+    "final_data_report": "reports/data/H200_DATA_PREPARATION.json",
+    "final_tokenizer_report": "reports/data/H200_TOKENIZER_PREPARATION.json",
+    "next_steps": [
+      "Transfer verified source/data archives to the H200 server.",
+      "Install pinned GPU runtime, restore data, recreate local plan, run the matching H200 probe, then execute."
+    ],
+    "status": "COMPLETE",
+    "logs": {
+      "admission": ".workspace/h200-ready/subset-final.log",
+      "tokenizer": ".workspace/h200-ready/tokenizer-prepare.log",
+      "plans": ".workspace/h200-ready/plans-create-check.log",
+      "smoke": ".workspace/h200-ready/actual-cpu-smoke.log",
+      "resume": ".workspace/h200-ready/actual-cpu-resume.log",
+      "export": ".workspace/h200-ready/data-export.log",
+      "restore": ".workspace/h200-ready/data-restore-check.log"
+    }
+  },
+  "additional_preparation_findings": [
+    {
+      "id": "PREP-01",
+      "status": "VERIFIED_ON_FINAL_CORPUS",
+      "problem": "A minor source lost all validation rows after contamination removal; strict source-set equality rejected the complete generation.",
+      "resolution": "Explicit source coverage: minor train-only gaps are reported; major or required gaps and incomplete source counts fail. Planner independently recomputes the proof. Failed finalization writes durable diagnostics."
+    },
+    {
+      "id": "PREP-02",
+      "status": "VERIFIED_ON_FINAL_CORPUS",
+      "problem": "Post-trim minimum text length bypassed source aliases, using 30 characters for full Wiki sources instead of the configured 400/200.",
+      "resolution": "Post-trim checks use shared source_rule; full-finalizer regressions exercise both aliases."
+    },
+    {
+      "id": "PREP-03",
+      "status": "VERIFIED_ON_FINAL_ADMITTED_CORPUS",
+      "problem": "Agent spot-check found malformed machine-translation-like prose in 7 of 24 sampled FineWeb2/HPLT documents, plus template-heavy pages. Automated language gates did not exclude these.",
+      "evidence": "reports/data/H200_AGENT_SPOT_CHECK.json",
+      "resolution": "Reviewed additive policy applied as exact whole-row subset; all expected row/character totals and inherited lineage verified on actual published corpus. Final reviewed 44-document retained sample has no material defects; residual noise and no native-speaker approval are explicit.",
+      "independent_native_review": false,
+      "final_review": "reports/data/H200_ADMISSION_FINAL_REVIEW.json"
+    },
+    {
+      "id": "PREP-04",
+      "status": "VERIFIED_FULL_SUITE",
+      "problem": "prepare_h200_tokenizer.prepare changed global NANOCHAT_BASE_DIR, redirecting later runtime reads to deleted temporary fixtures.",
+      "resolution": "Tokenizer and SFT operations already take explicit paths; removed the unnecessary global environment mutation. Actual preparation tests verify preservation of both set and unset caller selections."
+    }
+  ],
+  "plans": {
+    "h200_quality": {
+      "path": "reports/audits/h200_plans/h200_quality.json",
+      "sha256": "8e29c8e52e16d5c33a009ebe5e33930fc9d06467f6947d61d7c6794289ef5433",
+      "plan_identity": "9fdc9b6646d31ec5b11361ce5e924f5a136ae983f96fa3f1ff58aed3172e2baa",
+      "check": {
+        "status": "PASS",
+        "plan_sha256": "9fdc9b6646d31ec5b11361ce5e924f5a136ae983f96fa3f1ff58aed3172e2baa",
+        "software_and_artifacts_verified": true,
+        "hardware_verified": false,
+        "production_launch_ready": false
+      },
+      "budgets": {
+        "base_dataset_passes": 3.000022389970573,
+        "base_iterations": 37429,
+        "base_tokens": 4905893888,
+        "eval_every": 4679,
+        "eval_tokens": 1048576,
+        "save_every": 4679,
+        "sft_device_batch_size": 4,
+        "sft_epoch_note": "Nominal packed-token budget; trainer records actual content/supervised tokens. Padding makes this an upper bound on content passes.",
+        "sft_eval_every": 3,
+        "sft_eval_tokens": 11576,
+        "sft_iterations": 14,
+        "sft_max_seq_len": 256,
+        "sft_requested_token_passes": 3.024951205359498,
+        "sft_total_batch_size": 4096,
+        "skip_sft": false
+      }
+    },
+    "h200_max": {
+      "path": "reports/audits/h200_plans/h200_max.json",
+      "sha256": "60ac4d9ece93740cf076c49fdfecd50115e172560f2f9c488ea1c7a7db9ae381",
+      "plan_identity": "bbee5351045e515e8aeabca05428565ec318b7b52d26e835e8c1aabb83dcaa79",
+      "check": {
+        "status": "PASS",
+        "plan_sha256": "bbee5351045e515e8aeabca05428565ec318b7b52d26e835e8c1aabb83dcaa79",
+        "software_and_artifacts_verified": true,
+        "hardware_verified": false,
+        "production_launch_ready": false
+      },
+      "budgets": {
+        "base_dataset_passes": 3.000102542322759,
+        "base_iterations": 18715,
+        "base_tokens": 4906024960,
+        "eval_every": 2340,
+        "eval_tokens": 1048576,
+        "save_every": 2340,
+        "sft_device_batch_size": 4,
+        "sft_epoch_note": "Nominal packed-token budget; trainer records actual content/supervised tokens. Padding makes this an upper bound on content passes.",
+        "sft_eval_every": 3,
+        "sft_eval_tokens": 11576,
+        "sft_iterations": 14,
+        "sft_max_seq_len": 256,
+        "sft_requested_token_passes": 3.024951205359498,
+        "sft_total_batch_size": 4096,
+        "skip_sft": false
+      }
+    },
+    "h200_large": {
+      "path": "reports/audits/h200_plans/h200_large.json",
+      "sha256": "2e82f62f4bc6fef6ca85bc7e7a2da0da4d538c1a48ddbd55297349cb2b50055f",
+      "plan_identity": "d92ad81ef54a1a3f254549978e44252b4d189bbaee372be9595ca15eabf2c892",
+      "check": {
+        "status": "PASS",
+        "plan_sha256": "d92ad81ef54a1a3f254549978e44252b4d189bbaee372be9595ca15eabf2c892",
+        "software_and_artifacts_verified": true,
+        "hardware_verified": false,
+        "production_launch_ready": false
+      },
+      "budgets": {
+        "base_dataset_passes": 3.000102542322759,
+        "base_iterations": 18715,
+        "base_tokens": 4906024960,
+        "eval_every": 2340,
+        "eval_tokens": 1048576,
+        "save_every": 2340,
+        "sft_device_batch_size": 4,
+        "sft_epoch_note": "Nominal packed-token budget; trainer records actual content/supervised tokens. Padding makes this an upper bound on content passes.",
+        "sft_eval_every": 3,
+        "sft_eval_tokens": 11576,
+        "sft_iterations": 14,
+        "sft_max_seq_len": 256,
+        "sft_requested_token_passes": 3.024951205359498,
+        "sft_total_batch_size": 4096,
+        "skip_sft": false
+      }
+    },
+    "smoke": {
+      "path": "reports/audits/h200_plans/smoke.json",
+      "sha256": "d00e2fd4e9595f98c5a671c225f9b6de14c8095090fbcdabb9e645abc5616ae1",
+      "plan_identity": "672648509df4d56ed4541db387e68dad5d312f0ddb926e3dd48c563db115bb81",
+      "check": {
+        "status": "PASS",
+        "plan_sha256": "672648509df4d56ed4541db387e68dad5d312f0ddb926e3dd48c563db115bb81",
+        "software_and_artifacts_verified": true,
+        "hardware_verified": false,
+        "production_launch_ready": false
+      },
+      "budgets": {
+        "base_dataset_passes": 9.392853771799313e-07,
+        "base_iterations": 3,
+        "base_tokens": 1536,
+        "eval_every": 1,
+        "eval_tokens": 2048,
+        "save_every": 1,
+        "sft_device_batch_size": 1,
+        "sft_epoch_note": "Nominal packed-token budget; trainer records actual content/supervised tokens. Padding makes this an upper bound on content passes.",
+        "sft_eval_every": 1,
+        "sft_eval_tokens": 11576,
+        "sft_iterations": 3,
+        "sft_max_seq_len": 256,
+        "sft_requested_token_passes": 0.04051273935749328,
+        "sft_total_batch_size": 256,
+        "skip_sft": false
+      }
+    }
+  },
+  "transfer": {
+    "data_archive": {
+      "archive": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/prepared.tar",
+      "bytes": 7349667840,
+      "files": 178,
+      "schema": "belka-prepared-transfer-v1",
+      "sha256": "26a2569c6052acfe44195835346603a3dd7f3b3b6781a095f15eb91b9c47a182"
+    },
+    "actual_restore": {
+      "status": "PASS",
+      "actual_archive_restored": true,
+      "all_member_hashes_verified": true,
+      "portable_prepared_assets_verified": true,
+      "original_selected_generations_unchanged": true,
+      "archive_sha256": "26a2569c6052acfe44195835346603a3dd7f3b3b6781a095f15eb91b9c47a182",
+      "archive_bytes": 7349667840,
+      "files": 178
+    },
+    "source_snapshot": ".workspace/h200-ready/source.tar",
+    "source_snapshot_proof": ".workspace/h200-ready/source.tar.json",
+    "final_transfer_index": ".workspace/h200-ready/TRANSFER_READY.json",
+    "scope": "Source snapshot proof is external to the snapshot to avoid a self-referential archive hash; TRANSFER_READY is written only after both archives are verified."
+  },
+  "final_repository_checks": {
+    "source_hashes": "reports/runtime_audit/SOURCE_HASHES.json",
+    "syntax": "reports/audits/h200_source_validation.json",
+    "owner_checksums": "PASS",
+    "git_diff_check": "PASS",
+    "public_structure": {
+      "report": "reports/audits/h200_public_release.json",
+      "status": "PASS",
+      "scope": "554 Git-tracked files, including the committed H200 source, documentation and readiness reports."
+    }
+  },
+  "followup_ssh_guide": {
+    "cleanup_report": "reports/audits/h200_cleanup.json",
+    "planning_estimates": "reports/audits/h200_planning_estimates.json",
+    "removed_temporary_allocated_bytes": 20430393344,
+    "training_implementation_changed": false,
+    "hardware_measurement": false,
+    "scope": "SSH machine selection, explicit modeled timing, revised runbook, deletion of known redundant temporary files. Final data/runtime/checkpoints retained; source archive refreshed after documentation changes.",
+    "validation": "reports/audits/h200_ssh_guide_validation.json"
+  }
+}

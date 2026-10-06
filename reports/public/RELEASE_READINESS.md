@@ -1,48 +1,20 @@
-# Belka — Release Readiness
+# Belka — release readiness
 
-*Public summary. Full checklist: `release/RELEASE_CHECKLIST.md`.*
+Updated 2026-10-06. Code availability, data preparation, training completion and
+scientific model acceptance are separate claims.
 
-## GitHub (public code repo)
-
-| Item | Status |
+| Area | Evidence required before a new release |
 |---|---|
-| Junk untracked, `.gitignore` hardened | ✅ done (Phase 1) |
-| Public reports curated (`reports/public/`) | ✅ done |
-| Data-rights docs present | ✅ done |
-| README rewritten as public-facing | ✅ done (Phase 8) |
-| CONTRIBUTING / CITATION / DATA_LICENSES | ✅ added |
-| CI workflow | ✅ added (`.github/workflows/ci.yml`) |
-| Private ops separated | ⏳ manifest prepared (`manifests/cleanup/private_ops_manifest.jsonl`); owner to move |
-| History rewrite for public mirror | ✅ resolved 2026-08-16 (owner cleared all sources; full corpus now published in-repo) |
+| Source | Current syntax, public-surface and runtime CI results; historical passing CI is not a check of modified code |
+| Corpus | Content-hashed preparation report for the selected generation and verified source policy |
+| Checkpoint | Committed native checkpoint, matching tokenizer, actual run config and content-bound provenance |
+| Evaluation | Actual answers and benchmark predictions linked to the chosen checkpoint; independent native-speaker review |
+| HF artifact | Complete exported config/tokenizer/weights/code and roundtrip result; export does not confer quality acceptance |
+| GGUF / vLLM | Unsupported; no release artifact is promised |
+| Publication | Explicit checkpoint, data-subset and license selection; freeze/tag only after acceptance |
 
-## Hugging Face — model
-
-| Item | Status |
-|---|---|
-| Model card | ✅ `model_cards/belka-research-preview.md` |
-| Checkpoint chosen + license | ⏳ owner decision (which checkpoint, what model license) |
-| Eval table attached | ⏳ small suites only; expand before release |
-
-## Hugging Face — dataset
-
-| Item | Status |
-|---|---|
-| Dataset card | ✅ `data_cards/corpus_v3b.md` |
-| Raw redistribution | ❌ **not** for permissioned raw data; processed-data release is by-request only |
-| Open-only subset for public dataset | ✅ optional via build_open_corpus_bundle.py --only-open (default now ships the FULL corpus) |
-
-## Zenodo (DOI / archival)
-
-| Item | Status |
-|---|---|
-| Citation metadata (`CITATION.cff`) | ✅ added |
-| Frozen release tag | ⏳ after history/mirror decision |
-| Data-rights statement included | ✅ docs ready |
-
-## Blockers (owner decisions)
-
-1. ~~History-rewrite / fresh-mirror decision~~ resolved 2026-08-16: owner cleared all v3b sources for publication; the full corpus ships in data_release/.
-2. Which checkpoint(s) and dataset subset to publish, and under which licenses.
-3. Whether any **processed** book data may be redistributed (raw: no).
-4. Move private ops out of the public surface (manifest ready).
-5. Verify web-corpus licenses (CC100/HPLT/FineWeb2/Leipzig) before any public training claim.
+No new checkpoint is declared accepted and no H200 production run or full model
+benchmark is claimed here. The previous `release/` reports are historical snapshots;
+their checked boxes and contradictory publication decisions are not current gates.
+Existing source-rights documents remain source-specific evidence; a cleanup script
+or a metadata-only board does not independently establish permissions.

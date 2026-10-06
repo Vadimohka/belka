@@ -1,56 +1,39 @@
-# Belka — Evaluation Summary
+# Belka — evaluation scope
 
-*Public summary. Plan: `docs/06_evaluation_plan.md`. Leakage detail:
-`reports/public/LEAKAGE_AND_HOLDOUT_SUMMARY.md`.*
+Updated 2026-10-06. No new model-quality result is asserted by this document.
 
-## Eval suites (in repo)
+`eval/strict_holdout_quality_control_v2.be.jsonl` contains 209 never-train prompts.
+The runner accepts its `eval_id` / `prompt` schema and older `id` / `messages`
+schemas. It queries the endpoint and records actual answers, language/keyword
+checks, weighted pass rate, transport failures, and manual criteria still requiring
+review. Native Belka SSE and OpenAI JSON/SSE responses are supported. HTTP errors,
+error events, incomplete streams, and empty completions are not scored as answers.
+`COMPLETE` means all requests completed; it does not mean every check passed.
 
-| Suite | Prompts | Type | Status |
-|---|---|---|---|
-| `eval/strict_holdout_quality_control_v2.be.jsonl` | 209 | strict holdout | clean (0% SFT overlap) — **publishable as internal holdout** |
-| `eval/regression_quality_control_v1.be.jsonl` | 170 | regression / seen-intent | **not a holdout** (117 prompts overlap SFT) |
-| `eval/sft_v8_manual_eval.be.jsonl` | 180 | manual / seen-behavior SFT-v8 check | **not a holdout** (89/180 overlap SFT v8 train, by design) |
-| `eval/belarusian_language_lock_eval.jsonl` (+`.extra`) | 8 (+6) | language-lock | preliminary (small) |
-| `eval/belka_eval_suite_v2.be.jsonl` | 8 | identity + factual smoke | preliminary |
-| `eval/hallucination_refusal_eval.be.jsonl` | 5 | hallucination / refusal | preliminary |
-| `eval/meetmesh_domain_eval.be.jsonl` | 8 | proprietary domain | internal only (exclude from public claims) |
-| `eval/tokenizer_fertility_prompts.be.txt` | 10 | tokenizer fertility | internal ablation |
+```bash
+python eval/run_openai_compatible_eval.py \
+  --base-url http://127.0.0.1:8000 --model be-local \
+  --eval-file eval/strict_holdout_quality_control_v2.be.jsonl \
+  --output reports/eval/strict_answers.jsonl
+```
 
-Runner: `eval/run_openai_compatible_eval.py` (checks Belarusian-language ratio,
-`must_include_any` / `must_not_include_any`).
+Set `BELKA_API_KEY` when the endpoint requires authentication. Results include a
+separate `.summary.json`; the command exits nonzero on a failed automated check
+or any transport failure. These heuristic checks do not score factuality, safety,
+or native-speaker quality; prompt-specific manual criteria remain unscored.
 
-## Strict holdout status
+The regression and v8 manual suites contain seen training behaviors and are not
+generalization holdouts. Historical exact-overlap counts refer to the old compared
+files only. A current leakage claim requires the selected corpus/SFT file hashes
+and an executed scan, including the base corpus; policy metadata alone is insufficient.
 
-`strict_holdout_quality_control_v2` is the **first leakage-clean** holdout: 209 prompts,
-0 exact SFT overlap, 5-gram ratio 0.0. This is the only set that may be quoted as a holdout.
-
-## Regression vs holdout
-
-`regression_quality_control_v1` (170 prompts) was reclassified from "holdout" to
-**regression** after 117/170 prompts were found verbatim in SFT training data. It measures
-seen-intent regression, **not** generalization. Do not cite it as a holdout result.
-
-`sft_v8_manual_eval` (180 prompts) is the SFT-v8 **manual behavioral check** used by
-`tools/validate_sft_v8.py` (specific REQUIRED_PROMPTS such as identity, refusal, and domain
-behavior). A leakage check shows **89/180 prompts overlap SFT v8 train (5-gram ratio 0.48)**
-— this overlap is **by design** (it verifies the model reproduces trained behaviors). It is
-a seen-behavior eval, **not** a holdout. Only `strict_holdout_quality_control_v2` (0 overlap)
-may be cited as a holdout result.
-
-## Language-lock
-
-Small language-lock suites check Belarusian-only responses and soft language retention
-under Russian/English prompts. Useful as behavior smoke tests; **too small for a
-quantitative claim**.
-
-## Current limitations
-
-- Suites are 5–209 prompts; most are 5–10 (preliminary).
-- No accepted released checkpoint with a full quantitative results table yet.
-- No human-eval results yet (protocol drafted in `docs/06_evaluation_plan.md`).
-
-## No overclaiming
-
-Belka does not currently publish accuracy/quality numbers as scientific claims. The
-honest, publishable facts are: (1) a leakage-clean holdout exists; (2) language-lock and
-refusal behavior can be measured; (3) the methodology is auditable.
+`tools/run_belarusianglue_eval.py` performs binary prompted classification against
+locally supplied, labeled dev/validation/test JSONL or Parquet files. It implements
+the seven configurations in the [official BelarusianGLUE dataset](https://huggingface.co/datasets/maaxap/BelarusianGLUE).
+Each file is placed at `DATASET_DIR/CONFIG/dev.jsonl` (or the chosen split and
+`.parquet`). Supply `--dataset-dir`, `--base-url`, and optionally repeated `--config`.
+The report records dataset hashes, predictions, accuracy and binary MCC. Invalid
+labels or transport errors prevent a complete benchmark result; invalid model
+answers count as wrong and make MCC undefined. `--dry-run` reports NOT_RUN.
+This zero-shot generative protocol is distinct from fine-tuned encoder leaderboards.
+No real benchmark score is claimed without actual data, a served model, and results.

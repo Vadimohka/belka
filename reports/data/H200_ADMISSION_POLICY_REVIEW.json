@@ -1,0 +1,1189 @@
+{
+  "schema": "belka-h200-admission-policy-review-v1",
+  "status": "POLICY_SUPPORTED_BY_AGENT_REVIEW",
+  "parent_corpus_fingerprint": "7f33e3e2f263b1d59a6c6614209ce875c8f964ba04753de6f1efa1b473f1c22f",
+  "independent_native_review": false,
+  "original_agent_spotcheck": {
+    "path": "reports/data/H200_AGENT_SPOT_CHECK.json",
+    "sha256": "f8f83b534493bcc9a90cf5bf8c188af8ea62778dbc04baf6efa6fdde9a532636"
+  },
+  "domain_inventory": {
+    "path": ".workspace/h200-ready/final-domain-inventory.json",
+    "sha256": "10e50af524e61debec3f7c011910dee3eaced3c2f9b57c536087393c36222da5",
+    "scope": "Column-only final train+val web documents; host identity is not a quality judgement.",
+    "total_rows": 3215658,
+    "total_chars": 8649804271,
+    "overlapping_family_counts": {
+      "by_tld": {
+        "rows": 1016610,
+        "chars": 2668471619
+      },
+      "be_or_by_subdomain": {
+        "rows": 421243,
+        "chars": 1269391824
+      },
+      "ru_host_naviny_path": {
+        "rows": 10493,
+        "chars": 18282535
+      },
+      "category_topic_tag_paths": {
+        "rows": 15786,
+        "chars": 44921999
+      },
+      "observed_problem_hosts": {
+        "rows": 10916,
+        "chars": 46159802
+      },
+      "lang_be_query": {
+        "rows": 9141,
+        "chars": 23679196
+      }
+    }
+  },
+  "targeted_sample": {
+    "path": ".workspace/h200-ready/admission-family-review-sample.json",
+    "sha256": "f78cdc87cbe425a057ef39960144b17122c62f7364eda7116f6e95ea1439e37a",
+    "method": "One smallest SHA256(belka-admission-family-review-v1:+content_sha256) per selected high-volume host; targeted development evidence, not independent confirmation.",
+    "records": [
+      {
+        "host": "be.woman-b.com",
+        "source": "fineweb2",
+        "source_url": "http://be.woman-b.com/zdorovya/late-toxicosis-late-morning-sickness-during-pregnancy.html",
+        "shard": "train_00132.parquet",
+        "row_index": 2310,
+        "split": "train",
+        "content_sha256": "9e36fb2b06bb41d5606821e8fb0bf2be845a41bb763bf45c94f3bbbb18f516c7",
+        "chars": 6736,
+        "rank": "0000a1a09db730b5ef12860645c73b7ab5275ad6f6f78fb0f7db46b1b62b4c7d",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1600
+          },
+          {
+            "start": 5936,
+            "end": 6736
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "be.birmiss.com",
+        "source": "fineweb2",
+        "source_url": "https://be.birmiss.com/%D1%80%D0%B0%D1%81%D1%96%D1%8F-%D1%81%D0%B0%D0%BC%D0%B0%D1%8F-%D0%B2%D1%8F%D0%BB%D1%96%D0%BA%D0%B0%D1%8F-%D0%BF%D0%B0-%D0%BF%D0%BB%D0%BE%D1%88%D1%87%D1%8B-%D0%BA%D1%80%D0%B0%D1%96%D0%BD%D0%B0/",
+        "shard": "train_00173.parquet",
+        "row_index": 802,
+        "split": "train",
+        "content_sha256": "d61a60bf27e0cc4b2daebda42ba79a7c6f2a1140db3114eaf95ebe171f7cbd9b",
+        "chars": 3045,
+        "rank": "00041d911feb1298078f54cd1429ec44254bbe69c2b2cd18f58777f880a150aa",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1600
+          },
+          {
+            "start": 2245,
+            "end": 3045
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "be.delachieve.com",
+        "source": "hplt_v2",
+        "source_url": "https://be.delachieve.com/%D0%BD%D0%B0%D1%81%D1%82%D0%BE%D0%B9%D0%BA%D0%B0-%D0%B6%D1%83%D1%80%D0%B0%D0%B2%D1%96%D0%BD%D0%B0%D0%B2%D1%8B-%D0%BB%D1%91%D0%B3%D0%BA%D1%96-%D1%96-%D1%81%D0%B0%D0%BB%D0%BE%D0%B4%D0%BA%D1%96/",
+        "shard": "train_00123.parquet",
+        "row_index": 18896,
+        "split": "train",
+        "content_sha256": "93691e5b74f4419004ed1873e7d665f201dcc8e62bdf0081b4c10f35ce334f23",
+        "chars": 3133,
+        "rank": "0005d29068a97e23ebd5a3bf70e42597751bb852977e1c2aeb66fb9a3a9b9a3d",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1600
+          },
+          {
+            "start": 2333,
+            "end": 3133
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "be.martech.zone",
+        "source": "fineweb2",
+        "source_url": "https://be.martech.zone/social-media-universe/",
+        "shard": "train_00163.parquet",
+        "row_index": 10608,
+        "split": "train",
+        "content_sha256": "c8d65cee9d723ec405acde36de76ca4778a857537480a9dd9addd8d513486e60",
+        "chars": 2965,
+        "rank": "001000f1ff4beb33e8c5060481244181447fdeff1e34007aed1722b887f8de70",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1600
+          },
+          {
+            "start": 2165,
+            "end": 2965
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "be.eturbonews.com",
+        "source": "fineweb2",
+        "source_url": "https://be.eturbonews.com/2999371/%D1%80%D0%BE%D0%B1%D0%B0%D1%82%D1%8B-%D0%B1%D0%B5%D1%81%D0%BF%D1%96%D0%BB%D0%BE%D1%82%D0%BD%D1%96%D0%BA%D1%96-%D0%B0%D1%9E%D1%82%D0%B0%D0%BD%D0%BE%D0%BC%D0%BD%D1%8B%D1%8F-%D1%82%D1%80%D0%B0%D0%BD%D1%81%D0%BF%D0%B0%D1%80%D1%82%D0%BD%D1%8B%D1%8F-%D1%81%D1%80%D0%BE%D0%B4%D0%BA%D1%96-%D1%81%D1%84%D0%B0%D1%80%D0%BC%D1%83%D1%8E%D1%86%D1%8C-%D1%82%D1%83%D1%80%D1%8B%D0%B7%D0%BC-%D0%BD%D0%B5-%D1%82%D0%BE%D0%BB%D1%8C%D0%BA%D1%96-%D0%BD%D0%B0-%D0%AF%D0%BC%D0%B0%D0%B9%D1%86%D1%8B/",
+        "shard": "train_00103.parquet",
+        "row_index": 3556,
+        "split": "train",
+        "content_sha256": "78855f9bb109cc7147cf691d7aed45dbf4adb3c1e3fe409b2fd69fc93608b6f2",
+        "chars": 1585,
+        "rank": "002069087c7520e19ac0ec24baf266f937843bf58afd0f99ada7c2064d6ad4da",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1585
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "be.hiloved.com",
+        "source": "fineweb2",
+        "source_url": "https://be.hiloved.com/%D1%81%D0%B0%D0%BC%D0%B0%D1%80%D0%BE%D0%B1%D0%BD%D0%B0%D1%8F-%D0%BC%D0%B5%D0%BA%D1%81%D1%96%D0%BA%D0%B0%D0%BD%D1%81%D0%BA%D0%B0%D1%8F-%D0%BA%D0%B0%D1%9E%D0%B1%D0%B0%D1%81%D0%B0/",
+        "shard": "train_00042.parquet",
+        "row_index": 12145,
+        "split": "train",
+        "content_sha256": "2ee7637d89cdcbe1538dd7289b98dfdf9ccc98dd6eaa48b5a8813b2e857fa075",
+        "chars": 2835,
+        "rank": "00114e8d58ce89b42a6b7acf64597d3f1600a698caf13598b42c93f249bc4521",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1600
+          },
+          {
+            "start": 2035,
+            "end": 2835
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "techking.by",
+        "source": "fineweb2",
+        "source_url": "https://techking.by/%D1%8F%D0%BA-%D0%B2%D1%8B%D0%B4%D0%B0%D0%BB%D1%96%D1%86%D1%8C-%D1%83%D0%BB%D1%96%D0%BA%D0%BE%D0%B2%D1%8B-%D0%B7%D0%B0%D0%BF%D1%96%D1%81-microsoft-teams/",
+        "shard": "train_00105.parquet",
+        "row_index": 8383,
+        "split": "train",
+        "content_sha256": "7b62a9875a94b755d452f3cda9dff854b351e94453272bd4c876abc3a114b482",
+        "chars": 1250,
+        "rank": "0009f57803df3667ceb815127c5be0f6ff62a3560478286292171a4462457c78",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1250
+          }
+        ],
+        "verdict": "ACCEPTABLE_WITH_MINOR_AWKWARDNESS",
+        "observation": "Mostly coherent Belarusian technical instructions; one awkward linked phrase. Not added to domain quarantine.",
+        "admission_reason": null
+      },
+      {
+        "host": "androidsis.com",
+        "source": "fineweb2",
+        "source_url": "https://www.androidsis.com/be/%D0%B2%D1%8D%D0%B1-%D1%84%D0%BB%D1%96%D0%BF%D0%B1%D0%BE%D1%80%D0%B4/",
+        "shard": "train_00158.parquet",
+        "row_index": 1417,
+        "split": "train",
+        "content_sha256": "c149869f3146c65aeb33974160184bb58cef07308b5be53f15f61555055c4f46",
+        "chars": 1988,
+        "rank": "00101b3a1a2ee3b90c394bf9cb8d8332053c7b495237c46efec95a259bb487b5",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1988
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "tostpost.com",
+        "source": "fineweb2",
+        "source_url": "https://www.tostpost.com/be/ezha-napo/561-grechka-z-kurycay-mul-tivarke-recept-prygatavannya.html",
+        "shard": "train_00026.parquet",
+        "row_index": 17174,
+        "split": "train",
+        "content_sha256": "1d0abed79ac8a7d2f7f861f0404d02d1708c68b7289eca964750b62d190e66ee",
+        "chars": 7424,
+        "rank": "000f619da587964a2f59d3337b3b7f0f522bedbd441705d1684c7b08d0f60303",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1600
+          },
+          {
+            "start": 6624,
+            "end": 7424
+          }
+        ],
+        "verdict": "MALFORMED_PROSE_COMPATIBLE_WITH_MT",
+        "observation": "Multiple agreement, grammatical or literal-translation defects in the reviewed windows; actual production method not proven.",
+        "admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "host": "investmarkets.top",
+        "source": "fineweb2",
+        "source_url": "https://investmarkets.top/kartachnaya-gulnya-gulnya-prastola-onlayn.html",
+        "shard": "train_00072.parquet",
+        "row_index": 3388,
+        "split": "train",
+        "content_sha256": "51ea57bbc01220d8f3f6e26bd240c9d9fcd9889dc1999deb1482c668ad175f60",
+        "chars": 6314,
+        "rank": "0000553213b8e55ffc1b148a129ee8259927bf720e4cd6d1d98101735f9a7e06",
+        "reviewed_windows": [
+          {
+            "start": 0,
+            "end": 1600
+          },
+          {
+            "start": 5514,
+            "end": 6314
+          }
+        ],
+        "verdict": "SEO_KEYWORD_SALAD",
+        "observation": "Unrelated search phrases, download/game keywords and repeated fragments with mixed-language residue.",
+        "admission_reason": "reviewed_problem_source_family"
+      }
+    ]
+  },
+  "original_material_cases_quarantined": [
+    {
+      "sample_id": 7,
+      "content_sha256": "ef10664de1c6d20b5e01c0f6fbcd1cecd3fc184603ecd0abdbd3566a8f2ca858",
+      "admission_reason": "reviewed_problem_source_family"
+    },
+    {
+      "sample_id": 9,
+      "content_sha256": "0c83dbee3a3ecfb70a3019ae986b6c8e00f300e55ddd8f26439c8fb2d0d1dba5",
+      "admission_reason": "unreviewed_multilingual_route"
+    },
+    {
+      "sample_id": 10,
+      "content_sha256": "590c19109e80b584cfe4c7d5c6d60ce8b5d98b9b535651c586127e47a71e4858",
+      "admission_reason": "reviewed_problem_source_family"
+    },
+    {
+      "sample_id": 11,
+      "content_sha256": "2153677b4f2e0b50e3bcc3332369b5c760d439614e8390b423892abc0e424fc5",
+      "admission_reason": "reviewed_problem_source_family"
+    },
+    {
+      "sample_id": 13,
+      "content_sha256": "27c57585030a0729f3bdff7c0462273b2c1bf76c94ae2e20cf5b51543c5dadcd",
+      "admission_reason": "reviewed_problem_source_family"
+    },
+    {
+      "sample_id": 15,
+      "content_sha256": "3669e65dc2ba777d41ac34b2afcde7ca556b9453a05a3f8dbc7f5686124c0f06",
+      "admission_reason": "paginated_article_archive"
+    },
+    {
+      "sample_id": 18,
+      "content_sha256": "c5db401843940400051d48e0b98fd9c3bac1ab53f2fa9e381fa2b17408c5b70c",
+      "admission_reason": "reviewed_problem_source_family"
+    },
+    {
+      "sample_id": 19,
+      "content_sha256": "cf3fe08dae58ea67f0b67af114c7fffddcf8b0fc26b58003e95d31a870195d11",
+      "admission_reason": "reviewed_problem_source_family"
+    },
+    {
+      "sample_id": 22,
+      "content_sha256": "a5c32cbf42226eb74416fe581ec4a4eaa91db2def57f5ee740ae80e2d85d4221",
+      "admission_reason": "reviewed_problem_source_family"
+    },
+    {
+      "sample_id": 30,
+      "content_sha256": "e3fd9c6f2e6d4ee545a882edde14f07b1cae90e23fb60fd618af1472a8081834",
+      "admission_reason": "dated_tagged_news_index"
+    },
+    {
+      "sample_id": 36,
+      "content_sha256": "b73a981ef1e4cb3b74439ebf2d91efd06f476b81a2c6503bcfb75f15dc9e9d67",
+      "admission_reason": "dominant_unexpanded_wiki_template"
+    }
+  ],
+  "policy_rationale": [
+    "Multiple independently hosted be./by. or /be/ multilingual routes contain severe malformed translation-like prose in both source collections. Such routes outside the local .by domain family or explicit publisher exceptions are held for review; not every quarantined page is declared bad.",
+    "Known bad source families apply before exceptions. The narrow .ru/naviny/ clone route is supported by two separately sampled hosts and the earlier lorealcolortrophy.ru evidence; ordinary .ru or .com articles are not blanket-rejected.",
+    "Publisher exceptions are based on observed coherent Belarusian editorial/Wikimedia content, not topic or viewpoint. They still pass every prior language/leakage/dedup gate and the new text-template checks.",
+    "Whole-row template gates target repeated read-more archive entries, dated/tagged teaser indexes, dominant related-link tails and large raw infobox templates. Minor footers, isolated citations, short repetitions and OCR artifacts are not claimed eliminated.",
+    "Repeated independent content reviews of local CC100 found malformed game/dictionary/chat-service boilerplate, navigation-dominated pages and extraction corruption. The source is quarantined as a whole because local per-document URLs are unavailable; this is not a claim that every CC100 document is bad.",
+    "Repeated independently selected legacy wikiquote records were empty-quote stubs dominated by raw infoboxes. The tiny source is held out as a whole pending an extraction-quality rebuild.",
+    "Two source-bound normalized content hashes identify specific reviewed curated defects; this is targeted reviewed evidence, not a blanket exclusion of classical Belarusian or subject matter.",
+    "Conservative Google Play controls and extreme Cyrillic-fragment tests complement template controls. Rejected-example review is labelled heuristic_not_native and explicitly distinguishes syllable spacing from Latin/Cyrillic homoglyph corruption."
+  ],
+  "limitations": [
+    "Agent review is not independent native-speaker approval.",
+    "Conservative multilingual-route admission can quarantine useful human-authored translations; no attempt was made to rewrite or repair text.",
+    "A .by host is not a quality guarantee; known bad hosts override the routing exception.",
+    "Final confirmation uses an explicitly described staged44 review set and cannot establish a population error rate.",
+    "Substantial but coherent article/teaser/recommendation/fragment residue and isolated language/OCR errors remain; no clean-native-prose guarantee is made."
+  ],
+  "full_dryrun": {
+    "schema": "belka-h200-admission-dryrun-v1",
+    "parent_fingerprint": "7f33e3e2f263b1d59a6c6614209ce875c8f964ba04753de6f1efa1b473f1c22f",
+    "pipeline_hashes": {
+      "data_pipeline/h200_admission.py": "7dc29796f3ef0c089a32411c115783160137b8c8f76939c02a9e646569fc0704",
+      "configs/h200_admission_policy.json": "1d2e533ae838279a804b03d148e543b4abde89a76387c2566e31a19f431a1143"
+    },
+    "counts": {
+      "scanned": 4104965,
+      "retained": 3323429,
+      "removed": 781536
+    },
+    "reasons": {
+      "unreviewed_multilingual_route": {
+        "rows": 466605,
+        "chars": 1633310781
+      },
+      "dominant_unexpanded_wiki_template": {
+        "rows": 37918,
+        "chars": 68665216
+      },
+      "legacy_source_failed_repeated_content_review": {
+        "rows": 251017,
+        "chars": 442478469
+      },
+      "unreviewed_translated_news_route": {
+        "rows": 10876,
+        "chars": 18941798
+      },
+      "reviewed_problem_source_family": {
+        "rows": 9952,
+        "chars": 38769701
+      },
+      "article_teaser_archive": {
+        "rows": 262,
+        "chars": 1032862
+      },
+      "paginated_article_archive": {
+        "rows": 4892,
+        "chars": 11526532
+      },
+      "extreme_short_token_fragmentation": {
+        "rows": 12,
+        "chars": 102507
+      },
+      "reviewed_material_content_defect": {
+        "rows": 2,
+        "chars": 4708
+      }
+    },
+    "per_source": {
+      "fineweb2": {
+        "parent_rows": 1898294,
+        "parent_chars": 5179042338,
+        "kept_rows": 1575402,
+        "kept_chars": 3978383242,
+        "removed_rows": 322892,
+        "removed_chars": 1200659096
+      },
+      "leipzig": {
+        "parent_rows": 651731,
+        "parent_chars": 75291032,
+        "kept_rows": 651731,
+        "kept_chars": 75291032,
+        "removed_rows": 0,
+        "removed_chars": 0
+      },
+      "hplt_v2": {
+        "parent_rows": 1066347,
+        "parent_chars": 3028283464,
+        "kept_rows": 896478,
+        "kept_chars": 2524141108,
+        "removed_rows": 169869,
+        "removed_chars": 504142356
+      },
+      "be_x_oldwiki": {
+        "parent_rows": 29039,
+        "parent_chars": 61353178,
+        "kept_rows": 25153,
+        "kept_chars": 51723548,
+        "removed_rows": 3886,
+        "removed_chars": 9629630
+      },
+      "bewiki": {
+        "parent_rows": 204467,
+        "parent_chars": 406190322,
+        "removed_rows": 33354,
+        "removed_chars": 57634081,
+        "kept_rows": 171113,
+        "kept_chars": 348556241
+      },
+      "cc100-be": {
+        "parent_rows": 251017,
+        "parent_chars": 442478469,
+        "removed_rows": 251017,
+        "removed_chars": 442478469,
+        "kept_rows": 0,
+        "kept_chars": 0
+      },
+      "bewikisource_full": {
+        "parent_rows": 2294,
+        "parent_chars": 11872037,
+        "kept_rows": 2131,
+        "kept_chars": 11782030,
+        "removed_rows": 163,
+        "removed_chars": 90007
+      },
+      "bewikibooks_full": {
+        "parent_rows": 171,
+        "parent_chars": 311142,
+        "kept_rows": 171,
+        "kept_chars": 311142,
+        "removed_rows": 0,
+        "removed_chars": 0
+      },
+      "bewikiquote": {
+        "parent_rows": 567,
+        "parent_chars": 279840,
+        "removed_rows": 354,
+        "removed_chars": 195738,
+        "kept_rows": 213,
+        "kept_chars": 84102
+      },
+      "tatoeba_sentences": {
+        "parent_rows": 560,
+        "parent_chars": 37355,
+        "kept_rows": 560,
+        "kept_chars": 37355,
+        "removed_rows": 0,
+        "removed_chars": 0
+      },
+      "books_clean_v2": {
+        "parent_rows": 460,
+        "parent_chars": 3829871,
+        "kept_rows": 459,
+        "kept_chars": 3826674,
+        "removed_rows": 1,
+        "removed_chars": 3197
+      },
+      "bootstrap": {
+        "parent_rows": 18,
+        "parent_chars": 7090,
+        "kept_rows": 18,
+        "kept_chars": 7090,
+        "removed_rows": 0,
+        "removed_chars": 0
+      }
+    },
+    "validation_coverage": {
+      "schema": "belka-source-validation-coverage-v1",
+      "status": "PASS_WITH_MINOR_GAPS",
+      "policy": {
+        "required_sources_when_present": [
+          "bewiki",
+          "be_x_oldwiki",
+          "fineweb2",
+          "hplt_v2",
+          "cc100-be",
+          "leipzig"
+        ],
+        "major_source_min_train_rows": 10000,
+        "major_source_min_char_fraction": 0.001,
+        "missing_minor_validation": "report_train_only_without_quality_estimate"
+      },
+      "source_counts_complete": true,
+      "source_count_errors": [],
+      "final_splits_nonempty": true,
+      "per_source": {
+        "be_x_oldwiki": {
+          "train_rows": 24793,
+          "val_rows": 360,
+          "total_chars": 51723548,
+          "char_fraction": 0.007395265414085801,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "bewiki": {
+          "train_rows": 168582,
+          "val_rows": 2531,
+          "total_chars": 348556241,
+          "char_fraction": 0.0498354427258365,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "bewikibooks_full": {
+          "train_rows": 169,
+          "val_rows": 2,
+          "total_chars": 311142,
+          "char_fraction": 4.4486075693598674e-05,
+          "validation_required": false,
+          "status": "COVERED"
+        },
+        "bewikiquote": {
+          "train_rows": 210,
+          "val_rows": 3,
+          "total_chars": 84102,
+          "char_fraction": 1.2024631640803992e-05,
+          "validation_required": false,
+          "status": "COVERED"
+        },
+        "bewikisource_full": {
+          "train_rows": 2103,
+          "val_rows": 28,
+          "total_chars": 11782030,
+          "char_fraction": 0.0016845564996183426,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "books_clean_v2": {
+          "train_rows": 459,
+          "val_rows": 0,
+          "total_chars": 3826674,
+          "char_fraction": 0.0005471254578897288,
+          "validation_required": false,
+          "status": "TRAIN_ONLY_MINOR"
+        },
+        "bootstrap": {
+          "train_rows": 17,
+          "val_rows": 1,
+          "total_chars": 7090,
+          "char_fraction": 1.0137052428396507e-06,
+          "validation_required": false,
+          "status": "COVERED"
+        },
+        "fineweb2": {
+          "train_rows": 1552618,
+          "val_rows": 22784,
+          "total_chars": 3978383242,
+          "char_fraction": 0.5688163540819191,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "hplt_v2": {
+          "train_rows": 886481,
+          "val_rows": 9997,
+          "total_chars": 2524141108,
+          "char_fraction": 0.36089352254537166,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "leipzig": {
+          "train_rows": 638705,
+          "val_rows": 13026,
+          "total_chars": 75291032,
+          "char_fraction": 0.0107648679657557,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "tatoeba_sentences": {
+          "train_rows": 549,
+          "val_rows": 11,
+          "total_chars": 37355,
+          "char_fraction": 5.3408969458780185e-06,
+          "validation_required": false,
+          "status": "COVERED"
+        }
+      },
+      "train_only_minor_sources": [
+        "books_clean_v2"
+      ],
+      "missing_required_sources": [],
+      "val_only_sources": [],
+      "scope": "Measured final source coverage. Train-only minor categories have no source-specific held-out quality estimate; contaminated validation is never restored."
+    },
+    "fractions": {
+      "tarask": 0.007395265414085801,
+      "synthetic": 1.0137052428396507e-06
+    },
+    "no_data_mutation": true,
+    "evidence_path": ".workspace/h200-ready/admission-dryrun-v4.json",
+    "evidence_sha256": "71383a2c41877a8354303e78550a5bc443103b459c836e08557e7b2d9f5d0a5d",
+    "scope": "Full v4policy scan before the final whole-source wikiquote exclusion; do not confuse these counts with final expected counts."
+  },
+  "additional_development_rounds": [
+    {
+      "path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+      "sha256": "020ffabb3a4fcf52dda79d13422f7ed53c6bc0c93c154650b01529d85178cb8d"
+    },
+    {
+      "path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+      "sha256": "398bfaa6c3735ac8487535fb0aa9d50fc6e7b189822c32b09037aff33540d8cb"
+    },
+    {
+      "path": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "sha256": "5da9d1499c0b0590785bb8d91d8014d164df32d4f05b0dde1e65733d47b8c774"
+    },
+    {
+      "path": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+      "sha256": "c536e3b0fe57a804bd643102180ab824e5f978254e6bdd8f06f6951e32c70a54"
+    }
+  ],
+  "ocr_rejected_example_review": {
+    "path": "reports/data/H200_ADMISSION_OCR_REVIEW.json",
+    "sha256": "a693e0ee251d77cf5d3861b937a7f2505762b42a44a241a605c212a6ee2990af"
+  },
+  "final_derived_dryrun": {
+    "schema": "belka-h200-admission-derived-dryrun-v1",
+    "parent_fingerprint": "7f33e3e2f263b1d59a6c6614209ce875c8f964ba04753de6f1efa1b473f1c22f",
+    "pipeline_hashes": {
+      "data_pipeline/h200_admission.py": "7dc29796f3ef0c089a32411c115783160137b8c8f76939c02a9e646569fc0704",
+      "configs/h200_admission_policy.json": "0d8ce3f525b8de4f1e27ecaf1ad71d8167a197ef2401fe49de56972dcc992c2b"
+    },
+    "counts": {
+      "scanned": 4104965,
+      "retained": 3323216,
+      "removed": 781749
+    },
+    "per_source": {
+      "fineweb2": {
+        "parent_rows": 1898294,
+        "parent_chars": 5179042338,
+        "kept_rows": 1575402,
+        "kept_chars": 3978383242,
+        "removed_rows": 322892,
+        "removed_chars": 1200659096
+      },
+      "leipzig": {
+        "parent_rows": 651731,
+        "parent_chars": 75291032,
+        "kept_rows": 651731,
+        "kept_chars": 75291032,
+        "removed_rows": 0,
+        "removed_chars": 0
+      },
+      "hplt_v2": {
+        "parent_rows": 1066347,
+        "parent_chars": 3028283464,
+        "kept_rows": 896478,
+        "kept_chars": 2524141108,
+        "removed_rows": 169869,
+        "removed_chars": 504142356
+      },
+      "be_x_oldwiki": {
+        "parent_rows": 29039,
+        "parent_chars": 61353178,
+        "kept_rows": 25153,
+        "kept_chars": 51723548,
+        "removed_rows": 3886,
+        "removed_chars": 9629630
+      },
+      "bewiki": {
+        "parent_rows": 204467,
+        "parent_chars": 406190322,
+        "removed_rows": 33354,
+        "removed_chars": 57634081,
+        "kept_rows": 171113,
+        "kept_chars": 348556241
+      },
+      "cc100-be": {
+        "parent_rows": 251017,
+        "parent_chars": 442478469,
+        "removed_rows": 251017,
+        "removed_chars": 442478469,
+        "kept_rows": 0,
+        "kept_chars": 0
+      },
+      "bewikisource_full": {
+        "parent_rows": 2294,
+        "parent_chars": 11872037,
+        "kept_rows": 2131,
+        "kept_chars": 11782030,
+        "removed_rows": 163,
+        "removed_chars": 90007
+      },
+      "bewikibooks_full": {
+        "parent_rows": 171,
+        "parent_chars": 311142,
+        "kept_rows": 171,
+        "kept_chars": 311142,
+        "removed_rows": 0,
+        "removed_chars": 0
+      },
+      "bewikiquote": {
+        "parent_rows": 567,
+        "parent_chars": 279840,
+        "removed_rows": 567,
+        "removed_chars": 279840,
+        "kept_rows": 0,
+        "kept_chars": 0
+      },
+      "tatoeba_sentences": {
+        "parent_rows": 560,
+        "parent_chars": 37355,
+        "kept_rows": 560,
+        "kept_chars": 37355,
+        "removed_rows": 0,
+        "removed_chars": 0
+      },
+      "books_clean_v2": {
+        "parent_rows": 460,
+        "parent_chars": 3829871,
+        "kept_rows": 459,
+        "kept_chars": 3826674,
+        "removed_rows": 1,
+        "removed_chars": 3197
+      },
+      "bootstrap": {
+        "parent_rows": 18,
+        "parent_chars": 7090,
+        "kept_rows": 18,
+        "kept_chars": 7090,
+        "removed_rows": 0,
+        "removed_chars": 0
+      }
+    },
+    "splits": {
+      "train": {
+        "rows": 3274476,
+        "chars": 6917344183,
+        "sources": {
+          "fineweb2": {
+            "rows": 1552618,
+            "chars": 3928000355
+          },
+          "leipzig": {
+            "rows": 638705,
+            "chars": 73790789
+          },
+          "hplt_v2": {
+            "rows": 886481,
+            "chars": 2503428826
+          },
+          "be_x_oldwiki": {
+            "rows": 24793,
+            "chars": 51277745
+          },
+          "bewiki": {
+            "rows": 168582,
+            "chars": 344963408
+          },
+          "bewikisource_full": {
+            "rows": 2103,
+            "chars": 11702440
+          },
+          "bewikibooks_full": {
+            "rows": 169,
+            "chars": 310484
+          },
+          "tatoeba_sentences": {
+            "rows": 549,
+            "chars": 36803
+          },
+          "books_clean_v2": {
+            "rows": 459,
+            "chars": 3826674
+          },
+          "bootstrap": {
+            "rows": 17,
+            "chars": 6659
+          }
+        }
+      },
+      "val": {
+        "rows": 48740,
+        "chars": 76715279,
+        "sources": {
+          "fineweb2": {
+            "rows": 22784,
+            "chars": 50382887
+          },
+          "leipzig": {
+            "rows": 13026,
+            "chars": 1500243
+          },
+          "hplt_v2": {
+            "rows": 9997,
+            "chars": 20712282
+          },
+          "bewikisource_full": {
+            "rows": 28,
+            "chars": 79590
+          },
+          "be_x_oldwiki": {
+            "rows": 360,
+            "chars": 445803
+          },
+          "bewiki": {
+            "rows": 2531,
+            "chars": 3592833
+          },
+          "tatoeba_sentences": {
+            "rows": 11,
+            "chars": 552
+          },
+          "bootstrap": {
+            "rows": 1,
+            "chars": 431
+          },
+          "bewikibooks_full": {
+            "rows": 2,
+            "chars": 658
+          }
+        }
+      }
+    },
+    "measured_chars": {
+      "total": 6994059462,
+      "tarask": 51723548,
+      "synthetic": 7090
+    },
+    "validation_coverage": {
+      "schema": "belka-source-validation-coverage-v1",
+      "status": "PASS_WITH_MINOR_GAPS",
+      "policy": {
+        "required_sources_when_present": [
+          "bewiki",
+          "be_x_oldwiki",
+          "fineweb2",
+          "hplt_v2",
+          "cc100-be",
+          "leipzig"
+        ],
+        "major_source_min_train_rows": 10000,
+        "major_source_min_char_fraction": 0.001,
+        "missing_minor_validation": "report_train_only_without_quality_estimate"
+      },
+      "source_counts_complete": true,
+      "source_count_errors": [],
+      "final_splits_nonempty": true,
+      "per_source": {
+        "be_x_oldwiki": {
+          "train_rows": 24793,
+          "val_rows": 360,
+          "total_chars": 51723548,
+          "char_fraction": 0.007395354340497599,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "bewiki": {
+          "train_rows": 168582,
+          "val_rows": 2531,
+          "total_chars": 348556241,
+          "char_fraction": 0.04983604198588382,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "bewikibooks_full": {
+          "train_rows": 169,
+          "val_rows": 2,
+          "total_chars": 311142,
+          "char_fraction": 4.4486610628704434e-05,
+          "validation_required": false,
+          "status": "COVERED"
+        },
+        "bewikisource_full": {
+          "train_rows": 2103,
+          "val_rows": 28,
+          "total_chars": 11782030,
+          "char_fraction": 0.0016845767560333047,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "books_clean_v2": {
+          "train_rows": 459,
+          "val_rows": 0,
+          "total_chars": 3826674,
+          "char_fraction": 0.0005471320369509321,
+          "validation_required": false,
+          "status": "TRAIN_ONLY_MINOR"
+        },
+        "bootstrap": {
+          "train_rows": 17,
+          "val_rows": 1,
+          "total_chars": 7090,
+          "char_fraction": 1.0137174324183634e-06,
+          "validation_required": false,
+          "status": "COVERED"
+        },
+        "fineweb2": {
+          "train_rows": 1552618,
+          "val_rows": 22784,
+          "total_chars": 3978383242,
+          "char_fraction": 0.5688231939712954,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "hplt_v2": {
+          "train_rows": 886481,
+          "val_rows": 9997,
+          "total_chars": 2524141108,
+          "char_fraction": 0.36089786220922465,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "leipzig": {
+          "train_rows": 638705,
+          "val_rows": 13026,
+          "total_chars": 75291032,
+          "char_fraction": 0.01076499741088418,
+          "validation_required": true,
+          "status": "COVERED"
+        },
+        "tatoeba_sentences": {
+          "train_rows": 549,
+          "val_rows": 11,
+          "total_chars": 37355,
+          "char_fraction": 5.340961168968683e-06,
+          "validation_required": false,
+          "status": "COVERED"
+        }
+      },
+      "train_only_minor_sources": [
+        "books_clean_v2"
+      ],
+      "missing_required_sources": [],
+      "val_only_sources": [],
+      "scope": "Measured final source coverage. Train-only minor categories have no source-specific held-out quality estimate; contaminated validation is never restored."
+    },
+    "fractions": {
+      "tarask": 0.007395354340497599,
+      "synthetic": 1.0137174324183634e-06
+    },
+    "derivation": {
+      "method": "Exact subtraction of the fully measured v4 retained bewikiquote source inventory after adding its whole-source exclusion. Not a new full policy scan.",
+      "full_scan_path": ".workspace/h200-ready/admission-dryrun-v4.json",
+      "full_scan_sha256": "71383a2c41877a8354303e78550a5bc443103b459c836e08557e7b2d9f5d0a5d",
+      "full_scan_pipeline_hashes": {
+        "data_pipeline/h200_admission.py": "7dc29796f3ef0c089a32411c115783160137b8c8f76939c02a9e646569fc0704",
+        "configs/h200_admission_policy.json": "1d2e533ae838279a804b03d148e543b4abde89a76387c2566e31a19f431a1143"
+      },
+      "previous_policy_path": ".workspace/h200-ready/admission-policy-v4.json",
+      "previous_policy_sha256": "1d2e533ae838279a804b03d148e543b4abde89a76387c2566e31a19f431a1143",
+      "new_policy_sha256": "0d8ce3f525b8de4f1e27ecaf1ad71d8167a197ef2401fe49de56972dcc992c2b",
+      "changed_rule": "Add bewikiquote to excluded_sources; no other executable rule changed.",
+      "additionally_removed_rows": 213,
+      "additionally_removed_chars": 84102,
+      "source_orthography_inventory": {
+        "unknown": 567
+      },
+      "expected_actual_producer": "The actual producer must perform a full parent scan and reproduce these row/character/source/split counts; its exclusive first-reason quarantine histogram may shift earlier removals into the whole-source reason."
+    },
+    "no_data_mutation": true,
+    "evidence_path": ".workspace/h200-ready/admission-dryrun-final-derived.json",
+    "evidence_sha256": "ca893bb329c44fc004847b0d632522f11c0745fc2368f22a8b19b72eb299f50d"
+  },
+  "all_known_material_documents_quarantined": {
+    "status": "PASS",
+    "documents": 28,
+    "records": [
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 7,
+        "source": "fineweb2",
+        "content_sha256": "ef10664de1c6d20b5e01c0f6fbcd1cecd3fc184603ecd0abdbd3566a8f2ca858",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 9,
+        "source": "fineweb2",
+        "content_sha256": "0c83dbee3a3ecfb70a3019ae986b6c8e00f300e55ddd8f26439c8fb2d0d1dba5",
+        "final_admission_reason": "unreviewed_multilingual_route"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 10,
+        "source": "fineweb2",
+        "content_sha256": "590c19109e80b584cfe4c7d5c6d60ce8b5d98b9b535651c586127e47a71e4858",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 11,
+        "source": "fineweb2",
+        "content_sha256": "2153677b4f2e0b50e3bcc3332369b5c760d439614e8390b423892abc0e424fc5",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 13,
+        "source": "hplt_v2",
+        "content_sha256": "27c57585030a0729f3bdff7c0462273b2c1bf76c94ae2e20cf5b51543c5dadcd",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 15,
+        "source": "hplt_v2",
+        "content_sha256": "3669e65dc2ba777d41ac34b2afcde7ca556b9453a05a3f8dbc7f5686124c0f06",
+        "final_admission_reason": "paginated_article_archive"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 18,
+        "source": "hplt_v2",
+        "content_sha256": "c5db401843940400051d48e0b98fd9c3bac1ab53f2fa9e381fa2b17408c5b70c",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 19,
+        "source": "hplt_v2",
+        "content_sha256": "cf3fe08dae58ea67f0b67af114c7fffddcf8b0fc26b58003e95d31a870195d11",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 22,
+        "source": "hplt_v2",
+        "content_sha256": "a5c32cbf42226eb74416fe581ec4a4eaa91db2def57f5ee740ae80e2d85d4221",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 30,
+        "source": "cc100-be",
+        "content_sha256": "e3fd9c6f2e6d4ee545a882edde14f07b1cae90e23fb60fd618af1472a8081834",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_AGENT_SPOT_CHECK.json",
+        "sample_id": 36,
+        "source": "be_x_oldwiki",
+        "content_sha256": "b73a981ef1e4cb3b74439ebf2d91efd06f476b81a2c6503bcfb75f15dc9e9d67",
+        "final_admission_reason": "dominant_unexpanded_wiki_template"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 20,
+        "source": "hplt_v2",
+        "content_sha256": "adeb72d2f797493ce0f86c58a9521c80f3d60d516f1afc80e012792e2191b87b",
+        "final_admission_reason": "reviewed_problem_source_family"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 22,
+        "source": "hplt_v2",
+        "content_sha256": "dce571c7fe692d13ea8851356dd5d9757655bc8b8208fce20cb56b109f04c627",
+        "final_admission_reason": "paginated_article_archive"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 26,
+        "source": "cc100-be",
+        "content_sha256": "1746c88b9f379efaf324aeb3421cbed66deef8f34e830a340b89ad8c34ed1356",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 32,
+        "source": "cc100-be",
+        "content_sha256": "0af5f07a19beced21f84d5c650cf84402981f37224e53032800ee83d3d608924",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+        "sample_id": 44,
+        "source": "bewikiquote",
+        "content_sha256": "38eb41735a6d2bfeaab68a216018f903eedb6e99950d5d3216fc83b6ecaf0d47",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 25,
+        "source": "cc100-be",
+        "content_sha256": "abb7f80175b584f1a7144743a775e0a5bfcacdfda80fd7fcd7efd7da6e05cd3a",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 32,
+        "source": "cc100-be",
+        "content_sha256": "f8f704ba04f0a856273b0029229eb2fcce10c7ce245a8f16449398eab255f526",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 34,
+        "source": "bewiki",
+        "content_sha256": "333fbef423dd2c19622e4690a52eeb179013cf5852d04d936755671eb4369791",
+        "final_admission_reason": "dominant_unexpanded_wiki_template"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 40,
+        "source": "bewikisource_full",
+        "content_sha256": "c0e95fc5bd6ecd7cd7cbad507e568b8d18a2dea3d5340a2545c218f9435f00a3",
+        "final_admission_reason": "dominant_unexpanded_wiki_template"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+        "sample_id": 44,
+        "source": "bewikiquote",
+        "content_sha256": "3ace204b5d0fb8b2d56e65b93a1580156e67f3f9ef95d64e6e57dff7a96a9357",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 26,
+        "source": "cc100-be",
+        "content_sha256": "0b7e89a0a7ab0d752c32c61bc9b10f64fab188d2d39a7f95bf81b9f58c5496a6",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 28,
+        "source": "cc100-be",
+        "content_sha256": "03c02afc1762b65deed6a08d7a93585ec7eb23292422d4744ab53293d4544206",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 30,
+        "source": "cc100-be",
+        "content_sha256": "fb98bf42136a555be6e96e66b2bdc63c55cf8c8e7cda6b3b8e83438f1d1a58a0",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 31,
+        "source": "cc100-be",
+        "content_sha256": "d8db3c805b910e9bd144fc61bc8e745ff37e016b725cabfbd9247a926ea521d5",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 35,
+        "source": "be_x_oldwiki",
+        "content_sha256": "eef5acb25bffa3e5a16935c675f37e766c9ddfc89928f4886e42d1eea26dbb09",
+        "final_admission_reason": "reviewed_material_content_defect"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+        "sample_id": 44,
+        "source": "bewikiquote",
+        "content_sha256": "dd91d651618b9346898d75bd467ca4e22ce3bc94f04909398beb4d5084b4bb7b",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      },
+      {
+        "review": "reports/data/H200_ADMISSION_TOPUP_REVIEW.json",
+        "sample_id": 10,
+        "source": "bewikiquote",
+        "content_sha256": "caed5258949381b3dbeb1ba0a0d7d53b5fdc62b47fcff1b615f6df04f0936009",
+        "final_admission_reason": "legacy_source_failed_repeated_content_review"
+      }
+    ]
+  }
+}

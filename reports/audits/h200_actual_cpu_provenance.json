@@ -1,0 +1,202 @@
+{
+  "NATIVE_TRAINING_LOG_PROVENANCE": "NOT_ASSESSED",
+  "PROVENANCE_STATUS": "PASS",
+  "SFT_ALLOWED": "NO",
+  "TRAINING_ALLOWED": "NO",
+  "audit_status": "PASS",
+  "checkpoints": [
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/base_checkpoints/belka-smoke-ready/model_000001.pt",
+      "checkpoint_sha256": "40b2a833deb7afd28514be51315ea59df26a270e4445a8931077d35a5833c636",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316202299197918_RECORDED_RUN_MANIFEST.json",
+        "sha256": "5e8ab433c65419b8eec84267d1bf23b3eb65b564870ebf3b89a2e3e3bcc5c604",
+        "size_bytes": 51775
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/base_checkpoints/belka-smoke-ready/model_000002.pt",
+      "checkpoint_sha256": "02ddb85e9238ab01254e1d3e3880110495004434b9ea30e21e250474a080b137",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316202299197918_RECORDED_RUN_MANIFEST.json",
+        "sha256": "5e8ab433c65419b8eec84267d1bf23b3eb65b564870ebf3b89a2e3e3bcc5c604",
+        "size_bytes": 51775
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/base_checkpoints/belka-smoke-ready/model_000003.pt",
+      "checkpoint_sha256": "c6729783c61f7aa204d61a6a94e42899daf3a0295d1998ea94cef55f8e7c5b0b",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316202299197918_RECORDED_RUN_MANIFEST.json",
+        "sha256": "5e8ab433c65419b8eec84267d1bf23b3eb65b564870ebf3b89a2e3e3bcc5c604",
+        "size_bytes": 51775
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/base_checkpoints/belka-smoke-ready/model_000001.pt",
+      "checkpoint_sha256": "40b2a833deb7afd28514be51315ea59df26a270e4445a8931077d35a5833c636",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316303167433080_RECORDED_RUN_MANIFEST.json",
+        "sha256": "4dc37931dffea5fb38961df8c55f3a4ee3c68f8c523816fe5f2067aca55cf0ed",
+        "size_bytes": 51775
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/base_checkpoints/belka-smoke-ready/model_000002.pt",
+      "checkpoint_sha256": "02ddb85e9238ab01254e1d3e3880110495004434b9ea30e21e250474a080b137",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316303167433080_RECORDED_RUN_MANIFEST.json",
+        "sha256": "4dc37931dffea5fb38961df8c55f3a4ee3c68f8c523816fe5f2067aca55cf0ed",
+        "size_bytes": 51775
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/base_checkpoints/belka-smoke-ready/model_000003.pt",
+      "checkpoint_sha256": "c6729783c61f7aa204d61a6a94e42899daf3a0295d1998ea94cef55f8e7c5b0b",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316303167433080_RECORDED_RUN_MANIFEST.json",
+        "sha256": "4dc37931dffea5fb38961df8c55f3a4ee3c68f8c523816fe5f2067aca55cf0ed",
+        "size_bytes": 51775
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/chatsft_checkpoints/belka-smoke-ready/model_000001.pt",
+      "checkpoint_sha256": "9da8e9a00cb3d48cea5ebabfec2612db431961d728367b84595454dd038b55ec",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316227942420066_RECORDED_RUN_MANIFEST.json",
+        "sha256": "a2f994d6b9b77c36bbea01b0ea48b505fc63d43a7fb63b05074a7aa5c076dd23",
+        "size_bytes": 3394
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/chatsft_checkpoints/belka-smoke-ready/model_000002.pt",
+      "checkpoint_sha256": "b06bd2b6b6156599494cfc7a9113499745c6b80e5b7b31d870eb12c9f287c01f",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316227942420066_RECORDED_RUN_MANIFEST.json",
+        "sha256": "a2f994d6b9b77c36bbea01b0ea48b505fc63d43a7fb63b05074a7aa5c076dd23",
+        "size_bytes": 3394
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/chatsft_checkpoints/belka-smoke-ready/model_000003.pt",
+      "checkpoint_sha256": "b06bd2b6b6156599494cfc7a9113499745c6b80e5b7b31d870eb12c9f287c01f",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316227942420066_RECORDED_RUN_MANIFEST.json",
+        "sha256": "a2f994d6b9b77c36bbea01b0ea48b505fc63d43a7fb63b05074a7aa5c076dd23",
+        "size_bytes": 3394
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/chatsft_checkpoints/belka-smoke-ready/model_000001.pt",
+      "checkpoint_sha256": "9da8e9a00cb3d48cea5ebabfec2612db431961d728367b84595454dd038b55ec",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316303506062027_RECORDED_RUN_MANIFEST.json",
+        "sha256": "35a87c6b6ee1e23e9a9926aef10506038ea88727118bd997579889a530169485",
+        "size_bytes": 3394
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/chatsft_checkpoints/belka-smoke-ready/model_000002.pt",
+      "checkpoint_sha256": "b06bd2b6b6156599494cfc7a9113499745c6b80e5b7b31d870eb12c9f287c01f",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316303506062027_RECORDED_RUN_MANIFEST.json",
+        "sha256": "35a87c6b6ee1e23e9a9926aef10506038ea88727118bd997579889a530169485",
+        "size_bytes": 3394
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    },
+    {
+      "checkpoint_path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/chatsft_checkpoints/belka-smoke-ready/model_000003.pt",
+      "checkpoint_sha256": "b06bd2b6b6156599494cfc7a9113499745c6b80e5b7b31d870eb12c9f287c01f",
+      "model_tag": "belka-smoke-ready",
+      "quality_status": "NOT_EVALUATED",
+      "run_manifest": {
+        "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316303506062027_RECORDED_RUN_MANIFEST.json",
+        "sha256": "35a87c6b6ee1e23e9a9926aef10506038ea88727118bd997579889a530169485",
+        "size_bytes": 3394
+      },
+      "status": "PROVENANCE_VERIFIED",
+      "tokenizer_sha256": "cfb595028126d3dd7745fc21012ab0437c0e3c1abc557f0737a97613866f259d"
+    }
+  ],
+  "failures": [],
+  "prepared_manifests": [
+    {
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316187790608113_PREPARED_RUN_MANIFEST.json",
+      "sha256": "78501e77ba0ff82ec4462f89c8e6ebf69cd5193fd205adb286c45986a7da7bc3",
+      "size_bytes": 50924
+    },
+    {
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316202308148936_PREPARED_RUN_MANIFEST.json",
+      "sha256": "e374a20ddce1bdc331b69165df3536694609a071693a0a847fa651cf52ecd9df",
+      "size_bytes": 2534
+    }
+  ],
+  "quality_status": "NOT_EVALUATED",
+  "run_manifests": [
+    {
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316202299197918_RECORDED_RUN_MANIFEST.json",
+      "sha256": "5e8ab433c65419b8eec84267d1bf23b3eb65b564870ebf3b89a2e3e3bcc5c604",
+      "size_bytes": 51775
+    },
+    {
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/base_1791316303167433080_RECORDED_RUN_MANIFEST.json",
+      "sha256": "4dc37931dffea5fb38961df8c55f3a4ee3c68f8c523816fe5f2067aca55cf0ed",
+      "size_bytes": 51775
+    },
+    {
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316227942420066_RECORDED_RUN_MANIFEST.json",
+      "sha256": "a2f994d6b9b77c36bbea01b0ea48b505fc63d43a7fb63b05074a7aa5c076dd23",
+      "size_bytes": 3394
+    },
+    {
+      "path": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/runs/belka-smoke-ready/run_manifests/sft_1791316303506062027_RECORDED_RUN_MANIFEST.json",
+      "sha256": "35a87c6b6ee1e23e9a9926aef10506038ea88727118bd997579889a530169485",
+      "size_bytes": 3394
+    }
+  ],
+  "schema_version": 1
+}

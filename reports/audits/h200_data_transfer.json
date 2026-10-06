@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "actual_archive_restored": true,
+  "all_member_hashes_verified": true,
+  "portable_prepared_assets_verified": true,
+  "original_selected_generations_unchanged": true,
+  "archive_sha256": "26a2569c6052acfe44195835346603a3dd7f3b3b6781a095f15eb91b9c47a182",
+  "archive_bytes": 7349667840,
+  "files": 178
+}

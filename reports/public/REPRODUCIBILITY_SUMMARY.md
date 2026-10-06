@@ -1,52 +1,36 @@
-# Belka — Reproducibility Summary
+# Belka — reproducibility
 
-*Public summary. Methodology: `docs/03_data_pipeline_plan.md`, `docs/04_tokenizer_plan.md`,
-`docs/05_training_strategy.md`.*
-
-## Canonical commands
+Updated 2026-10-06. The installer uses the pinned nanochat revision, frozen upstream
+`uv.lock`, reviewed pack constraints in `constraints_pack_py310.txt`, and `pip check`.
+The constraints cover pack additions, not a complete lock for every platform;
+archive the resolved environment with each accepted run.
 
 ```bash
-# 1. Static checks (clean clone, no GPU, no data)
+python -m pip install -r requirements_pack.txt -c constraints_pack_py310.txt
 PYTHONPATH="$PWD" pytest -q tests
-python tools/audit_data_rights.py --manifest reports/DATA_RIGHTS_MANIFEST.json
 python tools/validate_public_release.py
-python tools/check_train_eval_decontamination.py --dry-run
-
-# 2. SFT data validation (in-repo data)
-python tools/validate_sft_v8.py
-
-# 3. Source / rights board (metadata only, no downloads)
-python tools/build_source_expansion_board.py --dry-run
-
-# 4. Evaluate a served model (needs a running endpoint)
-python eval/run_openai_compatible_eval.py --base-url http://127.0.0.1:8000 --model be-local \
-  --eval-file eval/strict_holdout_quality_control_v2.be.jsonl
+python tools/build_sft_mix.py --check-only
 ```
 
-## What works on a clean clone (no GPU, no external data)
+Minimal checks can skip optional runtime integrations. The separate Runtime contracts
+CI job provisions real CPU Torch/nanochat and HF dependencies, runs the complete suite,
+and verifies the JUnit report. Missing dependencies or an unexecuted native HF roundtrip
+fail that job. Explicit CUDA/H200 hardware tests can be marked unavailable; a CPU
+result does not certify GPU behavior or throughput.
 
-- Test suite (`tests/`); workspace-dependent tests are `skipif`-guarded.
-- Data-rights / public-release / decontamination audits.
-- SFT JSONL validation; source-board generation.
+Bundled historical corpus restoration is not an immediate training approval. Prepare
+and verify the selected H200 corpus, SFT generation and tokenizer using the canonical
+training plan. Data preparation and checkpoint QC have separate scopes. Missing files,
+failed content hashes, unknown provenance, or absent measurements remain failures or
+UNKNOWN; legacy acceptance labels cannot substitute for those checks.
 
-## Data: bundled in this repository (updated 2026-08-16)
+Before training, `tools/write_training_run_manifest.py` requires the resolved trainer
+config, selected dataset directory and tokenizer. Its PREPARED manifest binds full
+hashes; after a real run a RECORDED manifest binds the committed checkpoint. Neither
+artifact asserts language quality. `tools/audit_training_provenance.py --base-dir ...`
+checks current bytes and coverage; checkpoint acceptance still needs evaluation.
 
-- The complete `v3b` corpus + trained 16k tokenizer ship in
-  `data_release/open_corpus_bundle/` (owner-cleared for publication). Restore with
-  `bash ops/local/restore_bundled_corpus.sh` — training can start immediately.
-- Rebuilding the corpus from the original raw sources (~38 GB under `data_input/`,
-  not in git) is only needed to re-derive it end to end.
-
-## What requires a GPU
-
-- Base pretraining and SFT (gated: `TRAINING_ALLOWED=NO` by default).
-- Serving the model for end-to-end eval.
-
-## Artifact hashes
-
-- Tokenizer SHA256: `d9272e81…71ac` (`reports/tokenizer_v2/`).
-- Checkpoint SHA256s: `reports/checkpoints_manifest/` and
-  `reports/audit/TRAINING_PROVENANCE_AUDIT.md`.
-- Provenance note: nanochat does not log the dataset path natively
-  (`NATIVE_TRAINING_LOG_PROVENANCE=FAIL`); provenance is reconstructed from owner-run
-  manifests (`PROVENANCE_RISK=MEDIUM`).
+For standalone HF inference install `export/requirements_hf.txt` in a separate
+environment and run `export/export_to_hf.sh` against a committed checkpoint and its
+matching tokenizer. See `export/HF_MODEL_CARD.md` for loading and supported scope.
+The exporter preserves the native architecture. GGUF and vLLM are not implemented.

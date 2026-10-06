@@ -1,0 +1,139 @@
+{
+  "schema": "belka-workspace-cleanup-v1",
+  "status": "PASS",
+  "scope": "Only known temporary/redundant artifacts of this preparation and regenerable repository caches. No Git-tracked files removed.",
+  "removed": [
+    {
+      "path": ".pytest_cache",
+      "files": 5,
+      "logical_bytes": 187992,
+      "allocated_bytes": 204800
+    },
+    {
+      "path": ".workspace/audit-main-20261006/pytest",
+      "files": 375,
+      "logical_bytes": 22514766,
+      "allocated_bytes": 23601152
+    },
+    {
+      "path": ".workspace/audit-main-20261006/pytest-unrestricted",
+      "files": 3615,
+      "logical_bytes": 107828424,
+      "allocated_bytes": 119545856
+    },
+    {
+      "path": ".workspace/h200-ready/admission-v3-patch",
+      "files": 3,
+      "logical_bytes": 30762,
+      "allocated_bytes": 32768
+    },
+    {
+      "path": ".workspace/h200-ready/curated-check",
+      "files": 29,
+      "logical_bytes": 648261019,
+      "allocated_bytes": 648323072
+    },
+    {
+      "path": ".workspace/h200-ready/data/..corpus_current.generations/.staging-kak_gx_8",
+      "files": 2,
+      "logical_bytes": 2051508094,
+      "allocated_bytes": 2051518464
+    },
+    {
+      "path": ".workspace/h200-ready/data/.quality-hz8j9fpg",
+      "files": 1,
+      "logical_bytes": 9582596096,
+      "allocated_bytes": 9582596096
+    },
+    {
+      "path": ".workspace/h200-ready/proposed_h200_admission.py",
+      "files": 1,
+      "logical_bytes": 9227,
+      "allocated_bytes": 12288
+    },
+    {
+      "path": ".workspace/h200-ready/proposed_h200_admission_policy.json",
+      "files": 1,
+      "logical_bytes": 5079,
+      "allocated_bytes": 8192
+    },
+    {
+      "path": ".workspace/h200-ready/proposed_test_h200_admission.py",
+      "files": 1,
+      "logical_bytes": 8319,
+      "allocated_bytes": 12288
+    },
+    {
+      "path": ".workspace/h200-ready/qc-subset-patch",
+      "files": 6,
+      "logical_bytes": 89749,
+      "allocated_bytes": 106496
+    },
+    {
+      "path": ".workspace/h200-ready/quality-smoke",
+      "files": 18,
+      "logical_bytes": 325703048,
+      "allocated_bytes": 325742592
+    },
+    {
+      "path": ".workspace/h200-ready/quality-smoke-v2",
+      "files": 18,
+      "logical_bytes": 325246186,
+      "allocated_bytes": 325292032
+    },
+    {
+      "path": ".workspace/h200-ready/restore-check",
+      "files": 181,
+      "logical_bytes": 7349310223,
+      "allocated_bytes": 7349719040
+    },
+    {
+      "path": "data_pipeline/__pycache__",
+      "files": 30,
+      "logical_bytes": 242515,
+      "allocated_bytes": 311296
+    },
+    {
+      "path": "eval/__pycache__",
+      "files": 2,
+      "logical_bytes": 9538,
+      "allocated_bytes": 12288
+    },
+    {
+      "path": "export/__pycache__",
+      "files": 1,
+      "logical_bytes": 10139,
+      "allocated_bytes": 12288
+    },
+    {
+      "path": "tests/__pycache__",
+      "files": 124,
+      "logical_bytes": 2469118,
+      "allocated_bytes": 2736128
+    },
+    {
+      "path": "tools/__pycache__",
+      "files": 55,
+      "logical_bytes": 480039,
+      "allocated_bytes": 606208
+    }
+  ],
+  "removed_allocated_bytes": 20430393344,
+  "observed_disk_free_delta_bytes": 20442304512,
+  "preserved": [
+    "Selected corpus/tokenizer/SFT generations and CPU smoke checkpoints",
+    "Completed raw baseline and full-scan parent generations",
+    "Original local raw inputs, historical runs and belka_handoff_2026-09-22",
+    "Final archives, audit reports, logs and frozen admission samples/evidence",
+    "Pinned runtime and installed dependencies"
+  ],
+  "note": "Failed SQLite/staging payloads are deleted after successful final publication; interruption diagnostics/logs remain. Restore-check directory was a redundant byte-verified copy; its PASS report remains.",
+  "post_cleanup_plan_check": {
+    "status": "PASS",
+    "plan_sha256": "bbee5351045e515e8aeabca05428565ec318b7b52d26e835e8c1aabb83dcaa79",
+    "software_and_artifacts_verified": true,
+    "hardware_verified": false,
+    "production_launch_ready": false
+  },
+  "admission_frozen_hashes_unchanged": 11
+}

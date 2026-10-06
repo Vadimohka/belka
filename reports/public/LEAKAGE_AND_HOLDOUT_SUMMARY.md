@@ -1,5 +1,7 @@
 # Belka — Leakage and Holdout Summary
 
+> Historical snapshot: the acceptance labels and measured overlaps below refer to earlier artifacts only. For current evidence requirements see `reports/public/PROJECT_STATUS.md` and `reports/public/RELEASE_READINESS.md`. They do not certify the new H200 corpus, runtime or model.
+
 *Public summary. Detectors: `tools/audit_sft_leakage.py`, `tools/check_eval_leakage.py`,
 `tools/glue_leakage_guard.py`. New: `tools/check_train_eval_decontamination.py`.*
 

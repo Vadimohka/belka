@@ -30,15 +30,17 @@ Repository maintenance / cleanup audit records (kept as provenance of the cleanu
 
 ## Related top-level docs
 
-- [`../../DATA_RIGHTS_AND_PERMISSIONS.md`](../../DATA_RIGHTS_AND_PERMISSIONS.md)
+- [`../../configs/source_mixing_policy.yaml`](../../configs/source_mixing_policy.yaml) — active source policy.
 - [`../../data_cards/corpus_v3b.md`](../../data_cards/corpus_v3b.md)
 - [`../../model_cards/belka-research-preview.md`](../../model_cards/belka-research-preview.md)
-- [`../DATA_RIGHTS_MANIFEST.json`](../DATA_RIGHTS_MANIFEST.json) · [`../LICENSE_MANIFEST.json`](../LICENSE_MANIFEST.json)
+- [`../../export/HF_MODEL_CARD.md`](../../export/HF_MODEL_CARD.md) — native HF export contract and limitations.
 
 ## Machine-readable state (kept, not public-noise)
 
-- `reports/state/` — canonical state (source of truth).
-- `reports/checkpoints_manifest/` — checkpoint hashes.
+- `reports/state/` — historical state snapshots; not evidence for newly prepared inputs.
+- `reports/data/H200_DATA_PREPARATION.json` — generated preparation evidence for the selected data generation.
+- `run_manifests/` under the selected run base — content-bound PREPARED/RECORDED manifests.
+- `reports/checkpoints_manifest/` — historical checkpoint hashes.
 
 ## Not part of public release (local/ignored)
 

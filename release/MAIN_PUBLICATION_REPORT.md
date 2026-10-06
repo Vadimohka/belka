@@ -1,5 +1,7 @@
 # Belka Main Branch Publication Report
 
+> Historical snapshot: the acceptance labels and measured overlaps below refer to earlier artifacts only. For current evidence requirements see `reports/public/PROJECT_STATUS.md` and `reports/public/RELEASE_READINESS.md`. They do not certify the new H200 corpus, runtime or model.
+
 > The earlier separate-mirror / orphan-branch publication approach was **superseded** by
 > the owner's decision to publish the full project in this single repository on `main`.
 > `main` is the canonical public branch; full git history is preserved.

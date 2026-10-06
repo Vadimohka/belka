@@ -1,5 +1,7 @@
 # Final polish report
 
+> Historical snapshot: the acceptance labels and measured overlaps below refer to earlier artifacts only. For current evidence requirements see `reports/public/PROJECT_STATUS.md` and `reports/public/RELEASE_READINESS.md`. They do not certify the new H200 corpus, runtime or model.
+
 Pre-tag polish pass on the public Belka repository. **No commit, no push, no tag, no release.**
 
 ## Context

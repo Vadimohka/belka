@@ -1,5 +1,7 @@
 # Final polish audit
 
+> Historical snapshot: the acceptance labels and measured overlaps below refer to earlier artifacts only. For current evidence requirements see `reports/public/PROJECT_STATUS.md` and `reports/public/RELEASE_READINESS.md`. They do not certify the new H200 corpus, runtime or model.
+
 Branch: `main` · Start commit: `768d6ac` · Tracked files at start: 346
 
 Temporary audit for the pre-tag polish pass. Categories: KEEP / MOVE_TO_OPS /

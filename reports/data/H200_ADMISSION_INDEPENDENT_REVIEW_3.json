@@ -1,0 +1,1106 @@
+{
+  "schema": "belka-h200-independent-admission-review-v1",
+  "status": "RESIDUAL_GAPS_REQUIRING_DECISION",
+  "bpe_go": false,
+  "parent_corpus_fingerprint": "7f33e3e2f263b1d59a6c6614209ce875c8f964ba04753de6f1efa1b473f1c22f",
+  "tested_pipeline_hashes": {
+    "data_pipeline/h200_admission.py": "e3213d4da6771fdb8af36c003d79cc8d5381f7a0e772c1d20ede14f0fe7dbf5e",
+    "configs/h200_admission_policy.json": "49e069b8d9b4009c682b30fb5301779392d0a04fd0ab819c1312bfc99ea60a11"
+  },
+  "sample_path": ".workspace/h200-ready/admission-independent-sample-v3.json",
+  "sample_sha256": "c50b6928c59e5567cab89ea2c0801febf8755d63e8a97c1979ac9f790b099601",
+  "windows_path": ".workspace/h200-ready/admission-independent-windows-v3.json",
+  "windows_sha256": "1d9491f52d827227a47c60328236cefa9ee2e2ef415c48703ccd0e6e67f397ba",
+  "selection_salt": "belka-independent-admission-spotcheck-v3",
+  "quotas": {
+    "fineweb2": 12,
+    "hplt_v2": 12,
+    "cc100-be": 8,
+    "bewiki": 2,
+    "be_x_oldwiki": 2,
+    "books_clean_v2": 2,
+    "bewikisource_full": 2,
+    "leipzig": 2,
+    "bewikibooks_full": 1,
+    "bewikiquote": 1
+  },
+  "excluded_development_documents": 142,
+  "excluded_development_content_hashes": [
+    "00464cba902cad9236ef5b561062b9e50b9da57efb688588641fd1e26c454920",
+    "00c6fd41151f2f9b166b0e410e9810b4c39120b685afa4840f8e51f7d412e234",
+    "00d83bd2db601f8f937df32f151d894a9cb1918abac1c71adb0286eeca40e587",
+    "010079e4226d2f6f55892583260c0fed399c0b65f932a19b5cc4ad3dd139da41",
+    "01212037e0c66c12dd5f915d0382bee6a04506391a22a9ef27dda01c7f234af3",
+    "01fa2db6e32ac3b0cb0ba1fd01c7024fcae707f3879e700d4987f8aa4ede298c",
+    "0318a4244ea6edf3be7232157d67ac5d7890426bfdb1895f803ce384575a3954",
+    "05267ed04f420b7fcd1752c5cdf36ab9762c9850bc9a4bb0e9794fdf06f549de",
+    "05887293e22a51d0e3871c98d98708572453c739127dda32e8a1dd1c8676dead",
+    "0679e6df622c639b11a606763555603f70e8be8cc87348797e19a96f1e6a59aa",
+    "07d41f8b1104d36cbe32e39d061249c1bbfcb6793f48800e6bea6d43b102bd7e",
+    "08a5da62c19ecdea3fbe1575a8e541e2a9dda728c18064954b081860222ac9ba",
+    "09f8f57678a7fc637b6b48c3232803488fd87d74184f9e9b8507fb5e0686aba8",
+    "09fc5a319f00b6feb66fcb4b1480dccc487e384ff3353a5d10c350a61930ef65",
+    "0a6a336e8d8225b643c00a85021686734dd9fa11140b6ea1f4c5401ba2db3187",
+    "0af5f07a19beced21f84d5c650cf84402981f37224e53032800ee83d3d608924",
+    "0c83dbee3a3ecfb70a3019ae986b6c8e00f300e55ddd8f26439c8fb2d0d1dba5",
+    "129232dbef659020ca9cd31cdc4376d8b1d479cfd1e3281d78a929d5dced2695",
+    "1395067cdbf4e959a7d1a22b206e83083e014d308bf5f03825d7e9b8ec01d10f",
+    "1746c88b9f379efaf324aeb3421cbed66deef8f34e830a340b89ad8c34ed1356",
+    "17ed5c8e41efd01fc83e8df92a5fb0b13740a0b2d057f26c479ebbad9679015d",
+    "1842392ed1605df43ccd40fc75eab326cec24d68cb42a6a5537c280aa761b80c",
+    "190b207bcfa4757100404eebf0410b65147969ed87ddd855520ded04b8849522",
+    "1b261f421ae04c7254b6ae753b574662c00da44310f4b5c9b869487bbd3e3e7e",
+    "1d0abed79ac8a7d2f7f861f0404d02d1708c68b7289eca964750b62d190e66ee",
+    "2153677b4f2e0b50e3bcc3332369b5c760d439614e8390b423892abc0e424fc5",
+    "2305f3ac4a7291af1ce900182b9a9c36b680329e897ac1faed7d22a1ba044cf2",
+    "2309865e1e0495204145bb5ec14888ab2aaa33b8365c876431f130531f1aead5",
+    "23a35c0cb4aba4238c16bd2cd713f40e7990df3d25c29c03a62afc9f2aa5ef76",
+    "2494a4462a9fbb275969c190d7520be9523ce3f353fb976401257504c29cce7c",
+    "2571d868e88223d593e992f1a6bbae4c055b48f1ec7ad9107185b81e6d73e14d",
+    "27c57585030a0729f3bdff7c0462273b2c1bf76c94ae2e20cf5b51543c5dadcd",
+    "281ab53b961d1235c8b7b189ab99648872aa029a867595d5bef89d5b885e3c21",
+    "2897ef87bfe6571cf688c9b7734f718ed48f892de0b9348159a814800681c40a",
+    "2a519500310e3ebffe9a86e162b046815a3556856d597ab0cd98e2bc4f1201b2",
+    "2ba5d085c83cc88a510567e5188be4caf1b61bedad581d1b0d929aa8dac068dc",
+    "2d8fc7167a483b716d05fb1ec1baafd843a08637a51c968abec357c88e27e75a",
+    "2ee7637d89cdcbe1538dd7289b98dfdf9ccc98dd6eaa48b5a8813b2e857fa075",
+    "31b97efa62044f001f7181117a698813778e2ee7881cbed6238ce5f1d180a023",
+    "324729d22fbc7be985f2350c9c95779a4c1a563558a7b8c7cbd395a6ece90199",
+    "333fbef423dd2c19622e4690a52eeb179013cf5852d04d936755671eb4369791",
+    "33b34da94072915f42a6e46425ba380081f4da2fb7bafd93a2fc45b5563734ba",
+    "35d15ddca39b3f7983dbf481e3097df4c342da99d4cfc8d400a00a8058f68852",
+    "3669e65dc2ba777d41ac34b2afcde7ca556b9453a05a3f8dbc7f5686124c0f06",
+    "377f57aac27e3813fa4bae5c789f7be71504510c9941c4a26859f2309e4f01ea",
+    "38eb41735a6d2bfeaab68a216018f903eedb6e99950d5d3216fc83b6ecaf0d47",
+    "39924bada7fd585b9ab8e3a62ac82607c368fe1c20f3307f2e89b64eab396fbb",
+    "39e3d00af5eca7dffcc8110a0ab84736b6b88c23656237051af9a199daa8cdb6",
+    "3ace204b5d0fb8b2d56e65b93a1580156e67f3f9ef95d64e6e57dff7a96a9357",
+    "3d881d5f35d574d018eeb54a859416b5430c88e22def18ffb524cddf8ae3e9ef",
+    "3e9007d296d9616faca6cb812a280b26102d798e009191b764656f53a65344a0",
+    "426f810706aaa565b0a56e691283736214283bb92d5ec3236df79e6b954e0101",
+    "4727d53c356ee9d66ac76c30d4877ffb01ca9817a58f29bb9a1b2d3963686b59",
+    "49f070ae7a3f1acf0e036155a1a7d312dd78e6587302dcd51ebb3beb165d8fbb",
+    "4a4fd1d67dc7136dda634405b354f88fd4a25801f2b4f40109a5fd6d4db99b5a",
+    "4b2b613fae361fd414a7c78ef0616cab76ae8aacf96ba4474046e8110fcd43ac",
+    "4da72f04fe79e2a15a1e74849db3187eb1030ddfa998d8f8917f78ea91a45be1",
+    "4f2e4aba32771381612bce2c119249c746646158f81e65ea61a35ae004ef26ab",
+    "4fd875285caa00fd9e7abbc926b5b470eb183dc4764ae90318b21e5e2527670f",
+    "5069249bbec2a2f2217ab620bcd02f207a21d7bf3f04c1b69b7ec6bcb81ffb29",
+    "50eb251ed7a90dbf16f1e750c568e08881f0e27047cae8fdf2a39e53cb75e05b",
+    "51ea57bbc01220d8f3f6e26bd240c9d9fcd9889dc1999deb1482c668ad175f60",
+    "5468eefb2e3bd03655bbd4e6ac0afd780ca1065e5036461e2dee339297013d60",
+    "590c19109e80b584cfe4c7d5c6d60ce8b5d98b9b535651c586127e47a71e4858",
+    "5e8827dfe5787d48f895491b6461451d99765ccd9b274654859da425597c83de",
+    "61cc6a3021204d115aff454e31d4690fbaa726a9075fb56c0299b4ae951a4fa4",
+    "665d6e5b12272b17ea5d6381ffe3d6612bd4bca215de3b7857eb28b9da0eb4db",
+    "69b9649d59c03a4e320afe1c490497103a7cfffb9b4a4ab7fda02d89b10fe0de",
+    "69cb0c9d7b1d33052905fbfff319de5f49389a91495aaf542fa0418e57d56831",
+    "6c05207ddf1e9a28a752daf39ac1e92a2de5484ebccd865f5573d0f0f7248741",
+    "6c07df280f9baec79d89fa4f4bb0b3c0dcd5084f24725e558a8c09c9e1644474",
+    "6de92c44b86b934f488327a77be7c2fc7b902d240157412aefeef0d11b30b52b",
+    "74db2c2fb168f2a02cc494ec7fe29ef50628c1ae107ccb3008f2af343f73cb68",
+    "76a88d969f939e25725fe683b63f78a803e7d8f4e7c215f1f2a79e8b9f17c1a9",
+    "77df13e424f164a361a193c9add6fc6197c21e2c6abbd68951e647f419fd628d",
+    "78855f9bb109cc7147cf691d7aed45dbf4adb3c1e3fe409b2fd69fc93608b6f2",
+    "78b4c292b68a49c3cd1608ba6262ed572832837f967476aa712a5e2bf96b2446",
+    "79285cd4c1ef01860c37215a38c000339d7b664b470eee4f7b808024be82b40c",
+    "792b81e4d785df1adbcbfaed39fcc89cc4e56e628d4398169aac54a07ab16be4",
+    "7b62a9875a94b755d452f3cda9dff854b351e94453272bd4c876abc3a114b482",
+    "7c738afeebeda565719665d72f718872dc63d9f725aa69985f587e0d987db6d7",
+    "7fbb9f12f7fb77f075ae31050b6fb77dcdd6e0ddf1c76d8abeb7bcc922649698",
+    "85049a37d869379ae92f07e434aabab7fc77f54cbaa8ecb9c6f172b56e504aee",
+    "893ed27096456782e657f2b7a9622210411e1e1e821cb017bb53b7bcb8ef05ed",
+    "8953efaa327825103842aed27124d20016c117a3fa87db2863e7cbc6815c14f6",
+    "8960dc68575b2f61a236dec8e110c75ea516460eae8d3169884aee0c6d51347a",
+    "8bfd3b383d3f81465d20e4bfaa52c86f8ef3a8cbc5bb6fd6d12958fba8efb5d4",
+    "93691e5b74f4419004ed1873e7d665f201dcc8e62bdf0081b4c10f35ce334f23",
+    "93e31022a1bc5cd786e09a5b13c67cf6424f8e7c04062700408177099440e9b3",
+    "95d250624bb91685622dfb6d014510bfd54807344727bfe860f1c14f687ca687",
+    "96360cf8db9aa920bd6f7d0490786a52c8b5a1539b04aaaf3712a3c9ab7f6d8a",
+    "998099d5dd8b879220f4e47bfa9ba135c903c62bd7708f686986805988bdc428",
+    "9b34a51116e10227e66344f0a787e4a46dd0a2dbe0f43e33312c85d957a71e22",
+    "9bb15611c74b1d47577acfa692a22e984f38ffc46642b58e8c5af800a3c1c653",
+    "9bd90b79dbc67f461515f8c15fd8fa08a806c8461e95dd5c813b5be59e9cabe2",
+    "9e23c927567b8dae905099d85c73bd1827db24d55e6c416c9f3f952636278d5f",
+    "9e36fb2b06bb41d5606821e8fb0bf2be845a41bb763bf45c94f3bbbb18f516c7",
+    "a08148a96be78879d76ecb972321c889c568302c7d200462ef82181c9cdf036f",
+    "a2adbae0decc6c280e9e729268097a4dd00579e3dcad3a5231507bf2ae67d99d",
+    "a5c32cbf42226eb74416fe581ec4a4eaa91db2def57f5ee740ae80e2d85d4221",
+    "a7077a741009bfe629b1fc2b06459ed18c9df06b1515b6be341416c94f1c63dd",
+    "aba60018e812127a43928afb48ddc42266f48b37d89b9458cff0adf26c966c00",
+    "abb7f80175b584f1a7144743a775e0a5bfcacdfda80fd7fcd7efd7da6e05cd3a",
+    "ac07e34b0b6f57689d77634a81335db05e06965925e6884286ff5e532feb656e",
+    "ac2a2aa1ae84bf13b975da5053e67741292fe8a430257cde2a4aea561ce8815a",
+    "adeb72d2f797493ce0f86c58a9521c80f3d60d516f1afc80e012792e2191b87b",
+    "ae7edab35f4b8ee3f7853e4fd8b190625e09cfb85f10107360c0f0dffc2b4bd1",
+    "b034a0353495891df6cdc9c34bf2baf1d7933bf32676409499bd701050c3c5c8",
+    "b6031321165ac951997e807c1560604c229aed7ed3ec4fceb30972447969d950",
+    "b73a981ef1e4cb3b74439ebf2d91efd06f476b81a2c6503bcfb75f15dc9e9d67",
+    "b754575d33cda3e2764d4701a75b2bdff1fc715be8631e29913f8a0d21b7b3a9",
+    "bb0c4ae9ee21e4870f71882234e0227ba5abdbe8fac245b5ef1ea947f1d2cc07",
+    "bbf8d89beea3783171f6e7186a798a269c8423486fb7e94083f923ce18a00402",
+    "c0e95fc5bd6ecd7cd7cbad507e568b8d18a2dea3d5340a2545c218f9435f00a3",
+    "c149869f3146c65aeb33974160184bb58cef07308b5be53f15f61555055c4f46",
+    "c30dc40c1987a06be210406823107cccd2e6bac639f4c50a9c3c97f367634ca9",
+    "c35526ad73f06ff93c1adf3677add2bdff2db0511176782b2e7caa20119a6d1d",
+    "c5c6c74b921dd6bfc0840116f62eba676232b143f71933d3aa6a19d87bbcde93",
+    "c5db401843940400051d48e0b98fd9c3bac1ab53f2fa9e381fa2b17408c5b70c",
+    "c8d65cee9d723ec405acde36de76ca4778a857537480a9dd9addd8d513486e60",
+    "c9bea9357ba3d1a9da5fddcbc7eb5e5a8cb4a322f72b5ed0ea55f2a3abd013c7",
+    "cf3fe08dae58ea67f0b67af114c7fffddcf8b0fc26b58003e95d31a870195d11",
+    "d414f172c8c3593ebd13b62f3f8ff8a50dd629b67b5c5be5a0ad201f2a0a0bfc",
+    "d61a60bf27e0cc4b2daebda42ba79a7c6f2a1140db3114eaf95ebe171f7cbd9b",
+    "d684f54edf39fc8cec0661bb5aab7e350b46e82709e6c2e79717cde3b10f9b43",
+    "d6ae2ad451f94d5973eaf0ef40fd84821ee5e0a818e6d90c1dd86b437344af49",
+    "dad74e11984710549f76c631d7fbeb992eb4d1c458402ad9559124c8f06dc2c7",
+    "dce571c7fe692d13ea8851356dd5d9757655bc8b8208fce20cb56b109f04c627",
+    "e161486a01b95f44acae338a3d461fac9920ed4c89deff7a2addf631ba89a876",
+    "e3fd9c6f2e6d4ee545a882edde14f07b1cae90e23fb60fd618af1472a8081834",
+    "e5399d0b4b98353412b691864fb9d946aa1ce8d66faf222147df24c0a2b6129d",
+    "e99426ddf1013faf2d53d5da573f44327244d41b13f92dafd3cfc1ac7e856ae6",
+    "ec4280aa0e9e36d7c84d2c81a187bee7ef36b95f511c41c4fa9b4969ca68f958",
+    "ee18af04b65062c384c6a01a044f6c9acfa8446f43960394dbec1d0d2a0ffe40",
+    "ef10664de1c6d20b5e01c0f6fbcd1cecd3fc184603ecd0abdbd3566a8f2ca858",
+    "ef8e116ece76c4d3c95fab75b6b4b0849449996c39d1c6ee7315190408005d81",
+    "f15af9f390104f17afb1eac3bcfebab7aa716b7247d7aff8cdceb9de7482e676",
+    "f40afdc7f69fcd65d85e69cb139ad46d7bad9bbb2e1e80f1de4774c66c3c3031",
+    "f44e0f1c8c5995899375770bc7efecb929b8b335c470f6dbd55c3da9a0bc5f2d",
+    "f824bf379fc0101e9242dd16476358511111c64e5d8efbc9827881f474605bea",
+    "f8f704ba04f0a856273b0029229eb2fcce10c7ce245a8f16449398eab255f526",
+    "ff19aec3869719d075fa99b67470ec01808d6a06b10333fdc94047360b3cc3a0"
+  ],
+  "documents_reviewed": 44,
+  "reviewed_characters": 76319,
+  "sample_characters": 85029,
+  "independent_of_rule_development_sample": true,
+  "independent_native_review": false,
+  "summary": {
+    "MINOR_RESIDUAL_NOISE": 19,
+    "RESIDUAL_LANGUAGE_ERRORS": 4,
+    "ACCEPTABLE_IN_REVIEWED_WINDOWS": 9,
+    "SUBSTANTIAL_RESIDUAL_NOISE": 6,
+    "MATERIAL_MALFORMED_PROSE_AND_TEMPLATE": 3,
+    "MATERIAL_TEMPLATE_NOISE": 2,
+    "MATERIAL_MALFORMED_PROSE": 1
+  },
+  "web_language_observation": {
+    "reviewed_fineweb_hplt_documents": 24,
+    "pervasive_malformed_translation_documents_observed": 0,
+    "dominant_foreign_language_documents_observed": 0,
+    "scope": "Only the recorded review windows. Substantial recommendation/comment/fragment extraction noise remains; no corpus-wide or native-speaker quality approval claim."
+  },
+  "records": [
+    {
+      "sample_id": 1,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00164.parquet",
+      "parent_row_index": 6078,
+      "content_sha256": "c9e59b7c51634938cd75c723b9a470ef50ebf7d70339550ded1efa1f330c07fc",
+      "source_url": "https://d3rebrwga7u6ai.cloudfront.net/313230",
+      "chars": 3103,
+      "sampling_rank": "0x3bd95949ea03ebcb9d603545094fefb9c0d99eb81898e8f3107fc9972da",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent Belarusian lifestyle prose with a short related-link marker. Medical claims were not fact-checked.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 3103
+        }
+      ],
+      "reviewed_characters": 3103
+    },
+    {
+      "sample_id": 2,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00020.parquet",
+      "parent_row_index": 16824,
+      "content_sha256": "165afac3adec0fc0e26b8c21a56d7a91279b058064769d575a47ec9dd742a45a",
+      "source_url": "https://www.tvr.by/bel/news/kultura/v_gomele_prokhodit_traditsionnyy_mezhdunarodnyy_festival_muzyka_nadezhdy/",
+      "chars": 818,
+      "sampling_rank": "0xcdf2ab6dffd4bddf2bcd3bf7ef65f181e91d07e79d4087575db6673db33",
+      "verdict": "RESIDUAL_LANGUAGE_ERRORS",
+      "observation": "Coherent cultural news with a wrong instrument adjective and an isolated grammatical issue; not pervasive malformed prose.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 818
+        }
+      ],
+      "reviewed_characters": 818
+    },
+    {
+      "sample_id": 3,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00128.parquet",
+      "parent_row_index": 15208,
+      "content_sha256": "99c33321ea27395ad787071aadba69214fd190cd55654f8c7bfea68ff06ffa59",
+      "source_url": "https://www.svaboda.org/a/28688977.html",
+      "chars": 655,
+      "sampling_rank": "0x139ad486e511515e04c92b40afb2393bdca93bd20a24a1f6e433b6a6491c",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news fragment with missing preceding context and an isolated spelling error.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 655
+        }
+      ],
+      "reviewed_characters": 655
+    },
+    {
+      "sample_id": 4,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00105.parquet",
+      "parent_row_index": 4314,
+      "content_sha256": "7b20827db754435919f0f6389e3b93608f11d69e45285827746f72d52bb5f8fa",
+      "source_url": "https://www.kimpress.by/index.phtml?page=2&DomainName=cult&id=18986",
+      "chars": 4962,
+      "sampling_rank": "0x14fd89b8c5b139f49bb3955f4f4dc64f9e8bd26e9ed9b84afc3af01b2ad4",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent historical/art criticism essay; historical and political claims were not fact-checked.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 4962
+        }
+      ],
+      "reviewed_characters": 4962
+    },
+    {
+      "sample_id": 5,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00202.parquet",
+      "parent_row_index": 3762,
+      "content_sha256": "fff45aa231d224f3da53a2ce4bc3cc122dc7325b980abdb717e2187394b00daf",
+      "source_url": "https://euroradio.fm/genprakuror-belarusy-pavinny-vedac-za-shto-zhyvuc-chynouniki",
+      "chars": 999,
+      "sampling_rank": "0x1893429c1a0bc5c30f090616ee088e3fd2553ff7931f37bfe27291725a61",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news with a short breadcrumb and photo-source line.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 999
+        }
+      ],
+      "reviewed_characters": 999
+    },
+    {
+      "sample_id": 6,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00109.parquet",
+      "parent_row_index": 6443,
+      "content_sha256": "806526a92e406a3be127b1a68d4f3a066577b9e9bf0c853cfcc0663f97f5d43f",
+      "source_url": "http://mogilev-region.gov.by/news/mfinberg_festyval_-_geta_maystar-klas",
+      "chars": 3785,
+      "sampling_rank": "0x1ed16341f0c95fe396915d96c56d5e161db70c001f4386924f4d85a6adf1",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Coherent long interview with a Russian category menu at the beginning and isolated agreement/spelling errors. Main body remains Belarusian and substantive.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 3785
+        }
+      ],
+      "reviewed_characters": 3785
+    },
+    {
+      "sample_id": 7,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00071.parquet",
+      "parent_row_index": 19472,
+      "content_sha256": "51abf3aef6a9e9334bdaf19c0881822e9e482aac89cc95c41f6cec091e02b116",
+      "source_url": "http://www.svaboda.org/a/26706382.html",
+      "chars": 1266,
+      "sampling_rank": "0x2ab9885ad09c211bba724c19d09eb85edb611bb9e8861b39b085edbe94c1",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent news article with attributed quotations.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1266
+        }
+      ],
+      "reviewed_characters": 1266
+    },
+    {
+      "sample_id": 8,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00169.parquet",
+      "parent_row_index": 18257,
+      "content_sha256": "d1b5d50b2bb305b9261c6df8b46e32f4d57ac292ef26d0c30cdf1aee67bcaeca",
+      "source_url": "http://www.svaboda.org/a/758084.html",
+      "chars": 1088,
+      "sampling_rank": "0x2ced49a0846165a2f4f043a0cb779dfc7c9e57e77e9b5e87d497ea847a31",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news article with a short related-article footer and an isolated grammatical error.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1088
+        }
+      ],
+      "reviewed_characters": 1088
+    },
+    {
+      "sample_id": 9,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00123.parquet",
+      "parent_row_index": 2705,
+      "content_sha256": "925a3ee32f8db42d9938cbc06845fbe755b5611cd23936e5514337393498e445",
+      "source_url": "http://mfa.gov.by/be/sgp_bel/state_symbols/",
+      "chars": 6751,
+      "sampling_rank": "0x4645094c64fe503f6039cbcb5bb2485761dc206180f6d47b992ef389cc62",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent official descriptions in three windows, with some Latin i glyphs, headings and an audio-download control. Claims not independently validated.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1600
+        },
+        {
+          "start": 2575,
+          "end": 4175
+        },
+        {
+          "start": 5151,
+          "end": 6751
+        }
+      ],
+      "reviewed_characters": 4800
+    },
+    {
+      "sample_id": 10,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00097.parquet",
+      "parent_row_index": 4572,
+      "content_sha256": "70f4b694fde2aace8e554d9186daaf7702b9af38c10aa8906915beb518e6551d",
+      "source_url": "https://rh.by/2020/04/25/mola-parushenne-samaizalijacii/",
+      "chars": 827,
+      "sampling_rank": "0x795ce1e0161fb578ee3341f99fbb0ea184a10abb8909a51837ef10ae8ae9",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent local news with a short Russian language-switch footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 827
+        }
+      ],
+      "reviewed_characters": 827
+    },
+    {
+      "sample_id": 11,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00008.parquet",
+      "parent_row_index": 7830,
+      "content_sha256": "08db0e88700307216c54f56adf3afef8aac46609f9163099c9b021a74c6230d3",
+      "source_url": "https://m.nashaniva.com/308608/",
+      "chars": 1937,
+      "sampling_rank": "0x838ae87f689f489ba66f336d26b2a3dd74eb5b97132377ec131705c9464f",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "A substantive short news article followed by a larger recommendation/comment section and JavaScript controls. Two brief Russian user comments remain; this is not a clean standalone article.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1937
+        }
+      ],
+      "reviewed_characters": 1937
+    },
+    {
+      "sample_id": 12,
+      "source": "fineweb2",
+      "split": "train",
+      "parent_shard": "train_00063.parquet",
+      "parent_row_index": 566,
+      "content_sha256": "46de81606fb20890e151a20b5f949a22d2dce46a5604867e6729db525c34d46a",
+      "source_url": "https://www.narodnaja-partyja.org/1140481800/",
+      "chars": 1888,
+      "sampling_rank": "0x97d9171c596042b9356550b8aae7008506fdc913bd428f353d8a2f6cf38b",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent news/opinion with a missing announced quotation and spelling errors.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1888
+        }
+      ],
+      "reviewed_characters": 1888
+    },
+    {
+      "sample_id": 13,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00088.parquet",
+      "parent_row_index": 7598,
+      "content_sha256": "65da9820a0f7a8aa394004fe5d192eec9ff3e0d5a8096248862a7683a0ed455d",
+      "source_url": "https://catholic.by/3/liturgy/lectionary/zvychajny/4856-serada-dvatstsats-sjomy-zvychajny-tydzen",
+      "chars": 2946,
+      "sampling_rank": "0x14e6986e3d75b8859f810f739e81644784dda612fefe89c7e8f5c28dc5ea",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Readable liturgical prose and verse with missing lines/one empty reading, isolated damaged heading glyphs and flattened structure.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2946
+        }
+      ],
+      "reviewed_characters": 2946
+    },
+    {
+      "sample_id": 14,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00060.parquet",
+      "parent_row_index": 3285,
+      "content_sha256": "4374bc8fce29718a95dd1c167e62861581dddcbdbc922cbe139402dfca7a342c",
+      "source_url": "https://nashaniva.com/?c=amp&i=143579",
+      "chars": 787,
+      "sampling_rank": "0x1c34450f3428b508f2f8e2aa67c3cadb4d9a879ba0b4a6f199a7b711b1fa",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent news and quoted political commentary.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 787
+        }
+      ],
+      "reviewed_characters": 787
+    },
+    {
+      "sample_id": 15,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00154.parquet",
+      "parent_row_index": 12357,
+      "content_sha256": "bc8a951fb40825a09fd544c2a678469cfee31b338636e97affdb7cb38469985d",
+      "source_url": "http://pda.beltur.by/?Jemchujina_Polesya",
+      "chars": 1381,
+      "sampling_rank": "0x32060a839dd0f62b9a42cbdb8e91c51f8589017d1ca69d5ff88090813759",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent lodging description and facilities information.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1381
+        }
+      ],
+      "reviewed_characters": 1381
+    },
+    {
+      "sample_id": 16,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00077.parquet",
+      "parent_row_index": 13756,
+      "content_sha256": "589ce3c60e941ee6ec5e583f24e1c1d9a4cae490f77361b73de7683a33e8a908",
+      "source_url": "https://nashaniva.com/?c=ar&i=121981",
+      "chars": 505,
+      "sampling_rank": "0x49092660010749435e007637bb41abd21a7fbb62a4fe6ee3f2a48568c030",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent short news/opinion passage; viewpoints are not a data-quality exclusion criterion.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 505
+        }
+      ],
+      "reviewed_characters": 505
+    },
+    {
+      "sample_id": 17,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00117.parquet",
+      "parent_row_index": 14845,
+      "content_sha256": "8b4f163d4ba329973f7e2d6c4a80c7e83ee5aef2e6c8500e3f809f241e68d962",
+      "source_url": "http://www.kolastheatre.by/be/news/92-i-sezon-kolasauskaga-teatra-raspachnecca-gastrolyami-gorkauskaga-teatra-i-tradycyynym",
+      "chars": 1987,
+      "sampling_rank": "0x4bcc168687c8095f27a3e9f958f387a2eb3d865d1779c820f98897c89dd1",
+      "verdict": "RESIDUAL_LANGUAGE_ERRORS",
+      "observation": "Readable theatre announcement with several spelling/joined-word defects and local agreement errors, not wholesale malformed translation.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1987
+        }
+      ],
+      "reviewed_characters": 1987
+    },
+    {
+      "sample_id": 18,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00156.parquet",
+      "parent_row_index": 19318,
+      "content_sha256": "bfc450e78ac1fbc15cb23545b525b34adc414f9fe9ce78952d5d735c3010c33e",
+      "source_url": "http://be.wikipedia.org/wiki/%D0%9F%D0%B5%D1%80%D1%81%D0%B5%D0%B9",
+      "chars": 1353,
+      "sampling_rank": "0x54014c99c04fbb0f58c448db1d994ce91e25b0662e06d2124bcbc82c85d5",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Readable mythological encyclopedia fragments interleaved with numerous empty section headings and edit controls.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1353
+        }
+      ],
+      "reviewed_characters": 1353
+    },
+    {
+      "sample_id": 19,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00073.parquet",
+      "parent_row_index": 7107,
+      "content_sha256": "535943c9fad1c370b825de6e8eceee35e20a0fc2267a6522d00f9a8dda71a521",
+      "source_url": "http://www.zhabinka.by/?p=21947",
+      "chars": 2541,
+      "sampling_rank": "0x54cb5861f64cf50b9dfa36858fca538d0a7eafa2ac0ca6fbe6a42be61168",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent local festival report.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2541
+        }
+      ],
+      "reviewed_characters": 2541
+    },
+    {
+      "sample_id": 20,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00057.parquet",
+      "parent_row_index": 17240,
+      "content_sha256": "40bb8c52374ff14f543ced52de29de4167c118bea6feb99742cf2bdd564c2551",
+      "source_url": "http://news.21.by/2006/04/18.html?page=4&sort=1",
+      "chars": 691,
+      "sampling_rank": "0x5aded3aaf520234bf7aa7e66ce7f26248182d82ebae4bcdd1733bae58383",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Query-paginated news index consisting of incomplete but meaningful Belarusian sentence/title fragments, with Latin i glyphs.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 691
+        }
+      ],
+      "reviewed_characters": 691
+    },
+    {
+      "sample_id": 21,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00187.parquet",
+      "parent_row_index": 7095,
+      "content_sha256": "ea76b8e431d58f6aaa5c20a48647a7a3ded178388d13d08901abe2feedec3411",
+      "source_url": "https://volnajamova.online/about/",
+      "chars": 1114,
+      "sampling_rank": "0x5cfbf2c816261c042ef7bffc64a0252a33e6eb09bf0d777d3a6de1022f74",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent project description with contact/join headings and a minor punctuation issue.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1114
+        }
+      ],
+      "reviewed_characters": 1114
+    },
+    {
+      "sample_id": 22,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00140.parquet",
+      "parent_row_index": 11733,
+      "content_sha256": "a982a6a06d784921e9b04b7ce456695c48a68afbaba7958d51f50e31296ae7c7",
+      "source_url": "http://be.wikipedia.org/wiki/%D0%91%D0%B5%D0%BB%D0%B0%D1%80%D1%83%D1%81%D0%BA%D0%B0%D1%8F_%D0%B1%D0%BE%D1%80%D1%86%D1%8C_(1934)",
+      "chars": 1319,
+      "sampling_rank": "0x75c097f7910b510ae0f91b4475f647cdc984d21b5aa001efc6410e590b91",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent encyclopedia entry with isolated typos and bibliographic/edit-control footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1319
+        }
+      ],
+      "reviewed_characters": 1319
+    },
+    {
+      "sample_id": 23,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00101.parquet",
+      "parent_row_index": 6189,
+      "content_sha256": "761effee28faf5b03c602d7b02c2efa796558bf82147aa044ed5af4b6de482e6",
+      "source_url": "https://realty.tut.by/news/new-settler/367332.html",
+      "chars": 663,
+      "sampling_rank": "0x9cce98aacdf7fa89951a0a3f040e4f6ba03a404c3dc5a04703857e39b280",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent local housing report.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 663
+        }
+      ],
+      "reviewed_characters": 663
+    },
+    {
+      "sample_id": 24,
+      "source": "hplt_v2",
+      "split": "train",
+      "parent_shard": "train_00049.parquet",
+      "parent_row_index": 5932,
+      "content_sha256": "36a7e47bfa4d102283e932617ce6a5d2713e5bb991e936cd73273db03455e2d4",
+      "source_url": "http://www.svaboda.org/a/25123763.html",
+      "chars": 1697,
+      "sampling_rank": "0xa8466fbff3181d07a0ddddd85d75a8e5ad07acfcaf9977b692c7d4005dd5",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent cultural report and meaningful event schedule; separated photo captions and a truncated last schedule item remain.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1697
+        }
+      ],
+      "reviewed_characters": 1697
+    },
+    {
+      "sample_id": 25,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00181.parquet",
+      "parent_row_index": 12510,
+      "content_sha256": "e24a06fc4e2e02ce503c4ecde2ead18af31007b168124921655a0049e954ef33",
+      "source_url": null,
+      "chars": 1629,
+      "sampling_rank": "0x411e6d37ac7aa536868f6d8b50ab1ad7cfda0a89a9015ba35aad5a9f8fd",
+      "verdict": "RESIDUAL_LANGUAGE_ERRORS",
+      "observation": "Readable travel advertisement and comments with several agreement errors, small mixed-language fragments and footer controls.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1629
+        }
+      ],
+      "reviewed_characters": 1629
+    },
+    {
+      "sample_id": 26,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00010.parquet",
+      "parent_row_index": 17107,
+      "content_sha256": "0b7e89a0a7ab0d752c32c61bc9b10f64fab188d2d39a7f95bf81b9f58c5496a6",
+      "source_url": null,
+      "chars": 834,
+      "sampling_rank": "0x10b270e889d261238d26c621454ecc707c230359cefe6e9ff33ae4919a3e",
+      "verdict": "MATERIAL_MALFORMED_PROSE_AND_TEMPLATE",
+      "observation": "Short game page combines malformed promotional prose, repeated keyword headings and a large navigation/category tail.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 834
+        }
+      ],
+      "reviewed_characters": 834
+    },
+    {
+      "sample_id": 27,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00152.parquet",
+      "parent_row_index": 5426,
+      "content_sha256": "b958270219dd0c1788771286de68151ef7adca8b73185746b91b282b6d1217a8",
+      "source_url": null,
+      "chars": 322,
+      "sampling_rank": "0x2e8856b236c15069269cfd0f4a2c093ddecdc45d815313170239409e72dc",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent short news fragment with a spelling error.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 322
+        }
+      ],
+      "reviewed_characters": 322
+    },
+    {
+      "sample_id": 28,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00003.parquet",
+      "parent_row_index": 11438,
+      "content_sha256": "03c02afc1762b65deed6a08d7a93585ec7eb23292422d4744ab53293d4544206",
+      "source_url": null,
+      "chars": 575,
+      "sampling_rank": "0x3b8822527c3cb16965f985f28d1bbcdc9b2825432956088200c39a9420bc",
+      "verdict": "MATERIAL_MALFORMED_PROSE_AND_TEMPLATE",
+      "observation": "Generic dictionary doorway has malformed instruction prose, word-dependent boilerplate and no actual translation for the queried word.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 575
+        }
+      ],
+      "reviewed_characters": 575
+    },
+    {
+      "sample_id": 29,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00138.parquet",
+      "parent_row_index": 9018,
+      "content_sha256": "a6a29e4dcd6d6e39f468666e2fd205eed49fef84dea8bcf7cafd0e4cb544d322",
+      "source_url": null,
+      "chars": 439,
+      "sampling_rank": "0xb5c9d33531aa34ef29b15c23defa77ad0358270c19593bb6c773e5ec9006",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent linguistic encyclopedia excerpt with a source URL footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 439
+        }
+      ],
+      "reviewed_characters": 439
+    },
+    {
+      "sample_id": 30,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00199.parquet",
+      "parent_row_index": 4236,
+      "content_sha256": "fb98bf42136a555be6e96e66b2bdc63c55cf8c8e7cda6b3b8e83438f1d1a58a0",
+      "source_url": null,
+      "chars": 277,
+      "sampling_rank": "0xcb223b1916f07cdbc0677a70077b032df886d2a89c4f06fdda44f2166f46",
+      "verdict": "MATERIAL_MALFORMED_PROSE_AND_TEMPLATE",
+      "observation": "Short city-specific chat-service doorway consists of malformed generic promotional/navigation text without substantive content.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 277
+        }
+      ],
+      "reviewed_characters": 277
+    },
+    {
+      "sample_id": 31,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00174.parquet",
+      "parent_row_index": 19298,
+      "content_sha256": "d8db3c805b910e9bd144fc61bc8e745ff37e016b725cabfbd9247a926ea521d5",
+      "source_url": null,
+      "chars": 1598,
+      "sampling_rank": "0x12ac4cebbb7b14629e37013f3ef9961715a65d410b0b55e51de0b8f59412d",
+      "verdict": "MATERIAL_TEMPLATE_NOISE",
+      "observation": "A small sporting-event introduction followed by empty section headings and a dominant navigation/licence footer using alternative classical Belarusian labels.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1598
+        }
+      ],
+      "reviewed_characters": 1598
+    },
+    {
+      "sample_id": 32,
+      "source": "cc100-be",
+      "split": "train",
+      "parent_shard": "train_00074.parquet",
+      "parent_row_index": 11409,
+      "content_sha256": "54d496e9b0e3fc47899e69a615713f0698be448f4a51b817ccab09ae691c5b05",
+      "source_url": null,
+      "chars": 381,
+      "sampling_rank": "0x14b44a0183bdc8df3c94ae1619716badc394c0e3ff2fc99ff94cc98a43085",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Readable biographical fact stub and bibliographic reference with infobox residue.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 381
+        }
+      ],
+      "reviewed_characters": 381
+    },
+    {
+      "sample_id": 33,
+      "source": "bewiki",
+      "split": "train",
+      "parent_shard": "train_00071.parquet",
+      "parent_row_index": 8498,
+      "content_sha256": "5101ea804dd4160cebecdb8f021143eb84768957470a03ce4f8fe6676f3216ae",
+      "source_url": null,
+      "chars": 2783,
+      "sampling_rank": "0x445ffee39349a95829a3efb9c495d435c8a315dea7fb55baad996b46506c",
+      "verdict": "RESIDUAL_LANGUAGE_ERRORS",
+      "observation": "Understandable film encyclopedia article with several literal rendering/agreement defects, raw image-caption markup and a category footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2783
+        }
+      ],
+      "reviewed_characters": 2783
+    },
+    {
+      "sample_id": 34,
+      "source": "bewiki",
+      "split": "train",
+      "parent_shard": "train_00192.parquet",
+      "parent_row_index": 12447,
+      "content_sha256": "f20cc06df730d6b9197342b7fc7159e0224249a977806fdbea2cb63212603860",
+      "source_url": null,
+      "chars": 2996,
+      "sampling_rank": "0x4627295e26e2deed08d109410c1e81e14b10bd3eea37551c22d177662779",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent biographical encyclopedia article with image-caption markup and missing dates/references.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 2996
+        }
+      ],
+      "reviewed_characters": 2996
+    },
+    {
+      "sample_id": 35,
+      "source": "be_x_oldwiki",
+      "split": "train",
+      "parent_shard": "train_00190.parquet",
+      "parent_row_index": 9587,
+      "content_sha256": "eef5acb25bffa3e5a16935c675f37e766c9ddfc89928f4886e42d1eea26dbb09",
+      "source_url": null,
+      "chars": 4391,
+      "sampling_rank": "0x4ae13128674d9641eb3ae91b81b2b9c33f30055817e628b31310e260ef3c",
+      "verdict": "MATERIAL_MALFORMED_PROSE",
+      "observation": "Substantive encyclopedia topic but many malformed grammatical lists and literal sense substitutions across the regulations section; raw infobox is also present. Poor translation is a hypothesis, not established provenance.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 4391
+        }
+      ],
+      "reviewed_characters": 4391
+    },
+    {
+      "sample_id": 36,
+      "source": "be_x_oldwiki",
+      "split": "train",
+      "parent_shard": "train_00059.parquet",
+      "parent_row_index": 7964,
+      "content_sha256": "428d5775992d111b7ab0ce647ceea616f9683120fdce324317bb00878741bb97",
+      "source_url": null,
+      "chars": 803,
+      "sampling_rank": "0x1f199fe39dedf0b536fe37334821690084f8b632ad086b42e9e55afea57f2",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Meaningful historical event list with a preceding year-navigation block and isolated errors.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 803
+        }
+      ],
+      "reviewed_characters": 803
+    },
+    {
+      "sample_id": 37,
+      "source": "books_clean_v2",
+      "split": "train",
+      "parent_shard": "train_00027.parquet",
+      "parent_row_index": 4881,
+      "content_sha256": "1d7a2413eb21007afcd036334573fe6b864df6f1d8b5a405c98688d89f5dc09b",
+      "source_url": null,
+      "chars": 10973,
+      "sampling_rank": "0xcde1e840e93b05a144dfde3215aca8fe74327a9712d43b58f12cf16cd61",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Readable literary memoir in three windows; joined words and damaged Polish diacritics in embedded quotations remain. Most body prose is coherent.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1600
+        },
+        {
+          "start": 4686,
+          "end": 6286
+        },
+        {
+          "start": 9373,
+          "end": 10973
+        }
+      ],
+      "reviewed_characters": 4800
+    },
+    {
+      "sample_id": 38,
+      "source": "books_clean_v2",
+      "split": "train",
+      "parent_shard": "train_00074.parquet",
+      "parent_row_index": 14416,
+      "content_sha256": "550194275a036398209017fd75ebddfe852cb48cc72f8057078038554ce4ecb9",
+      "source_url": null,
+      "chars": 5386,
+      "sampling_rank": "0x3e717cec67a1f523176e832037aa3aeee88331aa96684419b1650dea7cfcc",
+      "verdict": "SUBSTANTIAL_RESIDUAL_NOISE",
+      "observation": "Readable literary dialogue in three windows with repeated punctuation-to-letter corruption and flattened stage directions. Archaic/authorial vocabulary is not itself classified as mistranslation.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1600
+        },
+        {
+          "start": 1893,
+          "end": 3493
+        },
+        {
+          "start": 3786,
+          "end": 5386
+        }
+      ],
+      "reviewed_characters": 4800
+    },
+    {
+      "sample_id": 39,
+      "source": "bewikisource_full",
+      "split": "train",
+      "parent_shard": "train_00194.parquet",
+      "parent_row_index": 19474,
+      "content_sha256": "f5798f2b05aea74472bd172aa7afcd63439a6f0d35c28cb44886b2ba1981e67e",
+      "source_url": null,
+      "chars": 3588,
+      "sampling_rank": "0x2174a29470860784d9bacea72ee9982bae494a1149abc501b6254f863f0535",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent historical prose in period orthography with isolated OCR errors and a category footer.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 3588
+        }
+      ],
+      "reviewed_characters": 3588
+    },
+    {
+      "sample_id": 40,
+      "source": "bewikisource_full",
+      "split": "train",
+      "parent_shard": "train_00190.parquet",
+      "parent_row_index": 927,
+      "content_sha256": "ee538d4c1e650566cec0524094edfa5389fcb7159b9956ba17f5171231aba5b8",
+      "source_url": null,
+      "chars": 1243,
+      "sampling_rank": "0x58edb16a1786e80a0fddaa1cd135cc9b082f1a589cb289fc2c179293fe38a5",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent verse/fable with raw indentation markers, flattened line breaks and several OCR typos.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1243
+        }
+      ],
+      "reviewed_characters": 1243
+    },
+    {
+      "sample_id": 41,
+      "source": "leipzig",
+      "split": "train",
+      "parent_shard": "train_00007.parquet",
+      "parent_row_index": 10155,
+      "content_sha256": "07ebcd24a56e1bb6567a3d699477e6a85efa16b5a026c4b7b8196176d34a0f80",
+      "source_url": null,
+      "chars": 64,
+      "sampling_rank": "0x112361917bf27e8d329eb478cc2452a6f5c5b39cf8b2e1d96b7a6b865b81",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent short Belarusian sentence.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 64
+        }
+      ],
+      "reviewed_characters": 64
+    },
+    {
+      "sample_id": 42,
+      "source": "leipzig",
+      "split": "train",
+      "parent_shard": "train_00151.parquet",
+      "parent_row_index": 13230,
+      "content_sha256": "b87feeacc10ee3c4019a83a150cfb64bb66afbf3a6580bb8b96d1c5f675b9861",
+      "source_url": null,
+      "chars": 58,
+      "sampling_rank": "0x310c3154e08bb6dc2d55fd1d83ec22a2c699a8db39d63fe718a6b59800f6",
+      "verdict": "ACCEPTABLE_IN_REVIEWED_WINDOWS",
+      "observation": "Coherent short Belarusian sentence.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 58
+        }
+      ],
+      "reviewed_characters": 58
+    },
+    {
+      "sample_id": 43,
+      "source": "bewikibooks_full",
+      "split": "train",
+      "parent_shard": "train_00200.parquet",
+      "parent_row_index": 15455,
+      "content_sha256": "fddfd282f128916edd32b225665d2e17b79f9c6b4c5e039121c78406a97b515c",
+      "source_url": null,
+      "chars": 1309,
+      "sampling_rank": "0x3f4f361b2a206d792e0add1e411e423dfe2a1feb58507cd989d94b51bd6366",
+      "verdict": "MINOR_RESIDUAL_NOISE",
+      "observation": "Coherent recipe with bibliographic/category footer and isolated spelling errors; factual instructions not validated.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1309
+        }
+      ],
+      "reviewed_characters": 1309
+    },
+    {
+      "sample_id": 44,
+      "source": "bewikiquote",
+      "split": "val",
+      "parent_shard": "val_00002.parquet",
+      "parent_row_index": 12768,
+      "content_sha256": "dd91d651618b9346898d75bd467ca4e22ce3bc94f04909398beb4d5084b4bb7b",
+      "source_url": null,
+      "chars": 317,
+      "sampling_rank": "0x1e973044f7a15ba981a1824366d5c2017996510a081f122cd024f790a979124",
+      "verdict": "MATERIAL_TEMPLATE_NOISE",
+      "observation": "A raw unexpanded person template occupies roughly half of a short biography stub with no quotation; its absolute template size is below 200 characters.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 317
+        }
+      ],
+      "reviewed_characters": 317
+    }
+  ],
+  "limitations": [
+    "Agent spot-check, not independent native-speaker approval or a corpus-wide statistical quality estimate.",
+    "Long documents were inspected only in recorded windows.",
+    "Source quotas deliberately oversample small sources; sample proportions are not overall corpus prevalence estimates.",
+    "No claim that the true production process of malformed text is known.",
+    "This round selected retained candidate rows under a hash-bound policy; actual subset publication must be checked separately.",
+    "If these observations change policy, those cases become development evidence; any retained confirmation subset must explicitly describe this selection."
+  ]
+}

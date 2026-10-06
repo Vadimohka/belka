@@ -1,5 +1,7 @@
 # Belka v0.1.0 — Public Release Notes (Research Preview)
 
+> Historical snapshot: the acceptance labels and measured overlaps below refer to earlier artifacts only. For current evidence requirements see `reports/public/PROJECT_STATUS.md` and `reports/public/RELEASE_READINESS.md`. They do not certify the new H200 corpus, runtime or model.
+
 **Belka** is a research preview of a **Belarusian language model trained from scratch** —
 a small nanochat/GPT-style model with a fully auditable data-provenance pipeline for a
 lower-resource, morphologically rich Cyrillic language.

@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "plan_sha256": "d92ad81ef54a1a3f254549978e44252b4d189bbaee372be9595ca15eabf2c892",
+  "software_and_artifacts_verified": true,
+  "hardware_verified": false,
+  "production_launch_ready": false
+}

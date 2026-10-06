@@ -1,5 +1,7 @@
 # Model Card — Belka (Research Preview)
 
+> Historical snapshot: the acceptance labels and measured overlaps below refer to earlier artifacts only. For current evidence requirements see `reports/public/PROJECT_STATUS.md` and `reports/public/RELEASE_READINESS.md`. They do not certify the new H200 corpus, runtime or model.
+
 > Research preview of a from-scratch Belarusian language model. The owner holds full
 > rights to all training data; the corpus is published in this repository.
 

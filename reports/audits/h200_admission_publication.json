@@ -1,0 +1,246 @@
+{
+  "status": "PASS",
+  "scope": "Read-only actual manifest/count confirmation and content-hash/split membership of all44 reviewed rows. The shared strict-subset validator independently verified whole-row lineage.",
+  "report_path": "reports/data/H200_DATA_PREPARATION.json",
+  "report_sha256": "1be2beb9bb42a63de5f88ecf6fa078b5a69fb27c3a2cd4f2eedecd11b77c080d",
+  "corpus_dir": "/home/vadimohka/WORK/vadimohka/.workspace/h200-ready/data/..corpus_current.generations/cd7ee2e6959f48d881da41eaad7acf89",
+  "corpus_fingerprint": "c3985dc944943b32c0865be1ad70db6abe95c5eb0ba9739d61d79e1e6ec630f9",
+  "shards": 167,
+  "splits": {
+    "train": {
+      "rows": 3274476,
+      "chars": 6917344183
+    },
+    "val": {
+      "rows": 48740,
+      "chars": 76715279
+    }
+  },
+  "all_reviewed_rows_present": 44,
+  "all_reviewed_splits_unchanged": true,
+  "quality_status": "PASS",
+  "quality_verification_mode": "whole_row_strict_subset",
+  "validation_coverage_status": "PASS_WITH_MINOR_GAPS",
+  "rows": {
+    "07ebcd24a56e1bb6567a3d699477e6a85efa16b5a026c4b7b8196176d34a0f80": {
+      "shard": "train_00006.parquet",
+      "row_index": 1406,
+      "split": "train"
+    },
+    "08db0e88700307216c54f56adf3afef8aac46609f9163099c9b021a74c6230d3": {
+      "shard": "train_00006.parquet",
+      "row_index": 15693,
+      "split": "train"
+    },
+    "11eddd01a40178a3f2458c3631345a4ce728fbab2fd253ff3b34dc69172b37d4": {
+      "shard": "train_00013.parquet",
+      "row_index": 11853,
+      "split": "train"
+    },
+    "1318b8432a4c1ddf044c3b75901803dd772c0f6063c309f26059c7823869d0f0": {
+      "shard": "train_00014.parquet",
+      "row_index": 9348,
+      "split": "train"
+    },
+    "165afac3adec0fc0e26b8c21a56d7a91279b058064769d575a47ec9dd742a45a": {
+      "shard": "train_00016.parquet",
+      "row_index": 17379,
+      "split": "train"
+    },
+    "1d7a2413eb21007afcd036334573fe6b864df6f1d8b5a405c98688d89f5dc09b": {
+      "shard": "train_00022.parquet",
+      "row_index": 1072,
+      "split": "train"
+    },
+    "1d92bf37077abe7ad25e7fcc0f7ff2d00bfb9900d3e750fef71ed94395da9c19": {
+      "shard": "train_00022.parquet",
+      "row_index": 2468,
+      "split": "train"
+    },
+    "245378e932a627cb1d88240cbc09787663171c84b2c22a79c56813146aaa2635": {
+      "shard": "train_00026.parquet",
+      "row_index": 19519,
+      "split": "train"
+    },
+    "3300ea715398b3f872170a89b869095690f9a47e48dbdbd0d96a7f829d1927be": {
+      "shard": "train_00037.parquet",
+      "row_index": 7559,
+      "split": "train"
+    },
+    "36a7e47bfa4d102283e932617ce6a5d2713e5bb991e936cd73273db03455e2d4": {
+      "shard": "train_00039.parquet",
+      "row_index": 18075,
+      "split": "train"
+    },
+    "3acc8548b61dc57651a16c453e50dbc548d057fe31e7a02e3972c4a1a1ed1f55": {
+      "shard": "train_00042.parquet",
+      "row_index": 15162,
+      "split": "train"
+    },
+    "40bb8c52374ff14f543ced52de29de4167c118bea6feb99742cf2bdd564c2551": {
+      "shard": "train_00046.parquet",
+      "row_index": 16722,
+      "split": "train"
+    },
+    "428d5775992d111b7ab0ce647ceea616f9683120fdce324317bb00878741bb97": {
+      "shard": "train_00048.parquet",
+      "row_index": 1508,
+      "split": "train"
+    },
+    "4374bc8fce29718a95dd1c167e62861581dddcbdbc922cbe139402dfca7a342c": {
+      "shard": "train_00048.parquet",
+      "row_index": 13873,
+      "split": "train"
+    },
+    "46de81606fb20890e151a20b5f949a22d2dce46a5604867e6729db525c34d46a": {
+      "shard": "train_00051.parquet",
+      "row_index": 474,
+      "split": "train"
+    },
+    "5101ea804dd4160cebecdb8f021143eb84768957470a03ce4f8fe6676f3216ae": {
+      "shard": "train_00057.parquet",
+      "row_index": 16291,
+      "split": "train"
+    },
+    "51abf3aef6a9e9334bdaf19c0881822e9e482aac89cc95c41f6cec091e02b116": {
+      "shard": "train_00058.parquet",
+      "row_index": 5164,
+      "split": "train"
+    },
+    "535943c9fad1c370b825de6e8eceee35e20a0fc2267a6522d00f9a8dda71a521": {
+      "shard": "train_00059.parquet",
+      "row_index": 7407,
+      "split": "train"
+    },
+    "550194275a036398209017fd75ebddfe852cb48cc72f8057078038554ce4ecb9": {
+      "shard": "train_00060.parquet",
+      "row_index": 9582,
+      "split": "train"
+    },
+    "589ce3c60e941ee6ec5e583f24e1c1d9a4cae490f77361b73de7683a33e8a908": {
+      "shard": "train_00062.parquet",
+      "row_index": 17600,
+      "split": "train"
+    },
+    "612624134618cdd117006ea3115dd478aa55b92f3168a7e2c018e01256ca2179": {
+      "shard": "train_00068.parquet",
+      "row_index": 9506,
+      "split": "train"
+    },
+    "65da9820a0f7a8aa394004fe5d192eec9ff3e0d5a8096248862a7683a0ed455d": {
+      "shard": "train_00071.parquet",
+      "row_index": 10616,
+      "split": "train"
+    },
+    "70f4b694fde2aace8e554d9186daaf7702b9af38c10aa8906915beb518e6551d": {
+      "shard": "train_00078.parquet",
+      "row_index": 13808,
+      "split": "train"
+    },
+    "761effee28faf5b03c602d7b02c2efa796558bf82147aa044ed5af4b6de482e6": {
+      "shard": "train_00081.parquet",
+      "row_index": 19822,
+      "split": "train"
+    },
+    "7b20827db754435919f0f6389e3b93608f11d69e45285827746f72d52bb5f8fa": {
+      "shard": "train_00085.parquet",
+      "row_index": 2955,
+      "split": "train"
+    },
+    "806526a92e406a3be127b1a68d4f3a066577b9e9bf0c853cfcc0663f97f5d43f": {
+      "shard": "train_00088.parquet",
+      "row_index": 9266,
+      "split": "train"
+    },
+    "881b6d2b6c66d8758c42520a3fddd23c3e3117cdeb9117cc9b2553e01a57bf04": {
+      "shard": "train_00093.parquet",
+      "row_index": 5762,
+      "split": "train"
+    },
+    "8b4f163d4ba329973f7e2d6c4a80c7e83ee5aef2e6c8500e3f809f241e68d962": {
+      "shard": "train_00095.parquet",
+      "row_index": 5597,
+      "split": "train"
+    },
+    "925a3ee32f8db42d9938cbc06845fbe755b5611cd23936e5514337393498e445": {
+      "shard": "train_00099.parquet",
+      "row_index": 12978,
+      "split": "train"
+    },
+    "99c33321ea27395ad787071aadba69214fd190cd55654f8c7bfea68ff06ffa59": {
+      "shard": "train_00104.parquet",
+      "row_index": 4049,
+      "split": "train"
+    },
+    "9ba97ecb17640e527371902d6e36aa44519578fbd12a5a18bc4bc241a1ba1361": {
+      "shard": "train_00105.parquet",
+      "row_index": 7278,
+      "split": "train"
+    },
+    "a982a6a06d784921e9b04b7ce456695c48a68afbaba7958d51f50e31296ae7c7": {
+      "shard": "train_00113.parquet",
+      "row_index": 15748,
+      "split": "train"
+    },
+    "b87feeacc10ee3c4019a83a150cfb64bb66afbf3a6580bb8b96d1c5f675b9861": {
+      "shard": "train_00122.parquet",
+      "row_index": 15423,
+      "split": "train"
+    },
+    "bc8a951fb40825a09fd544c2a678469cfee31b338636e97affdb7cb38469985d": {
+      "shard": "train_00125.parquet",
+      "row_index": 3283,
+      "split": "train"
+    },
+    "bfc450e78ac1fbc15cb23545b525b34adc414f9fe9ce78952d5d735c3010c33e": {
+      "shard": "train_00127.parquet",
+      "row_index": 1127,
+      "split": "train"
+    },
+    "c9e59b7c51634938cd75c723b9a470ef50ebf7d70339550ded1efa1f330c07fc": {
+      "shard": "train_00133.parquet",
+      "row_index": 29,
+      "split": "train"
+    },
+    "d1b5d50b2bb305b9261c6df8b46e32f4d57ac292ef26d0c30cdf1aee67bcaeca": {
+      "shard": "train_00137.parquet",
+      "row_index": 10948,
+      "split": "train"
+    },
+    "e9727725cce766a083233c43fe50c20ffbde85974080e90470cc0cd59112f3f3": {
+      "shard": "train_00151.parquet",
+      "row_index": 2055,
+      "split": "train"
+    },
+    "ea76b8e431d58f6aaa5c20a48647a7a3ded178388d13d08901abe2feedec3411": {
+      "shard": "train_00151.parquet",
+      "row_index": 13502,
+      "split": "train"
+    },
+    "ee538d4c1e650566cec0524094edfa5389fcb7159b9956ba17f5171231aba5b8": {
+      "shard": "train_00153.parquet",
+      "row_index": 17235,
+      "split": "train"
+    },
+    "f20cc06df730d6b9197342b7fc7159e0224249a977806fdbea2cb63212603860": {
+      "shard": "train_00155.parquet",
+      "row_index": 18999,
+      "split": "train"
+    },
+    "f5798f2b05aea74472bd172aa7afcd63439a6f0d35c28cb44886b2ba1981e67e": {
+      "shard": "train_00157.parquet",
+      "row_index": 17160,
+      "split": "train"
+    },
+    "fddfd282f128916edd32b225665d2e17b79f9c6b4c5e039121c78406a97b515c": {
+      "shard": "train_00162.parquet",
+      "row_index": 11155,
+      "split": "train"
+    },
+    "fff45aa231d224f3da53a2ce4bc3cc122dc7325b980abdb717e2187394b00daf": {
+      "shard": "train_00163.parquet",
+      "row_index": 13982,
+      "split": "train"
+    }
+  }
+}

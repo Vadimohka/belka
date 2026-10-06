@@ -1,0 +1,353 @@
+{
+  "schema": "belka-admission-ocr-reject-review-v1",
+  "status": "NO_CLEAN_FALSE_POSITIVE_OBSERVED_IN_SAMPLE",
+  "independent_native_review": false,
+  "review_label": "heuristic_not_native",
+  "parent_fingerprint": "7f33e3e2f263b1d59a6c6614209ce875c8f964ba04753de6f1efa1b473f1c22f",
+  "tested_pipeline_hashes": {
+    "data_pipeline/h200_admission.py": "e3213d4da6771fdb8af36c003d79cc8d5381f7a0e772c1d20ede14f0fe7dbf5e",
+    "configs/h200_admission_policy.json": "49e069b8d9b4009c682b30fb5301779392d0a04fd0ab819c1312bfc99ea60a11"
+  },
+  "sample_path": ".workspace/h200-ready/admission-ocr-rejected-sample-v3.json",
+  "sample_sha256": "9c5c480e7531fcf8cbc0b867e9e4410fa0415735cd1b8b9ac8cd18d0baf8ebaf",
+  "method": "Up to five smallest SHA256(belka-ocr-rejected-review-v1:+content_sha256) per affected source across all rejected rows. Full text up to3000chars; otherwise1000chars each at head, middle and tail.",
+  "rejected_rows": 122,
+  "reviewed_rows": 13,
+  "summary": {
+    "pervasive_spacing_corruption": 6,
+    "pervasive_mixed_script_character_corruption": 7,
+    "clean_false_positives_observed": 0
+  },
+  "records": [
+    {
+      "source": "fineweb2",
+      "source_url": "http://be-tarask.wikipedia.su/wiki/%D0%92%D1%96%D0%BA%D1%96%D0%BF%D1%8D%D0%B4%D1%8B%D1%8F:%D0%94%D0%B0%D0%BF%D0%B0%D0%BC%D0%BE%D0%B3%D0%B0",
+      "parent_shard": "train_00000.parquet",
+      "parent_row_index": 2240,
+      "split": "train",
+      "content_sha256": "001d66146de5fb0b5ac30f0cc415b154abb4dccd9b4f377896aeaada5f906992",
+      "chars": 4479,
+      "sampling_rank": "0x575de706cd0c7856bd86a5a4e5bb6444060ed778903540326717cb56e8db23ae",
+      "sample_id": 1,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Pervasive Latin/Cyrillic homoglyph mixing fragments the Cyrillic token runs; not evidence of an OCR production process.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 1739,
+          "end": 2739
+        },
+        {
+          "start": 3479,
+          "end": 4479
+        }
+      ]
+    },
+    {
+      "source": "fineweb2",
+      "source_url": "http://be-tarask.wikipedia.su/wiki/%D0%86%D0%BD%D1%84%D0%BB%D1%8F%D0%BD%D1%86%D0%BA%D0%B0%D1%8F_%D0%B2%D0%B0%D0%B9%D0%BD%D0%B0",
+      "parent_shard": "train_00026.parquet",
+      "parent_row_index": 15090,
+      "split": "train",
+      "content_sha256": "1cec642454f11296635afb4ed47e7ef624e82cf4cfc76213fcdd29e39c28df5d",
+      "chars": 4345,
+      "sampling_rank": "0xc5a571d1c75fbaeae477de6f84dacee6de4f3091b3dd7215929768a53692e34d",
+      "sample_id": 2,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Pervasive Latin/Cyrillic homoglyph mixing fragments the Cyrillic token runs; not evidence of an OCR production process.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 1672,
+          "end": 2672
+        },
+        {
+          "start": 3345,
+          "end": 4345
+        }
+      ]
+    },
+    {
+      "source": "cc100-be",
+      "source_url": null,
+      "parent_shard": "train_00097.parquet",
+      "parent_row_index": 6693,
+      "split": "train",
+      "content_sha256": "71176734a3972c7ec8e9b635a1571ad675779927c35397f655d6e2f4e51acad7",
+      "chars": 1074,
+      "sampling_rank": "0x22c9be282a9259aecf8d2fc93c7fd9f993941b108b15be55990cf2c89868fd1",
+      "sample_id": 3,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Prose is pervasively separated into syllable-sized fragments throughout the inspected windows, rather than isolated pedagogical syllable examples.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1074
+        }
+      ]
+    },
+    {
+      "source": "cc100-be",
+      "source_url": null,
+      "parent_shard": "train_00056.parquet",
+      "parent_row_index": 19204,
+      "split": "train",
+      "content_sha256": "3fad0983814b6524d8485599d53f2c8dbae650af9593954b34c7a7b7bb962295",
+      "chars": 856,
+      "sampling_rank": "0x33f65f71cb499f38e7b1f684287c65e96365241df6db714bbfd1a45d6f3cb9f",
+      "sample_id": 4,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Prose is pervasively separated into syllable-sized fragments throughout the inspected windows, rather than isolated pedagogical syllable examples.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 856
+        }
+      ]
+    },
+    {
+      "source": "cc100-be",
+      "source_url": null,
+      "parent_shard": "train_00189.parquet",
+      "parent_row_index": 19648,
+      "split": "train",
+      "content_sha256": "ee3cbb99b9642fb2c50569737008c4dea41710319460a5fd3a52f4a1f838fec3",
+      "chars": 3889,
+      "sampling_rank": "0x3795606cc9f094937b0c798c17b3a1d59aaf36aa37376d0f8e799bc6145cf61",
+      "sample_id": 5,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Prose is pervasively separated into syllable-sized fragments throughout the inspected windows, rather than isolated pedagogical syllable examples.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 1444,
+          "end": 2444
+        },
+        {
+          "start": 2889,
+          "end": 3889
+        }
+      ]
+    },
+    {
+      "source": "cc100-be",
+      "source_url": null,
+      "parent_shard": "train_00018.parquet",
+      "parent_row_index": 18225,
+      "split": "train",
+      "content_sha256": "143b0399843c5ad84d8dea9496c35ef3ab0ef155694374753957bd2ec01b2f63",
+      "chars": 1223,
+      "sampling_rank": "0x6514a2de58f68c64b26ade02981d013208a186486b31238860eede6cb0a58af",
+      "sample_id": 6,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Prose is pervasively separated into syllable-sized fragments throughout the inspected windows, rather than isolated pedagogical syllable examples.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1223
+        }
+      ]
+    },
+    {
+      "source": "cc100-be",
+      "source_url": null,
+      "parent_shard": "train_00137.parquet",
+      "parent_row_index": 18834,
+      "split": "train",
+      "content_sha256": "a5f5d4ca19cf8efb10629dfd1e3348d1b7dd4d5b361ba51bb5a51d6b69a34c26",
+      "chars": 1669,
+      "sampling_rank": "0x736de3cbd4731cc8683c887033a758258f1ac170d16365a3aa7df60dd678ce6",
+      "sample_id": 7,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Prose is pervasively separated into syllable-sized fragments throughout the inspected windows, rather than isolated pedagogical syllable examples.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1669
+        }
+      ]
+    },
+    {
+      "source": "hplt_v2",
+      "source_url": "http://be-tarask.wikipedia.su/wiki/%D0%A5%D0%BE%D0%B1%D1%96%D1%82,_%D0%B0%D0%B1%D0%BE_%D0%A2%D1%83%D0%B4%D1%8B_%D1%96_%D0%BD%D0%B0%D0%B7%D0%B0%D0%B4",
+      "parent_shard": "train_00046.parquet",
+      "parent_row_index": 1656,
+      "split": "train",
+      "content_sha256": "32e7e9d2c10fddcc54ba3c4eddd97e13ec86308c296b1f5eefd5b243c4381f3a",
+      "chars": 4309,
+      "sampling_rank": "0x11100bd25a9081514e08b9a217c46d97844b1b3617364d827daee60e68303f37",
+      "sample_id": 8,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Pervasive Latin/Cyrillic homoglyph mixing fragments the Cyrillic token runs; not evidence of an OCR production process.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 1654,
+          "end": 2654
+        },
+        {
+          "start": 3309,
+          "end": 4309
+        }
+      ]
+    },
+    {
+      "source": "hplt_v2",
+      "source_url": "http://x-minus.org/track/85910/%D0%B0%D0%BD%D0%B6%D0%B5%D0%BB%D0%B8%D0%BA%D0%B0-%D0%B0%D0%B3%D1%83%D1%80%D0%B1%D0%B0%D1%88-%D0%BE%D0%B9-%D1%8F-%D0%B6%D1%8B%D1%82%D0%B0-%D0%B4%D1%8B-%D0%BD%D0%B5-%D1%81%D0%B5%D1%8F%D0%BB%D0%B0.html",
+      "parent_shard": "train_00082.parquet",
+      "parent_row_index": 8899,
+      "split": "train",
+      "content_sha256": "5e74bbaa7126634963dfa737dc29b96fbc8a08e90e48bb8cddaceb7fd560765b",
+      "chars": 824,
+      "sampling_rank": "0x4d604a3138c24beef4f113b57681ff36dae0525ecde7eb4714aff621c74a8d64",
+      "sample_id": 9,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Pervasive Latin/Cyrillic homoglyph mixing fragments the Cyrillic token runs; not evidence of an OCR production process.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 824
+        }
+      ]
+    },
+    {
+      "source": "hplt_v2",
+      "source_url": "http://be-tarask.wikipedia.su/wiki/21_%D0%B2%D0%B5%D1%80%D0%B0%D1%81%D1%8C%D0%BD%D1%8F",
+      "parent_shard": "train_00176.parquet",
+      "parent_row_index": 18437,
+      "split": "train",
+      "content_sha256": "dba0dde3a49dec06104de39a34c6254d0db2e5f3b7a18fc6252e8ebb7633fae1",
+      "chars": 9686,
+      "sampling_rank": "0x743507ea1d631d666665f0e6521cf64b52a306c8924806893d21b54484317e30",
+      "sample_id": 10,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Pervasive Latin/Cyrillic homoglyph mixing fragments the Cyrillic token runs; not evidence of an OCR production process.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 4343,
+          "end": 5343
+        },
+        {
+          "start": 8686,
+          "end": 9686
+        }
+      ]
+    },
+    {
+      "source": "hplt_v2",
+      "source_url": "http://be-tarask.wikipedia.su/wiki/%D0%92%D1%96%D0%BA%D1%96%D0%BF%D1%8D%D0%B4%D1%8B%D1%8F:%D0%9A%D0%B0%D0%BD%D0%B4%D1%8B%D0%B4%D0%B0%D1%82%D1%8B_%D1%9E_%D0%B4%D0%BE%D0%B1%D1%80%D1%8B%D1%8F_%D0%B0%D1%80%D1%82%D1%8B%D0%BA%D1%83%D0%BB%D1%8B",
+      "parent_shard": "train_00039.parquet",
+      "parent_row_index": 6408,
+      "split": "train",
+      "content_sha256": "2b265beae5f71875b7f1199cb92369e7497b4e8b06cc408f86530b874e61ca77",
+      "chars": 5127,
+      "sampling_rank": "0x8ea9750b673891b537d272417a48519a39d4beea47210747832fbcb41f09564c",
+      "sample_id": 11,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Pervasive Latin/Cyrillic homoglyph mixing fragments the Cyrillic token runs; not evidence of an OCR production process.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 2063,
+          "end": 3063
+        },
+        {
+          "start": 4127,
+          "end": 5127
+        }
+      ]
+    },
+    {
+      "source": "hplt_v2",
+      "source_url": "http://be-tarask.wikipedia.su/wiki/%D0%A8%D0%B0%D0%BD%D1%85%D0%B0%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%B0%D1%80%D0%B3%D0%B0%D0%BD%D1%96%D0%B7%D0%B0%D1%86%D1%8B%D1%8F_%D1%81%D1%83%D0%BF%D1%80%D0%B0%D1%86%D1%8B",
+      "parent_shard": "train_00093.parquet",
+      "parent_row_index": 19965,
+      "split": "train",
+      "content_sha256": "6ce14f5e1d228b418fc29c52de51157eb7617dcff3235d3354bc1a5d74d764db",
+      "chars": 13889,
+      "sampling_rank": "0x9fde42ebcb774b41250d7a69d8b5466ff4622556d71014e0602b6d99353913f2",
+      "sample_id": 12,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Pervasive Latin/Cyrillic homoglyph mixing fragments the Cyrillic token runs; not evidence of an OCR production process.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 6444,
+          "end": 7444
+        },
+        {
+          "start": 12889,
+          "end": 13889
+        }
+      ]
+    },
+    {
+      "source": "books_clean_v2",
+      "source_url": null,
+      "parent_shard": "train_00092.parquet",
+      "parent_row_index": 8336,
+      "split": "train",
+      "content_sha256": "6ae3ddc58bde6f6e9309e6b2ac47e80d560f17ce8bda4ceb7383338438775839",
+      "chars": 3197,
+      "sampling_rank": "0x27f8339ba2b0ab1a076df71efb78614e83f73d1b331121d3653509478eab4d31",
+      "sample_id": 13,
+      "review_label": "heuristic_not_native",
+      "verdict": "VISIBLE_CHARACTER_OR_SPACING_CORRUPTION",
+      "observed_pattern": "Prose is pervasively separated into syllable-sized fragments throughout the inspected windows, rather than isolated pedagogical syllable examples.",
+      "reviewed_windows": [
+        {
+          "start": 0,
+          "end": 1000
+        },
+        {
+          "start": 1098,
+          "end": 2098
+        },
+        {
+          "start": 2197,
+          "end": 3197
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Small agent review of rejected examples, not a proof of zero false positives.",
+    "No independent native review.",
+    "The tokenizer uses Cyrillic runs, so mixed-script character corruption can trigger the same measurable rule as syllable spacing.",
+    "Original texts are preserved in the immutable parent; only whole documents are quarantined."
+  ]
+}

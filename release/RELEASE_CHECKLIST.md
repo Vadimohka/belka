@@ -1,5 +1,7 @@
 # Belka — Release Checklist
 
+> Historical snapshot: the acceptance labels and measured overlaps below refer to earlier artifacts only. For current evidence requirements see `reports/public/PROJECT_STATUS.md` and `reports/public/RELEASE_READINESS.md`. They do not certify the new H200 corpus, runtime or model.
+
 Status legend: ✅ done · ⏳ pending owner decision/action · ❌ blocker.
 
 ## 1. GitHub public repo readiness

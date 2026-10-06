@@ -5,7 +5,8 @@ curated Belarusian corpus → custom tokenizer → randomly-initialized nanochat
 model → base pretraining → Belarusian-only SFT → language-lock evaluation.
 
 > **Research preview.** Belka is an open-source code and research-pipeline project. It is
-> not a production model. The training corpus is published in this repository.
+> not a production model. The historical corpus bundle is published in this repository;
+> the expanded H200 corpus is prepared locally and transferred separately with checksums.
 
 ## Mission
 
@@ -38,14 +39,21 @@ historical trees remain reachable from `main`; competing earlier runtime
 implementations were retained as history, not installed over the PR #5 code.
 See [branch consolidation and recovery](docs/BRANCH_CONSOLIDATION_2026-10-06.md).
 
-The runtime remains based on pinned nanochat
-`92d63d4e8bb4df75c3b71618f31ddde2378b2bcd`. Merging is not training approval:
-preparation issue #30 and the launch/data/hardware gates remain open.
+The runtime is pinned to nanochat `92d63d4e8bb4df75c3b71618f31ddde2378b2bcd`.
+The current preparation and launch path targets **one H200 and up to seven days**:
+clean data → new train-only BPE → `plan/check` → measured hardware `probe` →
+`execute/resume`. See [the H200 runbook](docs/H200_TRAINING.md).
+Hardware acceptance awaits the GPU; CPU tests do not establish model quality.
 
-[Detailed Belka vs nanochat technical patch notes (Russian)](docs/BELKA_VS_NANOCHAT_PATCH_NOTES_RU.md)
-separate inherited architecture, published changes, compatibility and unresolved
-work. The locally described preparation package in #30 is not part of that
-published runtime.
+The prepared local H200 corpus now has **3,274,476 train / 48,740 validation
+documents**. A fresh train-only BPE32768 counts **1,635,285,758 train tokens**
+and **17,977,093 validation tokens**, including BOS. The final CPU suite passes
+**1,545 tests with no skips**. See the [data manifest](reports/data/H200_DATA_PREPARATION.json),
+[token census](reports/data/H200_TOKENIZER_PREPARATION.json), and
+[remediation evidence](reports/audits/H200_REMEDIATION_2026-10-06.json).
+
+[Belka vs nanochat technical notes (Russian)](docs/BELKA_VS_NANOCHAT_PATCH_NOTES_RU.md)
+provide architecture context. Historical artifact statuses below are not new training results.
 
 ## Artifact history and current implementation
 
@@ -55,7 +63,7 @@ published runtime.
 | Tokenizer | custom BPE, SHA256 `d9272e81…71ac` |
 | Base model | Historical `belka-d8-base-v3-pilot`; not retrained after all PR #5 changes. |
 | SFT | Current code derives a validated v9 generation from retained v8 seeds; independent language review remains outstanding. |
-| Hardware plan | Historical H200 plan; not measured hardware acceptance or permission to launch. See #30 and `TASKS.md`. |
+| Hardware plan | Single-H200 plan/probe/execute implemented; actual H200 acceptance still required. See `docs/H200_TRAINING.md`. |
 | Strict holdout | 209 prompts; historical zero exact overlap applies only to the checker's selected fields, not every dataset or contamination mode. |
 
 Historical report: [`reports/public/PROJECT_STATUS.md`](reports/public/PROJECT_STATUS.md).
@@ -64,20 +72,26 @@ using the incorrect cache requires recomputation before comparison; see
 [raw-byte derivation](docs/TOKEN_BYTE_DERIVATION.md). The historical ~180.6M-token
 figure is not a new count of training targets including BOS.
 
-## Read-only review and historical quickstart
+## Prepare and launch
 
-Reading the source, patch notes and `TASKS.md` does not require installation,
-tests, corpus extraction or training.
+For the already prepared `source.tar` / `prepared.tar`, follow the
+[SSH server runbook](docs/H200_TRAINING.md): machine requirements, transfer,
+installation, measured timing, `tmux`, launch and resume. The suggested main-profile
+server has one full H200 141 GB, 16–32 vCPUs, 128 GB RAM and 1 TB free NVMe.
+The commands below are for rebuilding data from sources.
 
-`ops/local/quickstart.sh` is a historical executable path: it installs an
-environment, restores data and starts a small training run. It is **not** a
-read-only check. The old `run_belka_h200_maxquality.sh` also has known budget/data
-preparation issues tracked in #30. The locally described `plan/check/execute`
-package must not be presented as already published or approved for execution.
+`ops/local/quickstart.sh` now prepares verified inputs without starting training.
+Expanded preparation requires the pinned local files in `configs/h200_local_sources.json`;
+`--curated-only` explicitly selects the smaller published source bundle.
 
-Installation and runtime acceptance must be separately matched to the current
-branch and `TASKS.md`. Prior commands or reports do not certify new artifacts,
-hardware, or model quality.
+```bash
+bash ops/local/prepare_h200.sh --cpu --nanochat-dir .workspace/nanochat-h200
+bash ops/local/run_belka_h200_maxquality.sh --help
+```
+
+The main candidate has 1.38B parameters; alternatives have 537M and 2.82B.
+The actual H200 probe chooses a microbatch and checks memory, time and disk budgets.
+See [preparation, server transfer, launch and limitations](docs/H200_TRAINING.md).
 
 ## Repository layout
 

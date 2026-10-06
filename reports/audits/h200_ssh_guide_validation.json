@@ -1,0 +1,12 @@
+{
+  "schema": "belka-ssh-guide-validation-v1",
+  "status": "PASS",
+  "bash_blocks": 15,
+  "local_links": 10,
+  "source_hashes": 269,
+  "changed_previously_hashed_sources": [
+    "docs/H200_TRAINING.md"
+  ],
+  "training_implementation_unchanged": true,
+  "hardware_measured": false
+}
