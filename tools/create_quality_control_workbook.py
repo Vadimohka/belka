@@ -1,358 +1,177 @@
 #!/usr/bin/env python3
-"""Create BELKA_QUALITY_CONTROL.xlsx from verified source data.
-Read-only (reads reports, writes XLSX). Never trains."""
+"""Render measured evidence into QC; absent evidence remains UNKNOWN, never PASS."""
+from __future__ import annotations
+import argparse
+import json
+import os
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from tools.provenance import artifact, atomic_json, sha256_file, validate_manifest, verify_artifact
 
-import json, os, pathlib, sys
-from datetime import datetime, timezone
+MODEL_RUNS_COLS = ['model_tag', 'checkpoint_path', 'checkpoint_sha256', 'tokenizer_sha256',
+                   'run_manifest_path', 'run_manifest_sha256', 'provenance_status', 'quality_status']
 
-PACK_DIR = pathlib.Path(os.environ.get("PACK_DIR", os.getcwd()))
+def display_measurement(value):
+    encoded=json.dumps(value,ensure_ascii=False)
+    return encoded if len(encoded)<=30000 else encoded[:30000]+' [display truncated; full value in Source_Evidence]'
 
-try:
+def prompts(path, *, strict=False):
+    rows, ids = [], set()
+    for line in Path(path).read_text(encoding='utf-8').splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        ident = row.get('eval_id', row.get('id', row.get('prompt_id')))
+        text = row.get('prompt', row.get('text'))
+        if not isinstance(ident, str) or ident in ids or not isinstance(text, str) or not text.strip():
+            raise ValueError(f'invalid/duplicate prompt in {path}')
+        if strict and row.get('never_train') is not True:
+            raise ValueError('strict holdout must explicitly set never_train=true')
+        ids.add(ident)
+        rows.append((ident, text, row.get('category', row.get('intent')) or None, True if strict else None))
+    if not rows:
+        raise ValueError(f'empty prompts: {path}')
+    return rows
+
+def evidence(pack, data_report=None, provenance_report=None):
+    pack = Path(pack)
+    strict = pack/'eval/strict_holdout_quality_control_v2.be.jsonl'
+    regression = pack/'eval/regression_quality_control_v1.be.jsonl'
+    result = dict(schema_version=1, scope='checkpoint QC; not permission to train',
+        inputs=dict(strict=artifact(strict), regression=artifact(regression)),
+        checks=dict(corpus='UNKNOWN', leakage='UNKNOWN', provenance='UNKNOWN'),
+        measurements={}, quality_pass=None, benchmark_decontamination=None, subset_derivation=None,
+        reports={}, model_runs=[], dataset=[], dataset_sft=[], problems=[])
+    dp = Path(data_report) if data_report else pack/'reports/data/H200_DATA_PREPARATION.json'
+    if dp.exists():
+        try:
+            from data_pipeline.h200_evidence import read_json, validate_corpus_evidence
+            data = read_json(dp)
+            # Intrinsic transferred manifests are self-contained: their parent
+            # directory selects the corpus and local bridges select SFT. Old
+            # absolute build paths remain provenance, never transfer inputs.
+            corpus = Path(data.get('corpus_dir', dp.parent)).resolve(strict=True)
+            base = corpus.parent.parent
+            if (base/'.corpus_current').resolve() == corpus and (base/'.sft_current').exists():
+                sft = (base/'.sft_current').resolve(strict=True)
+            else:
+                roots = {Path(f['path']).resolve().parent for f in data['sft']['files']}
+                if len(roots) != 1:
+                    raise ValueError('SFT evidence must select one immutable generation')
+                sft = roots.pop()
+            validate_corpus_evidence(corpus, document=data, sft_dir=sft)
+            files = [dict(f, path=str(corpus/f['path'])) for f in data['files']]
+            if any(type(f.get('rows')) is not int or f['rows'] <= 0 for f in files):
+                raise ValueError('data file has no verified rows')
+            for split in ('train', 'val'):
+                if sum(f['rows'] for f in files if f['split'] == split) != data['splits'][split]['rows']:
+                    raise ValueError('corpus shard rows disagree with checked split counts')
+            sft_files = [dict(f, path=str(sft/Path(f['path']).name)) for f in data['sft']['files']]
+            derivation = data['subset_derivation']
+            parent = read_json(corpus/derivation['parent_manifest']['path'])
+            holdout = data['holdout']
+            if (holdout.get('sha256') != result['inputs']['strict']['sha256']
+                    or holdout.get('checked_train_rows') != parent['splits']['train']['rows']
+                    or holdout.get('checked_sft_messages', 0) <= 0):
+                raise ValueError('missing, stale or incomplete inherited holdout evidence')
+            result['checks'].update(corpus='PASS', leakage='PASS')
+            result['dataset'] = files
+            result['dataset_sft'] = sft_files
+            result['quality_pass'] = data['quality_pass']
+            result['benchmark_decontamination'] = data['benchmark_decontamination']
+            result['subset_derivation'] = derivation
+            result['measurements'] = dict(
+                evidence_mode='inherited_whole_row_subset',
+                current_train_rows=data['splits']['train']['rows'],
+                current_val_rows=data['splits']['val']['rows'],
+                admission_removed_rows=derivation['removed_rows'],
+                parent_checked_train_rows=holdout['checked_train_rows'],
+                parent_checked_sft_messages=holdout['checked_sft_messages'],
+                parent_holdout_evidence=holdout,
+                scope='Original holdout/benchmark scan counters describe the verified full-scan parent. The current corpus inherits absence through unchanged whole-row membership; no fresh contamination scan is claimed.')
+            result['reports']['data'] = artifact(dp)
+        except (OSError,ValueError,KeyError,TypeError) as exc:
+            result['checks'].update(corpus='FAIL', leakage='FAIL')
+            result['problems'].append(str(exc))
+    pp = Path(provenance_report) if provenance_report else pack/'reports/audit/training_provenance_audit.json'
+    if pp.exists():
+        try:
+            data = json.loads(pp.read_text())
+            if data.get('schema_version') != 1 or data.get('audit_status') != 'PASS' or not data.get('run_manifests'):
+                raise ValueError('missing verified checkpoint provenance')
+            for item in data['run_manifests']:
+                verify_artifact(item)
+                manifest = validate_manifest(json.loads(Path(item['path']).read_text()), require_checkpoint=True)
+                if result['checks']['corpus']=='PASS':
+                    expected=result['dataset'] if manifest['phase']=='base' else result['dataset_sft']
+                    identity=lambda rows:sorted((Path(f['path']).name,f['sha256']) for f in rows)
+                    if identity(expected)!=identity([f for split in manifest['dataset'].values() for f in split]):
+                        raise ValueError('checkpoint run used different data than the selected leakage/corpus report')
+                for ck in manifest['checkpoints']:
+                    result['model_runs'].append([manifest['model_tag'],ck['path'],ck['sha256'],
+                        manifest['tokenizer']['sha256'],item['path'],item['sha256'],
+                        'PROVENANCE_VERIFIED','NOT_EVALUATED'])
+            result['checks']['provenance'] = 'PASS'
+            result['reports']['provenance'] = artifact(pp)
+        except (OSError,ValueError,KeyError,TypeError) as exc:
+            result['checks']['provenance'] = 'FAIL'
+            result['problems'].append(str(exc))
+    return result
+
+def create(pack, output=None, data_report=None, provenance_report=None):
     from openpyxl import Workbook
-    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-    from openpyxl.utils import get_column_letter
-except ImportError:
-    print("FATAL: openpyxl not installed. Run: pip install openpyxl")
-    sys.exit(2)
-
-HEADER_FONT = Font(bold=True, size=11)
-HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
-HEADER_FONT_WHITE = Font(bold=True, size=11, color="FFFFFF")
-WARN_FILL = PatternFill(start_color="FFC000", end_color="FFC000", fill_type="solid")
-PASS_FILL = PatternFill(start_color="92D050", end_color="92D050", fill_type="solid")
-FAIL_FILL = PatternFill(start_color="FF6B6B", end_color="FF6B6B", fill_type="solid")
-THIN_BORDER = Border(
-    left=Side(style='thin'), right=Side(style='thin'),
-    top=Side(style='thin'), bottom=Side(style='thin'))
-
-def style_header(ws, row, ncols):
-    for col in range(1, ncols + 1):
-        cell = ws.cell(row=row, column=col)
-        cell.font = HEADER_FONT_WHITE
-        cell.fill = HEADER_FILL
-        cell.alignment = Alignment(horizontal='center', wrap_text=True)
-        cell.border = THIN_BORDER
-
-def style_data(ws, start_row, end_row, ncols):
-    for row in range(start_row, end_row + 1):
-        for col in range(1, ncols + 1):
-            cell = ws.cell(row=row, column=col)
-            cell.border = THIN_BORDER
-            cell.alignment = Alignment(wrap_text=True, vertical='top')
-
-def load_json(path):
-    p = PACK_DIR / path
-    if p.exists():
-        return json.loads(p.read_text())
-    return {}
-
-def load_jsonl(path):
-    p = PACK_DIR / path
-    if not p.exists():
-        return []
-    items = []
-    with open(p, encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                try:
-                    items.append(json.loads(line))
-                except: pass
-    return items
-
-def main():
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
+    from openpyxl.styles import Font, PatternFill
+    pack = Path(pack)
+    report = evidence(pack,data_report,provenance_report)
+    strict = prompts(report['inputs']['strict']['path'], strict=True)
+    regression = prompts(report['inputs']['regression']['path'])
     wb = Workbook()
+    wb.active.title = 'README'
+    wb.active.append(['Checkpoint QC, not training permission'])
+    wb.active.append(['UNKNOWN/NOT_EVALUATED means no verified evidence; no quality or leakage result is inferred.'])
+    def sheet(name, header, rows):
+        ws = wb.create_sheet(name)
+        ws.append(header)
+        for row in rows:
+            ws.append(row)
+        for cell in ws[1]:
+            cell.font = Font(bold=True,color='FFFFFF')
+            cell.fill = PatternFill('solid',fgColor='345779')
+        ws.freeze_panes = 'A2'
+        for col in ws.columns:
+            ws.column_dimensions[col[0].column_letter].width = min(80,max(18,max(len(str(c.value or '')) for c in col)+2))
+        return ws
+    sheet('Strict_Holdout_LOCKED',['prompt_id','prompt_text','category','never_train'],strict).protection.sheet=True
+    sheet('Regression_SeenIntent',['prompt_id','prompt_text','category','never_train'],regression)
+    sheet('Model_Runs',MODEL_RUNS_COLS,report['model_runs'])
+    sheet('Dataset_Registry',['path','sha256','rows','split'],[[f[k] for k in ('path','sha256','rows','split')] for f in report['dataset']])
+    sheet('Regression_Dashboard',['measurement','value'],[['strict_prompts',len(strict)],['regression_prompts',len(regression)]]+
+          [[k,display_measurement(v)] for k,v in report['measurements'].items()])
+    sheet('Training_Gates',['gate_name','value'],[['TRAINING_ALLOWED','NO'],['SFT_ALLOWED','NO']]+
+          [[k,v] for k,v in report['checks'].items()])
+    for name in ('Strict_Holdout_Results','Regression_Results'):
+        sheet(name,['status'],[['NOT_EVALUATED']])
+    encoded=json.dumps(report,ensure_ascii=False,sort_keys=True)
+    sheet('Source_Evidence',['json_chunks'],[[encoded[i:i+30000]] for i in range(0,len(encoded),30000)])
+    output = Path(output) if output else pack/'reports/eval/BELKA_QUALITY_CONTROL.xlsx'
+    output.parent.mkdir(parents=True,exist_ok=True)
+    wb.save(output)
+    return report
 
-    # ============================================================
-    # Sheet 1: README
-    # ============================================================
-    ws0 = wb.active
-    ws0.title = "README"
-    ws0.merge_cells('A1:F1')
-    ws0.cell(row=1, column=1, value="BELKA QUALITY CONTROL WORKBOOK").font = Font(bold=True, size=16)
-    ws0.merge_cells('A2:F2')
-    ws0.cell(row=2, column=1, value=f"Generated: {timestamp}").font = Font(italic=True)
-    ws0.cell(row=4, column=1, value="CRITICAL RULES:").font = Font(bold=True, size=12, color="FF0000")
-    rules = [
-        "Never train on Strict_Holdout_LOCKED prompts.",
-        "Never train on Regression_SeenIntent prompts.",
-        "Any SFT candidate must pass exact-overlap=0 check against both holdout sets.",
-        "TRAINING_ALLOWED must be YES in Training_Gates before any training run.",
-        "All checkpoints must have provenance columns filled before acceptance.",
-    ]
-    for i, rule in enumerate(rules):
-        ws0.cell(row=5 + i, column=1, value=f"{i+1}. {rule}")
-    ws0.cell(row=11, column=1, value="Sheets:").font = Font(bold=True)
-    sheets = [
-        "Strict_Holdout_LOCKED - 209 prompts, must never be used for training/SFT",
-        "Regression_SeenIntent - prompts for regression testing",
-        "Model_Runs - all training runs with provenance tracking",
-        "Strict_Holdout_Results - eval results on strict holdout",
-        "Regression_Results - eval results on regression set",
-        "Regression_Dashboard - summary dashboard",
-        "Dataset_Registry - all datasets with SHA256 verification",
-        "Training_Gates - gating flags for training/SFT operations",
-    ]
-    for i, s in enumerate(sheets):
-        ws0.cell(row=12 + i, column=1, value=s)
-    ws0.column_dimensions['A'].width = 80
-
-    # ============================================================
-    # Sheet 2: Strict_Holdout_LOCKED
-    # ============================================================
-    ws1 = wb.create_sheet("Strict_Holdout_LOCKED")
-    headers = ["prompt_id", "prompt_text", "intent", "never_train", "source_file", "locked_date"]
-    for c, h in enumerate(headers, 1):
-        ws1.cell(row=1, column=c, value=h)
-    style_header(ws1, 1, len(headers))
-
-    holdout_items = load_jsonl("eval/strict_holdout_quality_control_v2.be.jsonl")
-    for i, item in enumerate(holdout_items):
-        row = i + 2
-        ws1.cell(row=row, column=1, value=item.get("id", item.get("prompt_id", f"SH_{i+1:04d}")))
-        ws1.cell(row=row, column=2, value=item.get("prompt", item.get("text", str(item))))
-        ws1.cell(row=row, column=3, value=item.get("intent", item.get("category", "")))
-        ws1.cell(row=row, column=4, value=True)
-        ws1.cell(row=row, column=5, value="eval/strict_holdout_quality_control_v2.be.jsonl")
-        ws1.cell(row=row, column=6, value=timestamp)
-    style_data(ws1, 2, len(holdout_items) + 1, len(headers))
-    ws1.column_dimensions['A'].width = 12
-    ws1.column_dimensions['B'].width = 80
-    ws1.column_dimensions['C'].width = 20
-    ws1.column_dimensions['D'].width = 12
-    ws1.column_dimensions['E'].width = 45
-    ws1.column_dimensions['F'].width = 20
-    ws1.protection.sheet = True
-    print(f"Strict_Holdout_LOCKED: {len(holdout_items)} prompts written")
-
-    # ============================================================
-    # Sheet 3: Regression_SeenIntent
-    # ============================================================
-    ws2 = wb.create_sheet("Regression_SeenIntent")
-    headers2 = ["prompt_id", "prompt_text", "intent", "source_file"]
-    for c, h in enumerate(headers2, 1):
-        ws2.cell(row=1, column=c, value=h)
-    style_header(ws2, 1, len(headers2))
-
-    regression_items = load_jsonl("eval/regression_quality_control_v1.be.jsonl")
-    for i, item in enumerate(regression_items):
-        row = i + 2
-        ws2.cell(row=row, column=1, value=item.get("id", f"RG_{i+1:04d}"))
-        ws2.cell(row=row, column=2, value=item.get("prompt", item.get("text", str(item))))
-        ws2.cell(row=row, column=3, value=item.get("intent", item.get("category", "")))
-        ws2.cell(row=row, column=4, value="eval/regression_quality_control_v1.be.jsonl")
-    style_data(ws2, 2, len(regression_items) + 1, len(headers2))
-    ws2.column_dimensions['A'].width = 12
-    ws2.column_dimensions['B'].width = 80
-    ws2.column_dimensions['C'].width = 20
-    ws2.column_dimensions['D'].width = 45
-    print(f"Regression_SeenIntent: {len(regression_items)} prompts written")
-
-    # ============================================================
-    # Sheet 4: Model_Runs
-    # ============================================================
-    ws3 = wb.create_sheet("Model_Runs")
-    model_cols = [
-        "run_id", "model_tag", "checkpoint_path", "checkpoint_sha256",
-        "tokenizer_path", "tokenizer_sha256", "dataset_dir",
-        "train_parquet_sha256", "val_parquet_sha256", "build_manifest_sha256",
-        "license_manifest_sha256", "run_manifest_path", "tokens_seen",
-        "dataset_passes", "status", "provenance_status", "notes"
-    ]
-    for c, h in enumerate(model_cols, 1):
-        ws3.cell(row=1, column=c, value=h)
-    style_header(ws3, 1, len(model_cols))
-
-    # Load provenance data
-    prov_data = load_json("reports/audit/training_provenance_audit.json")
-    checkpoints = prov_data.get("checkpoints", []) if isinstance(prov_data, dict) else prov_data
-    if isinstance(checkpoints, dict):
-        checkpoints = [checkpoints]
-
-    run_id = 0
-    for ck in checkpoints:
-        run_id += 1
-        row = run_id + 1
-        tag = ck.get("model_tag", "unknown")
-        ws3.cell(row=row, column=1, value=f"RUN_{run_id:03d}")
-        ws3.cell(row=row, column=2, value=tag)
-        ws3.cell(row=row, column=3, value=ck.get("checkpoint_path", ""))
-        ws3.cell(row=row, column=4, value=ck.get("checkpoint_sha256", ""))
-        ws3.cell(row=row, column=5, value=".workspace/nanochat_base_d8_v3/tokenizer/tokenizer.pkl")
-        ws3.cell(row=row, column=6, value=ck.get("tokenizer_sha256", ""))
-        ws3.cell(row=row, column=7, value=".workspace/nanochat_base_d8_v3/base_data_climbmix_v3b")
-        ws3.cell(row=row, column=8, value="HEX_PLACEHOLDER")
-        ws3.cell(row=row, column=9, value="HEX_PLACEHOLDER")
-        ws3.cell(row=row, column=10, value="HEX_PLACEHOLDER")
-        ws3.cell(row=row, column=11, value="HEX_PLACEHOLDER")
-        ws3.cell(row=row, column=12, value="")
-        ws3.cell(row=row, column=13, value="TBD")
-        ws3.cell(row=row, column=14, value="TBD")
-        ws3.cell(row=row, column=15, value=ck.get("status", "UNKNOWN"))
-        ws3.cell(row=row, column=16, value=ck.get("status", "UNKNOWN"))
-        ws3.cell(row=row, column=17, value=ck.get("reason", ""))
-
-        # Color status
-        status = ck.get("status", "")
-        if "REJECT" in status:
-            ws3.cell(row=row, column=15).fill = FAIL_FILL
-        elif "ACCEPT" in status:
-            ws3.cell(row=row, column=15).fill = PASS_FILL
-
-    style_data(ws3, 2, run_id + 1, len(model_cols))
-    for i, w in enumerate([10, 25, 50, 70, 50, 70, 50, 18, 18, 18, 18, 35, 12, 14, 30, 30, 40], 1):
-        ws3.column_dimensions[get_column_letter(i)].width = w
-    print(f"Model_Runs: {run_id} runs written")
-
-    # ============================================================
-    # Sheet 5: Strict_Holdout_Results (placeholder for eval results)
-    # ============================================================
-    ws4 = wb.create_sheet("Strict_Holdout_Results")
-    eval_cols = ["run_id", "model_tag", "prompt_id", "prompt_text", "model_output", "human_rating", "eval_date", "notes"]
-    for c, h in enumerate(eval_cols, 1):
-        ws4.cell(row=1, column=c, value=h)
-    style_header(ws4, 1, len(eval_cols))
-    ws4.cell(row=2, column=1, value="TBD - run eval to populate")
-    ws4.column_dimensions['A'].width = 10
-    ws4.column_dimensions['B'].width = 25
-    ws4.column_dimensions['C'].width = 12
-    ws4.column_dimensions['D'].width = 80
-    ws4.column_dimensions['E'].width = 80
-    ws4.column_dimensions['F'].width = 12
-    ws4.column_dimensions['G'].width = 20
-    ws4.column_dimensions['H'].width = 30
-
-    # ============================================================
-    # Sheet 6: Regression_Results (placeholder)
-    # ============================================================
-    ws5 = wb.create_sheet("Regression_Results")
-    for c, h in enumerate(eval_cols, 1):
-        ws5.cell(row=1, column=c, value=h)
-    style_header(ws5, 1, len(eval_cols))
-    ws5.cell(row=2, column=1, value="TBD - run eval to populate")
-    for i, w in enumerate([10, 25, 12, 80, 80, 12, 20, 30], 1):
-        ws5.column_dimensions[get_column_letter(i)].width = w
-
-    # ============================================================
-    # Sheet 7: Regression_Dashboard
-    # ============================================================
-    ws6 = wb.create_sheet("Regression_Dashboard")
-    dash_data = [
-        ["Metric", "Value", "Status", "Notes"],
-        ["Strict holdout prompts", len(holdout_items), "PASS" if len(holdout_items) == 209 else "WARN", "Expected: 209"],
-        ["Regression prompts", len(regression_items), "INFO", f"from regression_quality_control_v1.be.jsonl"],
-        ["SFT exact overlap", 0, "PASS", "Must remain 0"],
-        ["Regression exact overlap", 0, "PASS", "Must remain 0"],
-        ["5-gram ratio", 0.0, "PASS", "< 1% threshold"],
-        ["TRAINING_ALLOWED", "NO", "GATE", ""],
-        ["SFT_ALLOWED", "NO", "GATE", ""],
-        ["Corpus v3b accepted", "YES", "PASS", "302,991 rows, ~59M est tokens"],
-        ["Token gap to 150M", "90,623,157", "OPEN", "Corpus expansion needed"],
-    ]
-    for r, row_data in enumerate(dash_data, 1):
-        for c, val in enumerate(row_data, 1):
-            ws6.cell(row=r, column=c, value=val)
-    style_header(ws6, 1, len(dash_data[0]))
-    style_data(ws6, 2, len(dash_data), len(dash_data[0]))
-    ws6.column_dimensions['A'].width = 30
-    ws6.column_dimensions['B'].width = 20
-    ws6.column_dimensions['C'].width = 12
-    ws6.column_dimensions['D'].width = 50
-
-    # ============================================================
-    # Sheet 8: Dataset_Registry
-    # ============================================================
-    ws7 = wb.create_sheet("Dataset_Registry")
-    reg_cols = ["dataset_name", "source_path", "rows", "chars_est", "license", "sha256", "in_v3b", "notes"]
-    for c, h in enumerate(reg_cols, 1):
-        ws7.cell(row=1, column=c, value=h)
-    style_header(ws7, 1, len(reg_cols))
-
-    # Load corpus proof data
-    proof = load_json("reports/data/corpus_v3b_final_parquet_proof.json")
-
-    reg_rows = [
-        ["books_clean_v2", "data_input/be_texts/books_clean_v2/", proof.get("BOOKS_CLEAN_V2_ROWS", 485), "~10M", "various", "CHECK", True, "30 books, manual review required"],
-        ["bewikisource_full", "data_input/be_texts/wikimedia_full/bewikisource_full.jsonl", proof.get("BEWIKISOURCE_ROWS_FINAL", 3493), "~25M", "CC-BY-SA", "CHECK", True, ""],
-        ["bewikibooks_full", "data_input/be_texts/wikimedia_full/bewikibooks_full.jsonl", proof.get("BEWIKIBOOKS_ROWS_FINAL", 177), "~1M", "CC-BY-SA", "CHECK", True, ""],
-        ["bewiki_full", "data_input/be_texts/wikimedia_full/bewiki_full.jsonl", "TBD", "TBD", "CC-BY-SA", "CHECK", True, "Wikipedia BE"],
-        ["bewikiquote_full", "data_input/be_texts/wikimedia_full/bewikiquote_full.jsonl", "TBD", "TBD", "CC-BY-SA", "CHECK", True, ""],
-        ["bewiktionary_full", "data_input/be_texts/wikimedia_full/bewiktionary_full.jsonl", "TBD", "TBD", "CC-BY-SA", "CHECK", True, ""],
-        ["be_x_oldwiki_full", "data_input/be_texts/wikimedia_full/be_x_oldwiki_full.jsonl", "TBD", "TBD", "CC-BY-SA", "CHECK", True, "Old Belarusian"],
-    ]
-    for i, rd in enumerate(reg_rows):
-        row = i + 2
-        for c, val in enumerate(rd, 1):
-            ws7.cell(row=row, column=c, value=val)
-    style_data(ws7, 2, len(reg_rows) + 1, len(reg_cols))
-    for i, w in enumerate([20, 55, 10, 12, 15, 40, 10, 40], 1):
-        ws7.column_dimensions[get_column_letter(i)].width = w
-
-    # ============================================================
-    # Sheet 9: Training_Gates
-    # ============================================================
-    ws8 = wb.create_sheet("Training_Gates")
-    gate_cols = ["gate_name", "value", "required_for_action", "verified_date", "verified_by", "notes"]
-    for c, h in enumerate(gate_cols, 1):
-        ws8.cell(row=1, column=c, value=h)
-    style_header(ws8, 1, len(gate_cols))
-
-    gates = [
-        ["TRAINING_ALLOWED", "NO", "Any training run", timestamp, "repo integrity audit", "Must be set to YES via owner approval before training"],
-        ["SFT_ALLOWED", "NO", "Any SFT run", timestamp, "repo integrity audit", "Must be set to YES via owner approval before SFT"],
-        ["CORPUS_V3B_ACCEPTED", "YES", "Training on v3b", timestamp, "script 32", ""],
-        ["STRICT_HOLDOUT_READY", "YES", "Eval launch", timestamp, "script 40", "209 prompts, 0 overlap"],
-        ["PROVENANCE_AUDITED", "YES", "Checkpoint acceptance", timestamp, "script 39", "PASS_WITH_SCRIPT_CONFIG_EVIDENCE"],
-        ["HOLDOUT_LEAKAGE_CHECKED", "YES", "Before any training", timestamp, "script 40", "exact overlap=0, 5-gram ratio=0"],
-        ["QC_WORKBOOK_READY", "YES", "QC process", timestamp, "script 41/43", "reports/eval/BELKA_QUALITY_CONTROL.xlsx"],
-        ["OWNER_TRAINING_APPROVAL", "NO", "Training gate override", timestamp, "pending", "BELKA_OWNER_APPROVED_TRAINING=YES required"],
-    ]
-    for i, g in enumerate(gates):
-        row = i + 2
-        for c, val in enumerate(g, 1):
-            ws8.cell(row=row, column=c, value=val)
-        if g[1] == "NO":
-            ws8.cell(row=row, column=2).fill = FAIL_FILL
-        elif g[1] == "YES":
-            ws8.cell(row=row, column=2).fill = PASS_FILL
-    style_data(ws8, 2, len(gates) + 1, len(gate_cols))
-    for i, w in enumerate([30, 8, 25, 20, 25, 60], 1):
-        ws8.column_dimensions[get_column_letter(i)].width = w
-
-    # ============================================================
-    # Remove default Sheet if it was replaced
-    # ============================================================
-    if "Sheet" in wb.sheetnames:
-        del wb["Sheet"]
-
-    # ============================================================
-    # Save
-    # ============================================================
-    output_path = PACK_DIR / "reports/eval/BELKA_QUALITY_CONTROL.xlsx"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    wb.save(str(output_path))
-    print(f"\nXLSX written: {output_path} ({output_path.stat().st_size} bytes)")
-
-    # Also write CSV of holdout prompts
-    csv_path = PACK_DIR / "reports/eval/BELKA_QUALITY_CONTROL.csv"
-    import csv
-    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        writer.writerow(["prompt_id", "prompt_text", "intent", "never_train"])
-        for i, item in enumerate(holdout_items):
-            writer.writerow([
-                item.get("id", f"SH_{i+1:04d}"),
-                item.get("prompt", item.get("text", str(item))),
-                item.get("intent", item.get("category", "")),
-                "TRUE"
-            ])
-    print(f"CSV written: {csv_path}")
-
-    print("\nQC_WORKBOOK_CREATED=YES")
-    print("TRAINING_ALLOWED=NO")
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--pack-dir',type=Path,default=Path(os.environ.get('PACK_DIR','.')))
+    ap.add_argument('--output',type=Path)
+    ap.add_argument('--data-report',type=Path)
+    ap.add_argument('--provenance-report',type=Path)
+    args=ap.parse_args(argv)
+    try:
+        result=create(args.pack_dir,args.output,args.data_report,args.provenance_report)
+    except (OSError,ValueError,TypeError,KeyError,ImportError) as exc:
+        ap.error(str(exc))
+    print(json.dumps(result['checks']))
     return 0
 
-if __name__ == "__main__":
-    sys.exit(main())
+if __name__=='__main__':
+    raise SystemExit(main())

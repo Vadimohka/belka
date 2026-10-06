@@ -39,6 +39,7 @@ fi
 echo ""
 echo "Reports written to:"
 echo "  reports/eval/QUALITY_CONTROL_XLSX_AUDIT.json"
-echo "  reports/eval/QUALITY_CONTROL_XLSX_AUDIT.md"
 echo ""
-echo "NEXT_FOR_USER=\"review reports/eval/QUALITY_CONTROL_XLSX_AUDIT.md\""
+echo "NEXT_FOR_USER=\"review reports/eval/QUALITY_CONTROL_XLSX_AUDIT.json\""
+
+exit "$AUDIT_RC"

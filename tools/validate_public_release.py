@@ -18,12 +18,14 @@ import json
 import re
 import subprocess
 from pathlib import Path
+from urllib.parse import unquote, urldefrag, urlsplit
 
 REPO = Path(__file__).resolve().parent.parent
 
 TRACKED_JUNK = re.compile(r"(__pycache__/|\.pyc$|\.pyo$|^tree\.txt$|reports/context/|\.xlsx$|"
                           r"reports/source_quarantine|reports/source_rejected|\.log$|reports/governor/)")
-TRACKED_RAW = re.compile(r"(^data_input/|\.parquet$|\.zst$|\.xz$|\.bz2$|\.tar\.gz$|\.zip$)")
+TRACKED_RAW = re.compile(r"(^data_input/|\.parquet$|\.zst$|\.xz$|\.bz2$|\.tar\.gz$|\.zip$|"
+                         r"^eval/datasets/belarusianglue/.*\.(?:jsonl|arrow)(?:\.[^/]+)?$)")
 OWNER_PATHS = re.compile(r"(/home/[a-z]+/|/Users/|C:\\\\Users)")
 
 REQUIRED_FILES = [
@@ -32,6 +34,8 @@ REQUIRED_FILES = [
     "model_cards/belka-research-preview.md",
     "reports/public/REPORTS_INDEX.md",
     "data_release/open_corpus_bundle/BUNDLE_MANIFEST.json",
+    "eval/datasets/belarusianglue/MANIFEST.json",
+    "tools/acquire_belarusianglue.py",
 ]
 
 PUBLIC_TEXT_GLOBS = ["README.md", "README_RU.md"]
@@ -45,6 +49,18 @@ def tracked_files() -> list[str]:
 
 def md_links(text: str) -> list[str]:
     return re.findall(r"\]\(([^)#][^)]*)\)", text)
+
+
+def broken_local_links(path: Path) -> list[str]:
+    broken=[]
+    for link in md_links(path.read_text(encoding='utf-8')):
+        link=link.strip().strip('<>')
+        if urlsplit(link).scheme or link.startswith('//'):
+            continue
+        target=unquote(urldefrag(link)[0])
+        if target and not (path.parent/target).exists():
+            broken.append(f'{path.name} broken link: {link}')
+    return broken
 
 
 def main() -> int:
@@ -82,15 +98,13 @@ def main() -> int:
         if OWNER_PATHS.search(content):
             problems.append(f"owner-absolute path in public text: {tf.relative_to(REPO)}")
 
-    # README links resolve (relative, non-url)
-    readme = REPO / "README.md"
-    if readme.exists():
-        for link in md_links(readme.read_text(encoding="utf-8")):
-            if link.startswith(("http://", "https://", "mailto:")):
-                continue
-            target = (readme.parent / link).resolve()
-            if not target.exists():
-                problems.append(f"README broken link: {link}")
+    # Current entrypoints are executable guidance. Historical snapshots retain
+    # their original references and are explicitly labeled as such.
+    current_docs=['README.md']+['reports/public/'+name+'.md' for name in
+        ('REPORTS_INDEX','PROJECT_STATUS','EVALUATION_SUMMARY','RELEASE_READINESS','REPRODUCIBILITY_SUMMARY')]
+    for name in current_docs:
+        path=REPO/name
+        if path.is_file(): problems.extend(broken_local_links(path))
 
     report = {"ready": not problems, "tracked_files": len(files), "problems": problems}
     print(json.dumps(report, indent=2, ensure_ascii=False))

@@ -1,39 +1,37 @@
 #!/usr/bin/env python3
-"""Write training run manifest before training starts."""
-import json, hashlib, os, pathlib, subprocess, sys, time
+"""Record actual selected data/configuration before a run; never certifies quality."""
+from __future__ import annotations
+import argparse
+import json
+import os
+from pathlib import Path
+import sys
+import uuid
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from tools.provenance import atomic_json, build_manifest
 
-def main():
-    tag = os.environ.get("MODEL_TAG", sys.argv[1] if len(sys.argv) > 1 else "unknown")
-    base_dir = pathlib.Path(os.environ.get("NANOCHAT_BASE_DIR", ".workspace/nanochat_base_d8_v3"))
-    timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    
-    manifest_dir = base_dir / "run_manifests"
-    manifest_dir.mkdir(parents=True, exist_ok=True)
-    manifest_path = manifest_dir / f"{tag}_{timestamp}_RUN_MANIFEST.json"
-    
-    # Git commit
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--model-tag', required=True)
+    ap.add_argument('--phase', choices=('base', 'sft', 'rl'), required=True)
+    ap.add_argument('--config-json', type=Path, required=True)
+    ap.add_argument('--dataset-dir', type=Path, required=True)
+    ap.add_argument('--tokenizer', type=Path, required=True)
+    ap.add_argument('--runtime-dir', type=Path)
+    ap.add_argument('--checkpoint', type=Path)
+    ap.add_argument('--base-dir', type=Path, default=Path(os.environ.get('NANOCHAT_BASE_DIR', '.workspace/nanochat_base')))
+    ap.add_argument('--output', type=Path)
+    args = ap.parse_args(argv)
     try:
-        git_commit = subprocess.check_output(["git","rev-parse","HEAD"], text=True).strip()
-    except: git_commit = "unknown"
-    
-    m = {
-        "model_tag": tag, "created_at": timestamp,
-        "git_commit": git_commit,
-        "nanochat_base_dir": str(base_dir),
-        "tokenizer_path": str(base_dir / "tokenizer/tokenizer.pkl"),
-        "dataset_dir": str(base_dir / "base_data_climbmix_v3b"),
-        "train_parquet_path": str(base_dir / "base_data_climbmix_v3b/train_00000.parquet"),
-        "val_parquet_path": str(base_dir / "base_data_climbmix_v3b/val_00000.parquet"),
-        "from_scratch": True, "sft_used": False,
-        "wandb_disabled": True, "generic_english_eval_disabled": True,
-        "depth": int(os.environ.get("DEPTH", 8)),
-        "seq_len": int(os.environ.get("SEQ_LEN", 2048)),
-        "device_batch": int(os.environ.get("DEV_BATCH", 2)),
-        "total_batch": int(os.environ.get("TOTAL_BATCH", 16384)),
-        "target_tokens": int(os.environ.get("TARGET_TOKENS", 500000000)),
-        "provenance_status": "PASS_WITH_SCRIPT_CONFIG_EVIDENCE"
-    }
-    m['train_parquet_sha256'] = hashlib.sha256(m['train_parquet_path'].encode()).hexdigest()[:16]
-    
-    manifest_path.write_text(json.dumps(m, ensure_ascii=False, indent=2))
-    print(f'RUN_MANIFEST={manifest_path}')
+        record = build_manifest(model_tag=args.model_tag, phase=args.phase,
+            config=json.loads(args.config_json.read_text()), dataset_dir=args.dataset_dir,
+            tokenizer_path=args.tokenizer, runtime_dir=args.runtime_dir, checkpoint_path=args.checkpoint)
+        path = args.output or args.base_dir/'run_manifests'/f'{args.model_tag}_{uuid.uuid4().hex}_RUN_MANIFEST.json'
+        atomic_json(path, record)
+    except (OSError, ValueError, TypeError) as exc:
+        ap.error(str(exc))
+    print(f'RUN_MANIFEST={path.resolve()}')
+    return 0
+
+if __name__ == '__main__':
+    raise SystemExit(main())

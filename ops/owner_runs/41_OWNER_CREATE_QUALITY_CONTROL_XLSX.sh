@@ -4,6 +4,8 @@ PACK_DIR="${PACK_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 cd "$PACK_DIR"
 source "$PACK_DIR/ops/local/pack_paths.sh"
 VENV_PY="$NANOCHAT_DIR/.venv/bin/python"
+DATA_REPORT="${BELKA_QC_DATA_REPORT:-$PACK_DIR/.workspace/h200-ready/data/.corpus_current/H200_CORPUS_MANIFEST.json}"
+PROVENANCE_REPORT="${BELKA_QC_PROVENANCE_REPORT:-$PACK_DIR/reports/audit/training_provenance_audit.json}"
 
 echo "============================================="
 echo " CREATE QUALITY CONTROL XLSX (41)"
@@ -20,8 +22,8 @@ echo "=== Verifying source data ==="
 for f in \
     eval/strict_holdout_quality_control_v2.be.jsonl \
     eval/regression_quality_control_v1.be.jsonl \
-    reports/data/corpus_v3b_final_parquet_proof.json \
-    reports/audit/training_provenance_audit.json; do
+    "$DATA_REPORT" \
+    "$PROVENANCE_REPORT"; do
     if [[ -f "$f" ]]; then
         echo "OK: $f"
     else
@@ -32,7 +34,8 @@ done
 echo ""
 
 echo "=== Creating quality control workbook ==="
-"$VENV_PY" tools/create_quality_control_workbook.py
+"$VENV_PY" tools/create_quality_control_workbook.py \
+    --data-report "$DATA_REPORT" --provenance-report "$PROVENANCE_REPORT"
 
 echo ""
 XLSX_PATH="reports/eval/BELKA_QUALITY_CONTROL.xlsx"

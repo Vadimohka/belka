@@ -1,184 +1,82 @@
 #!/usr/bin/env python3
-"""Audit BELKA_QUALITY_CONTROL.xlsx — verify sheets, prompts, gates, provenance columns.
-Read-only. Never trains."""
+"""Fail closed on missing, changed or unverified checkpoint QC evidence."""
+from __future__ import annotations
+import argparse
+import json
+import os
+from pathlib import Path
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from tools.create_quality_control_workbook import evidence, prompts, MODEL_RUNS_COLS, display_measurement
+from tools.provenance import atomic_json, verify_artifact
 
-import json, os, pathlib, sys
-from datetime import datetime, timezone
-
-PACK_DIR = pathlib.Path(os.environ.get("PACK_DIR", os.getcwd()))
-
-try:
+def audit(pack, path):
     from openpyxl import load_workbook
-except ImportError:
-    print("FATAL: openpyxl not installed. Run: pip install openpyxl")
-    sys.exit(2)
+    failures=[]
+    wb=load_workbook(path,read_only=True,data_only=True)
+    try:
+        required={'README','Strict_Holdout_LOCKED','Regression_SeenIntent','Model_Runs',
+                  'Strict_Holdout_Results','Regression_Results','Regression_Dashboard',
+                  'Dataset_Registry','Training_Gates','Source_Evidence'}
+        if set(wb.sheetnames)!=required:
+            raise ValueError('missing or unexpected QC sheets')
+        saved=json.loads(''.join(row[0] for row in wb['Source_Evidence'].iter_rows(min_row=2,values_only=True)))
+        for record in saved['inputs'].values():
+            verify_artifact(record)
+        for record in saved['reports'].values():
+            verify_artifact(record)
+        current=evidence(pack, saved['reports'].get('data',{}).get('path'),
+                         saved['reports'].get('provenance',{}).get('path'))
+        if current!=saved:
+            failures.append('evidence has changed since workbook generation')
+        def rows(name):
+            return list(wb[name].iter_rows(min_row=2,values_only=True))
+        for name,key,strict in [('Strict_Holdout_LOCKED','strict',True),('Regression_SeenIntent','regression',False)]:
+            expected=prompts(current['inputs'][key]['path'],strict=strict)
+            if rows(name)!=expected:
+                failures.append(f'{name}: exact prompt identity/content/never_train mismatch')
+        expected_gates=[('TRAINING_ALLOWED','NO'),('SFT_ALLOWED','NO')]+list(current['checks'].items())
+        if rows('Training_Gates')!=expected_gates:
+            failures.append('training/evidence gates changed')
+        for name,status in current['checks'].items():
+            if status!='PASS':
+                failures.append(f'{name}: {status}')
+        if list(next(wb['Model_Runs'].iter_rows(values_only=True)))!=MODEL_RUNS_COLS:
+            failures.append('model provenance columns changed')
+        if rows('Model_Runs')!=[tuple(row) for row in current['model_runs']] or not current['model_runs']:
+            failures.append('model provenance missing or changed')
+        expected_data=[tuple(f[k] for k in ('path','sha256','rows','split')) for f in current['dataset']]
+        if not expected_data or rows('Dataset_Registry')!=expected_data:
+            failures.append('dataset registry missing or changed')
+        expected_dashboard=[('strict_prompts',len(prompts(current['inputs']['strict']['path'],strict=True))),
+                            ('regression_prompts',len(prompts(current['inputs']['regression']['path'])))]+[
+                            (k,display_measurement(v)) for k,v in current['measurements'].items()]
+        if rows('Regression_Dashboard')!=expected_dashboard:
+            failures.append('dashboard measurements changed')
+        for name in ('Strict_Holdout_Results','Regression_Results'):
+            if rows(name)!=[('NOT_EVALUATED',)]:
+                failures.append(f'{name}: unsupported quality claim')
+    except (OSError,ValueError,TypeError,KeyError) as exc:
+        failures.append(str(exc))
+    finally:
+        wb.close()
+    return dict(schema_version=1,audit_status='FAIL' if failures else 'PASS',
+                scope='checkpoint QC evidence, not model quality or training permission',
+                TRAINING_ALLOWED='NO',SFT_ALLOWED='NO',failures=failures)
 
-REQUIRED_SHEETS = [
-    "README",
-    "Strict_Holdout_LOCKED",
-    "Regression_SeenIntent",
-    "Model_Runs",
-    "Strict_Holdout_Results",
-    "Regression_Results",
-    "Regression_Dashboard",
-    "Dataset_Registry",
-    "Training_Gates",
-]
+def main(argv=None):
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--pack-dir',type=Path,default=Path(os.environ.get('PACK_DIR','.')))
+    ap.add_argument('--workbook',type=Path)
+    ap.add_argument('--output',type=Path)
+    args=ap.parse_args(argv)
+    try:
+        report=audit(args.pack_dir,args.workbook or args.pack_dir/'reports/eval/BELKA_QUALITY_CONTROL.xlsx')
+    except (OSError,ValueError,ImportError) as exc:
+        ap.error(str(exc))
+    atomic_json(args.output or args.pack_dir/'reports/eval/QUALITY_CONTROL_XLSX_AUDIT.json',report,overwrite=True)
+    print(json.dumps(report,ensure_ascii=False,indent=2))
+    return int(report['audit_status']!='PASS')
 
-MODEL_RUNS_COLS = [
-    "run_id", "model_tag", "checkpoint_path", "checkpoint_sha256",
-    "tokenizer_path", "tokenizer_sha256", "dataset_dir",
-    "train_parquet_sha256", "val_parquet_sha256", "build_manifest_sha256",
-    "license_manifest_sha256", "run_manifest_path", "tokens_seen",
-    "dataset_passes", "status", "provenance_status", "notes"
-]
-
-def main():
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-    xlsx_path = PACK_DIR / "reports/eval/BELKA_QUALITY_CONTROL.xlsx"
-    if not xlsx_path.exists():
-        print("FATAL: BELKA_QUALITY_CONTROL.xlsx not found")
-        sys.exit(2)
-
-    wb = load_workbook(str(xlsx_path), read_only=True, data_only=True)
-
-    checks = {}
-    failures = []
-    warnings = []
-
-    # 1. Required sheets
-    present_sheets = set(wb.sheetnames)
-    missing_sheets = [s for s in REQUIRED_SHEETS if s not in present_sheets]
-    checks["required_sheets"] = {"present": sorted(present_sheets), "missing": missing_sheets, "pass": len(missing_sheets) == 0}
-    if missing_sheets:
-        failures.append(f"Missing sheets: {missing_sheets}")
-
-    # 2. No default Sheet
-    has_default = "Sheet" in present_sheets
-    checks["no_default_sheet"] = {"pass": not has_default}
-    if has_default:
-        failures.append("Default 'Sheet' tab still present (must be removed)")
-
-    # 3. Strict_Holdout_LOCKED prompt count
-    strict_prompts = 0
-    never_train_ok = True
-    if "Strict_Holdout_LOCKED" in present_sheets:
-        ws = wb["Strict_Holdout_LOCKED"]
-        rows = list(ws.iter_rows(min_row=2, values_only=True))
-        strict_prompts = len(rows)
-        # Check never_train column (column D, index 3)
-        for i, row in enumerate(rows):
-            if row and len(row) >= 4:
-                if row[3] is not True and str(row[3]).upper() != "TRUE":
-                    never_train_ok = False
-                    warnings.append(f"Strict_Holdout_LOCKED row {i+2}: never_train != TRUE")
-        checks["strict_holdout_prompts"] = {"count": strict_prompts, "expected": 209, "pass": strict_prompts >= 200}
-        checks["never_train_flag"] = {"pass": never_train_ok}
-        if strict_prompts < 200:
-            failures.append(f"Strict_Holdout_LOCKED has only {strict_prompts} prompts (expected 209)")
-
-    # 4. Training_Gates values
-    if "Training_Gates" in present_sheets:
-        ws = wb["Training_Gates"]
-        rows = list(ws.iter_rows(min_row=2, values_only=True))
-        training_allowed = "UNKNOWN"
-        sft_allowed = "UNKNOWN"
-        for row in rows:
-            if row and row[0] == "TRAINING_ALLOWED":
-                training_allowed = str(row[1]).strip().upper()
-            if row and row[0] == "SFT_ALLOWED":
-                sft_allowed = str(row[1]).strip().upper()
-        checks["training_gate_value"] = {"value": training_allowed, "pass": training_allowed == "NO"}
-        checks["sft_gate_value"] = {"value": sft_allowed, "pass": sft_allowed == "NO"}
-        if training_allowed != "NO":
-            failures.append(f"TRAINING_ALLOWED={training_allowed} (must be NO)")
-
-    # 5. Model_Runs columns
-    if "Model_Runs" in present_sheets:
-        ws = wb["Model_Runs"]
-        header_row = list(ws.iter_rows(min_row=1, max_row=1, values_only=True))[0]
-        if header_row:
-            actual_cols = [str(c).lower().strip() for c in header_row if c]
-            missing_cols = [c for c in MODEL_RUNS_COLS if c not in actual_cols]
-            checks["model_runs_columns"] = {"expected": MODEL_RUNS_COLS, "actual": actual_cols, "missing": missing_cols, "pass": len(missing_cols) == 0}
-            if missing_cols:
-                failures.append(f"Model_Runs missing columns: {missing_cols}")
-        # Count rows
-        data_rows = list(ws.iter_rows(min_row=2, values_only=True))
-        checks["model_runs_rows"] = {"count": len(data_rows), "pass": len(data_rows) > 0}
-
-    # 6. Dataset_Registry has sha column
-    if "Dataset_Registry" in present_sheets:
-        ws = wb["Dataset_Registry"]
-        header_row = list(ws.iter_rows(min_row=1, max_row=1, values_only=True))[0]
-        if header_row:
-            has_sha = any("sha" in str(c).lower() for c in header_row if c)
-            checks["dataset_registry_sha_column"] = {"pass": has_sha}
-            if not has_sha:
-                failures.append("Dataset_Registry missing sha256 column")
-
-    wb.close()
-
-    # Overall
-    audit_pass = len(failures) == 0
-    audit_status = "PASS" if audit_pass else "FAIL"
-
-    report = {
-        "audit_timestamp": timestamp,
-        "xlsx_path": str(xlsx_path.relative_to(PACK_DIR)),
-        "audit_status": audit_status,
-        "TRAINING_ALLOWED": "NO",
-        "SFT_ALLOWED": "NO",
-        "checks": checks,
-        "failures": failures,
-        "warnings": warnings,
-    }
-
-    report_dir = PACK_DIR / "reports/eval"
-    report_dir.mkdir(parents=True, exist_ok=True)
-
-    json_path = report_dir / "QUALITY_CONTROL_XLSX_AUDIT.json"
-    json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2))
-
-    md_lines = [
-        "# QC XLSX Audit Report",
-        f"Generated: {timestamp}",
-        "",
-        f"## Overall: {audit_status}",
-        "",
-        f"- XLSX path: {report['xlsx_path']}",
-        f"- TRAINING_ALLOWED={report['TRAINING_ALLOWED']}",
-        f"- SFT_ALLOWED={report['SFT_ALLOWED']}",
-        "",
-        "## Checks",
-    ]
-    for check_name, check_data in checks.items():
-        status = "PASS" if check_data.get("pass") else "FAIL"
-        md_lines.append(f"- [{status}] {check_name}: { {k:v for k,v in check_data.items() if k != 'pass'} }")
-
-    if failures:
-        md_lines.append("\n## Failures")
-        for f in failures:
-            md_lines.append(f"- {f}")
-    if warnings:
-        md_lines.append("\n## Warnings")
-        for w in warnings:
-            md_lines.append(f"- {w}")
-
-    md_path = report_dir / "QUALITY_CONTROL_XLSX_AUDIT.md"
-    md_path.write_text("\n".join(md_lines))
-
-    print(f"QC_XLSX_AUDIT_STATUS={audit_status}")
-    for check_name, check_data in checks.items():
-        status = "PASS" if check_data.get("pass") else "FAIL"
-        print(f"  [{status}] {check_name}")
-    for f in failures:
-        print(f"  FAIL: {f}")
-    for w in warnings:
-        print(f"  WARN: {w}")
-
-    return 0 if audit_pass else 1
-
-if __name__ == "__main__":
-    sys.exit(main())
+if __name__=='__main__':
+    raise SystemExit(main())

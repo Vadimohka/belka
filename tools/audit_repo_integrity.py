@@ -8,7 +8,8 @@ from datetime import datetime, timezone
 PACK_DIR = pathlib.Path(os.environ.get("PACK_DIR", os.getcwd()))
 
 def exists(relpath):
-    return (PACK_DIR / relpath).exists()
+    path=PACK_DIR / relpath
+    return path.is_file() and path.stat().st_size > 0
 
 def sha256_hex(relpath):
     import hashlib
@@ -27,7 +28,7 @@ def dir_file_count(relpath):
     p = PACK_DIR / relpath
     if not p.is_dir():
         return -1
-    return len(list(p.iterdir()))
+    return sum(child.is_file() and child.stat().st_size > 0 for child in p.iterdir())
 
 def main():
     result = {
@@ -83,7 +84,7 @@ def main():
     data_checks["val_parquet"] = exists(".workspace/nanochat_base_d8_v3/base_data_climbmix_v3b/val_00000.parquet")
     data_checks["tokenizer_pkl"] = exists(".workspace/nanochat_base_d8_v3/tokenizer/tokenizer.pkl")
 
-    missing_data = [k for k, v in data_checks.items() if not v]
+    missing_data = [k for k, v in data_checks.items() if not (v if isinstance(v, bool) else v > 0)]
     result["MISSING_REQUIRED_DATA"] = missing_data
     result["DATA_CHECKS"] = {k: (v if isinstance(v, bool) else f"{v} files") for k, v in data_checks.items()}
 

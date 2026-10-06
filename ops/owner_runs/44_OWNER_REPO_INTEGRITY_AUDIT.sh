@@ -85,3 +85,5 @@ PYEOF
 
 echo ""
 echo "NEXT_FOR_USER=\"review reports/repo_integrity/REPO_INTEGRITY_REPORT.md\""
+
+exit "$AUDIT_RC"

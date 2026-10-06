@@ -52,7 +52,8 @@ jobs:
           mkdir -p reports/runtime_audit/ci
           python -m pip install uv
           bash ops/local/install_nanochat_env.sh --cpu --skip-rust --skip-git-pull | tee reports/runtime_audit/ci/install.log
-          .workspace/nanochat/.venv/bin/python -m pip install httpx
+          .workspace/nanochat/.venv/bin/python -m pip install -r export/requirements_hf.txt -c constraints_pack_py310.txt
+          .workspace/nanochat/.venv/bin/python -m pip check
           .workspace/nanochat/.venv/bin/python -m pip freeze > reports/runtime_audit/ci/environment.txt
           echo "NANOCHAT_DIR=$NANOCHAT_DIR" >> "$GITHUB_ENV"
           echo "NANOCHAT_BASE_DIR=$NANOCHAT_BASE_DIR" >> "$GITHUB_ENV"
@@ -69,7 +70,9 @@ jobs:
           .workspace/nanochat/.venv/bin/python ops/local/verify_nanochat_patch.py --nanochat-dir "$NANOCHAT_DIR" --base-dir "$NANOCHAT_BASE_DIR" --require-dtype-patch | tee reports/runtime_audit/ci/verify.json
       - name: Full tests including real CPU GPT and two Gloo processes
         run: |
+          .workspace/nanochat/.venv/bin/python tools/acquire_belarusianglue.py --pack-dir "$PWD"
           .workspace/nanochat/.venv/bin/python -m pytest -q tests -ra --basetemp=.workspace/pytest-runtime --junitxml=reports/runtime_audit/ci/tests.xml | tee reports/runtime_audit/ci/tests.log
+          .workspace/nanochat/.venv/bin/python tools/validate_runtime_test_report.py reports/runtime_audit/ci/tests.xml
       - name: Active v9 strict holdout and source syntax
         run: |
           .workspace/nanochat/.venv/bin/python tools/check_train_eval_decontamination.py --train '.workspace/ci_assets/.sft_current/identity_conversations*.jsonl' --eval eval/strict_holdout_quality_control_v2.be.jsonl --dry-run --fail-on-overlap | tee reports/runtime_audit/ci/holdout.json
