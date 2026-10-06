@@ -1,31 +1,19 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
+"""Reject unrelated templates: native framing belongs to BelkaTokenizer."""
 import argparse
 import json
 from pathlib import Path
 
+def main(argv=None):
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--model-dir',type=Path,required=True)
+    args=ap.parse_args(argv)
+    config=args.model_dir/'tokenizer_config.json'
+    if not config.is_file(): ap.error('export the full native HF bundle first')
+    data=json.loads(config.read_text())
+    if data.get('auto_map',{}).get('AutoTokenizer')!=['tokenization_belka.BelkaTokenizer',None]:
+        ap.error('unsupported tokenizer; an unrelated Jinja template cannot supply native ID parity')
+    print('Native chat framing is implemented by BelkaTokenizer.apply_chat_template; no mutation needed.')
+    return 0
 
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Attach Belarusian chat template to HF tokenizer config files when present")
-    ap.add_argument("--model-dir", type=Path, required=True)
-    ap.add_argument("--template", type=Path, default=Path(__file__).resolve().parents[1] / "templates" / "chat_template.jinja")
-    args = ap.parse_args()
-    template = args.template.read_text(encoding="utf-8")
-    args.model_dir.mkdir(parents=True, exist_ok=True)
-    for name in ["tokenizer_config.json", "generation_config.json"]:
-        path = args.model_dir / name
-        data = {}
-        if path.exists():
-            data = json.loads(path.read_text(encoding="utf-8"))
-        if name == "tokenizer_config.json":
-            data["chat_template"] = template
-        if name == "generation_config.json":
-            data.setdefault("temperature", 0.7)
-            data.setdefault("top_p", 0.95)
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(args.model_dir)
-
-
-if __name__ == "__main__":
-    main()
+if __name__=='__main__': raise SystemExit(main())

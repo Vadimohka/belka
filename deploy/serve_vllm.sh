@@ -1,18 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-MODEL_DIR="${MODEL_DIR:-./hf_export_be}"
-HOST="${HOST:-127.0.0.1}"
-PORT="${PORT:-8000}"
-DTYPE="${DTYPE:-float16}"
-usage() { echo "Usage: MODEL_DIR=/path/to/hf/model bash deploy/serve_vllm.sh [--port N] [--dtype float16]"; }
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --model-dir) MODEL_DIR="$2"; shift 2 ;;
-    --host) HOST="$2"; shift 2 ;;
-    --port) PORT="$2"; shift 2 ;;
-    --dtype) DTYPE="$2"; shift 2 ;;
-    -h|--help) usage; exit 0 ;;
-    *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
-  esac
-done
-exec python -m vllm.entrypoints.openai.api_server --model "$MODEL_DIR" --host "$HOST" --port "$PORT" --dtype "$DTYPE"
+if [[ "${1:-}" == --help || "${1:-}" == -h ]]; then
+  echo 'Native Belka/nanochat vLLM serving has no validated adapter in this repository.'
+  exit 0
+fi
+echo 'UNSUPPORTED: a Hugging Face custom-code bundle does not establish vLLM architecture support. Belka has no validated vLLM model adapter.' >&2
+echo 'Use ops/local/run_chat_web.sh for the native server; export/HF_MODEL_CARD.md describes standalone Transformers inference.' >&2
+exit 2

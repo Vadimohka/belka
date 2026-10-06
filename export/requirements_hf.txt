@@ -1,0 +1,5 @@
+# Optional reference exporter/consumer, separate from the training environment.
+transformers==4.57.1
+safetensors==0.6.2
+tiktoken==0.11.0
+torch==2.9.1
