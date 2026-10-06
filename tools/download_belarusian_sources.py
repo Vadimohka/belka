@@ -2,23 +2,20 @@
 from __future__ import annotations
 import argparse, bz2, csv, io, json, os, re, sys, tarfile, urllib.request, zipfile
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from data_pipeline.downloads import atomic_text_writer
 def inside(base,p):
     p=Path(p).resolve(); base=Path(base).resolve()
     if base not in p.parents and p!=base: raise SystemExit(f'Refusing outside PACK_DIR: {p}')
     return p
-def http_download(url,out):
-    out=Path(out); out.parent.mkdir(parents=True, exist_ok=True)
-    if out.exists() and out.stat().st_size>0: print('OK exists',out); return
-    print('Downloading',url,'->',out)
-    req=urllib.request.Request(url, headers={'User-Agent':'belarusian-llm-research/0.1'})
-    with urllib.request.urlopen(req, timeout=90) as r, open(out,'wb') as f:
-        while True:
-            b=r.read(1024*1024)
-            if not b: break
-            f.write(b)
+def http_download(url, out):
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+    from data_pipeline.downloads import download as atomic_download
+    atomic_download(url, out)
+
 def write_jsonl(records,path):
     path=Path(path); path.parent.mkdir(parents=True, exist_ok=True); n=0
-    with open(path,'w',encoding='utf-8') as f:
+    with atomic_text_writer(path) as f:
         for rec in records:
             txt=(rec.get('text') or '').strip()
             if len(txt)<20: continue
@@ -47,7 +44,8 @@ def extract_belacorpus(pack):
     print('Belacorpus: access_status=manual_request_required (public repo does not bundle .txt corpus files)')
     # Create empty placeholder
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text('', encoding='utf-8')
+    if not out.exists():
+        out.touch(exist_ok=False)
 def extract_ud(pack):
     url='https://github.com/UniversalDependencies/UD_Belarusian-HSE/archive/refs/heads/master.zip'; dl=inside(pack,Path(pack)/'data_input/downloads/ud_belarusian_hse/master.zip'); http_download(url,dl); out=inside(pack,Path(pack)/'data_input/be_texts/ud_belarusian_hse/ud_belarusian_hse_text.jsonl'); records=[]
     with zipfile.ZipFile(dl) as z:

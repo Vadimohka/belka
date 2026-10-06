@@ -24,7 +24,11 @@ def test_v9_determinism_corrections_and_family_disjointness():
     train, val, meta = prepare(ROOT)
     assert train and val and len(train) + len(val) == 570
     assert not families(train) & families(val)
-    assert len(meta['groups']) == 119
+    assert len(meta['groups']) < 119
+    train_families={f for g in meta['groups'] if g['split']=='train' for f in g['seed_family_ids']}
+    val_families={f for g in meta['groups'] if g['split']=='val' for f in g['seed_family_ids']}
+    assert train_families.isdisjoint(val_families)
+    assert any('belarusian_rivers' in g['seed_family_ids'] for g in meta['groups'])
     assert len(meta['corrections']) == 104
     assert len(meta['answer_corrections']) == 4
     assert not meta['independent_native_review']

@@ -31,6 +31,7 @@ HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
+from source_policy import base_rejection, detect_source
 from normalize_text import normalize_text
 from detect_belarusian import detect_belarusian
 from deduplicate import text_hash
@@ -94,17 +95,22 @@ def iter_local_texts(root: Path) -> Iterator[tuple[str, str, dict]]:
                         raise ValueError(f"{path}:{lineno}: expected object or text")
                     if not isinstance(text, str) or not text.strip():
                         raise ValueError(f"{path}:{lineno}: missing or invalid text")
-                    yield "local_jsonl", text, {"path": rel, "line": lineno}
+                    source = str(obj.get('source') or detect_source(rel)) if isinstance(obj, dict) else detect_source(rel)
+                    meta = dict(obj) if isinstance(obj, dict) else {}
+                    meta.pop('text', None); meta.pop('content', None)
+                    meta.update(path=rel, line=lineno)
+                    yield source if source != 'unknown' else 'local_jsonl', text, meta
         elif path.suffix.lower() == ".parquet":
             pf = pq.ParquetFile(path)
             for rg_idx in range(pf.num_row_groups):
-                table = pf.read_row_group(rg_idx, columns=["text"] if "text" in pf.schema.names else None)
+                table = pf.read_row_group(rg_idx)
                 if "text" not in table.column_names:
                     raise ValueError(f"{path}: missing text column")
-                for row_idx, text in enumerate(table.column("text").to_pylist()):
+                for row_idx, row in enumerate(table.to_pylist()):
+                    text = row["text"]
                     if not isinstance(text, str) or not text.strip():
                         raise ValueError(f"{path}: invalid Parquet text row")
-                    yield "local_parquet", text, {"path": rel, "row_group": rg_idx, "row": row_idx}
+                    yield row.get('source', 'local_parquet'), text, dict(row, path=rel, row_group=rg_idx, row=row_idx)
 
 
 def iter_smoke_texts(repeats: int = 12) -> Iterator[tuple[str, str, dict]]:
@@ -169,6 +175,11 @@ def prepare(
         if max_docs_total > 0 and stats.kept >= max_docs_total:
             break
         stats.seen += 1
+        exclusion = base_rejection(source, meta, meta.get('path', ''))
+        if exclusion:
+            stats.rejected += 1
+            write_jsonl(report_dir / "rejected.jsonl", {"source": source, "meta": meta, "reason": exclusion})
+            continue
         text = normalize_text(raw)
         if len(text) < min_chars and not allow_short:
             stats.too_short += 1

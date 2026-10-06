@@ -17,6 +17,8 @@ __pycache__/
 # Raw data and downloads
 data_input/
 data/downloads/
+# Pinned third-party evaluation texts are restored by acquire_belarusianglue.py.
+eval/datasets/belarusianglue/*/*.jsonl
 *.parquet
 *.jsonl.zst
 *.zst

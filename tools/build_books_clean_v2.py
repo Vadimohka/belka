@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse, hashlib, json, re
+import argparse, hashlib, json, re, sys
 from pathlib import Path
 from datetime import datetime, timezone
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from data_pipeline.contracts import corpus_generation
 try:
     import yaml
 except Exception:
@@ -24,6 +26,11 @@ def score_be(text:str)->float:
     return max(0.0,min(1.0,score))
 
 def try_decode(data:bytes, encs):
+    try:
+        text=data.decode('utf-8-sig', errors='strict')
+        return (score_be(text), 'utf-8-sig', text, text.count('\ufffd'), 0)
+    except UnicodeError:
+        pass
     best=None
     for enc in encs:
         try:
@@ -59,41 +66,46 @@ def main():
     ap.add_argument('--pack-dir',default='.')
     ap.add_argument('--config',default='configs/books_cleaning_policy.yaml')
     ap.add_argument('--manifest',default='reports/books_clean_v2_manifest.jsonl')
+    ap.add_argument('--output-dir', type=Path)
     args=ap.parse_args()
     pack=Path(args.pack_dir).resolve()
     cfg_path=Path(args.config); cfg_path=cfg_path if cfg_path.is_absolute() else pack/cfg_path
-    cfg=yaml.safe_load(cfg_path.read_text(encoding='utf-8')) if yaml else {}
+    if yaml is None:raise SystemExit('PyYAML is required to load the configured cleaning policy')
+    cfg=yaml.safe_load(cfg_path.read_text(encoding='utf-8'))
     encs=cfg.get('policy',{}).get('allowed_encodings_to_try',['utf-8-sig','utf-8','cp1251','windows-1251','iso-8859-5','cp866'])
-    out_dir=pack/cfg.get('output_dir','data_input/be_texts/books_clean_v2')
-    out_dir.mkdir(parents=True,exist_ok=True)
+    out_dir=args.output_dir or pack/cfg.get('output_dir','data_input/be_texts/books_clean_v3')
     manifest=Path(args.manifest); manifest=manifest if manifest.is_absolute() else pack/manifest
     manifest.parent.mkdir(parents=True,exist_ok=True)
     roots=[pack/p for p in cfg.get('input_dirs',['books','data_input/be_texts/books'])]
-    rows=[]
-    seen=set()
-    for root in roots:
-        if not root.exists(): continue
-        for p in sorted(root.rglob('*.txt')):
-            if p.resolve() in seen: continue
-            seen.add(p.resolve())
-            data=p.read_bytes(); sha=hashlib.sha256(data).hexdigest()
-            best=try_decode(data,encs)
-            if best is None:
-                rows.append({'path':str(p.relative_to(pack)),'status':'decode_failed','sha256':sha}); continue
-            dec_score,enc,text,repl,moj=best
-            text=clean_text(text); be=score_be(text)
-            base=re.sub(r'[^A-Za-z0-9_.-]+','_',p.stem)[:120]
-            utf8=out_dir/(base+'.utf8.txt'); jsl=out_dir/(base+'.jsonl')
-            status='accepted' if be>=cfg.get('policy',{}).get('reject_if_belarusian_score_lt',0.35) and repl/max(1,len(text))<=cfg.get('policy',{}).get('reject_if_replacement_char_ratio_gt',0.002) else 'manual_review'
-            utf8.write_text(text,encoding='utf-8')
-            count=0
-            with jsl.open('w',encoding='utf-8') as f:
-                for i,ch in enumerate(chunks(text,cfg.get('policy',{}).get('split_min_chars',500),cfg.get('policy',{}).get('split_max_chars',6000))):
-                    f.write(json.dumps({'text':ch,'source':'local_book_clean_v2','book_file':p.name,'chunk_id':i,'belarusian_score':be},ensure_ascii=False)+'\n')
-                    count+=1
-            rows.append({'path':str(p.relative_to(pack)),'sha256':sha,'encoding':enc,'decode_score':round(dec_score,4),'belarusian_score':round(be,4),'replacement_chars':repl,'mojibake_markers':moj,'status':status,'utf8_path':str(utf8.relative_to(pack)),'jsonl_path':str(jsl.relative_to(pack)),'chunks':count,'rights_status':'manual_review_required','public_release_allowed':False,'timestamp':datetime.now(timezone.utc).isoformat()})
-    with manifest.open('w',encoding='utf-8') as f:
-        for r in rows: f.write(json.dumps(r,ensure_ascii=False)+'\n')
+    rows=[]; quarantined=[]; seen=set()
+    with corpus_generation(out_dir) as stage:
+        for root in roots:
+            if not root.exists(): continue
+            for p in sorted(root.rglob('*.txt')):
+                if p.resolve() in seen: continue
+                seen.add(p.resolve())
+                data=p.read_bytes(); sha=hashlib.sha256(data).hexdigest()
+                best=try_decode(data,encs)
+                if best is None:
+                    rows.append({'path':str(p.relative_to(pack)),'status':'decode_failed','sha256':sha}); continue
+                dec_score,enc,text,repl,moj=best
+                text=clean_text(text); be=score_be(text)
+                identity=hashlib.sha256(str(p.relative_to(pack)).encode()).hexdigest()[:20]
+                base=re.sub(r'[^A-Za-z0-9_.-]+','_',p.stem)[:80]+'-'+identity
+                status='accepted' if be>=cfg.get('policy',{}).get('reject_if_belarusian_score_lt',0.35) and repl==0 else 'manual_review'
+                count=0
+                if status=='accepted':
+                    with (stage/(base+'.jsonl')).open('x',encoding='utf-8') as f:
+                        for i,ch in enumerate(chunks(text,cfg.get('policy',{}).get('split_min_chars',500),cfg.get('policy',{}).get('split_max_chars',6000))):
+                            f.write(json.dumps({'text':ch,'source':'books_clean_v2','book_file':str(p.relative_to(pack)),'group_id':identity,'chunk_id':i,'status':'accepted','belarusian_score':be},ensure_ascii=False)+'\n')
+                            count+=1
+                    if not count:
+                        (stage/(base+'.jsonl')).unlink();status='manual_review'
+                if status!='accepted':quarantined.append({'path':str(p.relative_to(pack)),'sha256':sha,'reason':'quality_gate','text':text})
+                rows.append({'path':str(p.relative_to(pack)),'sha256':sha,'encoding':enc,'decode_score':round(dec_score,4),'belarusian_score':round(be,4),'replacement_chars':repl,'mojibake_markers':moj,'status':status,'jsonl_path':str(out_dir/(base+'.jsonl')) if count else None,'group_id':identity,'chunks':count})
+        (stage/'_BOOKS_MANIFEST.json').write_text(json.dumps({'schema':'belka-books-v3','books':rows,'independent_native_review':False},ensure_ascii=False,indent=2)+'\n')
+    manifest.write_text(''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in rows))
+    manifest.with_suffix('.quarantine.jsonl').write_text(''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in quarantined))
     print(f'BOOKS_SEEN={len(rows)}')
     print(f'BOOKS_ACCEPTED={sum(1 for r in rows if r.get("status")=="accepted")}')
     print(f'BOOKS_MANUAL_REVIEW={sum(1 for r in rows if r.get("status")!="accepted")}')

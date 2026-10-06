@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse, json, os, sys
+import argparse, json, os, sys, tempfile
 from pathlib import Path
 def flatten(obj):
     if isinstance(obj,str):
@@ -41,16 +41,24 @@ def main():
         if not isinstance(configs, list):
             configs = [configs]
         for cfg in configs:
-            out=outbase/f"{key}{('_'+cfg) if cfg else ''}.jsonl"; print('Streaming',dataset,cfg,'->',out)
+            destination=inside(pack,pack/'data_input/eval_only/huggingface') if spec.get('eval_only') else outbase
+            destination.mkdir(parents=True,exist_ok=True)
+            out=destination/f"{key}{('_'+cfg) if cfg else ''}.jsonl"; print('Streaming',dataset,cfg,'->',out)
             try: ds=load_dataset(dataset,cfg,split=spec['split'],streaming=True,trust_remote_code=args.trust_remote_code)
             except Exception as e: print('WARN failed',dataset,cfg,e,file=sys.stderr); continue
             n=0
-            with open(out,'w',encoding='utf-8') as f:
-                for row in ds:
-                    texts=list(flatten(row))
-                    if not texts: continue
-                    f.write(json.dumps({'text':'\n'.join(dict.fromkeys(texts)),'source':key,'hf_dataset':dataset,'hf_config':cfg,'license':'see Hugging Face dataset card and original sources'},ensure_ascii=False)+'\n')
-                    n+=1
-                    if args.max_records and n>=args.max_records: break
+            fd,temporary=tempfile.mkstemp(prefix='.'+out.name+'.',dir=out.parent)
+            stage=Path(temporary)
+            try:
+                with os.fdopen(fd,'w',encoding='utf-8') as f:
+                    for row in ds:
+                        texts=list(flatten(row))
+                        if not texts: continue
+                        f.write(json.dumps({'text':'\n'.join(dict.fromkeys(texts)),'source':key,'eval_only':bool(spec.get('eval_only')),'hf_dataset':dataset,'hf_config':cfg,'license':'see Hugging Face dataset card and original sources'},ensure_ascii=False)+'\n')
+                        n+=1
+                        if args.max_records and n>=args.max_records: break
+                if not n:raise ValueError('empty streamed dataset')
+                os.replace(stage,out)
+            finally:stage.unlink(missing_ok=True)
             print('OK wrote',n,'records')
 if __name__=='__main__': main()

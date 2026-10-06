@@ -1,0 +1,413 @@
+{
+  "schema": "belka-belarusianglue-eval-v1",
+  "name": "BelarusianGLUE",
+  "repository": "maaxap/BelarusianGLUE",
+  "origin": "https://huggingface.co/datasets/maaxap/BelarusianGLUE",
+  "revision": "718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40",
+  "training_allowed": false,
+  "scope": "All seven published configurations, validation and test only; five tasks. The two BeWSC configurations represent the same underlying cases.",
+  "records": 4420,
+  "format": "UTF-8 JSONL; original Arrow row order and all fields preserved; json.dumps(ensure_ascii=False,sort_keys=True) plus one newline per row.",
+  "license": {
+    "repository_metadata": "apache-2.0",
+    "source_specific_notices": true,
+    "source_card_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/README.md",
+    "source_card_sha256": "0ca4e8a8d60b77735e23faa370de83dd3f0449f0bbe4dce9791cad0d9cc0e14e",
+    "redistribution": "Original text rights and source-specific notices remain as described in the source card. Downloaded text files are local eval-only assets, excluded from version control."
+  },
+  "official_evaluation": {
+    "repository": "https://github.com/maaxap/BelarusianGLUE",
+    "revision": "d1be3496b8e37072a05623c3ca5d57a6f1c403ac",
+    "metrics_path": "llm/lm-evaluation-harness/lm_eval/api/metrics.py"
+  },
+  "files": [
+    {
+      "path": "eval/datasets/belarusianglue/belacola_in_domain/test.jsonl",
+      "sha256": "3b794e8ed45982ac5f8427bcb0acde8ac601ff0b2edcf2bb3587555fd271d37f",
+      "bytes": 61879,
+      "config": "belacola_in_domain",
+      "split": "test",
+      "rows": 300,
+      "input_fields": [
+        "sentence"
+      ],
+      "source_path": "belacola/in_domain/test.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/belacola/in_domain/test.arrow",
+      "source_sha256": "161cbbb08196b5309ec1d7d34e79c2b7f1462efad2a51f0091e36b78079e65c1",
+      "source_bytes": 48080,
+      "columns": [
+        "idx",
+        "label",
+        "sentence",
+        "source",
+        "detailed_source"
+      ],
+      "label_counts": {
+        "0": 150,
+        "1": 150
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/belacola_in_domain/validation.jsonl",
+      "sha256": "a07920e812733d4988af872b5b30a3906316604c80d6ce1a3e109e0a370f5488",
+      "bytes": 61036,
+      "config": "belacola_in_domain",
+      "split": "validation",
+      "rows": 300,
+      "input_fields": [
+        "sentence"
+      ],
+      "source_path": "belacola/in_domain/validation.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/belacola/in_domain/validation.arrow",
+      "source_sha256": "a3c66447f92bd870d5e3ed905993edeafab64171870a366d24ccf214d22adf07",
+      "source_bytes": 47232,
+      "columns": [
+        "idx",
+        "label",
+        "sentence",
+        "source",
+        "detailed_source"
+      ],
+      "label_counts": {
+        "0": 150,
+        "1": 150
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/belacola_out_of_domain/test.jsonl",
+      "sha256": "23c4ac81bd6b3df0cccdb7eea4364f2bca1a086d3a4edfe2756c2d7d7f95d445",
+      "bytes": 88758,
+      "config": "belacola_out_of_domain",
+      "split": "test",
+      "rows": 500,
+      "input_fields": [
+        "sentence"
+      ],
+      "source_path": "belacola/out_of_domain/test.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/belacola/out_of_domain/test.arrow",
+      "source_sha256": "28c19757227cca8374dfcd6970e442ee5786edc8a1a409694c3b0322496beb76",
+      "source_bytes": 64952,
+      "columns": [
+        "idx",
+        "label",
+        "sentence",
+        "source",
+        "detailed_source"
+      ],
+      "label_counts": {
+        "0": 250,
+        "1": 250
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/belacola_out_of_domain/validation.jsonl",
+      "sha256": "263446579a64a3f77b1da52cd1b686bd023c46d5a85b1a46cfcaafaac9b036a8",
+      "bytes": 89381,
+      "config": "belacola_out_of_domain",
+      "split": "validation",
+      "rows": 500,
+      "input_fields": [
+        "sentence"
+      ],
+      "source_path": "belacola/out_of_domain/validation.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/belacola/out_of_domain/validation.arrow",
+      "source_sha256": "0c22e58fa1c973eb170f3e63ae29d188ba36730403466b081eef74ed7346960c",
+      "source_bytes": 65576,
+      "columns": [
+        "idx",
+        "label",
+        "sentence",
+        "source",
+        "detailed_source"
+      ],
+      "label_counts": {
+        "0": 250,
+        "1": 250
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bertewd/test.jsonl",
+      "sha256": "3fb58af9a0f5e08c25fe16843945fd7a28a027480d4f2ab6eb1419acc5e196c7",
+      "bytes": 153615,
+      "config": "bertewd",
+      "split": "test",
+      "rows": 360,
+      "input_fields": [
+        "text",
+        "hypothesis"
+      ],
+      "source_path": "bertewd/test.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bertewd/test.arrow",
+      "source_sha256": "44e8ad36e926a6ed5c1bb0c603e726b489b055742ee7f93703487b404393b740",
+      "source_bytes": 125848,
+      "columns": [
+        "value_type",
+        "text",
+        "hypothesis",
+        "label",
+        "e1",
+        "p1",
+        "v1",
+        "e2",
+        "p2",
+        "v2"
+      ],
+      "label_counts": {
+        "0": 180,
+        "1": 180
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bertewd/validation.jsonl",
+      "sha256": "a348c4511a6e7109ace62c80b10f0963a6a0078f45cd1fa10c5b773d999c631f",
+      "bytes": 153177,
+      "config": "bertewd",
+      "split": "validation",
+      "rows": 360,
+      "input_fields": [
+        "text",
+        "hypothesis"
+      ],
+      "source_path": "bertewd/validation.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bertewd/validation.arrow",
+      "source_sha256": "470dce0459f8d3b3718b21d1adcb3e6a41d4ba4a30abd1117ef9614951a68f3f",
+      "source_bytes": 125432,
+      "columns": [
+        "value_type",
+        "text",
+        "hypothesis",
+        "label",
+        "e1",
+        "p1",
+        "v1",
+        "e2",
+        "p2",
+        "v2"
+      ],
+      "label_counts": {
+        "0": 180,
+        "1": 180
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/besls/test.jsonl",
+      "sha256": "6f368f7a558832b1507c03352b63a73c8f27256d54202e71ad678ee568d73d2b",
+      "bytes": 54271,
+      "config": "besls",
+      "split": "test",
+      "rows": 250,
+      "input_fields": [
+        "sentence"
+      ],
+      "source_path": "besls/test.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/besls/test.arrow",
+      "source_sha256": "4f2649ab02c2af0ff413cc6fed0933679a543b7aa84a90c0f57b7875433f3699",
+      "source_bytes": 45928,
+      "columns": [
+        "domain",
+        "source",
+        "label",
+        "sentence"
+      ],
+      "label_counts": {
+        "0": 125,
+        "1": 125
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/besls/validation.jsonl",
+      "sha256": "9d93dcdc9c967deefcd30b98a88534187f7f3bf58020c216e41d4658c8bb483f",
+      "bytes": 56029,
+      "config": "besls",
+      "split": "validation",
+      "rows": 250,
+      "input_fields": [
+        "sentence"
+      ],
+      "source_path": "besls/validation.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/besls/validation.arrow",
+      "source_sha256": "1b933c765b033da6d0f2ddb1d2f306703df847bb6327f6bafdcd3d62653b651e",
+      "source_bytes": 47696,
+      "columns": [
+        "domain",
+        "source",
+        "label",
+        "sentence"
+      ],
+      "label_counts": {
+        "0": 125,
+        "1": 125
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bewic/test.jsonl",
+      "sha256": "05f75853dd55451e9b89979d6bcb0c32a749316b7b75c3874a066b8075defba3",
+      "bytes": 165999,
+      "config": "bewic",
+      "split": "test",
+      "rows": 400,
+      "input_fields": [
+        "sentence1",
+        "sentence2"
+      ],
+      "source_path": "bewic/test.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bewic/test.arrow",
+      "source_sha256": "15dff640965aed9fc2166206fcb00422e47c065abf9f04516ffa712eece58d5e",
+      "source_bytes": 142672,
+      "columns": [
+        "idx",
+        "word",
+        "sentence1",
+        "sentence2",
+        "start1",
+        "end1",
+        "start2",
+        "end2",
+        "label"
+      ],
+      "label_counts": {
+        "0": 200,
+        "1": 200
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bewic/validation.jsonl",
+      "sha256": "ca5ba8044bd380227bccc258f202740a39990f4ed44ef845cac0755469b33f67",
+      "bytes": 165873,
+      "config": "bewic",
+      "split": "validation",
+      "rows": 400,
+      "input_fields": [
+        "sentence1",
+        "sentence2"
+      ],
+      "source_path": "bewic/validation.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bewic/validation.arrow",
+      "source_sha256": "f4fbb1723a6bc9219238909faf26c48df0a8d6d1d0ca61ff2a725436075ecde9",
+      "source_bytes": 142560,
+      "columns": [
+        "idx",
+        "word",
+        "sentence1",
+        "sentence2",
+        "start1",
+        "end1",
+        "start2",
+        "end2",
+        "label"
+      ],
+      "label_counts": {
+        "0": 200,
+        "1": 200
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bewsc_as_wnli/test.jsonl",
+      "sha256": "f36f3384c8791af09286fb972dc941f3304a368c5a15d7c2e7cfc5d3bc54e298",
+      "bytes": 60758,
+      "config": "bewsc_as_wnli",
+      "split": "test",
+      "rows": 200,
+      "input_fields": [
+        "sentence1",
+        "sentence2"
+      ],
+      "source_path": "bewsc/as_wnli/test.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bewsc/as_wnli/test.arrow",
+      "source_sha256": "4f8f49f3b528badc5472b58e966797091d7328b2094649aefefd508ba8b86719",
+      "source_bytes": 53696,
+      "columns": [
+        "index",
+        "sentence1",
+        "sentence2",
+        "label"
+      ],
+      "label_counts": {
+        "0": 100,
+        "1": 100
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bewsc_as_wnli/validation.jsonl",
+      "sha256": "ff405b36bc83db7232f6b245ea942899a4bb36211f9e531c45ea5012059ed0ef",
+      "bytes": 57340,
+      "config": "bewsc_as_wnli",
+      "split": "validation",
+      "rows": 200,
+      "input_fields": [
+        "sentence1",
+        "sentence2"
+      ],
+      "source_path": "bewsc/as_wnli/validation.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bewsc/as_wnli/validation.arrow",
+      "source_sha256": "6089cd4bebf8c10b04e17e9aac2db363469088bf5e2df7dec0aaf5e32b621a2e",
+      "source_bytes": 50280,
+      "columns": [
+        "index",
+        "sentence1",
+        "sentence2",
+        "label"
+      ],
+      "label_counts": {
+        "0": 100,
+        "1": 100
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bewsc_as_wsc/test.jsonl",
+      "sha256": "03ac6def12a1efddba6c7a85d0230630e2da0fade101abab5418b8fd3eb6f4d6",
+      "bytes": 57164,
+      "config": "bewsc_as_wsc",
+      "split": "test",
+      "rows": 200,
+      "input_fields": [
+        "text"
+      ],
+      "source_path": "bewsc/as_wsc/test.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bewsc/as_wsc/test.arrow",
+      "source_sha256": "925114cf63cc133f321a747b62309b749d746838f9da748affdbc3ec4fadf01a",
+      "source_bytes": 45592,
+      "columns": [
+        "idx",
+        "text",
+        "span1_index",
+        "span1_text",
+        "span2_index",
+        "span2_text",
+        "label"
+      ],
+      "label_counts": {
+        "0": 100,
+        "1": 100
+      }
+    },
+    {
+      "path": "eval/datasets/belarusianglue/bewsc_as_wsc/validation.jsonl",
+      "sha256": "b123e170655b445ec6135224c2c3c146b6ac0db981df283c9706c8f2d6d4b331",
+      "bytes": 55717,
+      "config": "bewsc_as_wsc",
+      "split": "validation",
+      "rows": 200,
+      "input_fields": [
+        "text"
+      ],
+      "source_path": "bewsc/as_wsc/validation.arrow",
+      "source_url": "https://huggingface.co/datasets/maaxap/BelarusianGLUE/resolve/718c8f3bef58f1c44b5ab0c4e5cd34e91674ce40/bewsc/as_wsc/validation.arrow",
+      "source_sha256": "3429a97464fb6a04408aaf6534152c8c19f971dc03f8f4db20c3bab1658e0578",
+      "source_bytes": 44160,
+      "columns": [
+        "idx",
+        "text",
+        "span1_index",
+        "span1_text",
+        "span2_index",
+        "span2_text",
+        "label"
+      ],
+      "label_counts": {
+        "0": 100,
+        "1": 100
+      }
+    }
+  ]
+}

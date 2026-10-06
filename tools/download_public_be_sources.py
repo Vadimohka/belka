@@ -6,6 +6,8 @@ For Wikimedia XML dumps, this extracts a simple plain-text approximation. Run th
 from __future__ import annotations
 import argparse, bz2, html, json, os, re, sys, urllib.request
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from data_pipeline.downloads import atomic_text_writer
 from xml.etree import ElementTree as ET
 
 SOURCES = {
@@ -47,15 +49,10 @@ def clean_wikitext(text: str) -> str:
     text = re.sub(r'\s+', ' ', text)
     return text.strip()
 
-def download(url: str, dest: Path):
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    print(f'Downloading {url} -> {dest}')
-    with urllib.request.urlopen(url) as r, dest.open('wb') as f:
-        while True:
-            b = r.read(1024 * 1024)
-            if not b: break
-            f.write(b)
-    print(f'OK downloaded {dest} size={dest.stat().st_size}')
+def download(url, out):
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+    from data_pipeline.downloads import download as atomic_download
+    atomic_download(url, out)
 
 def iter_pages_bz2(path: Path):
     # Streaming iterparse over bz2 file. Good enough for Belarusian dumps.
@@ -74,7 +71,7 @@ def extract(source: str, dump: Path, out_dir: Path, limit_pages: int | None):
     out = out_dir / f'{source}.jsonl'
     manifest = out_dir / f'{source}.manifest.json'
     kept = 0; seen = 0
-    with out.open('w', encoding='utf-8') as w:
+    with atomic_text_writer(out) as w:
         for title, ns, wt in iter_pages_bz2(dump):
             seen += 1
             if ns != '0':

@@ -29,6 +29,22 @@ QUOTE_REPLACEMENTS = {
 }
 
 
+def _control_pattern():
+    # A compiled range class performs the old Unicode-category policy in C,
+    # avoiding a Python callback for every character of multi-GB corpora.
+    ranges=[];start=None;last=None
+    for code in range(0x110000):
+        bad=code not in (9,10) and unicodedata.category(chr(code)).startswith('C')
+        if bad:
+            if start is None:start=code
+            last=code
+        elif start is not None:
+            ranges.append((start,last));start=None
+    if start is not None:ranges.append((start,last))
+    return re.compile('['+''.join('\\U%08x-\\U%08x'%(a,b) for a,b in ranges)+']')
+CONTROL_RE=_control_pattern()
+
+
 def normalize_text(text: str, *, keep_paragraphs: bool = True) -> str:
     """Return a stable NFC-normalized text string.
 
@@ -43,7 +59,7 @@ def normalize_text(text: str, *, keep_paragraphs: bool = True) -> str:
     for src, dst in QUOTE_REPLACEMENTS.items():
         text = text.replace(src, dst)
     text = text.replace("\x00", " ")
-    text = "".join(ch if ch == "\n" or ch == "\t" or not unicodedata.category(ch).startswith("C") else " " for ch in text)
+    text = CONTROL_RE.sub(" ", text)
     if keep_paragraphs:
         lines = [SPACE_RE.sub(" ", line).strip() for line in text.splitlines()]
         text = "\n".join(line for line in lines)

@@ -1,0 +1,40 @@
+{
+  "schema": "belka-h200-quality-policy-v1",
+  "independent_native_review": false,
+  "scope": "Conservative, reproducible quarantine heuristics. Domain entries require review; they are not claims that every page is bad.",
+  "review_domains": {
+    "artlife.rv.ua": "sampled malformed machine-translated prose",
+    "by.onlinestudies.com": "sampled malformed machine-translated prose",
+    "be.eferrit.com": "sampled malformed machine-translated prose",
+    "lorealcolortrophy.ru": "sampled malformed machine-translated prose",
+    "kurs.expert": "exchange table/UI rather than prose"
+  },
+  "review_path_segments": ["tags", "tag", "search"],
+  "russian_segment": {
+    "window_words": 40,
+    "stride_words": 20,
+    "minimum_window_words": 20,
+    "minimum_marked_words": 6,
+    "minimum_marked_fraction": 0.25,
+    "maximum_belarusian_to_russian_ratio": 0.25,
+    "minimum_bad_words": 20,
+    "minimum_bad_document_fraction": 0.10,
+    "discriminative_letters": "ищъ"
+  },
+  "web_positive_evidence": {"minimum_discriminative_words_if_no_be_letters": 2},
+  "web_script": {
+    "minimum_cyrillic_letter_fraction": 0.65,
+    "latin_window_minimum_fraction": 0.75,
+    "latin_window_minimum_bad_words": 40,
+    "latin_window_minimum_document_fraction": 0.20,
+    "ukrainian_minimum_marked_words": 4,
+    "ukrainian_minimum_marked_fraction": 0.03
+  },
+  "exact_cross_split_spans": {"anchor_words": 40, "anchor_stride": 40, "guaranteed_detectable_span_words": 79},
+  "validation_coverage": {
+    "required_sources_when_present": ["bewiki", "be_x_oldwiki", "fineweb2", "hplt_v2", "cc100-be", "leipzig"],
+    "major_source_min_train_rows": 10000,
+    "major_source_min_char_fraction": 0.001,
+    "missing_minor_validation": "report_train_only_without_quality_estimate"
+  }
+}

@@ -5,27 +5,22 @@ import argparse, hashlib, json, os, sys
 from collections import defaultdict
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from data_pipeline.contracts import iter_jsonl, conversation_messages
+
 def load_messages(paths):
-    texts = set()
-    convos = []
+    texts=set();convos=[]
     for pat in paths:
-        for p in sorted(Path().glob(pat)):
-            with open(p, encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if not line: continue
-                    try:
-                        d = json.loads(line)
-                    except Exception: continue
-                    if isinstance(d, list):
-                        msgs = d
-                    elif isinstance(d, dict) and 'messages' in d:
-                        msgs = d['messages']
-                    else: continue
-                    convos.append((str(p), msgs))
-                    for m in msgs:
-                        texts.add((m.get('content', '').strip().lower()))
-    return texts, convos
+        import glob
+        matched=sorted(glob.glob(pat))
+        if not matched:raise ValueError(f'input pattern matched no files: {pat}')
+        for name in matched:
+            p=Path(name);count=0
+            for line,obj in iter_jsonl(p):
+                msgs=conversation_messages(obj);count+=1;convos.append((str(p),msgs))
+                texts.update(m['content'].strip().lower() for m in msgs)
+            if not count:raise ValueError(f'empty SFT dataset: {p}')
+    return texts,convos
 
 def ngrams(text, n):
     words = text.lower().split()
@@ -92,7 +87,7 @@ def main():
     print(f'Val size: {len(val_convos)} (need ≥50)')
     if report['leakage_detected']:
         print('LEAKAGE: train/val overlap detected. Val data shares templates with train.')
-    sys.exit(0 if not report['leakage_detected'] else 1)
+    sys.exit(0 if report['SFT_LEAKAGE_AUDIT']=='PASS' else 1)
 
 if __name__ == '__main__':
     main()

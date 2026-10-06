@@ -1,0 +1,259 @@
+{
+  "schema": "belka-h200-admission-policy-v1",
+  "scope": "Whole-document quarantine only. Unreviewed multilingual routing is an admission restriction, not proof of machine translation. No language, political or subject-matter judgement is inferred from a country TLD alone.",
+  "independent_native_review": false,
+  "evidence_files": [
+    "reports/data/H200_AGENT_SPOT_CHECK.json",
+    "reports/data/H200_ADMISSION_POLICY_REVIEW.json",
+    "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_1.json",
+    "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_2.json",
+    "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+    "reports/data/H200_ADMISSION_OCR_REVIEW.json",
+    "reports/data/H200_ADMISSION_TOPUP_REVIEW.json"
+  ],
+  "url_sources": [
+    "fineweb2",
+    "hplt_v2"
+  ],
+  "blocked_hosts": {
+    "ferryto.com": "Severely malformed travel prose in final sample 7.",
+    "by.academiccourses.com": "Severely malformed institution profile in final sample 10.",
+    "be.kasemledlight.com": "Malformed industrial prose in final sample 11.",
+    "be.freeplayonlinegame.net": "Malformed game description in final sample 13.",
+    "rkk-lider.ru": "Malformed translated news in final sample 18.",
+    "s274158323.online.de": "Malformed multilingual blog/archive in final sample 19; only this tenant, not the hosting provider.",
+    "intarium.ru": "Malformed translated news in final sample 22.",
+    "investmarkets.top": "Keyword salad and unrelated search phrases in targeted family sample.",
+    "inkmilk.ru": "Independent admission sample20: pervasive malformed translated construction prose across head/middle/tail."
+  },
+  "multilingual_routing": {
+    "host_prefixes": [
+      "be",
+      "by",
+      "bel"
+    ],
+    "path_prefixes": [
+      "be",
+      "by",
+      "bel"
+    ],
+    "query_keys": [
+      "lang",
+      "language",
+      "hl",
+      "locale"
+    ],
+    "query_values": [
+      "be",
+      "bel",
+      "be-by",
+      "be_by",
+      "belarusian"
+    ],
+    "local_tld_exceptions": [
+      "by"
+    ],
+    "publisher_exceptions": {
+      "svaboda.org": "Coherent journalism in final samples 12, 20 and 23; sample 20 remains an incomplete interview fragment.",
+      "spring96.org": "Coherent journalism in final sample 3.",
+      "belsat.eu": "Coherent television transcript in final sample 24.",
+      "charter97.link": "Coherent news in final sample 5.",
+      "charter97.org": "Editorial sibling of the reviewed Charter97 source; existing corpus news rather than generic multilingual routing.",
+      "wikipedia.org": "Encyclopedic Belarusian body in final sample 4; text-template rules still apply.",
+      "wikisource.org": "Historical literature represented in final samples 39 and 40; text-template rules still apply.",
+      "wikibooks.org": "Belarusian instructional prose represented in final sample 43; text-template rules still apply.",
+      "wikiquote.org": "Belarusian Wikimedia source; sample 44 documents residual small markup rather than malformed translation."
+    }
+  },
+  "clone_route": {
+    "host_tld": "ru",
+    "first_path_segment": "naviny"
+  },
+  "templates": {
+    "raw_wiki_minimum_template_chars": 200,
+    "raw_wiki_minimum_fraction": 0.25,
+    "raw_wiki_minimum_fields": 5,
+    "read_more_markers": [
+      "читать далее",
+      "чытаць далей",
+      "чытаць больш",
+      "read more"
+    ],
+    "read_more_minimum_occurrences": 3,
+    "archive_path_segments": [
+      "category",
+      "categories",
+      "topics"
+    ],
+    "dated_index_minimum_entries": 3,
+    "share_tail_markers": [
+      "падзяліцеся гэтым артыкулам:"
+    ],
+    "share_tail_minimum_fraction": 0.35,
+    "share_tail_minimum_short_lines": 12,
+    "share_tail_short_line_maximum_words": 20,
+    "paginated_archive_path_segment": "page",
+    "category_menu_markers": [
+      "выберите рубрику",
+      "абярыце рубрыку",
+      "выбраць рубрыку"
+    ],
+    "category_menu_minimum_counts": 25,
+    "category_menu_minimum_fraction": 0.35,
+    "game_ui_markers": [
+      "для дзяўчынак",
+      "для хлопчыкаў",
+      "паказаць дэталёвае апісанне",
+      "гуляць / рэгістрацыя",
+      "відэа і скрыншоты",
+      "гуляйце гэтак жа",
+      "гульні онлайн",
+      "зваротная сувязь"
+    ],
+    "game_ui_minimum_distinct_markers": 5,
+    "game_ui_minimum_fraction": 0.3,
+    "game_ui_maximum_chars": 1200,
+    "wiki_control_tail_markers": [
+      "асабістыя прылады"
+    ],
+    "wiki_control_markers": [
+      "стварыць уліковы запіс",
+      "прасторы назваў",
+      "правіць зыходнік",
+      "паказаць гісторыю",
+      "галоўная старонка",
+      "апошнія змены",
+      "звязаныя праўкі",
+      "адмысловыя старонкі",
+      "звесткі пра старонку",
+      "элемент вікідадзеных",
+      "цытаваць гэту старонку",
+      "палітыка прыватнасці"
+    ],
+    "wiki_control_minimum_distinct_markers": 8,
+    "wiki_control_minimum_tail_fraction": 0.25,
+    "google_play_ui_markers": [
+      "мае праграмы",
+      "мае фільмы",
+      "бацькоўскі даведнік",
+      "выбар рэдакцыі",
+      "купіць падарункавую карту",
+      "дадаць у спіс пажаданняў",
+      "гэта версія",
+      "перакласці апісанне",
+      "плацяжамі google",
+      "узрост 5 гадоў і менш",
+      "узрост 6-8 гадоў",
+      "узрост 9 гадоў і больш",
+      "развіваючыя гульні",
+      "дзіцячыя кнігі",
+      "мае падпіскі"
+    ],
+    "google_play_ui_minimum_distinct_markers": 6,
+    "google_play_ui_minimum_fraction": 0.2,
+    "google_play_ui_maximum_chars": 4000
+  },
+  "ocr_fragmentation": {
+    "scope": "Heuristic whole-document quarantine for extreme short-token fragmentation, not native review or proof of OCR provenance. Common short function words/pronouns are excluded from the fragment numerator.",
+    "minimum_cyrillic_words": 120,
+    "maximum_short_word_length": 3,
+    "minimum_short_word_fraction": 0.82,
+    "minimum_non_function_short_word_fraction": 0.5,
+    "minimum_long_word_length": 6,
+    "maximum_long_word_fraction": 0.03,
+    "maximum_mean_word_length": 3.0,
+    "common_short_words": [
+      "а",
+      "аб",
+      "ад",
+      "аж",
+      "ай",
+      "але",
+      "без",
+      "бы",
+      "быў",
+      "ва",
+      "вам",
+      "вас",
+      "ваш",
+      "вы",
+      "ён",
+      "за",
+      "з",
+      "да",
+      "ды",
+      "дзе",
+      "для",
+      "і",
+      "іх",
+      "ім",
+      "й",
+      "як",
+      "я",
+      "яе",
+      "яго",
+      "яна",
+      "яны",
+      "яно",
+      "ж",
+      "жа",
+      "мы",
+      "мой",
+      "мая",
+      "маё",
+      "мае",
+      "на",
+      "над",
+      "нам",
+      "нас",
+      "наш",
+      "ні",
+      "не",
+      "о",
+      "па",
+      "пад",
+      "пра",
+      "пры",
+      "то",
+      "той",
+      "тая",
+      "ты",
+      "тут",
+      "там",
+      "у",
+      "ужо",
+      "ў",
+      "усю",
+      "усе",
+      "усё",
+      "ці",
+      "чый",
+      "што",
+      "каб",
+      "тым",
+      "чым",
+      "хто",
+      "ну",
+      "са",
+      "сам"
+    ]
+  },
+  "excluded_sources": {
+    "cc100-be": "Repeated independent content reviews found malformed promotional prose and dominant UI/SEO/dictionary shells. This local legacy source lacks per-document URLs for source-family admission; original parent/raw remain preserved.",
+    "bewikiquote": "Repeated independently sampled empty quote stubs dominated by raw person infoboxes (round3 sample44 and fresh topup sample10). Hold this small legacy extraction out of training pending a source-quality rebuild; raw and parent documents remain preserved."
+  },
+  "reviewed_content_quarantine": {
+    "eef5acb25bffa3e5a16935c675f37e766c9ddfc89928f4886e42d1eea26dbb09": {
+      "source": "be_x_oldwiki",
+      "sample_report": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "sample_id": 35,
+      "reason": "Substantive encyclopedia topic but many malformed grammatical lists and literal sense substitutions across the regulations section; raw infobox is also present. Poor translation is a hypothesis, not established provenance."
+    },
+    "dd91d651618b9346898d75bd467ca4e22ce3bc94f04909398beb4d5084b4bb7b": {
+      "source": "bewikiquote",
+      "sample_report": "reports/data/H200_ADMISSION_INDEPENDENT_REVIEW_3.json",
+      "sample_id": 44,
+      "reason": "A raw unexpanded person template occupies roughly half of a short biography stub with no quotation; its absolute template size is below 200 characters."
+    }
+  }
+}

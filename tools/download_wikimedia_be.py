@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse, bz2, datetime as dt, hashlib, json, os, re, sys, urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from data_pipeline.downloads import atomic_text_writer
 PROJECTS = {
     'bewiki':'https://dumps.wikimedia.org/bewiki/latest/bewiki-latest-pages-articles-multistream.xml.bz2',
     'be_x_oldwiki':'https://dumps.wikimedia.org/be_x_oldwiki/latest/be_x_oldwiki-latest-pages-articles-multistream.xml.bz2',
@@ -21,16 +23,10 @@ def sha256_file(path):
         for b in iter(lambda:f.read(1024*1024), b''): h.update(b)
     return h.hexdigest()
 def download(url, out):
-    out.parent.mkdir(parents=True, exist_ok=True)
-    if out.exists() and out.stat().st_size>0:
-        print('OK exists', out); return
-    print('Downloading', url, '->', out)
-    req=urllib.request.Request(url, headers={'User-Agent':'belarusian-llm-research/0.1'})
-    with urllib.request.urlopen(req, timeout=60) as r, open(out,'wb') as f:
-        while True:
-            b=r.read(1024*1024)
-            if not b: break
-            f.write(b)
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+    from data_pipeline.downloads import download as atomic_download
+    atomic_download(url, out)
+
 def clean(s):
     s=re.sub(r'(?s)<ref[^>]*>.*?</ref>', ' ', s)
     s=re.sub(r'(?s)<[^>]+>', ' ', s)
@@ -47,7 +43,7 @@ def extract(path, out_jsonl, project, limit):
     ns_re=re.compile(r'^\{.*\}')
     out_jsonl.parent.mkdir(parents=True, exist_ok=True)
     n=0
-    with bz2.open(path,'rb') as f, open(out_jsonl,'w',encoding='utf-8') as out:
+    with bz2.open(path,'rb') as f, atomic_text_writer(out_jsonl) as out:
         for event, elem in ET.iterparse(f, events=('end',)):
             if ns_re.sub('', elem.tag) != 'page': continue
             title=''; ns='0'; text=''; page_id=''

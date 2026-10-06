@@ -2,7 +2,7 @@ version: 1
 input_dirs:
   - books
   - data_input/be_texts/books
-output_dir: data_input/be_texts/books_clean_v2
+output_dir: data_input/be_texts/books_clean_v3
 manifest: reports/books_clean_v2_manifest.jsonl
 policy:
   use_raw_books_directly: false

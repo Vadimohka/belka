@@ -1,0 +1,126 @@
+{
+  "schema": "belka-local-sources-v1",
+  "scope": "Explicit local source files, checksummed before/after ingestion. Download sources separately on a clean clone; no implicit network requests.",
+  "files": [
+    {
+      "source": "fineweb2",
+      "path": "data_input/be_texts/fineweb2/000_00000.parquet",
+      "reader": "parquet",
+      "sha256": "bc39f6683ce83b3784aa1ed50389ae370f0713ee80675bc67dbcab31fd6c3a34",
+      "bytes": 4157557300,
+      "origin_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2"
+    },
+    {
+      "source": "hplt_v2",
+      "path": "data_input/be_texts/hplt_v2/bel_Cyrl.jsonl",
+      "reader": "jsonl",
+      "sha256": "216fabd362a8401b7a5cce6e0ae93e0d2386b3d28af329a50c5e49e59fcc0f23",
+      "bytes": 16988745417,
+      "origin_url": "https://data.hplt-project.org/two/cleaned/bel_Cyrl/1.jsonl.zst"
+    },
+    {
+      "source": "cc100-be",
+      "path": "data_input/be_texts/cc100/be.txt",
+      "reader": "text_documents",
+      "sha256": "f4f680221f45a89373c5e06e3ad460f2f9e69021e6ca703ff189040583ac4f2a",
+      "bytes": 4048188488,
+      "origin_url": "https://data.statmt.org/cc-100/"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel-by_web_2013_1M/bel-by_web_2013_1M-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "e75e5bfe95b8f98c2904566da9e1490c2e68b8f49d31a9e1e104d926867ce7b9",
+      "bytes": 195324717,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel-by_web_2015_300K/bel-by_web_2015_300K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "b7ceae3b412f49593ed9c28e5ff634d50826dde651d321c3aa37df7f21fb5b37",
+      "bytes": 63344636,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_news_2011_300K/bel_news_2011_300K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "a2b2fafd5c7a22bc83bcfe47f79ecdf116bf78f5dc97de5598fc267222d19cc1",
+      "bytes": 56278591,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_news_2019_100K/bel_news_2019_100K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "6887c9aab41c1f711dd6ee03180d33e650de5205b71b46f9e654d60da4037b3a",
+      "bytes": 18441447,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_news_2020_100K/bel_news_2020_100K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "b85d7d7a47623b760c3a396f2d873b143a96d95d13cce520cb16656382968637",
+      "bytes": 18557747,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_newscrawl_2011_1M/bel_newscrawl_2011_1M-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "dea8795d093ff8f705a36beb256eb79671b69e8d5ad01e8c66dd10825241a49b",
+      "bytes": 184548669,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_newscrawl_2015_1M/bel_newscrawl_2015_1M-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "4b406d0ea072bb194804e8f3b2eea726da45c6c318be21b0d90c7faee89a8f91",
+      "bytes": 188869373,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_newscrawl_2017_300K/bel_newscrawl_2017_300K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "aacb13ec972d4dc22d35d6fe13ec5d4033ae68b73ceb2ca32bfb6e5208801648",
+      "bytes": 55410261,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_wikipedia_2010_100K/bel_wikipedia_2010_100K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "a316116a7c7b1545d285387692a079934a449346d74e475aba68145aba99c37d",
+      "bytes": 18886073,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_wikipedia_2014_300K/bel_wikipedia_2014_300K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "f03b078349ee33a8f77651b7019c8412c756d31990ac5fe54e0fcd551ca6d765",
+      "bytes": 57847325,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_wikipedia_2016_300K/bel_wikipedia_2016_300K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "5d4f3ea984132c64ab6a2c0a168cd4a195505401d8bc34c5bc064f99a205aa46",
+      "bytes": 58345684,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "source": "leipzig",
+      "path": "data_input/be_texts/leipzig/bel_wikipedia_2021_300K/bel_wikipedia_2021_300K-sentences.txt",
+      "reader": "leipzig_sentences",
+      "sha256": "9d773cb429cf7f96a4dd522604c9dd4da6bd642b77f6ddd92f8729248faf4ce3",
+      "bytes": 56209966,
+      "origin_url": "https://wortschatz.uni-leipzig.de/en/download"
+    }
+  ]
+}

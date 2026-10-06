@@ -1,142 +1,176 @@
-# Source mixing policy — from-scratch Belka training
-version: "1.0"
-
-# synthetic flag, quality_score_min, duplicate_count_preserved, source_weight
-
+# Retention probabilities apply to document groups, then measured character caps.
+# No duplication/oversampling; final token proportions are measured with the new tokenizer.
+version: '2.0'
 sources:
   bewiki:
-    source_id: "bewiki"
-    orthography: "narkamauka"
+    source_id: bewiki
+    orthography: narkamauka
     synthetic: false
     quality_score_min: 0.45
     min_chars: 120
     source_weight: 1.0
-    category: "encyclopedic"
-
+    category: encyclopedic
   be_x_oldwiki:
-    source_id: "be_x_oldwiki"
-    orthography: "tarask"
+    source_id: be_x_oldwiki
+    orthography: tarask
     synthetic: false
     quality_score_min: 0.45
     min_chars: 120
     source_weight: 0.4
-    category: "encyclopedic"
-    note: "separate_from_narkamauka"
-
+    category: encyclopedic
+    note: separate_from_narkamauka
   bewikisource:
-    source_id: "bewikisource"
-    orthography: "mixed"
+    source_id: bewikisource
+    orthography: mixed
     synthetic: false
     quality_score_min: 0.55
     min_chars: 400
-    source_weight: 0.6
-    category: "literary_strict_filter"
-
+    source_weight: 1.0
+    category: literary_strict_filter
   ud_belarusian_hse:
-    source_id: "ud_belarusian_hse"
-    orthography: "mixed"
+    source_id: ud_belarusian_hse
+    orthography: mixed
     synthetic: false
-    quality_score_min: 0.50
+    quality_score_min: 0.5
     min_chars: 30
-    source_weight: 0.15
-    category: "grammar_eval_mostly"
-
+    source_weight: 0.0
+    category: grammar_eval_mostly
   tatoeba_sentences:
-    source_id: "tatoeba_sentences"
-    orthography: "mixed"
+    source_id: tatoeba_sentences
+    orthography: mixed
     synthetic: false
-    quality_score_min: 0.50
+    quality_score_min: 0.5
     min_chars: 30
     source_weight: 0.15
-    category: "sentence_level"
-
+    category: sentence_level
   morphodict-bel:
-    source_id: "morphodict-bel"
-    orthography: "narkamauka"
+    source_id: morphodict-bel
+    orthography: narkamauka
     synthetic: false
     quality_score_min: 0.55
     min_chars: 10
     source_weight: 0.0
-    category: "excluded_from_base"
-
+    category: excluded_from_base
   belarusianglue:
-    source_id: "belarusianglue"
-    orthography: "narkamauka"
+    source_id: belarusianglue
+    orthography: narkamauka
     synthetic: false
     quality_score_min: 0.55
     min_chars: 50
     source_weight: 0.0
-    category: "eval_only_no_train"
-
+    category: eval_only_no_train
   bootstrap:
-    source_id: "bootstrap"
-    orthography: "narkamauka"
+    source_id: bootstrap
+    orthography: narkamauka
     synthetic: true
     quality_score_min: 0.45
     min_chars: 60
     source_weight: 0.8
-    category: "synthetic_seed"
-
+    category: synthetic_seed
   belacorpus_public_research:
-    source_id: "belacorpus_public_research"
-    orthography: "narkamauka"
+    source_id: belacorpus_public_research
+    orthography: narkamauka
     synthetic: false
     quality_score_min: 0.55
     min_chars: 150
     source_weight: 0.8
-    access_status: "manual_request_required"
-    category: "pending_access"
-
+    access_status: manual_request_required
+    category: pending_access
   oscar-2301-be:
-    source_id: "oscar-2301-be"
-    orthography: "mixed"
+    source_id: oscar-2301-be
+    orthography: mixed
     synthetic: false
     quality_score_min: 0.55
     min_chars: 150
     source_weight: 0.6
-    access_status: "gated_hf_login_required"
-    category: "web_corpus"
-
+    access_status: gated_hf_login_required
+    category: web_corpus
   culturax-be:
-    source_id: "culturax-be"
-    orthography: "mixed"
+    source_id: culturax-be
+    orthography: mixed
     synthetic: false
     quality_score_min: 0.55
     min_chars: 150
     source_weight: 0.5
-    access_status: "gated_hf_login_required"
-    category: "web_corpus"
-
+    access_status: gated_hf_login_required
+    category: web_corpus
   mc4-be:
-    source_id: "mc4-be"
-    orthography: "mixed"
+    source_id: mc4-be
+    orthography: mixed
     synthetic: false
     quality_score_min: 0.55
     min_chars: 150
     source_weight: 0.4
-    access_status: "gated_hf_login_required"
-    category: "web_corpus"
-
+    access_status: gated_hf_login_required
+    category: web_corpus
   cc100-be:
-    source_id: "cc100-be"
-    orthography: "unknown"
-    synthetic: false
-    quality_score_min: 0.55
+    source_id: cc100-be
+    source_weight: 0.3
     min_chars: 150
-    source_weight: 0.0
-
-mixing_formula: "weighted_sampling_by_source_weight"
+    quality_score_min: 0.5
+    synthetic: false
+    category: web
+  bewikibooks:
+    source_id: bewikibooks
+    source_weight: 1.0
+    min_chars: 200
+    quality_score_min: 0.5
+    synthetic: false
+    category: curated
+  bewikiquote:
+    source_id: bewikiquote
+    source_weight: 1.0
+    min_chars: 150
+    quality_score_min: 0.5
+    synthetic: false
+    category: curated
+  books_clean_v2:
+    source_id: books_clean_v2
+    source_weight: 1.0
+    min_chars: 300
+    quality_score_min: 0.5
+    synthetic: false
+    category: curated
+  bewiktionary:
+    source_id: bewiktionary
+    source_weight: 0
+    min_chars: 100
+    quality_score_min: 0.5
+    synthetic: false
+    category: excluded_from_base
+  fineweb2:
+    source_id: fineweb2
+    source_weight: 1.0
+    min_chars: 150
+    quality_score_min: 0.5
+    synthetic: false
+    category: web
+  hplt_v2:
+    source_id: hplt_v2
+    source_weight: 0.8
+    min_chars: 150
+    quality_score_min: 0.5
+    synthetic: false
+    category: web
+  leipzig:
+    source_id: leipzig
+    source_weight: 0.2
+    min_chars: 50
+    quality_score_min: 0.5
+    synthetic: false
+    category: sentence_level
+mixing_formula: deterministic_group_retention_without_replacement
 synthetic_cap: 0.15
-tarask_ratio_min: 0.03
-tarask_ratio_max: 0.10
-
+tarask_ratio_min: 0.0
+tarask_ratio_max: 0.1
 output_parquet_schema:
-  - text
-  - source
-  - source_id
-  - orthography
-  - synthetic
-  - quality_score
-  - duplicate_count
-  - chars
-  - doc_id
+- text
+- source
+- source_id
+- orthography
+- synthetic
+- quality_score
+- duplicate_count
+- chars
+- doc_id
+budget_unit: characters

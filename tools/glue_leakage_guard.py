@@ -1,111 +1,48 @@
 #!/usr/bin/env python3
-"""BelarusianGLUE train/eval leakage guard.
-
-Ensures:
-1. BelarusianGLUE is excluded from base pretraining corpus
-2. GLUE eval splits are not leaked into SFT training data
-3. Reports any GLUE content found in training parquet files
-"""
-from __future__ import annotations
-import argparse, hashlib, json, os, sys
+"""Audit actual corpus/SFT against source policy and pinned semantic GLUE inputs."""
+import argparse,json,os,sys
 from pathlib import Path
-
-GLUE_CONFIGS = [
-    'belacola_in_domain', 'belacola_out_of_domain',
-    'bertewd', 'besls', 'bewic', 'bewsc_as_wnli', 'bewsc_as_wsc'
-]
-GLUE_NGRAMS = {
-    'belacola': ['belacola', 'acola', 'белакола'],
-    'bertewd': ['bertewd', 'tewd', 'terrywda'],
-    'besls': ['besls', 'esls'],
-    'bewic': ['bewic', 'ewic'],
-    'bewsc': ['bewsc', 'ewsc', 'wsc', 'wnli'],
-}
-
-def check_parquet(path: Path) -> dict:
-    """Check a parquet file for GLUE leakage signals."""
-    import pandas as pd
-    df = pd.read_parquet(path)
-    text_col = 'text' if 'text' in df.columns else df.columns[0]
-    texts = df[text_col].dropna().astype(str)
-    found = {}
-    for config, ngrams in GLUE_NGRAMS.items():
-        matches = texts[texts.str.lower().str.contains('|'.join(ngrams), na=False)]
-        if len(matches) > 0:
-            found[config] = len(matches)
-    return {'path': str(path), 'total_rows': len(df), 'glue_matches': found}
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from data_pipeline.leakage import PromptIndex,texts
+from data_pipeline.source_policy import base_rejection
+from data_pipeline.contracts import sha256_file
+from data_pipeline.benchmark_leakage import BenchmarkIndex
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--pack-dir', default=os.environ.get('PACK_DIR', '.'))
-    ap.add_argument('--check-base-corpus', action='store_true', default=True)
-    ap.add_argument('--check-sft-data', action='store_true', default=True)
-    args = ap.parse_args()
-    pack = Path(args.pack_dir).resolve()
-    results = {'PACK_DIR': str(pack), 'GLUE_LEAKAGE_FOUND': False, 'checks': []}
-
-    # Check base corpus parquet
-    if args.check_base_corpus:
-        base_dir = pack / '.workspace/nanochat_base/base_data_climbmix'
-        if base_dir.exists():
-            for pq in sorted(base_dir.glob('*.parquet')):
-                r = check_parquet(pq)
-                if r['glue_matches']:
-                    results['GLUE_LEAKAGE_FOUND'] = True
-                results['checks'].append(r)
-
-    # Check SFT data
-    if args.check_sft_data:
-        sft_dir = pack / '.workspace/nanochat_base/sft'
-        if sft_dir.exists():
-            for jl in sorted(sft_dir.glob('*.jsonl')):
-                count = 0
-                for line in open(jl, encoding='utf-8'):
-                    try:
-                        obj = json.loads(line)
-                        text = json.dumps(obj, ensure_ascii=False).lower()
-                        for config, ngrams in GLUE_NGRAMS.items():
-                            if any(ng in text for ng in ngrams):
-                                count += 1
-                                break
-                    except Exception:
-                        pass
-                if count > 0:
-                    results['GLUE_LEAKAGE_FOUND'] = True
-                results['checks'].append({'path': str(jl), 'type': 'sft_jsonl', 'glue_hits': count})
-
-    # Check source filter report for GLUE in accepted (definitive check)
-    filter_report = pack / 'reports/source_filter_report.json'
-    if filter_report.exists():
-        d = json.loads(filter_report.read_text(encoding='utf-8'))
-        per_source = d.get('per_source', {})
-        glue_src = per_source.get('belarusianglue', {})
-        if glue_src.get('accepted', 0) > 0:
-            results['GLUE_LEAKAGE_FOUND'] = True
-            results['glue_in_accepted'] = glue_src['accepted']
-            print(f"FAIL: BelarusianGLUE has {glue_src['accepted']} records in accepted base corpus!")
-        else:
-            print("OK: BelarusianGLUE not in accepted base corpus (eval/sft only)")
-        # Ngram check is supplementary; false positives expected since GLUE not downloaded
-        ngram_hits = sum(1 for c in results.get('checks', []) if c.get('glue_matches'))
-        if ngram_hits > 0:
-            print(f"NOTE: {ngram_hits} parquet files have keyword matches (false positives expected; "
-                  f"GLUE data was not downloaded. Verify manually if GLUE was actually streamed.)")
-
-    # Print result
-    print(json.dumps(results, ensure_ascii=False, indent=2))
-    # Only fail if GLUE was actually in accepted corpus (ngram false positives don't count)
-    if results.get('glue_in_accepted', 0) > 0:
-        print("\nFAIL: BelarusianGLUE data found in accepted base corpus!")
-        sys.exit(1)
-    else:
-        ngram_notes = sum(1 for c in results.get('checks', []) if c.get('glue_matches'))
-        if ngram_notes > 0:
-            print(f"\nPASS: BelarusianGLUE not in accepted corpus ({ngram_notes} parquet files have "
-                  f"false-positive keyword matches; GLUE dataset was never downloaded)")
-        else:
-            print("\nPASS: No BelarusianGLUE leakage detected")
-
-
-if __name__ == '__main__':
-    main()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--pack-dir',type=Path,default=Path(os.environ.get('PACK_DIR','.')))
+    ap.add_argument('--base-dir',type=Path);ap.add_argument('--benchmark',type=Path,action='append',default=[])
+    ap.add_argument('--corpus-dir',type=Path);ap.add_argument('--benchmark-manifest',type=Path)
+    ap.add_argument('--source-policy-only',action='store_true',help='explicitly skip benchmark content; never reports full PASS')
+    ap.add_argument('--check-base-corpus',action='store_true',default=True);ap.add_argument('--check-sft-data',action='store_true',default=True)
+    a=ap.parse_args();base=(a.base_dir or a.pack_dir/'.workspace/nanochat_base').resolve();checked=[];hits=[]
+    try:
+        import pyarrow.parquet as pq
+        if a.source_policy_only and (a.benchmark or a.benchmark_manifest):raise ValueError('source-only mode cannot also request benchmark inputs')
+        if a.benchmark and a.benchmark_manifest:raise ValueError('choose explicit benchmark texts or the semantic manifest')
+        index=None if a.source_policy_only else (PromptIndex(a.benchmark) if a.benchmark else BenchmarkIndex(a.benchmark_manifest or a.pack_dir/'eval/datasets/belarusianglue/MANIFEST.json',pack=a.pack_dir))
+        corpus=(a.corpus_dir or (base/'.corpus_current' if (base/'.corpus_current').is_dir() else base/'base_data_climbmix')).resolve()
+        paths=sorted(corpus.glob('train_*.parquet'))+sorted(corpus.glob('val_*.parquet'))
+        if not any(p.name.startswith('train_') for p in paths) or not any(p.name.startswith('val_') for p in paths):raise ValueError('missing actual train/validation corpus')
+        for p in paths:
+            n=0
+            for b in pq.ParquetFile(p).iter_batches(batch_size=256):
+                for r in b.to_pylist():
+                    n+=1
+                    if not isinstance(r.get('source'),str):raise ValueError('source provenance is required')
+                    if not isinstance(r.get('text'),str) or not r['text'].strip():raise ValueError('invalid corpus text')
+                    reason=base_rejection(r['source'],r)
+                    if reason or index and index.match(r['text']):hits.append(dict(path=str(p),row=n,reason=reason or 'benchmark_text'))
+            if not n:raise ValueError('empty corpus shard')
+            checked.append(dict(path=str(p),rows=n,sha256=sha256_file(p)))
+        for name in ('identity_conversations.jsonl','identity_conversations_val.jsonl'):
+            p=(base/'.sft_current'/name).resolve();n=0
+            for line,values in texts(p,conversations=True):
+                for t in values:
+                    n+=1
+                    if index and index.match(t):hits.append(dict(path=str(p),line=line,reason='benchmark_text'))
+            checked.append(dict(path=str(p),messages=n,sha256=sha256_file(p)))
+        status='FAIL' if hits else ('PASS' if index else 'PASS_SOURCE_POLICY_ONLY')
+        if isinstance(index,BenchmarkIndex):index.verify_unchanged()
+        print(json.dumps(dict(status=status,checks=checked,hits=hits,benchmark_content_checked=bool(index),benchmark=index.proof() if isinstance(index,BenchmarkIndex) else None,scope='actual train/validation source policy and every SFT role; semantic pinned benchmark fields by default'),ensure_ascii=False,indent=2));return int(bool(hits))
+    except (ValueError,OSError,KeyError) as e:ap.error(str(e))
+if __name__=='__main__':raise SystemExit(main())

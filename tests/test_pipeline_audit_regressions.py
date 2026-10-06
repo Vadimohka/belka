@@ -429,26 +429,20 @@ def test_corpus_insufficient_data_preserves_previous_shards(tmp_path, corpus_bui
 
 
 @pytest.mark.parametrize("skip_training", ["YES", "NO"])
-def test_quickstart_status_matches_mock_training_path(tmp_path, skip_training):
-    """All installer/restore/training processes are fakes; no model is trained."""
+def test_quickstart_only_prepares_and_forwards_explicit_options(tmp_path, skip_training):
+    """Legacy SKIP_TRAIN values cannot silently launch production training."""
     repo = copy_paths(tmp_path / "repo")
     quick = repo / "ops/local/quickstart.sh"
     shutil.copyfile(ROOT / "ops/local/quickstart.sh", quick)
-    for name in ["install_nanochat_env.sh", "restore_bundled_corpus.sh"]:
-        fake_executable(repo / "ops/local" / name, "exit 0\n")
+    fake_executable(repo / "ops/local/prepare_h200.sh", 'printf "PREPARE %s\\n" "$*"\n')
     nano = repo / ".workspace/nanochat"
-    fake_executable(nano / ".venv/bin/python", 'printf "MOCK_TRAIN %s\\n" "$*"\nexit 0\n')
-    result = run(["bash", str(quick)], cwd=tmp_path,
-                 env=clean_env(PACK_DIR=str(repo), SKIP_TRAIN=skip_training, MODEL_TAG="custom-smoke-tag"))
+    fake_executable(nano / ".venv/bin/python", 'printf "UNEXPECTED_TRAIN\\n"\nexit 7\n')
+    result = run(["bash", str(quick), "--cpu", "--curated-only"], cwd=tmp_path,
+                 env=clean_env(PACK_DIR=str(repo), SKIP_TRAIN=skip_training))
     assert result.returncode == 0, result.stderr
-    if skip_training == "YES":
-        assert "Training was skipped" in result.stdout
-        assert "Smoke model trained" not in result.stdout
-        assert "MOCK_TRAIN" not in result.stdout
-    else:
-        assert "Smoke model trained: custom-smoke-tag" in result.stdout
-        assert "--model-tag custom-smoke-tag" in result.stdout
-        assert result.stdout.count("MOCK_TRAIN") == 2
+    assert result.stdout.strip() == "PREPARE --cpu --curated-only"
+    assert "UNEXPECTED_TRAIN" not in result.stdout
+    assert "trained" not in result.stdout
 
 
 def test_contribution_document_does_not_overclaim_decontamination():

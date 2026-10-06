@@ -18,81 +18,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from data_pipeline.contracts import HammingIndex, content_hash, group_split, corpus_generation, sha256_file, iter_jsonl as strict_iter_jsonl
 from data_pipeline.normalize_text import normalize_text
 
-SOURCE_THRESHOLDS = {
-    "bewiki": {"min_score": 0.45, "min_chars": 120, "orthography": "narkamauka"},
-    "be_x_oldwiki": {"min_score": 0.45, "min_chars": 120, "orthography": "tarask"},
-    "bewikisource": {"min_score": 0.50, "min_chars": 250, "orthography": None},
-    "bewikisource_full": {"min_score": 0.50, "min_chars": 250, "orthography": None},
-    "bewiktionary": {"min_score": 0.45, "min_chars": 100, "orthography": None, "not_for_base": True},
-    "bewikiquote": {"min_score": 0.50, "min_chars": 150, "orthography": None},
-    "bewikibooks": {"min_score": 0.45, "min_chars": 200, "orthography": None},
-    "bewikibooks_full": {"min_score": 0.45, "min_chars": 200, "orthography": None},
-    "belacorpus_public_research": {"min_score": 0.55, "min_chars": 150, "orthography": "narkamauka"},
-    "ud_belarusian_hse": {"min_score": 0.50, "min_chars": 30, "orthography": None, "not_for_base": True},
-    "tatoeba_sentences": {"min_score": 0.50, "min_chars": 30, "orthography": None, "sentence_level": True},
-    "belarusianglue": {"min_score": 0.55, "min_chars": 50, "orthography": None, "eval_or_sft_only": True},
-    "morphodict-bel": {"min_score": 0.55, "min_chars": 10, "orthography": None, "not_for_base": True},
-    "books_clean_v2": {"min_score": 0.50, "min_chars": 300, "orthography": "narkamauka"},
-    "oscar-2301-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
-    "culturax-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
-    "mc4-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
-    "cc100-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
-    "bootstrap": {"min_score": 0.45, "min_chars": 60, "orthography": "narkamauka"},
-    "belarusian_seed": {"min_score": 0.45, "min_chars": 60, "orthography": "narkamauka"},
-}
-
-BE_WORDS = {'гэта','які','якая','якія','быў','была','былі','ёсць','няма','для','праз','пасля',
-            'вельмі','калі','каб','трэба','можна','чалавек','мова','краіна','беларусь','беларускі',
-            'сустрэча','праца','кожны','месца','справа','дапамагае','таксама','іншы','яшчэ',
-            'добра','вялікі','новы','свой','павінна','павінен','патрэбна','разам','менавіта',
-            'можа',"з'яўляецца",'мае','мець','робіць','робяць','ідзе','ідуць','бачыць','кажа',
-            'паказвае','разумець','ведаць','хацець','думаць','гаварыць','рабіць','бачыць'}
-RU_MARKERS = {'что','это','который','которая','очень','если','чтобы','можно','нужно','человек',
-              'страна','язык','которые','также','очень','ещё','более','менее','вообще','конечно',
-              'например','наверное','находится','является','имеется','данный','данная','данное'}
-UK_MARKERS = {'є','ї','ґ','дуже','якщо','після','країна','зараз','також','треба','можна',
-              'наприклад','звічайно','знаходиться','згідно','щодо','протягом','відповідно'}
-
-
-SOURCE_ALIASES = {
-    'bewikisource_full': 'bewikisource_full',
-    'bewikibooks_full': 'bewikibooks_full',
-    'bewikiquote_full': 'bewikiquote',
-    'bewiktionary_full': 'bewiktionary',
-    'tatoeba': 'tatoeba_sentences',
-    'belarusianglue': 'belarusianglue',
-    'morphodict': 'morphodict-bel',
-    'belacorpus': 'belacorpus_public_research',
-    'ud_belarusian': 'ud_belarusian_hse',
-    'belarusian_seed': 'belarusian_seed',
-    'belarusian_bootstrap': 'bootstrap',
-    'books_clean': 'books_clean_v2',
-    'books_clean_v2': 'books_clean_v2',
-    'oscar': 'oscar-2301-be',
-    'culturax': 'culturax-be',
-    'mc4': 'mc4-be',
-    'cc100': 'cc100-be',
-}
-
-def detect_source(filepath: str) -> str:
-    """Map file path to source id using aliases and thresholds."""
-    p = str(filepath).lower()
-    # Check aliases first (keyword matching)
-    for alias, src in SOURCE_ALIASES.items():
-        if alias in p:
-            return src
-    # Check exact source keys (longer/specific keys first to avoid substring false match)
-    for src in sorted(SOURCE_THRESHOLDS, key=lambda s: -len(s)):
-        if src in p:
-            return src
-    return "unknown"
-
+from data_pipeline.source_policy import SOURCE_THRESHOLDS, SOURCE_ALIASES, BE_WORDS, RU_MARKERS, UK_MARKERS, detect_source, base_rejection
+from data_pipeline.detect_belarusian import mixed_language_reasons
 
 def score_be(text: str, source: str) -> tuple[float, list[str]]:
     """Score text for Belarusian-ness."""
+    problems = mixed_language_reasons(text)
+    if problems: return 0.0, problems
     low = text.lower()
-    cyr = sum(1 for ch in text if 'а' <= ch.lower() <= 'я' or ch in 'ўіё')
-    lat = sum(1 for ch in text if 'a' <= ch.lower() <= 'z')
+    cyr = sum(map(len, re.findall(r'[а-яёіў]+', low)))
+    lat = sum(map(len, re.findall(r'[a-z]+', low)))
     markers = sum(low.count(ch) for ch in 'ўі')
     words = re.findall(r"[а-яёіўʼ']+", low)
     be = sum(1 for w in words if w in BE_WORDS)
@@ -234,7 +169,8 @@ def main():
         if args.max_docs and raw_seen >= args.max_docs:
             break
         raw_seen += 1
-        source = detect_source(filepath)
+        source = str(obj.get('source') or detect_source(obj['input_file']))
+        if source not in SOURCE_THRESHOLDS: source = detect_source(obj['input_file'])
         thresh = SOURCE_THRESHOLDS.get(source, {"min_score": 0.45, "min_chars": 80})
         min_score = thresh.get("min_score", 0.45)
         min_chars = thresh.get("min_chars", 80)
@@ -266,7 +202,7 @@ def main():
             continue
 
         # Exclude eval-only/non-prose sources before they can influence dedup.
-        if thresh.get('not_for_base') or thresh.get('eval_or_sft_only'):
+        if base_rejection(source, obj, obj['input_file']):
             skipped_namespace += 1
             source_stats[source]['skipped_namespace'] += 1
             continue

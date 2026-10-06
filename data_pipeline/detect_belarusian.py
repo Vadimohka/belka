@@ -78,6 +78,35 @@ def _tokens(text: str) -> list[str]:
     return [m.group(0).lower().replace("'", "’") for m in WORD_RE.finditer(text)]
 
 
+def mixed_language_reasons(text: str) -> list[str]:
+    """Conservative segment diagnostic, not independent linguistic review.
+
+    Repeated foreign words count: a short Belarusian header must not outweigh
+    thousands of Russian words. Inspect 80-word windows as well as the full text.
+    Product names remain exempt; arbitrary Latin sentences do not.
+    """
+    if '\ufffd' in text:
+        return ['replacement_character']
+    tokens = _tokens(TECH_NAMES.sub('', text))
+    if len(tokens) < 20:
+        return []
+    ru_only = RUSSIAN_HINTS - BEL_WORDS - UKRAINIAN_HINTS
+    be_only = BEL_WORDS - RUSSIAN_HINTS - UKRAINIAN_HINTS
+    windows = [tokens] + [tokens[i:i+80] for i in range(0, len(tokens), 80)]
+    bad_words = 0
+    for window in windows[1:]:
+        if len(window) < 20: continue
+        ru = sum(w in ru_only for w in window)
+        be = sum(w in be_only or any(c in w for c in 'ўі') for w in window)
+        if ru >= 6 and ru / len(window) >= .08 and ru / max(ru + be, 1) >= .6:
+            bad_words += len(window)
+    ru = sum(w in ru_only for w in tokens)
+    be = sum(w in be_only or any(c in w for c in 'ўі') for w in tokens)
+    if (ru >= 6 and ru / len(tokens) >= .08 and ru / max(ru + be, 1) >= .6) or bad_words / len(tokens) > .15:
+        return ['russian_dominant_segments']
+    return []
+
+
 def detect_belarusian(
     text: str,
     *,
@@ -153,6 +182,10 @@ def detect_belarusian(
         score -= 2.0
         reasons.append("code_or_config_like")
 
+    mixed = mixed_language_reasons(original_text)
+    if mixed:
+        reasons.extend(mixed)
+        score = min(score, 0.0)
     if score >= accept_threshold:
         decision = "accept"
     elif score >= quarantine_threshold:

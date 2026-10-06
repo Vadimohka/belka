@@ -55,6 +55,10 @@ def family(text):
 
 
 def prepare(pack:Path,val_ratio=.2):
+    family_path=pack/'configs/sft_v9_seed_families.json'
+    declared=json.loads(family_path.read_text(encoding='utf-8'))
+    if declared.get('schema')!='belka-sft-seed-families-v1':raise ValueError('invalid seed family schema')
+    seed_families=declared['families']
     paths=[pack/'seed_sft'/f'sft_v8_{split}.be.jsonl' for split in ('train','val')]
     records=[];duplicates=0;seen=set();corrections=[];answer_corrections=[]
     for path in paths:
@@ -88,7 +92,10 @@ def prepare(pack:Path,val_ratio=.2):
         for message in record['messages']:
             # Group both prompts and targets to keep templated variants together.
             if message['role']=='system':continue
-            key=message['role']+':'+family(message['content'])
+            normalized=family(message['content'])
+            if message['role']=='user' and normalized not in seed_families:
+                raise ValueError('unregistered seed prompt family: '+normalized)
+            key=message['role']+':'+(seed_families[normalized] if message['role']=='user' else normalized)
             if key in owners:union(i,owners[key])
             else:owners[key]=i
     groups={}
@@ -110,9 +117,9 @@ def prepare(pack:Path,val_ratio=.2):
         target=val if split=='val' else train
         for row in sorted(items,key=lambda r:json.dumps(r['messages'],ensure_ascii=False,sort_keys=True)):
             target.append(json.dumps(row['messages'],ensure_ascii=False,separators=(',',':')))
-        group_info.append(dict(id=group,split=split,rows=len(items)))
+        group_info.append(dict(id=group,split=split,rows=len(items),seed_family_ids=sorted({seed_families[family(m['content'])] for r in items for m in r['messages'] if m['role']=='user'}),provenance=[{'source':r['source'],'line':r['line']} for r in items]))
     if not train or not val:raise ValueError('group-aware split is empty; review data, do not split a family')
-    metadata=dict(schema='belka-sft-v9',dataset_version='v9',input_files={str(p.relative_to(pack)):sha256_file(p) for p in paths},
+    metadata=dict(family_policy='explicit-seed-paraphrase-families-v1',seed_family_manifest_sha256=sha256_file(family_path),schema='belka-sft-v9',dataset_version='v9',input_files={str(p.relative_to(pack)):sha256_file(p) for p in paths},
                   sealed_holdout_sha256=sha256_file(pack/'eval/strict_holdout_quality_control_v2.be.jsonl'),
                   generator_sha256=sha256_file(Path(__file__)),val_ratio=val_ratio,groups=sorted(group_info,key=lambda x:x['id']),
                   exact_conversation_duplicates_removed=duplicates,corrections=corrections,quarantine=quarantined,
