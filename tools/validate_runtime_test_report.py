@@ -4,6 +4,13 @@ import argparse
 import xml.etree.ElementTree as ET
 
 HARDWARE_SKIP_REASONS={'requires CUDA hardware','requires H200 hardware'}
+# This local workspace check cannot run in a clean CI checkout. Match both
+# its identity and reason so missing CPU dependencies still fail the gate.
+LOCAL_ARTIFACT_SKIPS={(
+    'tests.test_tokenizer_isolation',
+    'test_d8_workspace_exists',
+    'requires local .workspace d8 build artifacts (not present on clean clone)',
+)}
 REQUIRED={'test_native_export_roundtrip'}
 
 def validate(path):
@@ -16,7 +23,8 @@ def validate(path):
         skip=case.find('skipped')
         if skip is not None:
             reason=skip.attrib.get('message','')
-            if reason not in HARDWARE_SKIP_REASONS:
+            identity=(case.attrib.get('classname',''),name,reason)
+            if reason not in HARDWARE_SKIP_REASONS and identity not in LOCAL_ARTIFACT_SKIPS:
                 failures.append(f'unexpected skip: {name}: {reason}')
         elif case.find('failure') is None and case.find('error') is None:
             executed.add(name)
