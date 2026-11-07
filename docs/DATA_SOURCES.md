@@ -8,9 +8,12 @@
 
 ## 1. Базовый корпус
 
-Эти источники входят в принятый корпус v3b либо в его подготовленные
-варианты. Распределение строк приведено по
-`reports/data/corpus_v3b_source_distribution.json`.
+Эти источники входят в опубликованный корпус v3b либо в его подготовленные
+варианты. Распределение строк v3b приведено по
+`reports/data/corpus_v3b_source_distribution.json`. Состав текущего расширенного
+H200-поколения приведён отдельно в
+[`reports/data/DATA_COMPOSITION_ANALYSIS_2026-11-07.md`](../reports/data/DATA_COMPOSITION_ANALYSIS_2026-11-07.md):
+в нём дополнительно реально используются `fineweb2`, `hplt_v2` и `leipzig`.
 
 | Источник | Идентификатор | Роль и объём | Правовой статус / обработка |
 |---|---|---:|---|
@@ -41,7 +44,7 @@ SFT-наборы состоят из вручную составленных и 
 | Curated Belarusian fact bank | `seed_sft/sft_v8_train.be.jsonl`, `seed_sft/sft_v8_val.be.jsonl` и отчёты `reports/sft_v8/` | Факты о Беларуси, география, культура, история, орфография, обработка неизвестных сущностей и безопасные отказы; v8: 450 train / 120 val / 180 eval |
 | Identity и language-lock prompts | `seed_sft/identity_conversations*.jsonl`, `data_ready/eval_jsonl/language_lock_data_sources_eval.be.jsonl` | Самоидентификация Belka, ответы на белорусском и проверка языкового ограничения |
 | MeetMesh domain SFT | `seed_sft/meetmesh_domain_sft*.jsonl` | Доменные ответы по MeetMesh, основанные на документации и коде проекта; ответы должны оставаться grounded |
-| Предыдущие SFT-версии | `seed_sft/sft_v5_*`, `sft_v6_*`, `sft_v7_*` и соответствующие отчёты | Исторические исследовательские наборы; используются для сравнения и аудита, а не автоматически смешиваются с активным v8 |
+| Предыдущие SFT-версии | `seed_sft/sft_v5_*`, `sft_v6_*`, `sft_v7_*` и соответствующие отчёты | Исторические исследовательские наборы; используются для сравнения и аудита, а не автоматически смешиваются с активным v9 |
 
 ## 3. Evaluation и holdout
 
@@ -58,14 +61,17 @@ SFT-наборы состоят из вручную составленных и 
 
 ## 4. Источники, которые пока не используются
 
-В конфигурациях перечислены кандидаты, но они не входят в текущий корпус и не
-покрываются утверждениями о разрешениях проекта: OSCAR 23.01, CulturaX, mC4,
-CC100, FineWeb2, HPLT v2, Common Crawl, Belacorpus, National Corpus of the
-Belarusian Language, Leipzig Belarusian Wikipedia 2021, Wikidata, OPUS/JW300/
-WikiMatrix/OpenSubtitles, Common Voice и внешние новостные сайты. Перед
-подключением каждого кандидата нужны отдельные: URL и версия, лицензия/terms,
-проверка доступа, PII и quality filtering, дедупликация и запись в source и
-rights manifests.
+В конфигурациях перечислены кандидаты, но они не входят в текущий active H200
+корпус: OSCAR 23.01, CulturaX, mC4, Common Crawl, Belacorpus, National Corpus
+of the Belarusian Language, Wikidata, OPUS/JW300/WikiMatrix/OpenSubtitles,
+Common Voice и внешние новостные сайты. `cc100-be` присутствует локально, но
+текущий admission/quality pipeline оставил в active-поколении 0 строк.
+Перед подключением каждого кандидата нужны отдельные: URL и версия,
+лицензия/terms, проверка доступа, PII и quality filtering, дедупликация и
+запись в source и rights manifests. `fineweb2`, `hplt_v2` и `leipzig` из
+старого списка сюда больше не относятся: они уже имеют строки в active H200
+поколении; их raw-файлы всё равно не являются автоматически
+перераспределяемыми.
 
 ## 5. Правила учёта
 
