@@ -46,7 +46,9 @@ One deterministic property case covers 25 generated layouts; it is one pytest
 case, not hundreds of extra tests. Read/cache counters avoid flaky timing gates.
 At the preceding reader implementation, 4 mechanism tests fail and 27 pass;
 with strides all 31 pass locally. Existing BPE/checkpoint/CPU/Gloo integration
-suites must also pass in the installed GitHub Actions runtime.
+suites must also pass in the installed local runtime. This repository does not
+define a GitHub Actions runtime; the commands in `CONTRIBUTING.md` are the
+acceptance checks.
 
 The topology preflight in R27-D04 is a prerequisite for integer-stride arithmetic.
 No v1 identity, checkpoint format, tokenizer or corpus bytes change. Roll back

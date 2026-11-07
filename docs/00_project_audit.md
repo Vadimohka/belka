@@ -27,7 +27,7 @@ Not found in archive:
 ```text
 docs/                            formal documentation folder was missing before this overlay
 Dockerfile / docker-compose       not found
-GitHub Actions / CI workflow      not found in source zip
+GitHub Actions / CI workflow      intentionally absent from the repository
 actual .git directory             not included in source zip
 .workspace/ checkpoints/parquet   not included, correctly treated as generated artifacts
 large external datasets           not included, expected to be downloaded separately
@@ -116,7 +116,8 @@ SKIPPED_DUPLICATE_NEAR=2870
 - Tokenizer ablation report exists, but it should be regenerated after every large corpus change.
 - Large external sources are mostly pending or only represented as downloaders/configs.
 - Dataset licenses need re-verification before public model/dataset release.
-- There is no CI yet; reproducibility depends on local commands.
+- There is no remote CI by repository requirement; reproducibility depends on
+  local commands and committed reports.
 
 ## Technical debt
 

@@ -38,6 +38,34 @@ PYTHONPATH="$PWD" pytest -q tests
 - Eval-only datasets (e.g. BelarusianGLUE, FLORES) must never be used for pretraining.
 - Record source, URL, date, checksum, and processing steps.
 
+## Commit requirements
+
+Each commit must be a self-contained logical change. Include every tracked
+source file needed to reproduce the change: implementation, focused tests,
+configuration, manifests, and user-facing documentation when they are part of
+the same contract. Do not include raw corpora, downloaded archives, checkpoints,
+secrets, local environments, or generated reports that are not required to
+reproduce the result.
+
+Data changes must update the source registry and the applicable provenance,
+rights, checksum, or dataset card records in the same commit. Behavior changes
+must add or update a focused regression test, or document why a test is not
+meaningful. A commit must leave the local validation commands below runnable
+from a clean clone.
+
+Use a short imperative subject with one of the repository's existing prefixes,
+for example `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, or `data:`. Keep one
+logical purpose per commit and do not mix unrelated cleanup with a behavior or
+data change.
+
+## Repository requirement: no GitHub CI
+
+GitHub Actions and GitHub CI are intentionally not part of this repository.
+The `.github/workflows/` directory must not exist, and no commit or pull-request
+status from GitHub CI is a release or merge requirement. Reproducibility and
+acceptance are established by the local commands below and by their committed
+reports and manifests.
+
 ## Before opening a PR
 
 ```bash
@@ -46,7 +74,8 @@ python tools/validate_public_release.py
 python tools/check_train_eval_decontamination.py --dry-run
 ```
 
-All three commands should exit successfully; inspect the reports as well. CI runs the same checks (`.github/workflows/ci.yml`).
+All three commands should exit successfully; inspect the reports as well. These
+are local checks; this repository does not define a remote CI workflow.
 
 ## Scope note
 

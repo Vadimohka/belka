@@ -349,12 +349,9 @@ sys.exit(9)
     assert result.returncode == 0, result.stderr
 
 
-def test_ci_does_not_reference_retired_audit():
-    text = (ROOT / ".github/workflows/ci.yml").read_text()
-    assert "audit_data_rights.py" not in text
-    assert "pytest -q tests" in text
-    assert "validate_public_release.py" in text
-    assert "check_train_eval_decontamination.py --dry-run" in text
+def test_repository_does_not_define_github_ci():
+    workflows = ROOT / ".github" / "workflows"
+    assert not workflows.exists()
 
 
 @pytest.fixture

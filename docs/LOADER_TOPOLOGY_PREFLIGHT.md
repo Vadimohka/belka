@@ -33,7 +33,9 @@ that rejected inputs never reach them; they are not process-group tests.
 At the hash-verified e685aa88 baseline: 51 failed / 9 passed. With the fix:
 60 passed locally. Those are parameterized cases, not independent bug counts.
 The potentially infinite baseline iterator is not actually entered in tests.
-Full runtime integration is separately checked by GitHub Actions.
+Full runtime integration is separately checked by the local runtime contract
+commands documented in `CONTRIBUTING.md`; this repository does not define
+GitHub Actions workflows.
 
 No training entrypoint, owner script or production corpus/tokenizer/weights is
 used. To roll back, revert this scope and regenerate the runtime overlay; do
