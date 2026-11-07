@@ -72,8 +72,8 @@ For short or one-token documents, refill/validation dominates and the extra
 span bookkeeping can be slower. Keep the short-document cases in comparisons.
 These timings exclude BPE, Parquet decoding, corpus hashing, tensors, transfers,
 forward/backward and optimizer work. Do not claim equivalent training speedup
-or model-quality improvement from them. Full local measurements and exact-commit
-results are recorded in the repository report after verification.
+or model-quality improvement from them. Record full local measurements and
+exact-commit results in a repository report after verification.
 
 ## Failure behavior and rollback
 
