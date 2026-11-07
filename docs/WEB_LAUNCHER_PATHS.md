@@ -67,7 +67,8 @@ before and after, including files outside the fixture PACK_DIR.
 
 The four absolute-external-path regression cases returned success on the previous
 launcher. The fixed launcher rejects them before activation or runtime invocation.
-Full-suite CI evidence is recorded in PR #5 against the published commit.
+Historical full-suite evidence is recorded in PR #5 against the published commit;
+current acceptance uses the local validation commands.
 
 ## Rollback
 

@@ -12,11 +12,11 @@ python tools/validate_public_release.py
 python tools/build_sft_mix.py --check-only
 ```
 
-Minimal checks can skip optional runtime integrations. The separate Runtime contracts
-CI job provisions real CPU Torch/nanochat and HF dependencies, runs the complete suite,
-and verifies the JUnit report. Missing dependencies or an unexecuted native HF roundtrip
-fail that job. Explicit CUDA/H200 hardware tests can be marked unavailable; a CPU
-result does not certify GPU behavior or throughput.
+Minimal checks can skip optional runtime integrations. The documented local runtime
+checks use the pinned CPU Torch/nanochat and HF dependencies, run the complete suite,
+and verify the JUnit report. Missing dependencies or an unexecuted native HF roundtrip
+fail the local acceptance run. Explicit CUDA/H200 hardware tests can be marked
+unavailable; a CPU result does not certify GPU behavior or throughput.
 
 Bundled historical corpus restoration is not an immediate training approval. Prepare
 and verify the selected H200 corpus, SFT generation and tokenizer using the canonical

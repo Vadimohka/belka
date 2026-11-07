@@ -61,12 +61,12 @@ BELKA_REQUIRE_RUNTIME_TESTS=1 \
   --basetemp=.workspace/pytest-cpu-continuation
 ```
 
-The existing Runtime contracts workflow collects this module in its complete
-suite without a workflow change. The two parameterized scenarios each have one
-positive and three negative-control cases: eight pytest cases total. A lightweight
-checkout without the runtime reports skips explicitly. The required runtime job
-must fail, rather than skip, when its runtime/dependencies are missing. Each child
-process has a 90-second timeout, CPU-only visibility and compilation disabled.
+The documented local runtime checks collect this module in the complete suite.
+The two parameterized scenarios each have one positive and three negative-control
+cases: eight pytest cases total. A lightweight checkout without the runtime
+reports skips explicitly. Set `BELKA_REQUIRE_RUNTIME_TESTS=1` to make missing
+runtime/dependencies fail instead of skip. Each child process has a 90-second
+timeout, CPU-only visibility and compilation disabled.
 
 ## Boundaries and rollback
 

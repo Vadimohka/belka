@@ -52,11 +52,13 @@ These 17 scenarios are four pytest cases, not 17 additional cases.
 
 Groups use unique file rendezvous paths, a 15-second collective timeout and a
 75-second outer timeout with POSIX process-tree cleanup. The tests use synthetic
-CPU gradients, no optimizer updates or production training entrypoint. Required
-CI loads the real installed runtime and checks its byte identity. The original
+CPU gradients, no optimizer updates or production training entrypoint. The
+required local runtime check loads the real installed runtime and checks its byte
+identity. The original
 source fails the divisor-mismatch test by accepting differing rank divisors.
-Existing independent MuonAdamW reference tests remain part of full CI.
+Existing independent MuonAdamW reference tests remain part of the full local
+validation suite.
 
-Exact-commit CI evidence is recorded in issue #26. Both this task and R23-N01 are
+Exact-commit historical evidence is recorded in issue #26. Both this task and R23-N01 are
 reverted by the same commit, followed by overlay regeneration. No production
 artifact, checkpoint format, model profile, dependency or workflow is changed.

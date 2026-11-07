@@ -60,7 +60,8 @@ The subprocess timeout is 90 seconds and compilation is disabled in that child.
 
 Without an installed runtime the two integration cases explicitly skip;
 `BELKA_REQUIRE_RUNTIME_TESTS=1` makes missing runtime an error. Full acceptance
-requires both GitHub workflows, not only local source-only results.
+requires the local runtime checks in `CONTRIBUTING.md`, not only source-only
+results.
 
 ## Limits and rollback
 

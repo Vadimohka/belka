@@ -44,7 +44,7 @@ records agree. Normal mode restoration and unchanged Torch RNG are asserted.
 The groups use initially absent file rendezvous paths, 15-second collective
 timeouts and a 75-second outer timeout. POSIX timeout cleanup terminates the
 supervisor and its spawned processes. Workers destroy normal groups in finally.
-Local tests import the reviewed source; required CI uses the installed overlay
+Local tests import the reviewed source; the required local runtime check uses the installed overlay
 and compares its file bytes with the source. Fixed-loss doubles isolate metric
 math; no optimizer steps, training entrypoints or production artifacts are used.
 

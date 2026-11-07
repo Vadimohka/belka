@@ -53,7 +53,7 @@ PYTHONPATH="$PWD:$NANOCHAT_DIR" python -m pytest -q tests/test_token_byte_deriva
 
 Tests include incomplete UTF-8, real byte-vocabulary tokenizers, special IDs,
 no RNG/artifact mutation, stale/missing/unreadable caches and actual installed
-routing. Required CI restores and checks all entries of the real published
+routing. The local runtime checks restore and check all entries of the real published
 tokenizer; absence of those artifacts is a failure, not a numerical pass.
 Source-only runs may explicitly skip the installed/artifact tests.
 

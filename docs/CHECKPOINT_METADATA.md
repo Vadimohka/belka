@@ -56,9 +56,9 @@ A subset of malformed fixtures is deliberately re-hashed to test semantic
 validation after normal integrity checking; separate tests retain hash failures.
 The initial 57-case suite on the verified baseline gave 51 failures / 6 passes;
 all 57 passed after the fix, before four further acceptance cases were added.
-The no-Torch workflow explicitly skips this integration module; the pinned CPU
-Runtime contracts job must execute it. Exact remote results are recorded in
-GitHub issue #11 and the Actions artifact, not predicted here.
+The source-only environment explicitly skips this integration module; the local
+runtime checks must execute it with pinned CPU dependencies. Record results for
+the exact commit and runtime manifest rather than predicting them here.
 
 ## Compatibility and limits
 

@@ -59,9 +59,10 @@ PYTHONPATH="$PWD" python -m pytest -q tests/test_checkpoint_manifest_schema.py
 
 The 45 discovery cases use real temporary files. Only the final case needs
 PyTorch; it checks real CPU save/load and rejection of corrupted weights before
-tensor deserialization, with tokenizer identity supplied by a fixture. Lightweight
-CI explicitly skips that one case without PyTorch; Runtime contracts must run it.
-Both workflows must pass on the published commit before accepting this scope.
+tensor deserialization, with tokenizer identity supplied by a fixture. The
+source-only environment explicitly skips that one case without PyTorch; the
+local runtime checks must run it. The local checks must pass on the published
+commit before accepting this scope.
 On the verified pre-change module, the same suite reports 35 failed / 10 passed.
 These are test cases, not 35 independent production defects.
 

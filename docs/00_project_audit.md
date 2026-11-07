@@ -121,7 +121,7 @@ SKIPPED_DUPLICATE_NEAR=2870
 
 ## Technical debt
 
-1. Add CI for shell syntax, pytest, JSONL validation, and path-policy grep.
+1. Keep local shell syntax, pytest, JSONL validation, and path-policy checks in the documented acceptance commands.
 2. Convert `reports/LICENSE_MANIFEST.json` into human-readable `reports/LICENSE_MANIFEST.md` on each corpus build.
 3. Ensure `dataset_sources.yaml` is the single source of truth; avoid duplicate divergent registries.
 4. Add decontamination against eval sets before any serious training.

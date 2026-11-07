@@ -62,8 +62,8 @@ BELKA_REQUIRE_RUNTIME_TESTS=1 PYTHONPATH="$PWD:$NANOCHAT_DIR" \
 ```
 
 There are eight pytest cases: two positive continuations and three negative
-controls for each setting. Runtime contracts collects them without a workflow
-change. A source-only checkout skips unavailable integrations explicitly;
+controls for each setting. The documented local runtime checks collect them
+without a workflow change. A source-only checkout skips unavailable integrations explicitly;
 `BELKA_REQUIRE_RUNTIME_TESTS=1` fails instead. A fake manifest is not a substitute
 for an installed, hash-verified runtime.
 

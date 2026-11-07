@@ -55,8 +55,9 @@ It is not a full JSONL conversation-schema validator. A zero count therefore doe
 not establish that a holdout is uncontaminated or that a model is better.
 
 The default training globs include historical seed files, including validation
-files, not just the actual active SFT mixture. CI retains a broad informational
-report and separately blocks exact overlap with the named strict holdout. The
+files, not just the actual active SFT mixture. Local validation retains a broad
+informational report and separately blocks exact overlap with the named strict
+holdout. The
 regression dataset is not relabeled as an independent sealed holdout or silently
 removed to turn a failing metric green. A versioned active-data manifest remains
 necessary for a precise training-specific claim.

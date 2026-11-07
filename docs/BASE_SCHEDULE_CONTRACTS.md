@@ -9,7 +9,7 @@ It extends, rather than replaces, the fixture-schedule CPU/Gloo continuation tes
 
 `load_base_schedules` in `tests/test_cpu_checkpoint_continuation.py` reads the
 installed script and verifies its SHA256 against `BELKA_RUNTIME_MANIFEST.json`.
-The surrounding CI installation already verifies the pinned upstream and overlay.
+The documented local runtime setup already verifies the pinned upstream and overlay.
 AST selection takes exactly the three named function definitions, requiring their
 reviewed undecorated `(it)` signatures. It compiles only those definitions in a new
 namespace containing `args`, `num_iterations`, `weight_decay_scaled` and `math`.
@@ -66,7 +66,7 @@ optimizer's parameter groups after every update.
 Two negative controls per scenario load the correct boundary state, but then
 restart schedule indexing or use a different schedule horizon. The oracle must
 detect changed scheduling, model and optimizer continuation, and final logits.
-These deliberate fixture errors are not new production defects or failing CI
+These deliberate fixture errors are not new production defects or failing local
 cases. They do not implement a runtime guard against changing CLI flags on resume.
 That compatibility check remains a separate task.
 
@@ -79,10 +79,10 @@ PYTHONPATH="$PWD:$NANOCHAT_DIR" "$NANOCHAT_DIR/.venv/bin/python" -m pytest -q \
   tests/test_gloo_checkpoint_continuation.py
 ```
 
-Runtime contracts must set `BELKA_REQUIRE_RUNTIME_TESTS=1`; missing required
+The local runtime checks must set `BELKA_REQUIRE_RUNTIME_TESTS=1`; missing required
 sources/dependencies are errors, not successful skips. Source-only optional runs
 skip the runtime-dependent cases. The five extraction-mechanism cases require no
-runtime; their success is not numerical acceptance. The complete Actions result,
+runtime; their success is not numerical acceptance. The complete local result,
 JUnit and source provenance must be inspected before closing this scope.
 
 ## Limits and rollback

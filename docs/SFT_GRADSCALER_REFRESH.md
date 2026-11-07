@@ -56,11 +56,11 @@ Two fresh two-rank Gloo groups exercise enabled and disabled scalers. An overflo
 on rank 1 makes both ranks skip, preserve parameters/buffers and back off. A
 subsequent finite call on the same group matches an independently computed mean
 gradient update. These groups use a real synchronized SGD subclass as a test
-optimizer, not nanochat's optimizer kernel. Separately, required-runtime CI uses
-actual installed MuonAdamW, verifies initialized buffers survive a skipped step,
-and compares the next finite update against an independent reference exactly.
+optimizer, not nanochat's optimizer kernel. Separately, the local runtime checks
+use actual installed MuonAdamW, verify initialized buffers survive a skipped step,
+and compare the next finite update against an independent reference exactly.
 
-Required runs extract only the scaler/optimizer branch from hash-verified
+Required local runs extract only the scaler/optimizer branch from hash-verified
 installed SFT source and check its AST against the transformed fixture. The
 trainer entrypoint, dataset loaders, schedules and production checkpoint loading
 do not execute. Workers have 15-second group and 75-second subprocess timeouts.

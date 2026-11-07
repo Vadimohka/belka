@@ -67,7 +67,7 @@ readiness timeouts, process cleanup, CLI validation and path escapes.
 
 It does not test model quality, GPU behavior, the authenticated browser UI, or
 full launcher migration. No server, model, tokenizer or dataset code is changed.
-The existing full CI and Runtime contracts workflows collect these tests without
+The local validation commands in `CONTRIBUTING.md` collect these tests without
 changing their commands or weakening their gates.
 
 Rollback: revert the health-smoke commit as a unit (script, checker, tests,

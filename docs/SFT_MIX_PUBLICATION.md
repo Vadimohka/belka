@@ -23,7 +23,7 @@ python tools/build_sft_mix.py --check-only
 
 Check-only mode may create repository-local staging directories and temporary
 files, but removes the temporary files and does not publish final train/val files.
-CI uses this mode; it does not launch training.
+Local validation uses this mode; it does not launch training.
 
 Publication uses atomic replacement per file. The pair is NOT a single atomic
 transaction: a crash or filesystem error between the two replacements may expose
@@ -34,6 +34,6 @@ atomicity, durable fsync, concurrent writers, recovery, and rollback.
 The existing validator's default language policy is retained. Passing this command
 is not proof of Belarusian-only content in every role: the validator's user/system
 policy and heuristic calibration remain separate audited work. The 19 publication
-regression cases use a fake validator to isolate failure behavior; CI also invokes
-the actual validator against the actual active seeds, so these two evidence types
+regression cases use a fake validator to isolate failure behavior; local validation
+also invokes the actual validator against the actual active seeds, so these two evidence types
 must not be confused.

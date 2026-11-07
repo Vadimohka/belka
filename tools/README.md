@@ -5,7 +5,7 @@ and evaluation. Canonical tools by purpose:
 
 ## Validation
 
-- `validate_public_release.py` — public-release surface check (run in CI).
+- `validate_public_release.py` — public-release surface check (run locally before commit).
 - `validate_sft_jsonl.py` — generic SFT JSONL schema validator.
 - `validate_sft_v7.py` — SFT v7 dataset validator.
 - `validate_sft_v8.py` — historical SFT v8 dataset validator.

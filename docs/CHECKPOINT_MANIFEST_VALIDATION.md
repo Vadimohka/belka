@@ -56,16 +56,16 @@ PYTHONPATH="$PWD" python -m pytest -q tests/test_checkpoint_manifest_schema.py
 ```
 
 Expected with CPU PyTorch available: 85 passed. Without PyTorch, 83 source-only
-cases pass and two serialization tests are explicitly skipped. The full Runtime
-contracts workflow installs real pinned PyTorch, so these two cases must run
-there. All temporary data are synthetic, and only tokenizer identity discovery
+cases pass and two serialization tests are explicitly skipped. The local runtime
+validation commands use real pinned PyTorch, so these two cases must run in that
+environment. All temporary data are synthetic, and only tokenizer identity discovery
 is replaced by a fixture. Existing runtime/Gloo tests provide adjacent coverage.
 
 The tests cover valid writer layouts, malformed fields, duplicate keys, hashes,
 file-name step/rank/extension mismatches, bounded reads, nonregular marker paths,
 lookup indices, legacy policy, real CPU save/load, and refusal before tensor
-loading. Final remote results belong to the GitHub issue and workflow artifacts,
-not to an unverified hard-coded success claim here.
+loading. Record local results against the exact commit and runtime manifest; do
+not replace them with an unverified hard-coded success claim here.
 
 ## Boundaries and rollback
 

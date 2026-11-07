@@ -46,9 +46,9 @@ The reference shares current validation/state methods and freezes only the old
 `__next__` body from `369eef1a30f2613e55e8a7da3f2562fc402565ad`.
 
 The existing BPE identity, Parquet cursor, packer restore, CPU/Gloo continuation
-and actual-schedule tests must continue to pass in Runtime contracts. The new
-standard-library tests are not substitutes for those integrations. The normal
-lightweight CI and Runtime contracts both discover the new test file.
+and actual-schedule tests must continue to pass in the local runtime checks. The
+new standard-library tests are not substitutes for those integrations. The
+documented local test commands discover the new test file.
 
 ## Reproducible isolated measurement
 
@@ -66,13 +66,14 @@ source state copies and list allocation. Direct oracle checks run outside the
 timed region. JSON on stdout records samples, medians, software/platform,
 source hashes and the scalar/block ratio. `--batches` and `--repeats` are bounded.
 
-A ratio greater than one favors block packing. No minimum ratio is a CI gate.
+A ratio greater than one favors block packing. No minimum ratio is a local
+acceptance gate.
 For short or one-token documents, refill/validation dominates and the extra
 span bookkeeping can be slower. Keep the short-document cases in comparisons.
 These timings exclude BPE, Parquet decoding, corpus hashing, tensors, transfers,
 forward/backward and optimizer work. Do not claim equivalent training speedup
 or model-quality improvement from them. Full local measurements and exact-commit
-CI results are recorded in issue #20 after verification.
+results are recorded in the repository report after verification.
 
 ## Failure behavior and rollback
 

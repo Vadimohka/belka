@@ -63,10 +63,10 @@ and per-rank optimizer/metadata/RNG roundtrip, duplicate-save refusal, propagate
 disk failure and optimizer-free publication. Its subprocess group is killed
 on an outer timeout rather than leaving test workers behind.
 
-The lightweight CI without Torch skips these cases explicitly. The Runtime
-contracts workflow installs the pinned CPU runtime and must execute them.
-Full-suite acceptance is recorded in GitHub issue #9 and the PR, for the exact
-published commit; a local minimal snapshot is not a full-suite CI substitute.
+The lightweight source-only environment skips these cases explicitly. The local
+runtime validation commands in `CONTRIBUTING.md` must run them with the pinned
+CPU runtime. Record the exact commit and runtime manifest with the local results;
+a source-only snapshot is not evidence for the installed-runtime contract.
 
 ## Boundaries and rollback
 
