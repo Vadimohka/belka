@@ -1,0 +1,13 @@
+{
+  "source_id": "be_llm_starter_cpt",
+  "status": "copied_local_pending_rights_review",
+  "input_dir": "data_input/be_texts/be_llm_starter",
+  "records": {"cpt_train": 5142, "cpt_val": 288, "total": 5430},
+  "files": [
+    {"path": "data_input/be_texts/be_llm_starter/cpt_train.jsonl", "records": 5142, "sha256": "2d73df54b6e042e670442d425d2d3a816495265394455cdbff03fe06c53ba86e"},
+    {"path": "data_input/be_texts/be_llm_starter/cpt_val.jsonl", "records": 288, "sha256": "66fb279cdfb2f2b43526dd44525fb6d76a68f03942ba8ae69d14f1e2c6c39fc4"}
+  ],
+  "upstream_manifest": "data_input/be_texts/be_llm_starter/preparation.json",
+  "excluded": ["sft_train.jsonl", "sft_val.jsonl", "qa.jsonl", "tokenized", "raw archives", "model weights", "virtual environments"],
+  "next_gate": "run Belka LID, quality, exact/near dedup and source-specific rights review before public training or release"
+}

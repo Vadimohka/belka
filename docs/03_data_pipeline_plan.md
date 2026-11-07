@@ -44,6 +44,15 @@ reports/
 
 ## ETL stages
 
+### Imported `be_llm_starter` snapshot
+
+The local `data_input/be_texts/be_llm_starter/` snapshot is an input source, not a
+published corpus. It contains only prepared `cpt_train.jsonl` and `cpt_val.jsonl`
+records plus the upstream preparation manifest. The regular Belka filter must be
+run again, using `source_id=be_llm_starter_cpt`, because the upstream language
+heuristic and split are not Belka's acceptance decision. SFT, QA, tokenized files,
+model weights, archives, and virtual environments remain outside this source.
+
 ### 1. Source registration
 
 Before downloading, add source metadata to `configs/dataset_sources.yaml`:

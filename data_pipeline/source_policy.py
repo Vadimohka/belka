@@ -22,6 +22,7 @@ SOURCE_THRESHOLDS = {
     "cc100-be": {"min_score": 0.55, "min_chars": 150, "orthography": None},
     "bootstrap": {"min_score": 0.45, "min_chars": 60, "orthography": "narkamauka"},
     "belarusian_seed": {"min_score": 0.45, "min_chars": 60, "orthography": "narkamauka"},
+    "be_llm_starter_cpt": {"min_score": 0.50, "min_chars": 120, "orthography": None},
 }
 
 SOURCE_THRESHOLDS.update({
@@ -57,6 +58,7 @@ SOURCE_ALIASES = {
     'belarusian_bootstrap': 'bootstrap',
     'books_clean': 'books_clean_v2',
     'books_clean_v2': 'books_clean_v2',
+    'be_llm_starter': 'be_llm_starter_cpt',
     'oscar': 'oscar-2301-be',
     'culturax': 'culturax-be',
     'mc4': 'mc4-be',

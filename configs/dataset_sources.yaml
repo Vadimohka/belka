@@ -347,6 +347,19 @@ sources:
   suitable_for: smoke/sanity, SFT seed
   preprocessing_notes: cap and mark synthetic
   risks: repetition, insufficient quality
+- id: be_llm_starter_cpt
+  name: be_llm_starter prepared Belarusian CPT corpus
+  url: local ../be_llm_starter/work/pilot/prepared/cpt_train.jsonl and cpt_val.jsonl
+  type: prepared_text_corpus
+  language: Belarusian-labelled, mixed source provenance
+  access_method: copied from adjacent local project into data_input/be_texts/be_llm_starter
+  priority: medium_candidate
+  status: local_import_pending_rights_review
+  suitable_for: pretraining supplement after provenance and duplicate review
+  preprocessing_notes: source records retain archive, member, doc_id and content_sha256; re-run Belka LID, quality and dedup filters; do not use tokenized outputs
+  risks: mixed web/legal/academic/OCR provenance, possible Russian text, copyright and redistribution restrictions, overlap with existing corpus
+  license: source-specific terms not established; no public redistribution or release use until reviewed
+  intended_use: local research corpus only pending rights review
 - id: books_clean_v2
   name: Belarusian literary prose (cleaned), incl. RuLit-style sources
   url: local data_input/be_texts/books_clean_v2/ (aggregated from RuLit-style sources)

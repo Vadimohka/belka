@@ -54,6 +54,7 @@ This inventory lists candidate data sources for a Belarusian language model. “
 | WMT / WMT24++ / WMT25 resources | MT benchmark/training | Belarusian coverage requires verification | varies by shared task | varies | WMT/mtdata | translation eval or data if covered | coverage uncertainty, licenses vary | low until verified | use mtdata search; record exact datasets |
 | MeetMesh generated Belarusian SFT | synthetic/domain SFT | Belarusian | small, project-specific | internal/project-derived; verify before publish | repo seed files | domain SFT/eval | hallucinated feature risk | medium | ground every answer in source code/docs; no secrets |
 | Bootstrap/seed synthetic corpus | synthetic text | Belarusian | archive has small bootstrap | synthetic/research | repo | smoke, SFT seed | synthetic repetition, not enough for quality | high for sanity only | cap and mark synthetic |
+| `be_llm_starter` prepared CPT corpus | prepared text JSONL from adjacent local project | Belarusian-labelled, mixed source provenance | 5,430 records in the imported train/validation snapshot | source-specific terms not established; no redistribution | copied from local `be_llm_starter` project | pretraining supplement after full Belka filtering | mixed web/legal/academic/OCR provenance, Russian text, copyright, PII, overlap | medium candidate | review each archive's rights, rerun LID/quality/dedup, retain provenance |
 
 ## Immediate dataset priorities
 
