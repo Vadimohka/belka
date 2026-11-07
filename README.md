@@ -77,7 +77,8 @@ figure is not a new count of training targets including BOS.
 For the already prepared `source.tar` / `prepared.tar`, follow the
 [SSH server runbook](docs/H200_TRAINING.md): machine requirements, transfer,
 installation, measured timing, `tmux`, launch and resume. The suggested main-profile
-server has one full H200 141 GB, 16–32 vCPUs, 128 GB RAM and 1 TB free NVMe.
+server has one full H200 141 GB, an estimated 8 vCPUs, 64 GB RAM and 500 GB free SSD.
+CPU/RAM have not been measured on H200; disk includes a conservative checkpoint reserve.
 The commands below are for rebuilding data from sources.
 
 `ops/local/quickstart.sh` now prepares verified inputs without starting training.
