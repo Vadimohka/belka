@@ -28,6 +28,42 @@ def replace_once(text, old, new):
     return text.replace(old,new,1)
 
 
+def add_sampling_controls(text):
+    """Add opt-in sampling without changing tool injection or native defaults."""
+    start = text.index('@torch.inference_mode()\ndef sample_next_token(')
+    end = text.index('\n# -----------------------------------------------------------------------------', start)
+    text = replace_once(text, text[start:end],
+        'from nanochat.belka_sampling import sample_next_token, validate_sampling_controls\n')
+    text = replace_once(text,
+        '    def generate(self, tokens, num_samples=1, max_tokens=None, temperature=1.0, top_k=None, seed=42):',
+        '    def generate(self, tokens, num_samples=1, max_tokens=None, temperature=1.0, top_k=None, seed=42,\n'
+        '                 min_p=0.0, repetition_penalty=1.0, repetition_window=64):')
+    text = replace_once(text,
+        '        """Same as generate, but does single prefill and then clones the KV cache."""',
+        '        """Prefill once, then decode with opt-in min-p and generated-only repetition penalties."""\n'
+        '        validate_sampling_controls(temperature, top_k, min_p, repetition_penalty, repetition_window)')
+    text = replace_once(text,
+        '        row_states = [RowState(tokens.copy()) for _ in range(num_samples)]',
+        '        row_states = [RowState(tokens.copy()) for _ in range(num_samples)]\n'
+        '        repetition_histories = ([deque(maxlen=repetition_window) for _ in row_states]\n'
+        '                                if repetition_penalty != 1 else None)\n'
+        '        repetition_specials = ({get_special(name) for name in self.tokenizer.get_special_tokens()}\n'
+        '                               if repetition_histories is not None else set())')
+    text = replace_once(text,
+        '            next_ids = sample_next_token(logits, rng, temperature, top_k)  # (B, 1)',
+        '            next_ids = sample_next_token(logits, rng, temperature, top_k, min_p=min_p,\n'
+        '                repetition_penalty=repetition_penalty, repetition_window=repetition_window,\n'
+        '                generated_tokens=repetition_histories)  # (B, 1)')
+    text = replace_once(text,
+        '                state.current_tokens.append(next_token)',
+        '                state.current_tokens.append(next_token)\n'
+        '                if repetition_histories is not None:\n'
+        '                    # Forced results and all control tokens age the window without being penalized.\n'
+        '                    ordinary = not is_forced and not state.completed and next_token not in repetition_specials\n'
+        '                    repetition_histories[i].append(next_token if ordinary else None)')
+    return text
+
+
 def preserve_sft_warm_start_decay(text):
     """Keep fresh SFT decay values when importing pretrained optimizer state."""
     text = replace_once(text,
@@ -280,7 +316,7 @@ def use_calculator(expr):
         '        if type(num_tokens) is not int or num_tokens < 0 or torch.any(self.cache_seqlens + num_tokens > self.max_seq_len).item():\n            raise ValueError("KV cache capacity exceeded")\n        self.cache_seqlens += num_tokens')
     engine=replace_once(engine, '        assert isinstance(tokens, list) and isinstance(tokens[0], int), "expecting list of ints"',
         '        if not isinstance(tokens, list) or not tokens or any(type(t) is not int or t < 0 for t in tokens):\n            raise ValueError("expecting a nonempty list of token IDs")\n        if type(num_samples) is not int or num_samples < 1:\n            raise ValueError("num_samples must be positive")\n        if max_tokens is None:\n            max_tokens = self.model.config.sequence_len - len(tokens)\n        if type(max_tokens) is not int or max_tokens < 0 or len(tokens) + max_tokens > self.model.config.sequence_len:\n            raise ValueError("prompt plus completion exceeds the configured context")\n        if max_tokens == 0:\n            return')
-    output['nanochat/engine.py']=engine
+    output['nanochat/engine.py']=add_sampling_controls(engine)
     gpt=originals['nanochat/gpt.py']
     gpt=replace_once(gpt,'        B, T = idx.size()\n',
         '        B, T = idx.size()\n        if B < 1 or T < 1:\n            raise ValueError("GPT inputs must be nonempty")\n        if targets is not None and targets.shape != idx.shape:\n            raise ValueError("input/target shapes differ")\n')

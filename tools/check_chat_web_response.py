@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -78,6 +79,37 @@ def check_health(payload: bytes) -> dict:
     return {"ready": True, "workers": workers}
 
 
+def _check_generation_metadata(item: dict) -> None:
+    """Accept optional replay metadata without relaxing the token/error protocol."""
+    if item.get('done') is not True or set(item) - {'done', 'generation', 'model'}:
+        raise ResponseError('invalid completion marker')
+    if 'generation' in item:
+        config = item['generation']
+        integer_ranges = {'seed': (0, 2**31-1), 'top_k': (0, 200),
+                          'repetition_window': (1, 512), 'max_tokens': (1, 4096)}
+        real_ranges = {'temperature': (0, 2), 'min_p': (0, 1), 'repetition_penalty': (1, 2)}
+        if not isinstance(config, dict) or set(config) != set(integer_ranges) | set(real_ranges):
+            raise ResponseError('invalid generation metadata')
+        for key, (low, high) in integer_ranges.items():
+            if type(config[key]) is not int or not low <= config[key] <= high:
+                raise ResponseError('invalid generation metadata')
+        for key, (low, high) in real_ranges.items():
+            value = config[key]
+            if type(value) not in (int, float) or not math.isfinite(value) or not low <= value <= high:
+                raise ResponseError('invalid generation metadata')
+    if 'model' in item:
+        model = item['model']
+        if not isinstance(model, dict) or set(model) != {'source', 'model_tag', 'step'}:
+            raise ResponseError('invalid model metadata')
+        if not isinstance(model['source'], str) or not model['source']:
+            raise ResponseError('invalid model metadata')
+        tag, step = model['model_tag'], model['step']
+        if tag is not None and (not isinstance(tag, str) or not tag):
+            raise ResponseError('invalid model metadata')
+        if step is not None and (type(step) is not int or step < 0):
+            raise ResponseError('invalid model metadata')
+
+
 def check_completion(payload: bytes) -> dict:
     # SSE recognizes CRLF, CR and LF, but not every Unicode line separator.
     text = _decode(payload).replace("\r\n", "\n").replace("\r", "\n")
@@ -97,8 +129,7 @@ def check_completion(payload: bytes) -> dict:
                 if "error" in item:
                     raise ResponseError("server reported a generation error")
                 if "done" in item:
-                    if item != {"done": True} or type(item["done"]) is not bool:
-                        raise ResponseError("invalid completion marker")
+                    _check_generation_metadata(item)
                     done = True
                 elif "token" in item:
                     token = item["token"]
