@@ -1,7 +1,7 @@
 {
   "repository": "karpathy/nanochat",
   "commit": "92d63d4e8bb4df75c3b71618f31ddde2378b2bcd",
-  "verified_date": "2026-10-01",
+  "verified_date": "2026-11-25",
   "files": {
     "nanochat/common.py": "b843db6e769db18d3364e42cb3742a9537a3d4cf43e5f098293babc7ddeb44bf",
     "nanochat/gpt.py": "8cdedc2e418b9d4dc45884e07f59904fcdec066bb3d76664b2adf2d415f704e3",
@@ -14,6 +14,7 @@
     "nanochat/flash_attention.py": "a10b0b10ad91893fcf9c9b19c96bd3468a2721cf156dcdbeeeecf05f97f22c2f",
     "nanochat/loss_eval.py": "00faad1e0ae8912022f79ee4bf583c4f9b4c058e4523c5674144648c49229fd6",
     "scripts/base_train.py": "87395b8078491d5088e7e8100866162b494638097215759b46d8ceb5d2f0fdcc",
-    "scripts/chat_sft.py": "325ed7768eb3ab4ce8be5f147b43dac98745c4b1c697a918c0350139328329cc"
+    "scripts/chat_sft.py": "325ed7768eb3ab4ce8be5f147b43dac98745c4b1c697a918c0350139328329cc",
+    "scripts/infer_bench.py": "d500905027f5f5633c009e97464166fe7d5a5880e9b4f8d3100ef461ca22f46c"
   }
 }

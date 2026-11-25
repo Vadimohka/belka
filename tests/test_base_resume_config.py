@@ -9,7 +9,6 @@ import ast
 import copy
 from datetime import timedelta
 import hashlib
-import importlib.util
 import json
 import os
 from pathlib import Path
@@ -20,10 +19,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = Path(os.environ.get('NANOCHAT_DIR', ROOT / '.workspace/nanochat')).resolve()
-spec = importlib.util.spec_from_file_location(
-    'base_resume_guard_test', ROOT / 'ops/nanochat_fork/nanochat/belka_resume.py')
-guard = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(guard)
+from ops.nanochat_fork.nanochat import belka_resume as guard
 
 
 def config():
@@ -126,6 +122,37 @@ def test_local_guard_preserves_rng_and_has_no_file_outputs(tmp_path):
     assert not list(tmp_path.iterdir())
 
 
+@pytest.mark.parametrize('recorded,requested,resolved', [
+    (None, 'auto', 'legacy'), ('legacy', 'auto', 'legacy'),
+    ('actual-v1', 'auto', 'actual-v1'),
+    ('legacy', 'legacy', 'legacy'), ('actual-v1', 'actual-v1', 'actual-v1'),
+])
+def test_collective_guard_returns_resolved_policy_without_mutating_inputs(recorded, requested, resolved):
+    pytest.importorskip('torch')
+    saved, current = metadata(), config()
+    if recorded is not None:
+        saved['user_config']['horizon_policy'] = recorded
+    current['horizon_policy'] = requested
+    original = copy.deepcopy((saved, current))
+    assert guard.validate_base_resume_config(saved, current, 20) == resolved
+    assert (saved, current) == original
+
+
+@pytest.mark.parametrize('recorded,requested,match', [
+    ('legacy', 'actual-v1', 'horizon_policy changed'),
+    ('actual-v1', 'legacy', 'horizon_policy changed'),
+    ('auto', 'auto', 'unknown saved horizon_policy'),
+    ('actual-v2', 'auto', 'unknown saved horizon_policy'),
+])
+def test_policy_mismatch_is_a_preflight_failure(recorded, requested, match):
+    pytest.importorskip('torch')
+    saved, current = metadata(), config()
+    saved['user_config']['horizon_policy'] = recorded
+    current['horizon_policy'] = requested
+    with pytest.raises(ValueError, match='base resume preflight failed:.*' + match):
+        guard.validate_base_resume_config(saved, current, 20)
+
+
 def _consensus_worker(rank, rendezvous, results):
     import torch
     import torch.distributed as dist
@@ -135,20 +162,32 @@ def _consensus_worker(rank, rendezvous, results):
     try:
         before = torch.get_rng_state().clone()
         for scenario in ('changed_rank1', 'missing_rank1', 'matching_but_different',
-                         'different_step', 'valid'):
+                         'different_step', 'unknown_saved_policy_rank1',
+                         'changed_policy_rank1', 'different_valid_policies',
+                         'valid', 'valid_actual'):
             saved, current, step = metadata(), config(), 20
+            current['horizon_policy'] = 'auto'
+            if scenario == 'valid_actual':
+                saved['user_config']['horizon_policy'] = 'actual-v1'
             if rank == 1:
                 if scenario == 'changed_rank1': current['warmup_steps'] = 1
                 elif scenario == 'missing_rank1': del saved['user_config']['warmup_steps']
                 elif scenario == 'matching_but_different':
                     saved['user_config']['warmup_steps'] = current['warmup_steps'] = 1
                 elif scenario == 'different_step': saved['step'] = step = 21
+                elif scenario == 'unknown_saved_policy_rank1':
+                    saved['user_config']['horizon_policy'] = 'actual-v2'
+                elif scenario == 'changed_policy_rank1': current['horizon_policy'] = 'actual-v1'
+                elif scenario == 'different_valid_policies':
+                    saved['user_config']['horizon_policy'] = 'actual-v1'
             try:
-                guard.validate_base_resume_config(saved, current, step)
+                resolved = guard.validate_base_resume_config(saved, current, step)
                 outcome = 'accepted'
             except ValueError:
                 outcome = 'rejected'
-            assert outcome == ('accepted' if scenario == 'valid' else 'rejected')
+            assert outcome == ('accepted' if scenario.startswith('valid') else 'rejected')
+            if outcome == 'accepted':
+                assert resolved == ('actual-v1' if scenario == 'valid_actual' else 'legacy')
             observed.append(outcome)
             assert torch.equal(before, torch.get_rng_state())
         Path(results, f'rank{rank}.json').write_text(json.dumps(observed))
@@ -182,7 +221,7 @@ def test_two_gloo_ranks_coordinate_rejection_and_recover(tmp_path):
             if process.is_alive(): process.kill(); process.join(timeout=5)
     for rank in range(2):
         assert json.loads((tmp_path/f'rank{rank}.json').read_text()) == [
-            'rejected', 'rejected', 'rejected', 'rejected', 'accepted']
+            'rejected'] * 7 + ['accepted', 'accepted']
 
 
 def installed_resume_branch():
@@ -225,3 +264,37 @@ def test_actual_generated_resume_branch_rejects_before_weight_application(change
     else:
         exec(code, namespace)
         assert calls == [(({'w': 1},), {'strict': True, 'assign': True})]
+        assert namespace['args'].horizon_policy == current['horizon_policy'] == 'legacy'
+
+
+@pytest.mark.parametrize('recorded,requested,expected', [
+    (None, 'auto', 'legacy'), ('actual-v1', 'auto', 'actual-v1'),
+    ('legacy', 'actual-v1', None), ('actual-v1', 'legacy', None),
+    ('unrecognized', 'auto', None),
+])
+def test_generated_resume_policy_resolves_or_refuses_before_model_apply(recorded, requested, expected):
+    pytest.importorskip('torch')
+    branch = installed_resume_branch()
+    sys.path.insert(0, str(RUNTIME))
+    saved, current = metadata(), config()
+    if recorded is not None:
+        saved['user_config']['horizon_policy'] = recorded
+    current['horizon_policy'] = requested
+    original_saved = copy.deepcopy(saved)
+    calls = []
+    namespace = dict(resuming=True, args=SimpleNamespace(resume_from_step=20, horizon_policy=requested),
+        checkpoint_dir='unused', device='cpu', ddp_rank=0, print0=lambda *a: None,
+        user_config=current, model_config_kwargs=saved['model_config'],
+        load_checkpoint=lambda *a, **kw: ({'w': 1}, {}, saved),
+        model=SimpleNamespace(load_state_dict=lambda *a, **kw: calls.append((a, kw))))
+    code = compile(ast.Module(body=[branch], type_ignores=[]), '<installed-resume-policy>', 'exec')
+    if expected is None:
+        with pytest.raises(ValueError, match='horizon_policy'):
+            exec(code, namespace)
+        assert not calls
+        assert current['horizon_policy'] == requested
+    else:
+        exec(code, namespace)
+        assert len(calls) == 1
+        assert namespace['args'].horizon_policy == current['horizon_policy'] == expected
+    assert saved == original_saved

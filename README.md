@@ -170,6 +170,11 @@ controls, per-answer settings and evaluation manifests. For vocabulary research,
 see [isolated tokenizer experiments](docs/TOKENIZER_ABLATION.md): independent BPE
 candidates, verified training inputs and measured Unicode/fertility checks.
 
+The [2026-11-25 upstream review](docs/NANOCHAT_UPSTREAM_REVIEW_2026_11_25.md)
+records the current nanochat heads and selected backports: versioned training
+horizon calculations, attention device routing and an optional automatic
+inference benchmark sweep.
+
 ## Publication / release artifacts
 
 Readiness for GitHub / Hugging Face (model + dataset) / Zenodo, and open blockers:

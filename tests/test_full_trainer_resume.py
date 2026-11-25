@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib
 import json
+import math
 import os
 import shutil
 import subprocess
@@ -80,26 +81,67 @@ def assert_equal(a, b):
         assert a == b
 
 
-def test_actual_base_and_sft_resume_matches_uninterrupted(tmp_path):
+@pytest.mark.parametrize('policy', ['legacy', 'actual-v1'])
+def test_actual_base_and_sft_resume_matches_uninterrupted(tmp_path, policy):
     torch = pytest.importorskip('torch')
     runtime = runtime_dir()
     complete, resumed = tmp_path / 'complete', tmp_path / 'resumed'
     prepare(complete); shutil.copytree(complete, resumed, symlinks=True)
     for module, folder in [('scripts.base_train', 'base_checkpoints'), ('scripts.chat_sft_be', 'chatsft_checkpoints')]:
-        train(runtime, complete, module)
-        train(runtime, resumed, module, ['--stop-after-step=1'])
+        policy_flags = [f'--horizon-policy={policy}'] if module == 'scripts.base_train' else []
+        train(runtime, complete, module, policy_flags)
+        train(runtime, resumed, module, [*policy_flags, '--stop-after-step=1'])
         assert not (resumed / folder / 'tiny/commit_000003.json').exists()
         stopped = json.loads((resumed / folder / 'tiny/result_000001.json').read_text())
         assert stopped['completion_reason'] == 'invocation_stop' and not stopped['training_complete']
         train(runtime, resumed, module, ['--resume-from-step=1'])
         a, b = complete / folder / 'tiny', resumed / folder / 'tiny'
         for name in ('model_000003.pt', 'optim_000003_rank0.pt', 'rng_000003_rank0.pt'):
-            assert_equal(torch.load(a / name, weights_only=True), torch.load(b / name, weights_only=True))
+            first, second = [torch.load(p / name, weights_only=True) for p in (a, b)]
+            assert_equal(first, second)
+            if name.startswith('model_'):
+                assert all(torch.isfinite(tensor).all().item() for tensor in first.values())
         ma, mb = [json.loads((p / 'meta_000003.json').read_text()) for p in (a, b)]
         for key in ('dataloader_state_dict', 'scaler_state', 'val_bpb'):
             assert_equal(ma[key], mb[key])
         for key in ('smooth_train_loss', 'min_val_bpb'):
             assert_equal(ma['loop_state'][key], mb['loop_state'][key])
+            assert math.isfinite(ma['loop_state'][key])
+        if module == 'scripts.base_train':
+            assert ma['user_config']['horizon_policy'] == mb['user_config']['horizon_policy'] == policy
+            # Resume used the default auto flag, but checkpoints record its resolution.
+            assert ma['user_config']['num_iterations'] == mb['user_config']['num_iterations'] == 3
+        result = json.loads((b / 'result_000003.json').read_text())
+        assert result['planned_optimizer_steps'] == 3
+        assert result['completion_reason'] == 'horizon' and result['training_complete']
+
+
+def test_actual_flops_budget_preserves_raw_selector_and_reports_resolved_horizon(tmp_path):
+    torch = pytest.importorskip('torch')
+    runtime = runtime_dir()
+    base = tmp_path / 'flops'; prepare(base)
+    from nanochat.gpt import GPT, GPTConfig
+    from nanochat.tokenizer import RustBPETokenizer
+    vocab = RustBPETokenizer.from_directory(str(base / 'tokenizer')).get_vocab_size()
+    with torch.device('meta'):
+        model = GPT(GPTConfig(sequence_len=64, vocab_size=vocab, n_layer=2,
+                             n_head=2, n_kv_head=2, n_embd=32, window_pattern='L'))
+    # 3.75 batches: actual-v1 schedules three complete steps; legacy rounded four.
+    target_flops = model.estimate_flops() * 480
+    flags = ['--num-iterations=-1', f'--target-flops={target_flops}']
+    train(runtime, base, 'scripts.base_train', flags)
+    folder = base / 'base_checkpoints/tiny'
+    metadata = json.loads((folder / 'meta_000003.json').read_text())
+    assert metadata['user_config']['num_iterations'] == -1
+    assert metadata['user_config']['horizon_policy'] == 'actual-v1'
+    assert metadata['user_config']['target_flops'] == target_flops
+    summary = json.loads((folder / 'result_000003.json').read_text())
+    assert summary['planned_optimizer_steps'] == summary['completed_optimizer_steps'] == 3
+    assert summary['completion_reason'] == 'horizon' and summary['training_complete']
+    assert not summary['stopped_before_horizon']
+    assert math.isfinite(metadata['loop_state']['smooth_train_loss'])
+    train(runtime, base, 'scripts.base_train', [*flags, '--resume-from-step=3'])
+    assert not (folder / 'commit_000004.json').exists()
 
 
 def test_actual_sft_early_stop_preserves_best_committed_step(tmp_path):
