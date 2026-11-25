@@ -1,25 +1,42 @@
-# Tokenizer ablation configuration
-version: "1.0"
+# Vocabulary comparison; final selection requires controlled model-quality runs.
+version: "2.0"
 
 vocab_sizes: [8192, 16384, 24576, 32768]
-primary_recommendation: 16384
+primary_recommendation: null
+selection_rule: "Compare held-out BPB and task quality at a matched training budget; fertility alone is not a winner."
+
+preparation:
+  entrypoint: "tools/prepare_h200_tokenizer.py"
+  base_dir: ".workspace/h200-ready/data"
+  fresh_output_required: true
+  train_only: true
+  pin_corpus_and_sft_generations: true
 
 algorithm:
   name: "bpe_byte_fallback"
   library: "rustbpe"
   max_chars_per_ablation: 20000000
   doc_cap: 15000
+  doc_cap_unit: "characters per document"
 
 evaluation_metrics:
   - tokens_per_char
   - tokens_per_word
-  - byte_fallback_rate
-  - unk_rate
+  - tokens_per_utf8_byte
+  - single_byte_token_rate
+  - non_ascii_byte_token_rate
+  - utf8_roundtrip
+  - byte_alphabet_coverage
   - belarusian_letter_coverage
   - tarask_fertility
   - narkamauka_fertility
-  - russian_penalty
-  - english_penalty
+  - russian_fertility
+  - english_fertility
+
+evaluation:
+  default_scope: "smoke_only"
+  eval_file: "Optional UTF-8 text or JSONL records with text and optional group; never tokenizer-training input."
+  byte_fallback_rate: "Deprecated report key is null; a single-byte token is not a separately observed fallback event."
 
 belarusian_letters_required:
   - "ў"
@@ -29,11 +46,14 @@ belarusian_letters_required:
   - "І"
   - "Ё"
   - "'"
+  - "’"
+  - "ʼ"
 
 outputs:
   - "reports/tokenizer_ablation_report.json"
-  - "reports/tokenizer_ablation_report.md"
-  - "reports/tokenizers/tok_8k.pkl"
-  - "reports/tokenizers/tok_16k.pkl"
-  - "reports/tokenizers/tok_24k.pkl"
-  - "reports/tokenizers/tok_32k.pkl"
+  - "reports/tokenizers/tokenizer_ablation_raw.json"
+  - "reports/tokenizers/vocab_<size>/tokenizer/TOKENIZER_TRAINING_MANIFEST.json"
+  - "reports/tokenizers/tok_8192.pkl"
+  - "reports/tokenizers/tok_16384.pkl"
+  - "reports/tokenizers/tok_24576.pkl"
+  - "reports/tokenizers/tok_32768.pkl"

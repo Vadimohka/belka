@@ -164,6 +164,12 @@ Canonical commands and the clean-clone / external-data / GPU split are in
 Artifact hashes: [`reports/checkpoints_manifest/`](reports/checkpoints_manifest/) and
 [`reports/state/`](reports/state/).
 
+For controlled inference experiments, see [reproducible generation and sampling
+comparisons](docs/REPRODUCIBLE_GENERATION.md): fixed seeds, optional min-p/repetition
+controls, per-answer settings and evaluation manifests. For vocabulary research,
+see [isolated tokenizer experiments](docs/TOKENIZER_ABLATION.md): independent BPE
+candidates, verified training inputs and measured Unicode/fertility checks.
+
 ## Publication / release artifacts
 
 Readiness for GitHub / Hugging Face (model + dataset) / Zenodo, and open blockers:
