@@ -42,12 +42,13 @@ def validate_batch(batch, sequence_length, world_size, total, eval_tokens=None):
 
 
 def training_result(checkpoint_dir, step, best_step, best_bpb, *, stopped_early, data_state,
-                    completion_reason=None):
+                    completion_reason=None, planned_optimizer_steps=None):
     import json
     import math
     import os
     import tempfile
     result = dict(schema='belka-training-result-v1', completed_optimizer_steps=step,
+                  planned_optimizer_steps=planned_optimizer_steps,
                   best_step=best_step, best_val_bpb=best_bpb if math.isfinite(best_bpb) else None,
                   stopped_before_horizon=stopped_early,
                   completion_reason=completion_reason,

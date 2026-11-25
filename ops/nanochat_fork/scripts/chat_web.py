@@ -34,6 +34,9 @@ class Settings:
     device_type: str = ''
     temperature: float = .8
     top_k: int = 50
+    min_p: float = 0.0
+    repetition_penalty: float = 1.0
+    repetition_window: int = 64
     max_tokens: int = 512
     host: str = '127.0.0.1'
     port: int = 8000
@@ -51,6 +54,11 @@ class Settings:
             if not math.isfinite(value): raise ValueError('non-finite settings')
         if not 0 <= self.temperature <= 2 or not 0 <= self.top_k <= 200 or not 1 <= self.max_tokens <= 4096:
             raise ValueError('invalid sampling defaults')
+        for value, low, high in ((self.min_p, 0, 1), (self.repetition_penalty, 1, 2)):
+            if type(value) not in (int, float) or not math.isfinite(value) or not low <= value <= high:
+                raise ValueError('invalid experimental sampling defaults')
+        if type(self.repetition_window) is not int or not 1 <= self.repetition_window <= 512:
+            raise ValueError('invalid repetition window')
         if self.acquire_timeout <= 0 or self.generation_timeout <= 0:
             raise ValueError('timeouts must be positive')
 
@@ -61,6 +69,7 @@ class Worker:
     device: Any
     engine: Any
     tokenizer: Any
+    model_info: dict[str, Any] | None = None
 
 
 class ChatMessage(BaseModel):
@@ -75,6 +84,10 @@ class ChatRequest(BaseModel):
     temperature: float | None = Field(default=None,ge=0,le=2,allow_inf_nan=False)
     top_k: int | None = Field(default=None,ge=0,le=200,strict=True)
     max_tokens: int | None = Field(default=None,ge=1,le=4096,strict=True)
+    seed: int | None = Field(default=None,ge=0,lt=2**31,strict=True)
+    min_p: float | None = Field(default=None,ge=0,le=1,allow_inf_nan=False,strict=True)
+    repetition_penalty: float | None = Field(default=None,ge=1,le=2,allow_inf_nan=False,strict=True)
+    repetition_window: int | None = Field(default=None,ge=1,le=512,strict=True)
     stream: bool = True  # compatibility: this endpoint always returns SSE
     model: str | None = Field(default=None, min_length=1, max_length=200)
 
@@ -132,8 +145,12 @@ def load_workers(settings):
     workers=[]
     for index in range(settings.num_gpus):
         device=torch.device(f'cuda:{index}' if kind=='cuda' else kind)
-        model,tok,_=load_model(settings.source,device,phase='eval',model_tag=settings.model_tag,step=settings.step)
-        workers.append(Worker(index,device,Engine(model,tok),tok))
+        model,tok,meta=load_model(settings.source,device,phase='eval',model_tag=settings.model_tag,step=settings.step)
+        # Do not expose checkpoint paths or arbitrary training metadata to clients.
+        step=meta.get('step') if isinstance(meta,dict) else None
+        if type(step) is not int or step < 0: step=settings.step
+        info=dict(source=settings.source,model_tag=settings.model_tag,step=step)
+        workers.append(Worker(index,device,Engine(model,tok),tok,info))
     return workers
 
 
@@ -200,6 +217,15 @@ def create_app(settings=None,workers=None):
             ids,maximum,_=prompt_budget(body,worker)
         except BaseException:
             app.state.available.put_nowait(worker);raise
+        generation=dict(
+            seed=body.seed if body.seed is not None else secrets.randbelow(2**31),
+            temperature=body.temperature if body.temperature is not None else settings.temperature,
+            top_k=body.top_k if body.top_k is not None else settings.top_k,
+            min_p=body.min_p if body.min_p is not None else settings.min_p,
+            repetition_penalty=body.repetition_penalty if body.repetition_penalty is not None else settings.repetition_penalty,
+            repetition_window=body.repetition_window if body.repetition_window is not None else settings.repetition_window,
+            max_tokens=maximum)
+        model_info=worker.model_info or dict(source=settings.source,model_tag=settings.model_tag,step=settings.step)
         loop=asyncio.get_running_loop();cancel=threading.Event();chunks=queue.Queue(maxsize=16)
         def offer(item):
             while not cancel.is_set():
@@ -208,9 +234,7 @@ def create_app(settings=None,workers=None):
         def producer():
             try:
                 accumulated=[];last='';deadline=time.monotonic()+settings.generation_timeout
-                for column,_ in worker.engine.generate(ids,num_samples=1,max_tokens=maximum,
-                        temperature=body.temperature if body.temperature is not None else settings.temperature,
-                        top_k=body.top_k if body.top_k is not None else settings.top_k,seed=secrets.randbelow(2**31)):
+                for column,_ in worker.engine.generate(ids,num_samples=1,**generation):
                     if cancel.is_set(): break
                     if time.monotonic()>deadline: offer({'error':'generation timeout'});break
                     token=column[0]
@@ -220,7 +244,7 @@ def create_app(settings=None,workers=None):
                         if not text.startswith(last): raise ValueError('non-monotonic token decoding')
                         delta=text[len(last):];last=text
                         if delta: offer({'token':delta,'gpu':worker.gpu_id})
-                offer({'done':True})
+                offer({'done':True,'generation':generation,'model':model_info})
             except Exception:
                 # Never log request text, model output, credentials or raw exception payload.
                 offer({'error':'generation failed'});offer({'done':True})
@@ -253,6 +277,9 @@ def main():
         parser.add_argument('-'+short,'--'+flag,type=kind,default=default)
     parser.add_argument('--host',default='127.0.0.1')
     parser.add_argument('--device-type',default='',choices=['','cpu','cuda','mps'])
+    parser.add_argument('--min-p',type=float,default=0.0)
+    parser.add_argument('--repetition-penalty',type=float,default=1.0)
+    parser.add_argument('--repetition-window',type=int,default=64)
     args=parser.parse_args()
     settings=Settings(**vars(args),api_key=os.environ.get('BELKA_API_KEY',''))
     settings.validate()

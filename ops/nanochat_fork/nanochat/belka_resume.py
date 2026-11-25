@@ -9,6 +9,8 @@ import hashlib
 import json
 import math
 
+from .belka_training_horizon import resolve_horizon_policy
+
 
 # Include inactive horizon selectors: silently changing their precedence is not
 # an exact continuation. The checkpoint already records all of these inputs.
@@ -59,12 +61,16 @@ def _base_resume_signature(metadata: dict, current: dict, resume_step: int) -> s
                          + '; restore the saved flags rather than rewriting checkpoint metadata')
     if saved.get('early_stopping_patience', 0) != current.get('early_stopping_patience', 0):
         raise ValueError('base resume early-stopping configuration changed')
+    # Missing historical fields intentionally select the old arithmetic. Resolve
+    # auto inside this collective preflight, never before other ranks enter it.
+    policy = resolve_horizon_policy(current.get('horizon_policy', 'legacy'), saved)
+    normalized[1]['horizon_policy'] = policy
     payload = {'step': resume_step, 'config': normalized[1]}
     return hashlib.sha256(json.dumps(payload, sort_keys=True, allow_nan=False,
                                      separators=(',', ':')).encode('utf-8')).hexdigest()
 
 
-def validate_base_resume_config(metadata: dict, current: dict, resume_step: int) -> None:
+def validate_base_resume_config(metadata: dict, current: dict, resume_step: int) -> str:
     """All default-group ranks must call after checkpoint load, before apply.
 
     Coordinate ordinary errors and differing per-rank configuration. Loading has
@@ -86,6 +92,7 @@ def validate_base_resume_config(metadata: dict, current: dict, resume_step: int)
         raise ValueError('base resume preflight failed: ' + '; '.join(failures))
     if any(item[1] != statuses[0][1] for item in statuses):
         raise ValueError('base resume configuration disagrees across ranks')
+    return resolve_horizon_policy(current.get('horizon_policy', 'legacy'), metadata['user_config'])
 
 
 _SFT_FIELDS = ('num_iterations', 'max_seq_len', 'device_batch_size', 'total_batch_size',

@@ -13,7 +13,10 @@ Likewise, HTTP 200 from `/health` does not mean `ready:true`.
 The checker now requires HTTP 200 with the correct Content-Type, valid UTF-8,
 valid object-shaped JSON without duplicate keys, loaded workers, and a complete
 SSE sequence: at least one non-whitespace text chunk followed by exactly one
-`{"done":true}` event. Error events, data after completion, missing termination,
+`done:true` event. The completion event may also contain the validated `generation`
+and `model` metadata described in [reproducible generation](REPRODUCIBLE_GENERATION.md);
+the legacy `{"done":true}` event remains accepted. Unknown fields or malformed
+metadata fail. Error events, data after completion, missing termination,
 malformed payloads and empty completions fail. SSE uses blank-line event framing
 and LF/CRLF/CR line endings; it is not parsed as one JSON object per HTTP response.
 Reference: https://html.spec.whatwg.org/dev/server-sent-events.html

@@ -24,6 +24,7 @@ and evaluation. Canonical tools by purpose:
 - `check_eval_leakage.py` — eval leakage detection.
 - `run_belka_eval_suite.py` — run the Belka eval suite.
 - `run_belarusianglue_eval.py` — actual binary endpoint predictions and metrics on supplied labeled evaluation files; dry-run is NOT_RUN.
+- `../eval/run_openai_compatible_eval.py` — balanced prompt-by-seed runs with requested/reported sampling settings, summaries and content-bound manifests. See [reproducible generation](../docs/REPRODUCIBLE_GENERATION.md).
 
 ## Source board / mixture planning
 
@@ -36,6 +37,9 @@ Generators, downloaders, and tokenizer utilities (`generate_*`, `download_*`,
 `build_*`, `train_tokenizer_ablation.py`, `eval_tokenizer_fertility.py`, etc.).
 Older single-version utilities are retained as research history unless explicitly
 deprecated.
+
+- `train_tokenizer_ablation.py` — canonical preparation in a fresh base per vocabulary; pins inputs, verifies candidates and leaves the active tokenizer unchanged.
+- `eval_tokenizer_fertility.py` — raw-byte and Unicode checks, grouped evaluation text and explicit smoke-only defaults. See [tokenizer experiments](../docs/TOKENIZER_ABLATION.md).
 
 ### Reproducible H200 data preparation
 

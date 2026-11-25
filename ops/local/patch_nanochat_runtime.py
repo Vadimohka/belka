@@ -28,6 +28,110 @@ def replace_once(text, old, new):
     return text.replace(old,new,1)
 
 
+def add_sampling_controls(text):
+    """Add opt-in sampling without changing tool injection or native defaults."""
+    start = text.index('@torch.inference_mode()\ndef sample_next_token(')
+    end = text.index('\n# -----------------------------------------------------------------------------', start)
+    text = replace_once(text, text[start:end],
+        'from nanochat.belka_sampling import sample_next_token, validate_sampling_controls\n')
+    text = replace_once(text,
+        '    def generate(self, tokens, num_samples=1, max_tokens=None, temperature=1.0, top_k=None, seed=42):',
+        '    def generate(self, tokens, num_samples=1, max_tokens=None, temperature=1.0, top_k=None, seed=42,\n'
+        '                 min_p=0.0, repetition_penalty=1.0, repetition_window=64):')
+    text = replace_once(text,
+        '        """Same as generate, but does single prefill and then clones the KV cache."""',
+        '        """Prefill once, then decode with opt-in min-p and generated-only repetition penalties."""\n'
+        '        validate_sampling_controls(temperature, top_k, min_p, repetition_penalty, repetition_window)')
+    text = replace_once(text,
+        '        row_states = [RowState(tokens.copy()) for _ in range(num_samples)]',
+        '        row_states = [RowState(tokens.copy()) for _ in range(num_samples)]\n'
+        '        repetition_histories = ([deque(maxlen=repetition_window) for _ in row_states]\n'
+        '                                if repetition_penalty != 1 else None)\n'
+        '        repetition_specials = ({get_special(name) for name in self.tokenizer.get_special_tokens()}\n'
+        '                               if repetition_histories is not None else set())')
+    text = replace_once(text,
+        '            next_ids = sample_next_token(logits, rng, temperature, top_k)  # (B, 1)',
+        '            next_ids = sample_next_token(logits, rng, temperature, top_k, min_p=min_p,\n'
+        '                repetition_penalty=repetition_penalty, repetition_window=repetition_window,\n'
+        '                generated_tokens=repetition_histories)  # (B, 1)')
+    text = replace_once(text,
+        '                state.current_tokens.append(next_token)',
+        '                state.current_tokens.append(next_token)\n'
+        '                if repetition_histories is not None:\n'
+        '                    # Forced results and all control tokens age the window without being penalized.\n'
+        '                    ordinary = not is_forced and not state.completed and next_token not in repetition_specials\n'
+        '                    repetition_histories[i].append(next_token if ordinary else None)')
+    return text
+
+
+def patch_attention_dispatch(text):
+    """Backport upstream 6aa9410's device guard with Belka's validated cache path."""
+    text = replace_once(text,
+        '    if USE_FA3:\n        return _fa3.flash_attn_func(',
+        '    if USE_FA3 and q.is_cuda:\n        return _fa3.flash_attn_func(')
+    text = replace_once(text,
+        '    if USE_FA3:\n        return _fa3.flash_attn_with_kvcache(',
+        '    if USE_FA3 and q.is_cuda:\n        return _fa3.flash_attn_with_kvcache(')
+    text = replace_once(text,
+        'y = _sdpa_attention(q, k, v, window_size, enable_gqa)',
+        'y = _sdpa_attention(q, k, v, window_size, enable_gqa, causal=causal)')
+    start = text.index('    # SDPA fallback: manually manage KV cache\n')
+    end = text.index('\n\n# =============================================================================\n# Export:', start)
+    text = replace_once(text, text[start:end],
+        '    # CPU tensors can reach this path even when FA3 is available on the host.\n'
+        '    return _fallback_with_kvcache(\n'
+        '        q, k_cache, v_cache, k=k, v=v, cache_seqlens=cache_seqlens,\n'
+        '        causal=causal, window_size=window_size\n'
+        '    )\n')
+    return replace_once(text, 'from types import SimpleNamespace\n',
+        '# BELARUSIAN_SUPERPACK_DTYPE_SDPA: validated cache/window semantics.\n'
+        'from nanochat.belka_attention import sdpa_attention as _sdpa_attention\n'
+        'from nanochat.belka_attention import fallback_with_kvcache as _fallback_with_kvcache\n'
+        'from types import SimpleNamespace\n')
+
+
+def patch_training_horizon(text):
+    """Version the 07620a2 budget fix while keeping legacy resume arithmetic."""
+    text = replace_once(text, 'args = parser.parse_args()',
+        'parser.add_argument("--horizon-policy", choices=("auto", "legacy", "actual-v1"), default="auto", '
+        'help="budget scaling: auto uses actual-v1 for fresh runs and the saved policy for resume")\n'
+        'args = parser.parse_args()\n'
+        'from nanochat.belka_training_horizon import REFERENCE_BATCH as B_REF, compute_training_horizon, resolve_horizon_policy\n'
+        'if args.resume_from_step == -1:\n'
+        '    args.horizon_policy = resolve_horizon_policy(args.horizon_policy)')
+    start = text.index('# 1) Use scaling laws to determine the optimal training horizon in tokens\n')
+    end = text.index('# -----------------------------------------------------------------------------\n# Initialize the Optimizer', start)
+    text = replace_once(text, text[start:end], '''# Resolve the requested horizon before scaling batch size, learning rates and decay.
+# actual-v1 adapts upstream experiment_refactor 07620a2; legacy keeps old runs exact.
+def get_scaling_params(m):
+    params_counts = m.num_scaling_params()
+    return params_counts['transformer_matrices'] + params_counts['lm_head']
+num_scaling_params = get_scaling_params(model)
+d12_ref = build_model_meta(12) # shape-only reference with this run's vocabulary/config
+horizon = compute_training_horizon(vars(args), num_scaling_params=num_scaling_params,
+    reference_scaling_params=get_scaling_params(d12_ref), num_flops_per_token=num_flops_per_token)
+target_tokens = horizon.target_tokens
+D_REF = horizon.reference_tokens
+total_batch_size = horizon.total_batch_size
+batch_lr_scale = horizon.batch_lr_scale
+weight_decay_scaled = horizon.weight_decay_scaled
+num_iterations = horizon.num_iterations
+print0(f"Training horizon policy: {horizon.policy}; source: {horizon.source}; scaling tokens: {target_tokens:,}")
+print0(f"Resolved optimizer steps: {num_iterations:,}")
+if args.total_batch_size == -1:
+    print0(f"Auto-computed optimal batch size: {total_batch_size:,} tokens")
+if batch_lr_scale != 1.0:
+    print0(f"Scaling LRs by {batch_lr_scale:.4f} for batch size {total_batch_size:,} (reference: {B_REF:,})")
+if weight_decay_scaled != args.weight_decay:
+    print0(f"Scaling weight decay from {args.weight_decay:.6f} to {weight_decay_scaled:.6f} for depth {args.depth}")
+
+''')
+    start = text.index('# num_iterations: either it is given, or from target flops, or from target data:param ratio (in that order)\n')
+    end = text.index('total_tokens = total_batch_size * num_iterations', start)
+    return replace_once(text, text[start:end],
+        '# The versioned horizon was resolved before optimizer initialization.\n')
+
+
 def preserve_sft_warm_start_decay(text):
     """Keep fresh SFT decay values when importing pretrained optimizer state."""
     text = replace_once(text,
@@ -210,11 +314,16 @@ def add_early_stopping(text, kind):
     summary='''from nanochat.belka_launch import training_result
 if master_process:
     training_result(checkpoint_dir, step, best_step, min_val_bpb,
+        planned_optimizer_steps=args.num_iterations,
         stopped_early=step < args.num_iterations,
         completion_reason=("horizon" if step >= args.num_iterations else
             "early_stopping" if args.early_stopping_patience > 0 and bad_eval_count >= args.early_stopping_patience else "invocation_stop"),
         data_state=dataloader_state_dict)
 '''
+    if kind == 'base':
+        # Raw CLI selectors stay unchanged for resume validation. Reporting uses
+        # the resolved optimizer-step budget for FLOPs/ratio modes as well.
+        summary = summary.replace('args.num_iterations', 'num_iterations')
     text=replace_once(text, 'compute_cleanup()',summary+'compute_cleanup()')
     return text
 
@@ -232,7 +341,7 @@ def candidates(originals, scratch):
         output['nanochat/'+file.name]=file.read_text(encoding='utf-8')
     for relative in ('tasks/customjson.py','scripts/chat_web.py','nanochat/ui.html','nanochat/logo.svg'):
         if (fork/relative).is_file(): output[relative]=(fork/relative).read_text(encoding='utf-8')
-    # Keep parameter layout and optimizer recipe intact; repair execution contracts.
+    # Keep parameter layout and optimizer implementation intact; version budget scaling.
     output['nanochat/belka_data_contracts.py']=(PACK/'data_pipeline/contracts.py').read_text(encoding='utf-8')
     output['nanochat/dataset.py']='''"""Belka explicit local split reader. No English dataset download fallback."""
 import os
@@ -280,7 +389,7 @@ def use_calculator(expr):
         '        if type(num_tokens) is not int or num_tokens < 0 or torch.any(self.cache_seqlens + num_tokens > self.max_seq_len).item():\n            raise ValueError("KV cache capacity exceeded")\n        self.cache_seqlens += num_tokens')
     engine=replace_once(engine, '        assert isinstance(tokens, list) and isinstance(tokens[0], int), "expecting list of ints"',
         '        if not isinstance(tokens, list) or not tokens or any(type(t) is not int or t < 0 for t in tokens):\n            raise ValueError("expecting a nonempty list of token IDs")\n        if type(num_samples) is not int or num_samples < 1:\n            raise ValueError("num_samples must be positive")\n        if max_tokens is None:\n            max_tokens = self.model.config.sequence_len - len(tokens)\n        if type(max_tokens) is not int or max_tokens < 0 or len(tokens) + max_tokens > self.model.config.sequence_len:\n            raise ValueError("prompt plus completion exceeds the configured context")\n        if max_tokens == 0:\n            return')
-    output['nanochat/engine.py']=engine
+    output['nanochat/engine.py']=add_sampling_controls(engine)
     gpt=originals['nanochat/gpt.py']
     gpt=replace_once(gpt,'        B, T = idx.size()\n',
         '        B, T = idx.size()\n        if B < 1 or T < 1:\n            raise ValueError("GPT inputs must be nonempty")\n        if targets is not None and targets.shape != idx.shape:\n            raise ValueError("input/target shapes differ")\n')
@@ -291,17 +400,7 @@ def use_calculator(expr):
     gpt=replace_once(gpt,'                x = torch.cat([x[:, :1], x[:, 1:] + gate * x[:, :-1]], dim=1)\n            elif x_pre_smear is not None:',
         '                first = x[:, :1]\n                if x_pre_smear is not None:\n                    first_gate = self.smear_lambda.to(x.dtype) * torch.sigmoid(self.smear_gate(first[:, :, :24]))\n                    first = first + first_gate * x_pre_smear\n                x = torch.cat([first, x[:, 1:] + gate * x[:, :-1]], dim=1)\n            elif x_pre_smear is not None:')
     output['nanochat/gpt.py']=gpt
-    attention=originals['nanochat/flash_attention.py']
-    attention=replace_once(attention,'y = _sdpa_attention(q, k, v, window_size, enable_gqa)',
-                           'y = _sdpa_attention(q, k, v, window_size, enable_gqa, causal=causal)')
-    anchor='from types import SimpleNamespace\n'
-    attention=replace_once(attention,anchor,'''# BELARUSIAN_SUPERPACK_DTYPE_SDPA: validated cache/window semantics.
-from nanochat.belka_attention import sdpa_attention as _sdpa_attention
-if not USE_FA3:
-    from nanochat.belka_attention import fallback_with_kvcache as flash_attn_with_kvcache
-from types import SimpleNamespace
-''')
-    output['nanochat/flash_attention.py']=attention
+    output['nanochat/flash_attention.py']=patch_attention_dispatch(originals['nanochat/flash_attention.py'])
     checkpoint=originals['nanochat/checkpoint_manager.py']
     checkpoint=replace_once(checkpoint,'    log0(f"Loading optimizer state from {optimizer_path}")\n    optimizer_data = torch.load(optimizer_path, map_location=device)',
         '    log0(f"Loading optimizer state from {optimizer_path}")\n    from nanochat.belka_checkpoint import validate_checkpoint\n    validate_checkpoint(checkpoint_dir, step, rank, load_optimizer=True)\n    optimizer_data = torch.load(optimizer_path, map_location=device, weights_only=True)')
@@ -311,9 +410,9 @@ from types import SimpleNamespace
         raise ValueError('expected two checkpoint tag joins in pinned upstream')
     checkpoint=checkpoint.replace(anchor, '    from nanochat.belka_launch import checkpoint_path_under\n    checkpoint_dir = checkpoint_path_under(checkpoints_dir, model_tag)')
     output['nanochat/checkpoint_manager.py']=checkpoint+'\nfrom nanochat.belka_checkpoint import save_checkpoint, load_checkpoint, find_last_step\n'
-    base=originals['scripts/base_train.py']
+    base=patch_training_horizon(originals['scripts/base_train.py'])
     base=replace_once(base,'    model.load_state_dict(model_data, strict=True, assign=True)',
-        '    from nanochat.belka_resume import validate_base_resume_config\n    validate_base_resume_config(meta_data, user_config, args.resume_from_step)\n    if meta_data["model_config"] != model_config_kwargs:\n        raise ValueError("resume model config differs from checkpoint")\n    model.load_state_dict(model_data, strict=True, assign=True)')
+        '    from nanochat.belka_resume import validate_base_resume_config\n    args.horizon_policy = validate_base_resume_config(meta_data, user_config, args.resume_from_step)\n    user_config["horizon_policy"] = args.horizon_policy\n    if meta_data["model_config"] != model_config_kwargs:\n        raise ValueError("resume model config differs from checkpoint")\n    model.load_state_dict(model_data, strict=True, assign=True)')
     base=replace_once(base,'scaler = torch.amp.GradScaler() if COMPUTE_DTYPE == torch.float16 else None',
         'scaler = torch.amp.GradScaler() if COMPUTE_DTYPE == torch.float16 else None\nif resuming and scaler is not None:\n    if meta_data.get("scaler_state") is None:\n        raise ValueError("fp16 resume checkpoint has no scaler state")\n    scaler.load_state_dict(meta_data["scaler_state"])')
     base=replace_once(base,'"dataloader_state_dict": dataloader_state_dict,',
@@ -330,6 +429,8 @@ from types import SimpleNamespace
     base=replace_once(base, 'assert total_batch_size % world_tokens_per_fwdbwd == 0, f"total_batch_size ({total_batch_size}) must be a multiple of {world_tokens_per_fwdbwd}."', 'validate_batch(args.device_batch_size, args.max_seq_len, ddp_world_size, total_batch_size, args.eval_tokens if args.eval_every > 0 else None)')
     output['scripts/base_train.py']=add_early_stopping(base, 'base')
     output['nanochat/loss_eval.py']=originals['nanochat/loss_eval.py']+'\nfrom nanochat.belka_metrics import evaluate_bpb\n'
+    output['scripts/infer_bench.py']=load_tool('patch_nanochat_inference_benchmark').patch_infer_bench(
+        originals['scripts/infer_bench.py'])
 
     # Generate the data-mixture variant from a pristine, pinned SFT source.
     src=scratch/'chat_sft.py';dst=scratch/'chat_sft_be.py'
@@ -418,7 +519,8 @@ def install(repo: Path, verify_only=False):
     previous=json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     pack_files = [PACK/'configs/nanochat_upstream.json', PACK/'data_pipeline/contracts.py',
                   Path(__file__), PACK/'ops/local/patch_nanochat_for_belarusian.py',
-                  PACK/'ops/local/patch_nanochat_branding.py']
+                  PACK/'ops/local/patch_nanochat_branding.py',
+                  PACK/'ops/local/patch_nanochat_inference_benchmark.py']
     pack_files += [p for p in (PACK/'ops/nanochat_fork').rglob('*') if p.is_file() and p.suffix in ('.py','.html','.svg')]
     pack_identity = {str(p.relative_to(PACK)):digest(p.read_bytes()) for p in sorted(pack_files)}
     if verify_only:

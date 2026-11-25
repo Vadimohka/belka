@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from eval.protocol import parse_response,EvaluationTransportError
+from eval.protocol import parse_response,EvaluationTransportError,CompletionResult
 from eval.run_openai_compatible_eval import normalize_item,main
 from tools.run_belarusianglue_eval import evaluate,metrics,question
 
@@ -35,14 +35,14 @@ def test_real_holdout_schema_and_transport_failures(tmp_path,monkeypatch):
     assert len(rows)==209 and rows[0]['id']=='strict_v2_0000'
     assert rows[0]['manual_criteria']
     calls=[]
-    def query(*args):calls.append(args);return 'Гэта беларускі адказ. Беларуская мова ёсць мовай Беларусі.'
-    monkeypatch.setattr(runner,'complete',query)
+    def query(*args):calls.append(args);return CompletionResult('Гэта беларускі адказ. Беларуская мова ёсць мовай Беларусі.')
+    monkeypatch.setattr(runner,'complete_with_metadata',query)
     out=tmp_path/'answers.jsonl'
     main(['--eval-file',str(path),'--output',str(out)])
     assert len(calls)==209
     assert json.loads(out.with_suffix('.summary.json').read_text())['status']=='COMPLETE'
     def fail(*args):raise EvaluationTransportError('failed')
-    monkeypatch.setattr(runner,'complete',fail)
+    monkeypatch.setattr(runner,'complete_with_metadata',fail)
     assert main(['--eval-file',str(path),'--output',str(out)])==1
     assert json.loads(out.with_suffix('.summary.json').read_text())['transport_errors']==209
     assert all(json.loads(line)['answer'] is None for line in out.read_text().splitlines())

@@ -287,6 +287,11 @@
         let isGenerating = false;
         let currentTemperature = 0.8;
         let currentTopK = 50;
+        let currentSeed = null;
+        let currentMinP = 0;
+        let currentRepetitionPenalty = 1;
+        let currentRepetitionWindow = 64;
+        let lastGeneration = null;
 
         function requestHeaders() {
             const headers = {'Content-Type': 'application/json'};
@@ -296,7 +301,7 @@
         }
 
         // A network read is neither a UTF-8 character boundary nor an SSE event boundary.
-        async function readSSE(reader, onToken) {
+        async function readSSE(reader, onToken, onMetadata = () => {}) {
             const decoder = new TextDecoder('utf-8', {fatal: true});
             let buffer = '', complete = false, text = '';
             function consume(flush = false) {
@@ -311,7 +316,10 @@
                     const data = JSON.parse(payload);
                     if (data.error) throw new Error(String(data.error));
                     if (typeof data.token === 'string') { text += data.token; onToken(text); }
-                    if (data.done === true) complete = true;
+                    if (data.done === true) {
+                        complete = true;
+                        if (data.generation) onMetadata(data.generation);
+                    }
                 }
                 if (flush && buffer.trim()) throw new Error('Incomplete response event');
             }
@@ -434,6 +442,7 @@
 
             const assistantContent = addMessage('assistant', '');
             assistantContent.innerHTML = '<span class="typing-indicator"></span>';
+            let responseGeneration = null;
 
             try {
                 const headers = requestHeaders();
@@ -449,6 +458,10 @@
                         messages: messages,
                         temperature: currentTemperature,
                         top_k: currentTopK,
+                        seed: currentSeed,
+                        min_p: currentMinP,
+                        repetition_penalty: currentRepetitionPenalty,
+                        repetition_window: currentRepetitionWindow,
                         max_tokens: budget.max_tokens
                     }),
                 });
@@ -462,6 +475,10 @@
                 const fullResponse = await readSSE(reader, text => {
                     assistantContent.textContent = text;
                     chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, generation => {
+                    responseGeneration = generation;
+                    lastGeneration = generation;
+                    assistantContent.dataset.seed = String(generation.seed);
                 });
 
                 const assistantMessageIndex = messages.length;
@@ -469,7 +486,7 @@
 
                 // Add click handler to regenerate this assistant message
                 assistantContent.setAttribute('data-message-index', assistantMessageIndex);
-                assistantContent.setAttribute('title', 'Click to regenerate this response');
+                assistantContent.setAttribute('title', `Click to regenerate this response. Seed: ${responseGeneration ? responseGeneration.seed : 'unavailable'}`);
                 assistantContent.addEventListener('click', function() {
                     if (!isGenerating) {
                         regenerateMessage(assistantMessageIndex);
@@ -543,6 +560,41 @@
                     }
                 }
                 return true;
+            } else if (cmd === '/seed') {
+                if (arg === undefined) {
+                    addMessage('console', `Seed: ${currentSeed === null ? 'random' : currentSeed}. Last used: ${lastGeneration ? lastGeneration.seed : 'none'}`);
+                } else if (arg.toLowerCase() === 'random' && parts.length === 2) {
+                    currentSeed = null;
+                    addMessage('console', 'A new random seed will be used for each response.');
+                } else if (parts.length === 2 && /^\d+$/.test(arg) && Number.isSafeInteger(Number(arg)) && Number(arg) < 2147483648) {
+                    currentSeed = Number(arg);
+                    addMessage('console', `Seed set to ${currentSeed}. Replay also requires the same conversation and sampling settings.`);
+                } else {
+                    addMessage('console', 'Use /seed random or an integer from 0 to 2147483647.');
+                }
+                return true;
+            } else if (['/minp', '/repeat', '/repeatwindow'].includes(cmd)) {
+                const controls = {
+                    '/minp': {name: 'Min-p', value: currentMinP, low: 0, high: 1},
+                    '/repeat': {name: 'Repetition penalty', value: currentRepetitionPenalty, low: 1, high: 2},
+                    '/repeatwindow': {name: 'Repetition window', value: currentRepetitionWindow, low: 1, high: 512}
+                };
+                const control = controls[cmd];
+                if (arg === undefined) {
+                    addMessage('console', `${control.name}: ${control.value}`);
+                } else {
+                    const value = Number(arg);
+                    if (parts.length !== 2 || !Number.isFinite(value) || value < control.low || value > control.high ||
+                            (cmd === '/repeatwindow' && !Number.isInteger(value))) {
+                        addMessage('console', `${control.name} must be between ${control.low} and ${control.high}${cmd === '/repeatwindow' ? ' (integer)' : ''}.`);
+                    } else {
+                        if (cmd === '/minp') currentMinP = value;
+                        if (cmd === '/repeat') currentRepetitionPenalty = value;
+                        if (cmd === '/repeatwindow') currentRepetitionWindow = value;
+                        addMessage('console', `${control.name} set to ${value}.`);
+                    }
+                }
+                return true;
             } else if (cmd === '/clear') {
                 newConversation();
                 return true;
@@ -553,6 +605,10 @@
                     '/temperature <value> - Set temperature (0.0-2.0)\n' +
                     '/topk - Show current top-k\n' +
                     '/topk <value> - Set top-k (1-200)\n' +
+                    '/seed [integer|random] - Show or set the replay seed\n' +
+                    '/minp [value] - Show or set min-p (0-1; 0 disables it)\n' +
+                    '/repeat [value] - Show or set repetition penalty (1-2; 1 disables it)\n' +
+                    '/repeatwindow [value] - Set the repetition window (1-512 tokens)\n' +
                     '/clear - Clear conversation\n' +
                     '/help - Show this help message'
                 );
